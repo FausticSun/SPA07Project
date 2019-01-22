@@ -1,0 +1,9 @@
+# Windows desktop.ini
+desktop.ini
+
+# Build folders
+/build
+/build_win
+
+# Visual Studio folders
+/.vs
