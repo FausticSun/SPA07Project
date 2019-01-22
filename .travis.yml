@@ -1,0 +1,13 @@
+language: cpp
+
+os:
+- linux
+
+compiler:
+- clang
+
+script:
+- mkdir build
+- cd build
+- cmake ..
+- make
