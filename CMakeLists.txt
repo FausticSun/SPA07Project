@@ -12,11 +12,11 @@ if (WIN32)
     set(AUTOTESTER_ROOT "${CMAKE_CURRENT_LIST_DIR}/lib/autotester/win")
 endif()
 
-if (APPLE)
+elseif (APPLE)
     set(AUTOTESTER_ROOT "${CMAKE_CURRENT_LIST_DIR}/lib/autotester/apple")
 endif()
 
-if (UNIX)
+elseif (UNIX)
     set(AUTOTESTER_ROOT "${CMAKE_CURRENT_LIST_DIR}/lib/autotester/unix")
 endif()
 list(APPEND CMAKE_PREFIX_PATH "${AUTOTESTER_ROOT}")
