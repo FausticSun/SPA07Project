@@ -16,6 +16,15 @@ elseif (UNIX)
     set(AUTOTESTER_ROOT "${CMAKE_CURRENT_LIST_DIR}/lib/autotester/unix")
 endif()
 
+SET(UNIX_WARNING_FLAGS "-Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic")
+SET(MSVC_WARNING_FLAGS "/permissive- /W4 /w14640")
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  ADD_DEFINITIONS(${UNIX_WARNING_FLAGS})
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  ADD_DEFINITIONS(${MSVC_WARNING_FLAGS})
+endif()
+
 list(APPEND CMAKE_PREFIX_PATH "${AUTOTESTER_ROOT}")
 find_package(Autotester REQUIRED)
 include_directories("${CMAKE_CURRENT_LIST_DIR}/lib")#include catch.hpp
