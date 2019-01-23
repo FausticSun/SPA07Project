@@ -1,10 +1,14 @@
 language: cpp
 
-os:
-- linux
-
-compiler:
-- clang
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+      compiler: gcc
+      
+    - os: linux
+      dist: xenial
+      compiler: clang
 
 script:
 - mkdir build
