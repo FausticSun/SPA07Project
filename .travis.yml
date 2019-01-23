@@ -16,4 +16,4 @@ matrix:
     - os: windows
       env: PLATFORM=win
 
-script: build.sh
+script: ./build.sh
