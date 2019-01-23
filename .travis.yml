@@ -1,13 +1,23 @@
 language: cpp
 
-os:
-- linux
-
-compiler:
-- clang
-
-script:
-- mkdir build
-- cd build
-- cmake ..
-- make
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+      compiler: gcc
+      env: PLATFORM=nix
+    - os: linux
+      dist: xenial
+      compiler: clang
+      env: PLATFORM=nix
+    - os: osx
+      osx_image: xcode10.1
+      env: PLATFORM=nix
+    - os: windows
+      env:
+        - PLATFORM=win
+        - MSBUILD_PATH="c:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin"
+      
+script: 
+  - export PATH=$MSBUILD_PATH:$PATH
+  - ./build.sh
