@@ -5,16 +5,24 @@ matrix:
     - os: linux
       dist: xenial
       compiler: gcc
-      
+      env: PLATFORM=nix
     - os: linux
       dist: xenial
       compiler: clang
-
+      env: PLATFORM=nix
     - os: osx
       osx_image: xcode10.1
-      
+      env: PLATFORM=nix
+    - os: windows
+      env: PLATFORM=win
+
 script:
-- mkdir build
-- cd build
-- cmake ..
-- make
+  - mkdir build
+  - cd build
+  - cmake ..
+  - if [ "$PLATFORM" = "nix" ]; then
+  - make -j
+  - else
+  - MSBuild.exe ALL_BUILD.vcxproj -m
+  - fi
+
