@@ -1,12 +1,10 @@
 
 #include "PKB.h"
 #include "PKB.cpp"
-
+#include "Test.h"
 #include "catch.hpp"
 using namespace std;
-void require(bool b) {
-	REQUIRE(b);
-}
+
 
 TEST_CASE("2st Test") {
 
