@@ -34,6 +34,9 @@ class TNode {
 public:
 	TNode(TNodeType, string);
 	~TNode();
+	TNodeType getType();
+	string getName();
+	vector<TNode*> getChildren();
 	void addChildren(TNode*);
 
 private:
