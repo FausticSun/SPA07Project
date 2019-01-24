@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include<list>
+#include <unordered_set>
 
 using namespace std;
 typedef short PROC;
@@ -13,7 +13,7 @@ class TNode;
 
 class VarTable {  // no need to #include "VarTable.h" as all I need is pointer
 public:
-	list<string> varList;
+	unordered_set<string> varList;
 	int numOfVars;
 	VarTable();
 	int add(string s);
@@ -23,7 +23,7 @@ public:
 
 class ProcTable {
 public:
-	list<string> procList;
+	unordered_set<string> procList;
 	int numOfProcs;
 	ProcTable();
 	int add(string s);
