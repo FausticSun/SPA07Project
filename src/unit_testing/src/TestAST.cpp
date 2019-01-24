@@ -1,9 +1,11 @@
 
 #include "TNode.h"
-#include "Test.h"
+
 #include "catch.hpp"
 using namespace std;
-
+void require(bool b) {
+	REQUIRE(b);
+}
 
 TEST_CASE("1st Test") {
 
