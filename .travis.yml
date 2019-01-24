@@ -1,23 +1,32 @@
 language: cpp
+dist: xenial
+osx_image: xcode10.1
+
+before_script:
+  - mkdir build
+  - cd build
 
 matrix:
   include:
+    # Linux/GCC Compilation
     - os: linux
-      dist: xenial
       compiler: gcc
-      env: PLATFORM=nix
+      script:
+        - make -j
+    # Linux/Clang Compilation
     - os: linux
-      dist: xenial
       compiler: clang
-      env: PLATFORM=nix
+      script:
+        - make -j
+    # OSX/XCode Compilation
     - os: osx
       osx_image: xcode10.1
-      env: PLATFORM=nix
+      script:
+        - make -j
+    # Windows/MSVC Compilation
     - os: windows
       env:
-        - PLATFORM=win
         - MSBUILD_PATH="c:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin"
-      
-script: 
-  - export PATH=$MSBUILD_PATH:$PATH
-  - ./build.sh
+      script:
+        - export PATH=$MSBUILD_PATH:$PATH
+        - MSBuild.exe ALL_BUILD.vcxproj -m
