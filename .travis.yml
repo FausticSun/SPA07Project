@@ -12,16 +12,19 @@ matrix:
     - os: linux
       compiler: gcc
       script:
+        - cmake ..
         - make -j
     # Linux/Clang Compilation
     - os: linux
       compiler: clang
       script:
+        - cmake ..
         - make -j
     # OSX/XCode Compilation
     - os: osx
       osx_image: xcode10.1
       script:
+        - cmake ..
         - make -j
     # Windows/MSVC Compilation
     - os: windows
@@ -29,4 +32,5 @@ matrix:
         - MSBUILD_PATH="c:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin"
       script:
         - export PATH=$MSBUILD_PATH:$PATH
+        - cmake ..
         - MSBuild.exe ALL_BUILD.vcxproj -m
