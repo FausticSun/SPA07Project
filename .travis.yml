@@ -1,6 +1,5 @@
 language: cpp
 dist: xenial
-osx_image: xcode10.1
 
 before_script:
   - mkdir build
