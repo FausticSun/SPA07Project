@@ -1,0 +1,2 @@
+procedure AssignmentTest {
+  x = 2; }
