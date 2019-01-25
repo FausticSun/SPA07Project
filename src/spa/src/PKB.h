@@ -13,22 +13,28 @@ class TNode;
 
 class VarTable {  // no need to #include "VarTable.h" as all I need is pointer
 public:
-	unordered_set<string> varList;
-	int numOfVars;
 	VarTable();
 	int add(string s);
 	bool contains(string s);
-	string getAll();
+	unordered_set<string> getVarList();
+ 	string toString();
+
+private:
+	unordered_set<string> varList;
+	int numOfVars;
 };
 
 class ProcTable {
 public:
-	unordered_set<string> procList;
-	int numOfProcs;
 	ProcTable();
 	int add(string s);
 	bool contains(string s);
-	string getAll();
+	unordered_set<string> getProcList();
+	string toString();
+
+private:
+	unordered_set<string> procList;
+	int numOfProcs;
 };
 
 class PKB {

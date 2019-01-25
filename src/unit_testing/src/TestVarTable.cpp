@@ -10,20 +10,18 @@ TEST_CASE("2nd Test") {
 
 	VarTable vt;
 
-	REQUIRE(vt.numOfVars == 0);
-
 	vt.add("x");
 	
 	REQUIRE(vt.contains("x") == true);
-	REQUIRE(vt.getAll() == "x");
+	REQUIRE(vt.toString() == "x");
 
 	VarTable vt2;
 	// empty variable list
-	REQUIRE(vt2.getAll() == ""); 
+	REQUIRE(vt2.toString() == ""); 
 	vt2.add("x");
 	vt2.add("y");
 	vt2.add("z");
-	REQUIRE(vt2.getAll() == "x, y, z");
+	REQUIRE(vt2.toString() == "x, y, z");
 }
 
 

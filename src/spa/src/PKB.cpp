@@ -25,7 +25,11 @@ bool VarTable::contains(string s) {
 	return got != varList.end() ? true : false;
 }
 
-string VarTable::getAll() {
+unordered_set<string>  VarTable::getVarList() {
+	return varList;
+}
+
+string VarTable::toString() {
 	string result = "";
 	for (unordered_set<string>::iterator it = varList.begin(); it != varList.end(); ++it)
 		result += *it + ", ";
@@ -51,7 +55,11 @@ bool ProcTable::contains(string s) {
 	return got != procList.end() ? true : false;
 }
 
-string ProcTable::getAll() {
+unordered_set<string>  ProcTable::getProcList() {
+	return procList;
+}
+
+string ProcTable::toString() {
 	string result = "";
 	for (unordered_set<string>::iterator it = procList.begin(); it != procList.end(); ++it)
 		result += *it + ", ";
