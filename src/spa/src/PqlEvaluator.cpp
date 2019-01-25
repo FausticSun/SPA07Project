@@ -1,7 +1,7 @@
 #include "PqlEvaluator.h"
 
 PqlEvaluator::PqlEvaluator() {
-	PqlEvaluator::queryCount = 0;
+	this -> queryCount = 0;
 }
 
 PqlEvaluator::~PqlEvaluator() {}
@@ -11,14 +11,14 @@ string PqlEvaluator::getParsedQuery() {
 }
 
 int PqlEvaluator::getQueryCount() {
-	return PqlEvaluator::queryCount;
+	return this -> queryCount;
 }
 
 string PqlEvaluator::evaluateQuery(string query) {
 	try {
 		//call a set of API in PKB
 		queries.push_back(query);
-		PqlEvaluator::queryCount++;
+		this -> queryCount++;
 	}
 	catch (const char* msg) {
 		return msg;

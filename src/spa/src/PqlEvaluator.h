@@ -21,6 +21,6 @@ class PqlEvaluator {
 	private:
 		list<string> queries;
 		string results;
-		static int queryCount;
+		int queryCount;
 
 };
