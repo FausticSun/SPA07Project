@@ -6,7 +6,7 @@
 using namespace std;
 
 
-TEST_CASE("2nd Test") {
+TEST_CASE("VarTable Test") {
 
 	VarTable vt;
 
