@@ -1,6 +1,5 @@
 
 #include "PKB.h"
-#include "PKB.cpp"
 
 #include "catch.hpp"
 using namespace std;

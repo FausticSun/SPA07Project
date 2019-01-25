@@ -1,6 +1,5 @@
 
 #include "PKB.h"
-#include "PKB.cpp"
 
 #include "catch.hpp"
 using namespace std;
@@ -16,7 +15,7 @@ TEST_CASE("ProcTable Test") {
 	REQUIRE(pt.toString() == "x");
 
 	ProcTable pt2;
-	// empty variable list
+	// empty procedure list
 	REQUIRE(pt2.toString() == "");
 	pt2.add("x");
 	pt2.add("y");
