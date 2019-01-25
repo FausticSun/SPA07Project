@@ -10,7 +10,7 @@
 using namespace std;
 
 class PqlEvaluator {
-	public;
+	public:
 		
 		PqlEvaluator();
 		~PqlEvaluator();

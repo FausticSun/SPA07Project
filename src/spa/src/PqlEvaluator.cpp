@@ -4,6 +4,8 @@ PqlEvaluator::PqlEvaluator() {
 	PqlEvaluator::queryCount = 0;
 }
 
+PqlEvaluator::~PqlEvaluator() {}
+
 string PqlEvaluator::getParsedQuery() {
 	return queries.back();
 }
@@ -18,9 +20,8 @@ string PqlEvaluator::evaluateQuery(string query) {
 		queries.push_back(query);
 		PqlEvaluator::queryCount++;
 	}
-	catch (const* char msg) {
-		//handle exception thrown from PKB and return error message
-		return errmsg;
+	catch (const char* msg) {
+		return msg;
 	}
 
 	return results;
