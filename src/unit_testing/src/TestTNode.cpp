@@ -20,7 +20,7 @@ SCENARIO("Construction of TNode") {
 
 }
 
-SCENARIO("Children to TNode") {
+SCENARIO("Children of TNode") {
 
 	TNode* childTNode = new TNode(TNodeType::Procedure, "child");
 	TNode* parentTNode = new TNode(TNodeType::Procedure, "parent");

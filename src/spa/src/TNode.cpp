@@ -1,6 +1,5 @@
 #include "TNode.h"
 
-
 TNode::TNode(TNodeType type, string name) {
 	this->type = type;
 	this->name = name;

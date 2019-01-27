@@ -10,29 +10,32 @@ enum class TNodeType
 {
 	Program,
 	Procedure,
+	StatementList,
+	Assign,
+	Call,
+	Print,
+	Read,
 	If,
 	Then,
 	Else,
 	While,
 	Variable,
 	Constant,
-	StmtLst,
-	Assign,
-	Call,
 	SemiColon,
-	CurlyBraceOpen,
-	CurlyBraceClose,
-	Equals,
+	OpenCurlyBrace,
+	CloseCurlyBrace,
 	Plus,
 	Minus,
-	Times,
+	Multiply,
 	Divide,
-	Mod
+	Mod,
+	Equal,
+	Error
 };
 
 class TNode {
 public:
-	TNode(TNodeType, string);
+	TNode(TNodeType, string = "");
 	~TNode();
 	TNodeType getType();
 	string getName();
