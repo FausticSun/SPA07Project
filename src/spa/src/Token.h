@@ -9,6 +9,8 @@ enum class TokenType
 	Constant,
 	Identifier,
 	If,
+	Then,
+	Else,
 	Print,
 	Procedure,
 	Read,
@@ -21,7 +23,15 @@ enum class TokenType
 	Multiply,
 	Divide,
 	Mod,
-	Equal
+	Greater,
+	GreaterThanOrEqual,
+	Lesser,
+	LesserThanOrEqual,
+	Equal,
+	NotEqual,
+	ExclamationMark,
+	And,
+	Or
 };
 
 class Token {
