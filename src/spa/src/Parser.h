@@ -11,20 +11,27 @@ class Parser {
 public:
 	Parser();
 	~Parser();
-	void parse(string);
-	TNode* buildAST();
+	queue<Token*> parse(string);
+	TNode* buildAST(queue<Token*> &tokenQueue);
 
 private:
 	queue<Token*> tokenQueue;
 	Token* token;
 	void getNextToken();
-	TNode* procedure();
-	TNode* assign();
-	TNode* read();
-	TNode* statement();
-	TNode* expression();
-	TNode* term();
-	TNode* factor();
-	TNode* createTNodeWithOneChild(TNodeType, TNode*);
-	TNode* createTNodeWithTwoChildren(TNodeType, TNode*, TNode*);
+	void expectToken(string);
+	TNode* createTNodeProcedure();
+	TNode* createTNodeAssign();
+	TNode* createTNodeRead();
+	TNode* createTNodePrint();
+	TNode* createTNodeWhile();
+	TNode* createTNodeIf();
+	TNode* createTNodeStatement();
+	TNode* createTNodeStatementList();
+	TNode* createTNodeConditionExpression();
+	TNode* createTNodeRelativeExpression();
+	TNode* createTNodeRelativeFactor();
+	TNode* createTNodeExpression();
+	TNode* createTNodeTerm();
+	TNode* createTNodeFactor();
+	TNode* createTNode(TNodeType, vector<TNode*>);
 };
