@@ -29,21 +29,30 @@ enum class TNodeType
 	Multiply,
 	Divide,
 	Mod,
+	Greater,
+	GreaterThanOrEqual,
+	Lesser,
+	LesserThanOrEqual,
 	Equal,
-	Error
+	NotEqual,
+	Not,
+	And,
+	Or
 };
 
 class TNode {
 public:
-	TNode(TNodeType, string = "");
+	TNode(TNodeType, string = "", int statementNumber = 0);
 	~TNode();
 	TNodeType getType();
 	string getName();
+	int getStatementNumber();
 	vector<TNode*> getChildren();
-	void addChildren(TNode*);
+	void setChildren(vector<TNode*>);
 
 private:
 	TNodeType type;
 	string name;
+	int statementNumber;
 	vector<TNode*> children;
 };
