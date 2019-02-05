@@ -1,4 +1,7 @@
 #include "PQLParser.h"
+#include <string>
+#include <vector>
+#include <queue>
 
 using namespace std;
 
@@ -45,7 +48,8 @@ vector<string> PQLParser::vectorize(string input)
 	vector<string> tokens;
 	char *d = " ";
 	char *p;
-	p = strtok(input, d);
+	char *temp = (char*)input.c_str();
+	p = strtok(temp, d);
 	while (p) {
 		tokens.push_back(p);
 		p = strtok(NULL, d);
@@ -53,12 +57,12 @@ vector<string> PQLParser::vectorize(string input)
 	return tokens;
 }
 
-queue<pair<DeclarationType, string>> PQLParser::getDeclarationQueue()
+queue<pair<TokenType, string>> PQLParser::getDeclarationQueue()
 {
 	return declarationQueue;
 }
 
-queue<pair<RelationType, pair<string, string>>> PQLParser::getSelectQueue()
+queue<pair<TokenType, pair<string, string>>> PQLParser::getSelectQueue()
 {
 	return selectQueue;
 }
@@ -66,17 +70,19 @@ queue<pair<RelationType, pair<string, string>>> PQLParser::getSelectQueue()
 
 void PQLParser::tokenizeVariable(vector<string> token)
 {
-	declarationQueue.push(make_pair(TokenType::keyword, "variable");
-	declarationQueue.push(make_pair(TokenType::identifier, token[1]));
-	declarationQueue.push(make_pair(TokenType::separator, ";"));
+	declarationQueue.push(make_pair(TokenType::Keyword, "variable"));
+	declarationQueue.push(make_pair(TokenType::Identifier, token[1]));
+	declarationQueue.push(make_pair(TokenType::Separator, ";"));
 }
 
-void PQLParser::tokenizeProcedure(vector<string>)
+void PQLParser::tokenizeProcedure(vector<string> token)
 {
-	declarationQueue.push(make_pair(TokenType::keyword, "procedure");
-	declarationQueue.push(make_pari(TokenType::identifier, token[1]));
-	declarationQueue.push(make_pair(TokenType::separator, ";"));
+	declarationQueue.push(make_pair(TokenType::Keyword, "procedure"));
+	declarationQueue.push(make_pair(TokenType::Identifier, token[1]));
+	declarationQueue.push(make_pair(TokenType::Separator, ";"));
 }
+
+void PQLParser::tokenizeSelect(vector<string> token) {
 
 }
 

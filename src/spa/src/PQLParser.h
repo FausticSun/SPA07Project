@@ -1,6 +1,7 @@
 #pragma once
 
 #include<string>
+#include<queue>
 
 using namespace std;
 
@@ -20,13 +21,13 @@ using namespace std;
 	ModifiesS,
 	ModifiesP
 };*/
-enum TokenType
+enum class TokenType
 {
-	identifier,
-	keyword,
-	separator,
-	operator,
-	literal
+	Identifier,
+	Keyword,
+	Separator,
+	Operator,
+	Literal,
 };
 
 
@@ -34,16 +35,17 @@ enum TokenType
 class PQLParser {
 public:
 	PQLParser(string input);
-	queue<pair<DeclarationType, string>> getDeclarationQueue();
-	queue<pair<RelationType, pair<string, string>>> getSelectQueue();
+	queue<pair<TokenType, string>> getDeclarationQueue();
+	queue<pair<TokenType, pair<string, string>>> getSelectQueue();
 
 private:
-	queue<pair<DeclarationType, string>> declarationQueue;
-	queue<pair<RelationType, pari<string, string>>> selectQueue;
+	queue<pair<TokenType, string>> declarationQueue;
+	queue<pair<TokenType, pair<string, string>>> selectQueue;
 	void Tokenize(string input);
 	vector<string> vectorize(string);
 	void tokenizeVariable(vector<string>);
 	void tokenizeProcedure(vector<string>);
+	void tokenizeSelect(vector<string>);
 	void tokenizePattern(vector<string>);
 	void tokenizeParent(vector<string>);
 	void tokenizeParentS(vector<string>);
