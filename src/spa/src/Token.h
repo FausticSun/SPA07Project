@@ -6,13 +6,14 @@ using std::string;
 
 enum class TokenType
 {
+	Assign,
+	Procedure,
+	Print,
+	Read,
+	If,
+	While,
 	Constant,
 	Identifier,
-	If,
-	Print,
-	Procedure,
-	Read,
-	While,
 	Separator,
 	OpenParenthesis,
 	CloseParenthesis,
