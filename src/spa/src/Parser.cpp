@@ -239,6 +239,15 @@ TNode* Parser::createTNodeExpression() {
 			else {
 				previousTNode = createTNode(TNodeType::Plus, { previousTNode, rightTermTNode });
 			}
+		case TokenType::Minus:
+			expectToken("-");
+			rightTermTNode = createTNodeTerm();
+			if (previousTNode == NULL) {
+				previousTNode = createTNode(TNodeType::Minus, { leftTermTNode, rightTermTNode });
+			}
+			else {
+				previousTNode = createTNode(TNodeType::Minus, { previousTNode, rightTermTNode });
+			}
 		}
 		nextTokenType = tokenQueue.front()->getType();
 	}
@@ -262,15 +271,35 @@ TNode* Parser::createTNodeTerm() {
 			rightFactorTNode = createTNodeFactor();
 			if (previousTNode == NULL) {
 				previousTNode = createTNode(TNodeType::Multiply, { leftFactorTNode, rightFactorTNode });
-			} else {
+			}
+			else {
 				previousTNode = createTNode(TNodeType::Multiply, { previousTNode, rightFactorTNode });
+			}
+		case TokenType::Divide:
+			expectToken("/");
+			rightFactorTNode = createTNodeFactor();
+			if (previousTNode == NULL) {
+				previousTNode = createTNode(TNodeType::Divide, { leftFactorTNode, rightFactorTNode });
+			}
+			else {
+				previousTNode = createTNode(TNodeType::Divide, { previousTNode, rightFactorTNode });
+			}
+		case TokenType::Mod:
+			expectToken("%");
+			rightFactorTNode = createTNodeFactor();
+			if (previousTNode == NULL) {
+				previousTNode = createTNode(TNodeType::Mod, { leftFactorTNode, rightFactorTNode });
+			}
+			else {
+				previousTNode = createTNode(TNodeType::Mod, { previousTNode, rightFactorTNode });
 			}
 		}
 		nextTokenType = tokenQueue.front()->getType();
 	}
 	if (previousTNode == NULL) {
 		return leftFactorTNode;
-	} else {
+	}
+	else {
 		return previousTNode;
 	}
 }
