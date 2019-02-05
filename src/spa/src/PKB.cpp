@@ -23,6 +23,7 @@ bool VarTable::buildVarTable(queue<pair<TokenType, string>> tokens) {
 			if (token.first == TokenType::Identifier && previous != "procedure") {
 				add(token.second);
 			}
+			previous = token.second;
 			tokens.pop();
 		}
 		return true;
@@ -72,6 +73,7 @@ bool ProcTable::buildProcTable(queue<pair<TokenType, string>> tokens) {
 			if (token.first == TokenType::Identifier && previous == "procedure") {
 				add(token.second);
 			}
+			previous = token.second;
 			tokens.pop();
 		}
 		return true;
