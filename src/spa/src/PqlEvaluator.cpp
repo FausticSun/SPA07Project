@@ -38,3 +38,16 @@ bool PqlEvaluator::isSimpleQuery(string query) {
 	//if there is no clauses then it should be simple query
 }
 
+Query::Query() {}
+
+Query::Query(list<string> des, string tar,Clause rel,Clause pat) {
+	this->DesignEntities = des;
+	this->targetDesignEntities = tar;
+	this->relClause = rel;
+	this->patClause = pat;
+}
+
+Query::~Query() {}
+
+
+

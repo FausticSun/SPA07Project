@@ -10,7 +10,6 @@
 using namespace std;
 
 typedef string QueryTokens;
-typedef string Query;
 typedef string Clause;
 
 enum class DesignEntityType {
@@ -38,6 +37,7 @@ enum class RelationshipType {
 class Query {
 	public:
 		Query();
+		Query(list<string> des, string tar, Clause rel, Clause pat);
 		~Query();
 		list<string> DesignEntities;
 		string targetDesignEntities;
