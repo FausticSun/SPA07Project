@@ -17,5 +17,6 @@ enum EntityType {
 
 struct Entity {
   std::string name;
-  EntityType type;
+  EntityType type{STMT};
+  Entity() = default;
 };

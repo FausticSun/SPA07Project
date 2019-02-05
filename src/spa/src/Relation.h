@@ -5,7 +5,8 @@
 enum RelationType { FOLLOWS, PARENT, USES, MODIFIES };
 
 struct Relation {
-  RelationType type;
+  RelationType type{FOLLOWS};
   Entity leftEntity;
   Entity rightEntity;
+  Relation() = default;
 };
