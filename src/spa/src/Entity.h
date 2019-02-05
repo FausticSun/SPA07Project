@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <tuple>
 
 enum EntityType {
   STMT,
@@ -16,7 +17,10 @@ enum EntityType {
 };
 
 struct Entity {
-  std::string name;
   EntityType type{STMT};
+  std::string name;
   Entity() = default;
+  bool operator<(const Entity &other) const {
+    return std::tie(type, name) < std::tie(other.type, other.name);
+  }
 };
