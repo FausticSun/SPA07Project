@@ -14,6 +14,24 @@ VarTable::VarTable() {
 	numOfVars = 0;
 }
 
+bool VarTable::buildVarTable(queue<pair<TokenType, string>> tokens) {
+	try
+	{
+		string previous = "";
+		while (!tokens.empty()) {
+			pair<TokenType, string> token = tokens.front();
+			if (token.first == TokenType::Identifier && previous != "procedure") {
+				add(token.second);
+			}
+		}
+		return true;
+	}
+	catch (exception& e) {
+		return false;
+	}
+
+}
+
 int VarTable::add(string s) {
 	varList.insert(s);
 	numOfVars++;
@@ -42,6 +60,24 @@ string VarTable::toString() {
 
 ProcTable::ProcTable() {
 	numOfProcs = 0;
+}
+
+bool ProcTable::buildProcTable(queue<pair<TokenType, string>> tokens) {
+	try
+	{
+		string previous = "";
+		while (!tokens.empty()) {
+			pair<TokenType, string> token = tokens.front();
+			if (token.first == TokenType::Identifier && previous == "procedure") {
+				add(token.second);
+			}
+		}
+		return true;
+	}
+	catch (exception& e) {
+		return false;
+	}
+
 }
 
 int ProcTable::add(string s) {
