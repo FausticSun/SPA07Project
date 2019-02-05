@@ -6,6 +6,17 @@
 
 using namespace std;
 
+SCENARIO("Testing123") {
+	ifstream file;
+
+	file.open("C:\\Users\\Flora Fong\\Documents\\SPAProject\\src\\spa\\src\\input.txt");
+	string line;
+	while (getline(file, line)) {
+		Lexer* lexer = new Lexer(line);
+	}
+	file.close();
+}
+
 SCENARIO("Lexing prodedure command") {
 	string input = "procedure AssignmentTest {";
 	Lexer lexer{ input };
@@ -14,7 +25,7 @@ SCENARIO("Lexing prodedure command") {
 	WHEN("Pushing into TokenQueue") {
 		THEN("First element is Keyword procedure") {
 			pair<TokenType, string> q1 = tokenQueue.front();
-			REQUIRE(q1.first == TokenType::Keyword);
+			REQUIRE(q1.first == TokenType::Procedure);
 			REQUIRE(q1.second == "procedure");
 		}
 		tokenQueue.pop();
@@ -43,7 +54,7 @@ SCENARIO("Lexing assign command") {
 
 		THEN("First element is Keyword assign") {
 			pair<TokenType, string> q1 = tokenQueue.front();
-			REQUIRE(q1.first == TokenType::Keyword);
+			REQUIRE(q1.first == TokenType::Identifier);
 			REQUIRE(q1.second == "assign");
 		}
 		tokenQueue.pop();
@@ -57,21 +68,21 @@ SCENARIO("Lexing assign command") {
 
 		THEN("Third element is Operator =") {
 			pair<TokenType, string> q3 = tokenQueue.front();
-			REQUIRE(q3.first == TokenType::Operator);
+			REQUIRE(q3.first == TokenType::Equal);
 			REQUIRE(q3.second == "=");
 		}
 		tokenQueue.pop();
 
 		THEN("Fourth element is Literal 2") {
 			pair<TokenType, string> q4 = tokenQueue.front();
-			REQUIRE(q4.first == TokenType::Literal);
+			REQUIRE(q4.first == TokenType::Constant);
 			REQUIRE(q4.second == "2");
 		}
 		tokenQueue.pop();
 
 		THEN("Fifth element is Operator +") {
 			pair<TokenType, string> q5 = tokenQueue.front();
-			REQUIRE(q5.first == TokenType::Operator);
+			REQUIRE(q5.first == TokenType::Plus);
 			REQUIRE(q5.second == "+");
 		}
 		tokenQueue.pop();

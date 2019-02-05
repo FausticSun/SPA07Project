@@ -1,2 +1,5 @@
 procedure AssignmentTest {
-  x = 2; }
+  x = 2; 
+  a = b+(c -d);
+  read wxy;
+  print sum;}
