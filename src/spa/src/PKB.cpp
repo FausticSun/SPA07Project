@@ -14,22 +14,22 @@ VarTable::VarTable() {
 	numOfVars = 0;
 }
 
-bool VarTable::buildVarTable(queue<pair<TokenType, string>> tokens) {
+VarTable* VarTable::buildVarTable(queue<Token*> tokens) {
 	try
 	{
 		string previous = "";
 		while (!tokens.empty()) {
-			pair<TokenType, string> token = tokens.front();
-			if (token.first == TokenType::Identifier && previous != "procedure") {
-				add(token.second);
+			Token* token = tokens.front();
+			if (token->getType() == TokenType::Identifier && previous != "procedure") {
+				add(token->getName());
 			}
-			previous = token.second;
+			previous = token->getName();
 			tokens.pop();
 		}
-		return true;
+		return this;
 	}
 	catch (exception& e) {
-		return false;
+		;
 	}
 
 }
@@ -64,22 +64,22 @@ ProcTable::ProcTable() {
 	numOfProcs = 0;
 }
 
-bool ProcTable::buildProcTable(queue<pair<TokenType, string>> tokens) {
+ProcTable* ProcTable::buildProcTable(queue<Token*> tokens) {
 	try
 	{
 		string previous = "";
 		while (!tokens.empty()) {
-			pair<TokenType, string> token = tokens.front();
-			if (token.first == TokenType::Identifier && previous == "procedure") {
-				add(token.second);
+			Token* token = tokens.front();
+			if (token->getType() == TokenType::Identifier && previous == "procedure") {
+				add(token->getName());
 			}
-			previous = token.second;
+			previous = token->getName();
 			tokens.pop();
 		}
-		return true;
+		return this;
 	}
 	catch (exception& e) {
-		return false;
+		;
 	}
 
 }
