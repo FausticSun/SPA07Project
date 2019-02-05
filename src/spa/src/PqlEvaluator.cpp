@@ -15,15 +15,26 @@ int PqlEvaluator::getQueryCount() {
 }
 
 string PqlEvaluator::evaluateQuery(string query) {
-	try {
-		//call a set of API in PKB
-		queries.push_back(query);
-		this -> queryCount++;
+	string results;
+	DesignEntityType de = query.getDesignEntityType();
+	if (isSimpleQuery(query)) {
+		results = evaluateSimpleQuery(de);
 	}
-	catch (const char* msg) {
-		return msg;
-	}
-
 	return results;
+}
+
+string PqlEvaluator::evaluateSimpleQuery(DesignEntityType de) {
+	string result;
+	if (de == DesignEntityType::Variable) {
+		result = PKB.varTable->toString();
+	}
+	else if (de == DesignEntityType::Procedure) {
+		result = PKB.procTable->toString();
+	}
+	return result;
+}
+
+bool PqlEvaluator::isSimpleQuery(string query) {
+	//if there is no clauses then it should be simple query
 }
 

@@ -9,18 +9,55 @@
 
 using namespace std;
 
+typedef string QueryTokens;
+typedef string Query;
+typedef string Clause;
+
+enum class DesignEntityType {
+	Stmt,
+	Read,
+	Print,
+	Call,
+	While,
+	If,
+	Assign,
+	Variable,
+	Constant,
+	Procedure,
+};
+enum class RelationshipType {
+	Follows,
+	FollowsT,
+	Parent,
+	Uses,
+	UsesP,
+	ModifiesS,
+	ModifiesP,
+};
+
+class Query {
+	public:
+		Query();
+		~Query();
+		list<string> DesignEntities;
+		string targetDesignEntities;
+		Clause relClause;
+		Clause patClause;
+};
+
 class PqlEvaluator {
 	public:
 		
 		PqlEvaluator();
 		~PqlEvaluator();
-		string getParsedQuery();
+		QueryTokens getParsedQuery();
 		int getQueryCount();
-		string evaluateQuery(string query);
+		Query evaluateQuery(QueryTokens query);
 
 	private:
-		list<string> queries;
-		string results;
+		list<QueryTokens> queries;
 		int queryCount;
+		Query evaluateSimpleQuery(DesignEntityType de);
+		bool isSimpleQuery(QueryTokens query);
 
 };

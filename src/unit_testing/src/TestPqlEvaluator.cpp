@@ -4,19 +4,19 @@
 #include "catch.hpp"
 using namespace std;
 
-TEST_CASE("PqlEvaluator Constructor Test") {
-
+SCENARIO("Selecting variable command") {
+	string PQL = "variable v; select v;";
 	PqlEvaluator pe;
-
-	REQUIRE(pe.getQueryCount() == 0);
+	WHEN("PKB is contructed") {
+		
+	}
 }
 
+SCENARIO("Selecting procedure command") {
+	string PQL = "procedure p;select p;";
+	PqlEvaluator pe();
+	WHEN("PKB is contructed") {
 
-TEST_CASE("PqlEvaluator pass query Test") {
+	}
 
-	PqlEvaluator pe;
-	pe.evaluateQuery("msg");
-
-	REQUIRE(pe.getParsedQuery() == "msg");
-	REQUIRE(pe.getQueryCount() == 1);
 }
