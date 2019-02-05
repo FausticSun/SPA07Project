@@ -1,9 +1,11 @@
 #pragma once
 #include "PKB.h"
+#include <list>
+#include <string>
 
 class SPA {
 private:
-  PKB PKB;
+  PKB pkb;
 
 public:
   void parseSIMPLEFile(std::string filename);
