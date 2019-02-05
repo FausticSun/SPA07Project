@@ -14,22 +14,22 @@ int PqlEvaluator::getQueryCount() {
 	return this -> queryCount;
 }
 
-string PqlEvaluator::evaluateQuery(string query) {
-	string results;
-	DesignEntityType de = query.getDesignEntityType();
+Query PqlEvaluator::evaluateQuery(string query) {
+	Query results;
+	/*DesignEntityType de = query.getDesignEntityType();*/
 	if (isSimpleQuery(query)) {
-		results = evaluateSimpleQuery(de);
+		/*results = evaluateSimpleQuery(de);*/
 	}
 	return results;
 }
 
-string PqlEvaluator::evaluateSimpleQuery(DesignEntityType de) {
-	string result;
+Query PqlEvaluator::evaluateSimpleQuery(DesignEntityType de) {
+	Query result;
 	if (de == DesignEntityType::Variable) {
-		result = PKB.varTable->toString();
+		/*result = PKB.varTable->toString();*/
 	}
 	else if (de == DesignEntityType::Procedure) {
-		result = PKB.procTable->toString();
+		/*result = PKB.procTable->toString();*/
 	}
 	return result;
 }
