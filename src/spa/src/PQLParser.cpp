@@ -67,13 +67,17 @@ queue<pair<RelationType, pair<string, string>>> PQLParser::getSelectQueue()
 void PQLParser::tokenizeVariable(vector<string> token)
 {
 	declarationQueue.push(make_pair(TokenType::keyword, "variable");
-	declarationQueue.push(make_pari(TokenType::identifier, token[1]));
+	declarationQueue.push(make_pair(TokenType::identifier, token[1]));
+	declarationQueue.push(make_pair(TokenType::separator, ";"));
 }
 
 void PQLParser::tokenizeProcedure(vector<string>)
 {
 	declarationQueue.push(make_pair(TokenType::keyword, "procedure");
 	declarationQueue.push(make_pari(TokenType::identifier, token[1]));
+	declarationQueue.push(make_pair(TokenType::separator, ";"));
+}
+
 }
 
 void PQLParser::tokenizePattern(vector<string>)
