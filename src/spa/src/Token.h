@@ -7,10 +7,12 @@ using std::string;
 enum class TokenType
 {
 	Assign,
-	Procedure,
-	Print,
-	Read,
 	If,
+	Then,
+	Else,
+	Print,
+	Procedure,
+	Read,
 	While,
 	Constant,
 	Identifier,
@@ -22,17 +24,27 @@ enum class TokenType
 	Multiply,
 	Divide,
 	Mod,
-	Equal
+	Greater,
+	GreaterThanOrEqual,
+	Lesser,
+	LesserThanOrEqual,
+	Equal,
+	NotEqual,
+	ExclamationMark,
+	And,
+	Or
 };
 
 class Token {
 public:
-	Token(TokenType, string);
+	Token(TokenType, string, int);
 	~Token();
 	TokenType getType();
 	string getName();
+	int getStatementNumber();
 
 private:
 	TokenType type;
 	string name;
+	int statementNumber;
 };
