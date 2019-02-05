@@ -9,18 +9,23 @@ TEST_CASE("ProcTable Test") {
 
 	ProcTable pt;
 
-	pt.add("x");
+	queue<pair<TokenType, string>> tokens;
+	tokens.push(make_pair(TokenType::Keyword, "procedure"));
+	tokens.push(make_pair(TokenType::Identifier, "readPoint"));
+	tokens.push(make_pair(TokenType::Separator, "{"));
+	tokens.push(make_pair(TokenType::Keyword, "read"));
+	tokens.push(make_pair(TokenType::Identifier, "x"));
+	tokens.push(make_pair(TokenType::Separator, ";"));
+	tokens.push(make_pair(TokenType::Keyword, "read"));
+	tokens.push(make_pair(TokenType::Identifier, "y"));
+	tokens.push(make_pair(TokenType::Separator, ";"));
+	tokens.push(make_pair(TokenType::Separator, "}"));
 
-	REQUIRE(pt.contains("x") == true);
-	REQUIRE(pt.toString() == "x");
+	pt.buildProcTable(tokens);
 
-	ProcTable pt2;
-	// empty procedure list
-	REQUIRE(pt2.toString() == "");
-	pt2.add("x");
-	pt2.add("y");
-	pt2.add("z");
-	REQUIRE(pt2.toString() == "x, y, z");
+	REQUIRE(pt.contains("readPoint") == true);
+	REQUIRE(pt.contains("x") == false);
+	REQUIRE(pt.toString() == "readPoint");
 }
 
 

@@ -29,7 +29,7 @@ enum class TokenType {
 class VarTable {  // no need to #include "VarTable.h" as all I need is pointer
 public:
 	VarTable();
-	bool buildVarTable(queue<pair<string, string>> tokens);
+	bool buildVarTable(queue<pair<TokenType, string>> tokens);
 	bool contains(string s);
 	unordered_set<string> getVarList();
  	string toString();
@@ -43,7 +43,7 @@ private:
 class ProcTable {
 public:
 	ProcTable();
-	bool buildProcTable(queue<pair<string, string>> tokens);
+	bool buildProcTable(queue<pair<TokenType, string>> tokens);
 	bool contains(string s);
 	unordered_set<string> getProcList();
 	string toString();
