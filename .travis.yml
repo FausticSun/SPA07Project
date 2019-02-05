@@ -55,3 +55,25 @@ matrix:
           else
             echo -e "\033[1;32m\xE2\x9C\x93 passed:\033[0m $1";
           fi
+    # Clang-Format check
+    - os: linux
+      env:
+        - TEST="Clang Format"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-xenial-7
+          packages:
+            - clang-format-7
+      script:
+        - cmake -DENABLE_CLANG_FORMAT=ON -DCMAKE_CXX_COMPILER="g++-6" ..
+        - make
+        - make format
+        - |
+          if [[ -n $(git diff) ]]; then
+            echo "You must run make format before submitting a pull request"
+            echo ""
+            git diff
+            exit -1
+          fi
