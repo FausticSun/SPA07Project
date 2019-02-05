@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <algorithm>
 
 using namespace std;
 
@@ -13,6 +14,7 @@ PQLParser::PQLParser(string input)
 void PQLParser::Tokenize(string input)
 {
 	vector<string> token = vectorize(input);
+
 	if (find(token.begin(), token.end(), "procedure") != token.end()) {
 		tokenizeProcedure(token);
 	}
