@@ -35,6 +35,8 @@ matrix:
         - MSBuild.exe ALL_BUILD.vcxproj -m
     # Clang-Tidy check
     - os: linux
+      env:
+        - TEST="Clang Tidy"
       addons:
         apt:
           sources:
@@ -67,7 +69,7 @@ matrix:
           packages:
             - clang-format-7
       script:
-        - cmake -DENABLE_CLANG_FORMAT=ON -DCMAKE_CXX_COMPILER="g++-6" ..
+        - cmake -DENABLE_CLANG_FORMAT=ON ..
         - make
         - make format
         - |
