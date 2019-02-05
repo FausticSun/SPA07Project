@@ -37,13 +37,13 @@ queue<Token*> Parser::parse(string filePath) {
 TNode* Parser::buildAST(queue<Token*> &tokenQueue) {
 	this->tokenQueue = tokenQueue;
 	expectToken("procedure");
-	TNode* procedureTNode;
-	try {
-		procedureTNode = createTNodeProcedure();
-	} catch (const string e) {
-		cout << e;
+	TNode* programTNode = new TNode(TNodeType::Program);
+	vector<TNode*> procedureTNodes;
+	while (!this->tokenQueue.empty()) {
+		procedureTNodes.push_back(createTNodeProcedure());
 	}
-	return procedureTNode;
+	programTNode->setChildren(procedureTNodes);
+	return programTNode;
 }
 
 void Parser::getNextToken() {

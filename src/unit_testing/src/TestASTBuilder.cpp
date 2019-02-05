@@ -15,7 +15,8 @@ SCENARIO("Procedure and assignment statements only") {
 	tokenQueue.push(new Token(TokenType::Separator, ";", 2));
 	tokenQueue.push(new Token(TokenType::Separator, "}", 2));
 	TNode* root = parser.buildAST(tokenQueue);
-	TNode* stmtLst = root->getChildren().front();
+	TNode* procTNode = root->getChildren().front();
+	TNode* stmtLst = procTNode->getChildren().front();
 	TNode* assignTNode = stmtLst->getChildren().front();
 
 	SECTION("Root of AST has one StatementList child") {
@@ -49,7 +50,8 @@ SCENARIO("Procedure and read statements only") {
 	tokenQueue.push(new Token(TokenType::Separator, ";", 2));
 	tokenQueue.push(new Token(TokenType::Separator, "}", 2));
 	TNode* root = parser.buildAST(tokenQueue);
-	TNode* stmtLst = root->getChildren().front();
+	TNode* procTNode = root->getChildren().front();
+	TNode* stmtLst = procTNode->getChildren().front();
 	TNode* readTNode = stmtLst->getChildren().front();
 
 	SECTION("Root of AST has one StatementList child") {
@@ -80,7 +82,8 @@ SCENARIO("Procedure and print statements only") {
 	tokenQueue.push(new Token(TokenType::Separator, ";", 2));
 	tokenQueue.push(new Token(TokenType::Separator, "}", 2));
 	TNode* root = parser.buildAST(tokenQueue);
-	TNode* stmtLst = root->getChildren().front();
+	TNode* procTNode = root->getChildren().front();
+	TNode* stmtLst = procTNode->getChildren().front();
 	TNode* printTNode = stmtLst->getChildren().front();
 
 	SECTION("Root of AST has one StatementList child") {
@@ -119,7 +122,8 @@ SCENARIO("Procedure and while statements only") {
 	tokenQueue.push(new Token(TokenType::Separator, "}", 3));
 	tokenQueue.push(new Token(TokenType::Separator, "}", 3));
 	TNode* root = parser.buildAST(tokenQueue);
-	TNode* stmtLst = root->getChildren().front();
+	TNode* procTNode = root->getChildren().front();
+	TNode* stmtLst = procTNode->getChildren().front();
 	TNode* whileTNode = stmtLst->getChildren().front();
 	TNode* whileCondExpr = whileTNode->getChildren().front();
 	TNode* whileStmtLst = whileTNode->getChildren().back();
@@ -184,7 +188,8 @@ SCENARIO("Procedure and if statements only") {
 	tokenQueue.push(new Token(TokenType::Separator, "}", 5));
 	tokenQueue.push(new Token(TokenType::Separator, "}", 5));
 	TNode* root = parser.buildAST(tokenQueue);
-	TNode* stmtLst = root->getChildren().front();
+	TNode* procTNode = root->getChildren().front();
+	TNode* stmtLst = procTNode->getChildren().front();
 	TNode* ifTNode = stmtLst->getChildren().front();
 	TNode* ifCondExpr = ifTNode->getChildren()[0];
 	TNode* thenStmtLst = ifTNode->getChildren()[1];
