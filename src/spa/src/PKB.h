@@ -5,16 +5,31 @@
 #include <string>
 #include <vector>
 #include <unordered_set>
+#include <queue>
 
 using namespace std;
 typedef short PROC;
 
 class TNode;
 
+enum class TokenType {
+
+	Keyword,
+
+	Identifier,
+
+	Separator,
+
+	Operator,
+
+	Literal,
+
+};
+
 class VarTable {  // no need to #include "VarTable.h" as all I need is pointer
 public:
 	VarTable();
-	int add(string s);
+	bool buildVarTable(queue<pair<string, string>> tokens);
 	bool contains(string s);
 	unordered_set<string> getVarList();
  	string toString();
@@ -22,12 +37,13 @@ public:
 private:
 	unordered_set<string> varList;
 	int numOfVars;
+	int add(string s);
 };
 
 class ProcTable {
 public:
 	ProcTable();
-	int add(string s);
+	bool buildProcTable(queue<pair<string, string>> tokens);
 	bool contains(string s);
 	unordered_set<string> getProcList();
 	string toString();
@@ -35,6 +51,7 @@ public:
 private:
 	unordered_set<string> procList;
 	int numOfProcs;
+	int add(string s);
 };
 
 class PKB {
