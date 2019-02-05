@@ -12,20 +12,6 @@ typedef short PROC;
 
 class TNode;
 
-enum class TokenType {
-
-	Keyword,
-
-	Identifier,
-
-	Separator,
-
-	Operator,
-
-	Literal,
-
-};
-
 class VarTable {  // no need to #include "VarTable.h" as all I need is pointer
 public:
 	VarTable();
