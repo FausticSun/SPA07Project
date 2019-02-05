@@ -35,7 +35,9 @@ Query PqlEvaluator::evaluateSimpleQuery(DesignEntityType de) {
 }
 
 bool PqlEvaluator::isSimpleQuery(string query) {
+	bool flag = true;
 	//if there is no clauses then it should be simple query
+	return flag;
 }
 
 Query::Query() {}
