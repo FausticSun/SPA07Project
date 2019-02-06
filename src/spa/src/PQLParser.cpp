@@ -15,21 +15,29 @@ PQLParser::PQLParser(string input)
 void PQLParser::Tokenize(string input)
 {
 	vector<string> token = vectorize(input);
-
+	while (0 < token.size()) {
 	if (find(token.begin(), token.end(), "procedure") != token.end()) {
 		tokenizeProcedure(token);
+		token.erase(token.begin());
+		token.erase(token.begin());
 	}
 
 	if (find(token.begin(), token.end(), "variable") != token.end()) {
 		tokenizeVariable(token);
+		token.erase(token.begin());
+		token.erase(token.begin());
 	}
 
-        if (find(token.begin(), token.end(), "select") != token.end()) {
-		  tokenizeSelect(token);
-		}
+	if (find(token.begin(), token.end(), "select") != token.end()) {
+		tokenizeSelect(token);
+		token.erase(token.begin());
+		token.erase(token.begin());
+	}
 
 	if (find(token.begin(), token.end(), "Modifies") != token.end()) {
 		tokenizeModifies(token);
+		token.erase(token.begin());
+		token.erase(token.begin());
 	}
 
 	if (find(token.begin(), token.end(), "Uses") != token.end()) {
@@ -38,15 +46,18 @@ void PQLParser::Tokenize(string input)
 
 	if (find(token.begin(), token.end(), "Parent*") != token.end()) {
 		tokenizeParentS(token);
-	} else if (find(token.begin(), token.end(), "Parent") != token.end()) {
+	}
+	else if (find(token.begin(), token.end(), "Parent") != token.end()) {
 		tokenizeParent(token);
 	}
 
 	if (find(token.begin(), token.end(), "Follows*") != token.end()) {
 		tokenizeFollowsS(token);
-	} else if (find(token.begin(), token.end(), "Follows") != token.end()) {
+	}
+	else if (find(token.begin(), token.end(), "Follows") != token.end()) {
 		tokenizeFollows(token);
 	}
+}
 
 }
 
