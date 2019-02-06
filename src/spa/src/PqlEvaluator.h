@@ -52,12 +52,10 @@ class PqlEvaluator {
 		~PqlEvaluator();
 		QueryTokens getParsedQuery();
 		int getQueryCount();
-		Query evaluateQuery(QueryTokens query);
+		Query evaluateQuery();
 
 	private:
 		list<QueryTokens> queries;
 		int queryCount;
-		Query evaluateSimpleQuery(DesignEntityType de);
-		bool isSimpleQuery(QueryTokens query);
 
 };

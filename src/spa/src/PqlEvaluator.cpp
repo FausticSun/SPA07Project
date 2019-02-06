@@ -4,7 +4,7 @@ PqlEvaluator::PqlEvaluator() {
 	this -> queryCount = 0;
 }
 
-PqlEvaluator::~PqlEvaluator() {}
+PqlEvaluator::~PqlEvaluator() = default;
 
 string PqlEvaluator::getParsedQuery() {
 	return queries.back();
@@ -14,30 +14,9 @@ int PqlEvaluator::getQueryCount() {
 	return this -> queryCount;
 }
 
-Query PqlEvaluator::evaluateQuery(QueryTokens query) {
+Query PqlEvaluator::evaluateQuery() {
 	Query results;
-	/*DesignEntityType de = query.getDesignEntityType();*/
-	if (isSimpleQuery(query)) {
-		/*results = evaluateSimpleQuery(de);*/
-	}
 	return results;
-}
-
-Query PqlEvaluator::evaluateSimpleQuery(DesignEntityType de) {
-	Query result;
-	if (de == DesignEntityType::Variable) {
-		/*result = PKB.varTable->toString();*/
-	}
-	else if (de == DesignEntityType::Procedure) {
-		/*result = PKB.procTable->toString();*/
-	}
-	return result;
-}
-
-bool PqlEvaluator::isSimpleQuery(QueryTokens query) {
-	bool flag = true;
-	//if there is no clauses then it should be simple query
-	return flag;
 }
 
 Query::Query() {}
