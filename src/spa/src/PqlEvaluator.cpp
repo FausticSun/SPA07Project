@@ -16,7 +16,8 @@ list<string> PqlEvaluator::evaluateQuery(string input) {
 		s_queue.pop();
 		if (s_queue.front().first == PQLTokenType::Identifier && s_queue.front().second == d_queue.front().second) {
 
-			list<string> results(mypkb.getVarTable().begin(), mypkb.getVarTable().end());
+			set<string> vtble = mypkb.getVarTable();
+			list<string> results(vtble.begin(), vtble.end());
 			return results;
 		}
 
@@ -26,7 +27,8 @@ list<string> PqlEvaluator::evaluateQuery(string input) {
 		d_queue.pop();
 		s_queue.pop();
 		if (s_queue.front().first == PQLTokenType::Identifier && s_queue.front().second == d_queue.front().second) {
-			list<string> results(mypkb.getProcTable().begin(), mypkb.getProcTable().end());
+			set<string> proble = mypkb.getProcTable();
+			list<string> results(proble.begin(), proble.end());
 			return results;
 		}
 
