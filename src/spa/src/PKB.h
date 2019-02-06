@@ -14,7 +14,7 @@ typedef short PROC;
 class TNode;
 
 class VarTable {  // no need to #include "VarTable.h" as all I need is pointer
-public:
+public: 
 	VarTable();
 	VarTable* buildVarTable(queue<Token*> tokens);
 	bool contains(string s);
