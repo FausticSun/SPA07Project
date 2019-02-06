@@ -21,7 +21,7 @@ using namespace std;
 	ModifiesS,
 	ModifiesP
 };*/
-enum class TokenType
+enum class PQLTokenType
 {
 	Identifier,
 	Keyword,
@@ -35,12 +35,12 @@ enum class TokenType
 class PQLParser {
 public:
 	PQLParser(string input);
-	queue<pair<TokenType, string>> getDeclarationQueue();
-	queue<pair<TokenType, string>> getSelectQueue();
+	queue<pair<PQLTokenType, string>> getDeclarationQueue();
+	queue<pair<PQLTokenType, string>> getSelectQueue();
 
 private:
-	queue<pair<TokenType, string>> declarationQueue;
-	queue<pair<TokenType, string>> selectQueue;
+	queue<pair<PQLTokenType, string>> declarationQueue;
+	queue<pair<PQLTokenType, string>> selectQueue;
 	void Tokenize(string input);
 	vector<string> vectorize(string);
 	void tokenizeVariable(vector<string>);

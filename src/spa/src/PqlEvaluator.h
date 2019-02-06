@@ -42,6 +42,6 @@ class PqlEvaluator {
 		list<string> evaluateQuery(string input);
 
 	private:
-		
+		PKB mypkb;
 
 };
