@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 #include<Token.h>
 #include<string>
 #include<queue>
