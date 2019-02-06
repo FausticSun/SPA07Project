@@ -4,10 +4,14 @@
 
 SCENARIO("Construction of TNode") {
 
-	TNode* tNode = new TNode(TNodeType::Procedure, "child");
+	TNode* tNode = new TNode(TNodeType::Procedure, "child", 1);
 
 	SECTION("Type of TNode") {
 		REQUIRE(tNode->getType() == TNodeType::Procedure);
+	}
+
+	SECTION("StatementNumber of TNode") {
+		REQUIRE(tNode->getStatementNumber() == 1);
 	}
 
 	SECTION("Name of TNode") {
@@ -22,11 +26,11 @@ SCENARIO("Construction of TNode") {
 
 SCENARIO("Children of TNode") {
 
-	TNode* childTNode = new TNode(TNodeType::Procedure, "child");
-	TNode* parentTNode = new TNode(TNodeType::Procedure, "parent");
+	TNode* childTNode = new TNode(TNodeType::Procedure, "child", 2);
+	TNode* parentTNode = new TNode(TNodeType::Procedure, "parent", 1);
 
 	SECTION("Adding one child to TNode") {
-		parentTNode->addChildren(childTNode);
+		parentTNode->setChildren({ childTNode });
 		REQUIRE(parentTNode->getChildren().front() == childTNode);
 	}
 
