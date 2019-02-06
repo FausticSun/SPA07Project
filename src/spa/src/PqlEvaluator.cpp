@@ -15,15 +15,8 @@ list<string> PqlEvaluator::evaluateQuery(string input) {
 		d_queue.pop();
 		s_queue.pop();
 		if (s_queue.front().first == PQLTokenType::Identifier && s_queue.front().second == d_queue.front().second) {
-			list<string> results;
-			int i = 0;
-			set<string>::iterator it = mypkb.getVarTable().begin();
-			set<string>::iterator its = mypkb.getVarTable().end();
-                        while(it!=its)
-                        {
-							cout << *it << endl;
-							it++;
-                        }
+
+			list<string> results(mypkb.getVarTable().begin(), mypkb.getVarTable().end());
 			return results;
 		}
 
@@ -33,12 +26,7 @@ list<string> PqlEvaluator::evaluateQuery(string input) {
 		d_queue.pop();
 		s_queue.pop();
 		if (s_queue.front().first == PQLTokenType::Identifier && s_queue.front().second == d_queue.front().second) {
-			list<string> results;
-			for (set<string>::iterator it = mypkb.getProcTable().begin(); it != mypkb.getProcTable().end(); ++it)
-			{
-				results.push_back(*it);
-
-			}
+			list<string> results(mypkb.getProcTable().begin(), mypkb.getProcTable().end());
 			return results;
 		}
 
