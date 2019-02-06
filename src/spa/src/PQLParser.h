@@ -36,11 +36,11 @@ class PQLParser {
 public:
 	PQLParser(string input);
 	queue<pair<TokenType, string>> getDeclarationQueue();
-	queue<pair<TokenType, pair<string, string>>> getSelectQueue();
+	queue<pair<TokenType, string>> getSelectQueue();
 
 private:
 	queue<pair<TokenType, string>> declarationQueue;
-	queue<pair<TokenType, pair<string, string>>> selectQueue;
+	queue<pair<TokenType, string>> selectQueue;
 	void Tokenize(string input);
 	vector<string> vectorize(string);
 	void tokenizeVariable(vector<string>);

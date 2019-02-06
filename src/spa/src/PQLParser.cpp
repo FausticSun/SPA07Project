@@ -65,7 +65,7 @@ queue<pair<TokenType, string>> PQLParser::getDeclarationQueue()
 	return declarationQueue;
 }
 
-queue<pair<TokenType, pair<string, string>>> PQLParser::getSelectQueue()
+queue<pair<TokenType, string>> PQLParser::getSelectQueue()
 {
 	return selectQueue;
 }
@@ -86,8 +86,8 @@ void PQLParser::tokenizeProcedure(vector<string> token)
 }
 
 void PQLParser::tokenizeSelect(vector<string> token) {
-	selectQueue.push(make_pair(TokenType::Keyword, make_pair("selection", "variable")));
-	selectQueue.push(make_pair(TokenType::Identifier, make_pair(token[1], "")));
+	selectQueue.push(make_pair(TokenType::Keyword, "selection"));
+	selectQueue.push(make_pair(TokenType::Identifier, token[1]));
 	
 }
 
