@@ -6,8 +6,7 @@ using std::string;
 
 enum class TokenType
 {
-	Constant,
-	Identifier,
+	Assign,
 	If,
 	Then,
 	Else,
@@ -15,6 +14,8 @@ enum class TokenType
 	Procedure,
 	Read,
 	While,
+	Constant,
+	Identifier,
 	Separator,
 	OpenParenthesis,
 	CloseParenthesis,

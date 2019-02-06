@@ -1,5 +1,4 @@
 #pragma once
-
 #include "TNode.h"
 #include "Token.h"
 
