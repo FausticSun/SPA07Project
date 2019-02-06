@@ -14,7 +14,7 @@ int PqlEvaluator::getQueryCount() {
 	return this -> queryCount;
 }
 
-Query PqlEvaluator::evaluateQuery(string query) {
+Query PqlEvaluator::evaluateQuery(QueryTokens query) {
 	Query results;
 	/*DesignEntityType de = query.getDesignEntityType();*/
 	if (isSimpleQuery(query)) {
@@ -34,7 +34,7 @@ Query PqlEvaluator::evaluateSimpleQuery(DesignEntityType de) {
 	return result;
 }
 
-bool PqlEvaluator::isSimpleQuery(string query) {
+bool PqlEvaluator::isSimpleQuery(QueryTokens query) {
 	bool flag = true;
 	//if there is no clauses then it should be simple query
 	return flag;
