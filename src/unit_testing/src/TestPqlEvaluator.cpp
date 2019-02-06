@@ -14,8 +14,17 @@ SCENARIO("Selecting variable command") {
 		PqlEvaluator pe(pkb);
                 THEN("Query")
                 {
-		        pe.evaluateQuery(PQL);
-
+			list<string> result = pe.evaluateQuery(PQL);
+			REQUIRE(result.front() == "alice");
+			result.pop_front();
+			REQUIRE(result.front() == "Bob");
+			result.pop_front();
+			REQUIRE(result.front() == "Ju");
+			result.pop_front();
+			REQUIRE(result.front() == "ben");
+			result.pop_front();
+			REQUIRE(result.empty());
+                           
                 }
 	}
 }
@@ -30,8 +39,14 @@ SCENARIO("Selecting procedure command") {
 		PqlEvaluator pe(pkb);
 		THEN("Query")
 		{
-			pe.evaluateQuery(PQL);
-
+			list<string> result = pe.evaluateQuery(PQL);
+			REQUIRE(result.front() == "main");
+			result.pop_front();
+			REQUIRE(result.front() == "readp");
+			result.pop_front();
+			REQUIRE(result.front() == "getp");
+			result.pop_front();
+			REQUIRE(result.empty());
 		}
 	}
 

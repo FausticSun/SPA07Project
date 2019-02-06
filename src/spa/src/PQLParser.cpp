@@ -24,6 +24,10 @@ void PQLParser::Tokenize(string input)
 		tokenizeVariable(token);
 	}
 
+	if (find(token.begin(), token.end(), "select") != token.end()) {
+		tokenizeSelect(token);
+	}
+
 	if (find(token.begin(), token.end(), "Modifies") != token.end()) {
 		tokenizeModifies(token);
 	}
@@ -34,13 +38,15 @@ void PQLParser::Tokenize(string input)
 
 	if (find(token.begin(), token.end(), "Parent*") != token.end()) {
 		tokenizeParentS(token);
-	} else if (find(token.begin(), token.end(), "Parent") != token.end()) {
+	}
+	else if (find(token.begin(), token.end(), "Parent") != token.end()) {
 		tokenizeParent(token);
 	}
 
 	if (find(token.begin(), token.end(), "Follows*") != token.end()) {
 		tokenizeFollowsS(token);
-	} else if (find(token.begin(), token.end(), "Follows") != token.end()) {
+	}
+	else if (find(token.begin(), token.end(), "Follows") != token.end()) {
 		tokenizeFollows(token);
 	}
 
@@ -51,10 +57,10 @@ vector<string> PQLParser::vectorize(string input)
 	vector<string> tokens;
 	char *p;
 	char *temp = (char*)input.c_str();
-	p = strtok(temp, " ");
+	p = strtok(temp, " ;");
 	while (p) {
 		tokens.push_back(p);
-		p = strtok(NULL, " ");
+		p = strtok(NULL, " ;");
 	}
 	return tokens;
 }
@@ -74,20 +80,17 @@ void PQLParser::tokenizeVariable(vector<string> token)
 {
 	declarationQueue.push(make_pair(PQLTokenType::Keyword, "variable"));
 	declarationQueue.push(make_pair(PQLTokenType::Identifier, token[1]));
-	declarationQueue.push(make_pair(PQLTokenType::Separator, ";"));
 }
 
 void PQLParser::tokenizeProcedure(vector<string> token)
 {
 	declarationQueue.push(make_pair(PQLTokenType::Keyword, "procedure"));
 	declarationQueue.push(make_pair(PQLTokenType::Identifier, token[1]));
-	declarationQueue.push(make_pair(PQLTokenType::Separator, ";"));
 }
 
 void PQLParser::tokenizeSelect(vector<string> token) {
 	selectQueue.push(make_pair(PQLTokenType::Keyword, "selection"));
 	selectQueue.push(make_pair(PQLTokenType::Identifier, token[1]));
-	
 }
 
 void PQLParser::tokenizePattern(vector<string>)
