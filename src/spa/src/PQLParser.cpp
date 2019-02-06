@@ -49,23 +49,22 @@ void PQLParser::Tokenize(string input)
 vector<string> PQLParser::vectorize(string input)
 {
 	vector<string> tokens;
-	char *d = " ";
 	char *p;
 	char *temp = (char*)input.c_str();
-	p = strtok(temp, d);
+	p = strtok(temp, " ");
 	while (p) {
 		tokens.push_back(p);
-		p = strtok(NULL, d);
+		p = strtok(NULL, " ");
 	}
 	return tokens;
 }
 
-queue<pair<TokenType, string>> PQLParser::getDeclarationQueue()
+queue<pair<PQLTokenType, string>> PQLParser::getDeclarationQueue()
 {
 	return declarationQueue;
 }
 
-queue<pair<TokenType, string>> PQLParser::getSelectQueue()
+queue<pair<PQLTokenType, string>> PQLParser::getSelectQueue()
 {
 	return selectQueue;
 }
@@ -73,21 +72,21 @@ queue<pair<TokenType, string>> PQLParser::getSelectQueue()
 
 void PQLParser::tokenizeVariable(vector<string> token)
 {
-	declarationQueue.push(make_pair(TokenType::Keyword, "variable"));
-	declarationQueue.push(make_pair(TokenType::Identifier, token[1]));
-	declarationQueue.push(make_pair(TokenType::Separator, ";"));
+	declarationQueue.push(make_pair(PQLTokenType::Keyword, "variable"));
+	declarationQueue.push(make_pair(PQLTokenType::Identifier, token[1]));
+	declarationQueue.push(make_pair(PQLTokenType::Separator, ";"));
 }
 
 void PQLParser::tokenizeProcedure(vector<string> token)
 {
-	declarationQueue.push(make_pair(TokenType::Keyword, "procedure"));
-	declarationQueue.push(make_pair(TokenType::Identifier, token[1]));
-	declarationQueue.push(make_pair(TokenType::Separator, ";"));
+	declarationQueue.push(make_pair(PQLTokenType::Keyword, "procedure"));
+	declarationQueue.push(make_pair(PQLTokenType::Identifier, token[1]));
+	declarationQueue.push(make_pair(PQLTokenType::Separator, ";"));
 }
 
 void PQLParser::tokenizeSelect(vector<string> token) {
-	selectQueue.push(make_pair(TokenType::Keyword, "selection"));
-	selectQueue.push(make_pair(TokenType::Identifier, token[1]));
+	selectQueue.push(make_pair(PQLTokenType::Keyword, "selection"));
+	selectQueue.push(make_pair(PQLTokenType::Identifier, token[1]));
 	
 }
 

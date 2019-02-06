@@ -2,6 +2,7 @@
 
 #include<stdio.h>
 #include<PKB.h>
+#include<PQLParser.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -34,28 +35,13 @@ enum class RelationshipType {
 	ModifiesP,
 };
 
-class Query {
-	public:
-		Query();
-		Query(list<string> des, string tar, Clause rel, Clause pat);
-		~Query();
-		list<string> DesignEntities;
-		string targetDesignEntities;
-		Clause relClause;
-		Clause patClause;
-};
-
 class PqlEvaluator {
 	public:
-		
-		PqlEvaluator();
+		PqlEvaluator(const PKB& pkb);
 		~PqlEvaluator();
-		QueryTokens getParsedQuery();
-		int getQueryCount();
-		Query evaluateQuery();
+		list<string> evaluateQuery(string input);
 
 	private:
-		list<QueryTokens> queries;
-		int queryCount;
+		
 
 };
