@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <iostream>
 #include <fstream>
 
@@ -323,3 +324,5 @@ TNode* Parser::createTNode(TNodeType type, vector<TNode*> children) {
 	tNode->setChildren(children);
 	return tNode;
 }
+
+int Parse() { return 0; }
