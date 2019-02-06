@@ -11,12 +11,15 @@ SCENARIO("Testing123") {
 
 	file.open("C:\\Users\\Flora Fong\\Documents\\SPAProject\\src\\spa\\src\\input.txt");
 	string line;
+	Lexer lexer;
+	vector<Token*> result;
 	while (getline(file, line)) {
-		Lexer* lexer = new Lexer(line);
+		result = lexer.tokenize(line);
 	}
 	file.close();
 }
 
+/**
 SCENARIO("Lexing prodedure command") {
 	string input = "procedure AssignmentTest {";
 	Lexer lexer{ input };
@@ -101,3 +104,5 @@ SCENARIO("Lexing assign command") {
 		}
 	}
 }
+
+**/

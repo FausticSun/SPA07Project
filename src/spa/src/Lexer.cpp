@@ -11,34 +11,37 @@ using namespace std;
 #include "Lexer.h"
 #include "PKB.h"
 
-Lexer::Lexer(string input) {
-	code = input;
-	tokenize(input);
+Lexer::Lexer() {
+	int statementLine = 0;
 }
 
-int Lexer::tokenize(string input) {
+Lexer::~Lexer() {}
+
+vector<Token*> Lexer::tokenize(string input) {
 
 	input.erase(remove_if(input.begin(), input.end(), isspace), input.end());
 	vector<string> tokens = vectorize(input);
 
 	//identifying different types of statement
 	if (find(tokens.begin(), tokens.end(), "procedure") != tokens.end()) {
-		tokenizeProcedure(tokens);
+		statementLine = 0;
+		return tokenizeProcedure(tokens);
 	}
 	else if (find(tokens.begin(), tokens.end(), "=") != tokens.end()) {
-		tokenizeAssignment(tokens);
+		statementLine++;
+		return tokenizeAssignment(tokens);
 	}
 	else if (find(tokens.begin(), tokens.end(), "read") != tokens.end()) {
-		tokenizeRead(tokens);
+		statementLine++;
+		return tokenizeRead(tokens);
 	}
 	else if (find(tokens.begin(), tokens.end(), "print") != tokens.end()) {
-		tokenizePrint(tokens);
+		statementLine++;
+		return tokenizePrint(tokens);
 	}
 	else {
 		throw "Invalid statement";
 	}
-
-	return 0;
 
 }
 vector<string> Lexer::vectorize(string input) {
@@ -66,67 +69,62 @@ vector<string> Lexer::vectorize(string input) {
 	return tokens;
 }
 
-void Lexer::tokenizeProcedure(vector<string> tokens) {
+vector<Token*> Lexer::tokenizeProcedure(vector<string> tokens) {
 	vector<Token*> toAST;
-	toAST.push_back(new Token(TokenType::Procedure, "procedure"));
+	toAST.push_back(new Token(TokenType::Procedure, "procedure", statementLine));
 	toAST.push_back(pushIdentifier(tokens[1]));
-	toAST.push_back(new Token(TokenType::Separator, "{"));
+	toAST.push_back(new Token(TokenType::Separator, "{", statementLine));
 
-	print(toAST);
+	return toAST;
 }
 
-void Lexer::tokenizeAssignment(vector<string> tokens) {
+vector<Token*> Lexer::tokenizeAssignment(vector<string> tokens) {
 	vector<Token*> toAST;
-	toAST.push_back(new Token(TokenType::Assign, "assign"));
+	toAST.push_back(new Token(TokenType::Assign, "assign", statementLine));
 
 	for (auto i : tokens) {
 		toAST.push_back(pushToken(i));
 	}
-	
-	print(toAST);
+
+	return toAST;
 }
 
-void Lexer::tokenizeRead(vector<string> tokens) {
+vector<Token*> Lexer::tokenizeRead(vector<string> tokens) {
 	vector<Token*> toAST;
-	toAST.push_back(new Token(TokenType::Read, "read"));
+	toAST.push_back(new Token(TokenType::Read, "read", statementLine));
 	tokens.erase(tokens.begin());
 
 	for (auto i : tokens) {
 		toAST.push_back(pushToken(i));
 	}
 
-	print(toAST);
-
+	return toAST;
 }
 
-void Lexer::tokenizePrint(vector<string> tokens) {
+vector<Token*> Lexer::tokenizePrint(vector<string> tokens) {
 	vector<Token*> toAST;
-	toAST.push_back(new Token(TokenType::Print, "print"));
+	toAST.push_back(new Token(TokenType::Print, "print", statementLine));
 	tokens.erase(tokens.begin());
 
 	for (auto i : tokens) {
 		toAST.push_back(pushToken(i));
 	}
 
-	print(toAST);
-}
-
-queue<pair<TokenType, string>> Lexer::getTokenQueue() {
-	return tokenQueue;
+	return toAST;
 }
 
 Token* Lexer::pushToken(string s) {
 	if (isConstant(s)) {
-		return new Token(TokenType::Constant, s);
+		return new Token(TokenType::Constant, s, statementLine);
 	}
 	else if (isSeparator(s)) {
-		return new Token(TokenType::Separator, s);
+		return new Token(TokenType::Separator, s, statementLine);
 	}
 	else if (isOperator(s)) {
 		return pushOperator(s);
 	}
 	else if (isIdentifier(s)) {
-		return new Token(TokenType::Identifier, s);
+		return new Token(TokenType::Identifier, s, statementLine);
 	}
 	else {
 		throw "Invalid Identifier";
@@ -136,7 +134,7 @@ Token* Lexer::pushToken(string s) {
 Token* Lexer::pushIdentifier(string s) {
 
 	if (isIdentifier(s)) {
-		return new Token(TokenType::Identifier, s);
+		return new Token(TokenType::Identifier, s, statementLine);
 	}
 	else {
 		throw "Invalid Identifier";
@@ -147,25 +145,25 @@ Token* Lexer::pushIdentifier(string s) {
 
 Token* Lexer::pushOperator(string s) {
 	if (s == "+") {
-		return new Token(TokenType::Plus, s);
+		return new Token(TokenType::Plus, s, statementLine);
 	}
 	else if (s == "-") {
-		return new Token(TokenType::Minus, s);
+		return new Token(TokenType::Minus, s, statementLine);
 	}
 	else if (s == "*") {
-		return new Token(TokenType::Multiply, s);
+		return new Token(TokenType::Multiply, s, statementLine);
 	}
 	else if (s == "/") {
-		return new Token(TokenType::Divide, s);
+		return new Token(TokenType::Divide, s, statementLine);
 	}
 	else if (s == "=") {
-		return new Token(TokenType::Equal, s);
+		return new Token(TokenType::Equal, s, statementLine);
 	}
 	else if (s == "(") {
-		return new Token(TokenType::OpenParenthesis, s);
+		return new Token(TokenType::OpenParenthesis, s, statementLine);
 	}
 	else if (s == ")") {
-		return new Token(TokenType::CloseParenthesis, s);
+		return new Token(TokenType::CloseParenthesis, s, statementLine);
 	}
 
 }
@@ -209,30 +207,6 @@ bool Lexer::onlyContainDigits(string s) {
 	strtol(s.c_str(), &p, 10);
 
 	return (*p == 0);
-}
-
-void Lexer::print(vector<Token*> tokens) {
-	vector<Token*>::iterator iter, end;
-	for (iter = tokens.begin(), end = tokens.end(); iter != end; ++iter) {
-		string type;
-		TokenType t = (*iter)->getType();
-		switch (t) {
-		case TokenType::Procedure: type = "procedure"; break;
-		case TokenType::Assign: type = "assign"; break;
-		case TokenType::Print: type = "print"; break;
-		case TokenType::Read: type = "read"; break;
-		case TokenType::Identifier: type = "identifier"; break;
-		case TokenType::Constant: type = "constant"; break;
-		case TokenType::Separator: type = "separator"; break;
-		case TokenType::Plus: type = "plus"; break;
-		case TokenType::Minus: type = "minus"; break;
-		case TokenType::Equal: type = "equal"; break;
-		case TokenType::OpenParenthesis: type = "open paranthesis"; break;
-		case TokenType::CloseParenthesis: type = "close paranthesis"; break;
-		default: cout << "fail";
-		}
-		cout << type << " " << (*iter)->getName() << endl;
-	}
 }
 
 
