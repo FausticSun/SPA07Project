@@ -86,7 +86,9 @@ void PQLParser::tokenizeProcedure(vector<string> token)
 }
 
 void PQLParser::tokenizeSelect(vector<string> token) {
-
+	selectQueue.push(make_pair(TokenType::Keyword, make_pair("selection", "variable")));
+	selectQueue.push(make_pair(TokenType::Identifier, make_pair(token[1], "")));
+	
 }
 
 void PQLParser::tokenizePattern(vector<string>)
