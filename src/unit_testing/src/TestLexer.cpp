@@ -12,9 +12,31 @@ SCENARIO("Testing123") {
 	file.open("C:\\Users\\Flora Fong\\Documents\\SPAProject\\src\\spa\\src\\input.txt");
 	string line;
 	Lexer lexer;
-	vector<Token*> result;
+	vector<Token*> tokens;
 	while (getline(file, line)) {
-		result = lexer.tokenize(line);
+		tokens = lexer.tokenize(line);
+
+		vector<Token*>::iterator iter, end;
+		for (iter = tokens.begin(), end = tokens.end(); iter != end; ++iter) {
+			string type;
+			TokenType t = (*iter)->getType();
+			switch (t) {
+			case TokenType::Procedure: type = "procedure"; break;
+			case TokenType::Assign: type = "assign"; break;
+			case TokenType::Print: type = "print"; break;
+			case TokenType::Read: type = "read"; break;
+			case TokenType::Identifier: type = "identifier"; break;
+			case TokenType::Constant: type = "constant"; break;
+			case TokenType::Separator: type = "separator"; break;
+			case TokenType::Plus: type = "plus"; break;
+			case TokenType::Minus: type = "minus"; break;
+			case TokenType::Equal: type = "equal"; break;
+			case TokenType::OpenParenthesis: type = "open paranthesis"; break;
+			case TokenType::CloseParenthesis: type = "close paranthesis"; break;
+			default: cout << "fail";
+			}
+			cout << type << " " << (*iter)->getName() << (*iter)->getStatementNumber() << endl;
+		}
 	}
 	file.close();
 }
