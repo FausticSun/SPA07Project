@@ -1,9 +1,9 @@
 #include <algorithm>
+#include <cctype>
 #include <fstream>
 #include <iostream>
 #include <iterator>
 #include <sstream>
-#include <stdio.h>
 #include <vector>
 
 using namespace std;
@@ -35,7 +35,9 @@ vector<Token> Lexer::tokenizeFile(string filePath) {
 
 vector<Token> Lexer::tokenize(string input) {
 
-  input.erase(remove_if(input.begin(), input.end(), isspace), input.end());
+  input.erase(remove_if(input.begin(), input.end(),
+                        static_cast<int (&)(int)>(std::isspace)),
+              input.end());
   vector<string> tokens = vectorize(input);
 
   // identifying different types of statement
