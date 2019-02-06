@@ -1,20 +1,21 @@
 #pragma once
 
-#include <cstdio>
-#include <iostream>
+#include "Relation.h"
+#include <set>
 #include <string>
-#include <vector>
-
-using namespace std;
-using PROC = short;
-
-class TNode;
-
-class VarTable; // no need to #include "VarTable.h" as all I need is pointer
 
 class PKB {
+private:
+  std::set<std::string> varTable;
+  std::set<std::string> procTable;
+  std::set<Relation> relTable;
+
 public:
-  static VarTable *varTable;
-  static int setProcToAST(PROC p, TNode *r);
-  static TNode *getRootAST(PROC p);
+  PKB();
+  void setPKB(const std::set<std::string> &variableTable = {},
+              const std::set<std::string> &procedureTable = {},
+              const std::set<Relation> &relationTable = {});
+  const std::set<std::string> getVarTable() const;
+  const std::set<std::string> getProcTable() const;
+  const std::set<Relation> getRelTable() const;
 };
