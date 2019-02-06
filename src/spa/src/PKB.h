@@ -1,7 +1,7 @@
 #pragma once
 
-#include<stdio.h>
-#include <iostream>
+#include "Relation.h"
+#include <set>
 #include <string>
 #include <vector>
 #include <unordered_set>
@@ -41,11 +41,19 @@ private:
 	int add(string s);
 };
 
-class PKB {
-public:
-	static VarTable* varTable; 
-	static ProcTable* procTable;
-	static int setProcToAST(PROC p, TNode* r);
-	static TNode* getRootAST (PROC p);
 
+class PKB {
+private:
+  std::set<std::string> varTable;
+  std::set<std::string> procTable;
+  std::set<Relation> relTable;
+
+public:
+  PKB();
+  void setPKB(const std::set<std::string> &variableTable = {},
+              const std::set<std::string> &procedureTable = {},
+              const std::set<Relation> &relationTable = {});
+  const std::set<std::string> getVarTable() const;
+  const std::set<std::string> getProcTable() const;
+  const std::set<Relation> getRelTable() const;
 };
