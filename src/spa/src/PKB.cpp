@@ -1,12 +1,8 @@
 #include "PKB.h"
-PKB::PKB() { this->setPKB(); }
-void PKB::setPKB(const std::set<std::string> &variableTable,
-                 const std::set<std::string> &procedureTable,
-                 const std::set<Relation> &relationTable) {
-  this->varTable = variableTable;
-  this->procTable = procedureTable;
-  this->relTable = relationTable;
-}
+PKB::PKB(const std::set<std::string> &varTable,
+         const std::set<std::string> &procTable,
+         const std::set<Relation> &relTable)
+    : varTable(varTable), procTable(procTable), relTable(relTable){};
 const std::set<std::string> PKB::getVarTable() const { return this->varTable; }
 const std::set<std::string> PKB::getProcTable() const {
   return this->procTable;
