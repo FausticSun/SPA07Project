@@ -167,11 +167,13 @@ TNode* Parser::createTNodeConditionExpression() {
 		expectToken(")");
 		switch (tokenQueue.front()->getType()) {
 		case TokenType::And:
+			expectToken("&&");
 			expectToken("(");
 			rightCondExpressionTNode = createTNodeConditionExpression();
 			expectToken(")");
 			return createTNode(TNodeType::And, { leftCondExpressionTNode, rightCondExpressionTNode });
 		case TokenType::Or:
+			expectToken("||");
 			expectToken("(");
 			rightCondExpressionTNode = createTNodeConditionExpression();
 			expectToken(")");
@@ -319,7 +321,7 @@ TNode* Parser::createTNodeFactor() {
 }
 
 TNode* Parser::createTNode(TNodeType type, vector<TNode*> children) {
-	TNode* tNode = new TNode(type);
+	TNode* tNode = new TNode(type, "", children.front()->getStatementNumber());
 	tNode->setChildren(children);
 	return tNode;
 }
