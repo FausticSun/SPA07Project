@@ -1,6 +1,6 @@
 
 #include "PqlEvaluator.h"
-
+#include <algorithm>
 #include "catch.hpp"
 using namespace std;
 
@@ -12,20 +12,23 @@ SCENARIO("Selecting variable command") {
 		PKB pkb;
 		pkb.setPKB(vars, procs);
 		PqlEvaluator pe(pkb);
-                THEN("Query")
-                {
+        THEN("Query")
+        {
 			list<string> result = pe.evaluateQuery(PQL);
-			REQUIRE(result.front() == "alice");
-			result.pop_front();
-			REQUIRE(result.front() == "Bob");
-			result.pop_front();
-			REQUIRE(result.front() == "Ju");
-			result.pop_front();
-			REQUIRE(result.front() == "ben");
-			result.pop_front();
-			REQUIRE(result.empty());
-                           
-                }
+			list<string>::iterator iter = find(result.begin(), result.end(), "alice");
+			REQUIRE(*iter == "alice");
+			iter = find(result.begin(), result.end(), "Bob");
+			REQUIRE(*iter == "Bob");
+			iter = find(result.begin(), result.end(), "Ju");
+			REQUIRE(*iter == "Ju");
+			iter = find(result.begin(), result.end(), "ben");
+			REQUIRE(*iter == "ben");
+			int size = result.size();
+			for (int i = 0; i < size; i++) {
+				cout << result.front() << endl;
+				result.pop_front();
+			}
+        }
 	}
 }
 
@@ -40,13 +43,12 @@ SCENARIO("Selecting procedure command") {
 		THEN("Query")
 		{
 			list<string> result = pe.evaluateQuery(PQL);
-			REQUIRE(result.front() == "main");
-			result.pop_front();
-			REQUIRE(result.front() == "readp");
-			result.pop_front();
-			REQUIRE(result.front() == "getp");
-			result.pop_front();
-			REQUIRE(result.empty());
+			list<string>::iterator iter = find(result.begin(), result.end(), "main");
+			REQUIRE(*iter == "main");
+			iter = find(result.begin(), result.end(), "readp");
+			REQUIRE(*iter == "readp");
+			iter = find(result.begin(), result.end(), "getp");
+			REQUIRE(*iter == "getp");
 		}
 	}
 
