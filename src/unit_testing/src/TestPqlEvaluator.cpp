@@ -1,6 +1,6 @@
 
 #include "PqlEvaluator.h"
-
+#include <algorithm>
 #include "catch.hpp"
 using namespace std;
 

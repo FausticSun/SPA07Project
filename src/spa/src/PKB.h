@@ -14,13 +14,13 @@ typedef short PROC;
 class TNode;
 
 class VarTable { // no need to #include "VarTable.h" as all I need is pointer
-public:
-  VarTable();
-  VarTable *buildVarTable(queue<Token *> tokens);
-  bool contains(string s);
-  unordered_set<string> getVarList();
-  string toString();
-  int add(string s); // for testing
+public: 
+	VarTable();
+	VarTable* buildVarTable(queue<Token*> tokens);
+	bool contains(string s);
+	unordered_set<string> getVarList();
+ 	string toString();
+	int add(string s); //for testing
 
 private:
   unordered_set<string> varList;
