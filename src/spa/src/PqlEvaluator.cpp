@@ -1,37 +1,25 @@
 #include "PqlEvaluator.h"
 
-PqlEvaluator::PqlEvaluator(const PKB& pkb) {
-	this -> mypkb = pkb;
-}
+PqlEvaluator::PqlEvaluator() { this->queryCount = 0; }
 
 PqlEvaluator::~PqlEvaluator() = default;
 
-list<string> PqlEvaluator::evaluateQuery(string input) {
-	PQLParser pp(input);
-	queue<pair<PQLTokenType, string>> d_queue = pp.getDeclarationQueue();
-	queue<pair<PQLTokenType, string>> s_queue = pp.getSelectQueue();
-	if (d_queue.front().first == PQLTokenType::Keyword && d_queue.front().second == "variable")
-	{
-		d_queue.pop();
-		s_queue.pop();
-		if (s_queue.front().first == PQLTokenType::Identifier && s_queue.front().second == d_queue.front().second) {
+string PqlEvaluator::getParsedQuery() { return queries.back(); }
 
-			set<string> vtble = mypkb.getVarTable();
-			list<string> results(vtble.begin(), vtble.end());
-			return results;
-		}
+int PqlEvaluator::getQueryCount() { return this->queryCount; }
 
-	}
-	if (d_queue.front().first == PQLTokenType::Keyword && d_queue.front().second == "procedure")
-	{
-		d_queue.pop();
-		s_queue.pop();
-		if (s_queue.front().first == PQLTokenType::Identifier && s_queue.front().second == d_queue.front().second) {
-			set<string> proble = mypkb.getProcTable();
-			list<string> results(proble.begin(), proble.end());
-			return results;
-		}
-
-	}
-	
+Query PqlEvaluator::evaluateQuery() {
+  Query results;
+  return results;
 }
+
+Query::Query() {}
+
+Query::Query(list<string> des, string tar, Clause rel, Clause pat) {
+  this->DesignEntities = des;
+  this->targetDesignEntities = tar;
+  this->relClause = rel;
+  this->patClause = pat;
+}
+
+Query::~Query() {}
