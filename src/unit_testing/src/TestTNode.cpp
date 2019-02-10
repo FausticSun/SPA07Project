@@ -3,28 +3,24 @@
 #include "catch.hpp"
 
 SCENARIO("Construction of TNode") {
-
-  TNode *tNode = new TNode(TNodeType::Procedure, "child", 1);
+  TNode *tNode = new TNode(TNodeType::Procedure, "child");
 
   SECTION("Type of TNode") {
     REQUIRE(tNode->getType() == TNodeType::Procedure);
   }
 
-  SECTION("StatementNumber of TNode") {
-    REQUIRE(tNode->getStatementNumber() == 1);
+  SECTION("Name of TNode") {
+    REQUIRE(tNode->getName() == "child");
   }
 
-  SECTION("Name of TNode") { REQUIRE(tNode->getName() == "child"); }
-
   SECTION("TNode has no children during construction") {
-    REQUIRE(tNode->getChildren().size() == 0);
+    REQUIRE(tNode->getChildren().empty());
   }
 }
 
 SCENARIO("Children of TNode") {
-
-  TNode *childTNode = new TNode(TNodeType::Procedure, "child", 2);
-  TNode *parentTNode = new TNode(TNodeType::Procedure, "parent", 1);
+  TNode *childTNode = new TNode(TNodeType::Procedure, "child");
+  TNode *parentTNode = new TNode(TNodeType::Procedure, "parent");
 
   SECTION("Adding one child to TNode") {
     parentTNode->setChildren({childTNode});

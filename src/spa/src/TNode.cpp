@@ -1,19 +1,16 @@
 #include "TNode.h"
 
-TNode::TNode(TNodeType type, string name, int statementNumber) {
+TNode::TNode(const TNodeType type, const std::string &name) {
   this->type = type;
   this->name = name;
-  this->statementNumber = statementNumber;
 }
-
-TNode::~TNode() {}
+  
+TNode::~TNode() = default;
 
 TNodeType TNode::getType() { return type; }
 
-string TNode::getName() { return name; }
+std::string TNode::getName() { return name; }
 
-int TNode::getStatementNumber() { return statementNumber; }
+std::vector<TNode *> TNode::getChildren() { return children; }
 
-vector<TNode *> TNode::getChildren() { return children; }
-
-void TNode::setChildren(vector<TNode *> children) { this->children = children; }
+void TNode::setChildren(std::vector<TNode *> children) { this->children = children; }

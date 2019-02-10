@@ -3,9 +3,6 @@
 #include <string>
 #include <vector>
 
-using std::string;
-using std::vector;
-
 enum class TNodeType {
   Program,
   Procedure,
@@ -41,17 +38,15 @@ enum class TNodeType {
 
 class TNode {
 public:
-  TNode(TNodeType, string = "", int statementNumber = 0);
+  TNode(TNodeType, const std::string & = "");
   ~TNode();
   TNodeType getType();
-  string getName();
-  int getStatementNumber();
-  vector<TNode *> getChildren();
-  void setChildren(vector<TNode *>);
+  std::string getName();
+  std::vector<TNode *> getChildren();
+  void setChildren(std::vector<TNode *>);
 
 private:
   TNodeType type;
-  string name;
-  int statementNumber;
-  vector<TNode *> children;
+  std::string name;
+  std::vector<TNode *> children;
 };

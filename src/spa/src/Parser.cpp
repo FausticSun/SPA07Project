@@ -1,46 +1,30 @@
-#include <cstdio>
-#include <fstream>
 #include <iostream>
 
 #include "Lexer.h"
 #include "Parser.h"
 
-using std::cout;
-using std::getline;
-using std::ifstream;
-using std::invalid_argument;
-using std::logic_error;
-
 Parser::Parser() : token() {}
+
 Parser::~Parser() {}
 
-queue<Token> Parser::parse(string filePath) {
-  ifstream inputFile;
-  inputFile.open(filePath);
-  if (!inputFile) {
-    throw invalid_argument("FileNotFoundException: " + filePath);
-  }
+std::queue<Token> Parser::parse(std::string filePath) {
   Lexer lexer;
-  string line;
-  queue<Token> tokenQueue;
-  while (getline(inputFile, line)) {
-    vector<Token> tokens = lexer.tokenize(line);
-    for (Token token : tokens) {
-      tokenQueue.push(token);
-    }
+  std::vector<Token> tokens = lexer.tokenizeFile(filePath);
+  std::queue<Token> tokenQueue;
+  for (Token token : tokens) {
+    tokenQueue.push(token);
   }
-  inputFile.close();
   return tokenQueue;
 }
 
-TNode *Parser::buildAST(queue<Token> &tokenQueue) {
+TNode *Parser::buildAst(std::queue<Token> &tokenQueue) {
   this->tokenQueue = tokenQueue;
   expectToken("procedure");
   TNode *procedureTNode;
   try {
     procedureTNode = createTNodeProcedure();
-  } catch (const string e) {
-    cout << e;
+  } catch (const std::string e) {
+    std::cout << e;
   }
   return procedureTNode;
 }
@@ -51,10 +35,10 @@ void Parser::getNextToken() {
   token = nextToken;
 }
 
-void Parser::expectToken(string expectedToken) {
+void Parser::expectToken(std::string expectedToken) {
   getNextToken();
   if (token.name != expectedToken) {
-    throw logic_error("Expected '" + expectedToken + "' but got '" +
+    throw std::logic_error("Expected '" + expectedToken + "' but got '" +
                       token.name + "'");
   }
 }
@@ -62,7 +46,7 @@ void Parser::expectToken(string expectedToken) {
 TNode *Parser::createTNodeProcedure() {
   getNextToken();
   TNode *procedureTNode =
-      new TNode(TNodeType::Procedure, token.name, token.statementNumber);
+      new TNode(TNodeType::Procedure, token.name);
   expectToken("{");
   TNode *stmtLstTNode = createTNodeStatementList();
   expectToken("}");
@@ -72,7 +56,7 @@ TNode *Parser::createTNodeProcedure() {
 
 TNode *Parser::createTNodeAssign() {
   TNode *variableTNode =
-      new TNode(TNodeType::Variable, token.name, token.statementNumber);
+      new TNode(TNodeType::Variable, token.name);
   expectToken("=");
   TNode *expressionTNode = createTNodeExpression();
   expectToken(";");
@@ -82,7 +66,7 @@ TNode *Parser::createTNodeAssign() {
 TNode *Parser::createTNodeRead() {
   getNextToken(); // token holding var_name
   TNode *variableTNode =
-      new TNode(TNodeType::Variable, token.name, token.statementNumber);
+      new TNode(TNodeType::Variable, token.name);
   expectToken(";");
   return createTNode(TNodeType::Read, {variableTNode});
 }
@@ -90,7 +74,7 @@ TNode *Parser::createTNodeRead() {
 TNode *Parser::createTNodePrint() {
   getNextToken(); // token holding var_name
   TNode *variableTNode =
-      new TNode(TNodeType::Variable, token.name, token.statementNumber);
+      new TNode(TNodeType::Variable, token.name);
   expectToken(";");
   return createTNode(TNodeType::Print, {variableTNode});
 }
@@ -123,15 +107,15 @@ TNode *Parser::createTNodeIf() {
 
 TNode *Parser::createTNodeStatementList() {
   TNode *stmtLstTNode = new TNode(TNodeType::StatementList);
-  vector<TNode *> stmtTNodes;
+  std::vector<TNode *> stmtTNodes;
   while (tokenQueue.front().name != "}") {
     stmtTNodes.push_back(createTNodeStatement());
     if (tokenQueue.empty()) {
-      throw logic_error("Missing '}'");
+      throw std::logic_error("Missing '}'");
     }
   }
   if (stmtTNodes.empty()) {
-    throw logic_error("Expected at least 1 statement but got 0");
+    throw std::logic_error("Expected at least 1 statement but got 0");
   }
   stmtLstTNode->setChildren(stmtTNodes);
   return stmtLstTNode;
@@ -151,9 +135,9 @@ TNode *Parser::createTNodeStatement() {
   case TokenType::If:
     return createTNodeIf();
   default:
-    throw invalid_argument("Expected TokenType to be 'IDENTIFIER', 'Read', "
-                           "'Print', 'While' or 'If' but got '" +
-                           token.name + "'");
+    throw std::invalid_argument("Expected TokenType to be 'IDENTIFIER', 'Read', "
+		"'Print', 'While' or 'If' but got '" +
+		token.name + "'");
   }
 }
 
@@ -226,9 +210,9 @@ TNode *Parser::createTNodeRelativeFactor() {
   getNextToken();
   switch (token.type) {
   case TokenType::Identifier:
-    return new TNode(TNodeType::Variable, token.name, token.statementNumber);
+    return new TNode(TNodeType::Variable, token.name);
   case TokenType::Constant:
-    return new TNode(TNodeType::Constant, token.name, token.statementNumber);
+    return new TNode(TNodeType::Constant, token.name);
   default:
     return createTNodeExpression();
   }
@@ -325,9 +309,9 @@ TNode *Parser::createTNodeFactor() {
   getNextToken();
   switch (token.type) {
   case TokenType::Identifier:
-    return new TNode(TNodeType::Variable, token.name, token.statementNumber);
+    return new TNode(TNodeType::Variable, token.name);
   case TokenType::Constant:
-    return new TNode(TNodeType::Constant, token.name, token.statementNumber);
+    return new TNode(TNodeType::Constant, token.name);
   case TokenType::OpenParenthesis:
     TNode *expressionTNode = createTNodeExpression();
     expectToken(")");
@@ -335,8 +319,8 @@ TNode *Parser::createTNodeFactor() {
   }
 }
 
-TNode *Parser::createTNode(TNodeType type, vector<TNode *> children) {
-  TNode *tNode = new TNode(type, "", children.front()->getStatementNumber());
+TNode *Parser::createTNode(TNodeType type, std::vector<TNode *> children) {
+  TNode *tNode = new TNode(type);
   tNode->setChildren(children);
   return tNode;
 }
