@@ -1,10 +1,21 @@
-#include <cstdio>
-#include <iostream>
-#include <string>
-#include <vector>
+#include "DesignExtractor.h"
 
-using namespace std;
+DesignExtractor::DesignExtractor(TNode *AST) : pkb() { traverseAST(AST); }
 
-#include "PKB.h"
+PKB DesignExtractor::getPKB(TNode *AST) { return pkb; }
 
-int DesignExtractor() { return 0; }
+void DesignExtractor::traverseAST(TNode *AST) {
+  switch (AST->type) {
+  case TNodeType::Procedure:
+    pkb.insertProc(AST->name);
+    break;
+  case TNodeType::Variable:
+    pkb.insertVar(AST->name);
+    break;
+  default:
+    for (auto c : AST->children) {
+      traverseAST(c);
+    }
+    break;
+  }
+}
