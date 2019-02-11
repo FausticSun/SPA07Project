@@ -36,16 +36,15 @@ enum class TNodeType {
   Or
 };
 
-class TNode {
-public:
-  TNode(TNodeType, const std::string & = "");
-  ~TNode();
-  TNodeType getType();
-  string getName();
-  int getStatementNumber();
-  vector<TNode *> getChildren();
-  void setChildren(vector<TNode *>);
+struct TNode {
+  explicit TNode(const TNodeType type, const std::string &name = "",
+                 std::vector<std::unique_ptr<TNode>> &&children = {})
+      : type(type), name(name), children(children){};
+  explicit TNode(const TNodeType type,
+                 std::vector<std::unique_ptr<TNode>> &&children = {},
+                 const std::string &name = "")
+      : type(type), name(name), children(children){};
   TNodeType type;
   std::string name;
-  std::vector<TNode *> children;
+  std::vector<std::unique_ptr<TNode>> children;
 };
