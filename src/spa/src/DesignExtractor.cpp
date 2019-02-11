@@ -1,21 +1,21 @@
 #include "DesignExtractor.h"
 
-DesignExtractor::DesignExtractor(const std::unique_ptr<TNode> &AST) : pkb() {
+DesignExtractor::DesignExtractor(std::unique_ptr<TNode> &AST) : pkb(new PKB()) {
   traverseAST(AST);
 }
 
-PKB DesignExtractor::getPKB() { return pkb; }
+std::unique_ptr<PKB> DesignExtractor::getPKB() { return std::move(pkb); }
 
-void DesignExtractor::traverseAST(const std::unique_ptr<TNode> &AST) {
+void DesignExtractor::traverseAST(std::unique_ptr<TNode> &AST) {
   switch (AST->type) {
   case TNodeType::Procedure:
-    pkb.insertProc(AST->name);
+    pkb->insertProc(AST->name);
     break;
   case TNodeType::Variable:
-    pkb.insertVar(AST->name);
+    pkb->insertVar(AST->name);
     break;
   default:
-    for (const std::unique_ptr<TNode> &child : AST->children) {
+    for (std::unique_ptr<TNode> &child : AST->children) {
       traverseAST(child);
     }
     break;
