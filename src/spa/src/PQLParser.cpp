@@ -16,11 +16,11 @@ void PQLParser::Tokenize(string input)
 {
 	vector<string> token = vectorize(input);
 	while (0 < token.size()) {
-			if (find(token.begin(), token.end(), "procedure") != token.end()) {
-				tokenizeProcedure(token);
-				token.erase(token.begin());
-				token.erase(token.begin());
-			}
+		if (find(token.begin(), token.end(), "procedure") != token.end()) {
+			tokenizeProcedure(token);
+			token.erase(token.begin());
+			token.erase(token.begin());
+		}
 
 
 		if (find(token.begin(), token.end(), "variable") != token.end()) {
@@ -90,52 +90,54 @@ void PQLParser::Tokenize(string input)
 	        tokenizeSelect(token);
 		token.erase(token.begin());
 		token.erase(token.begin());
-		if (token[0] == "such" && token[1] == "that") {
-			token.erase(token.begin());
-			token.erase(token.begin());
-			while (0 < token.size())
-			{
-				if (find(token.begin(), token.end(), "Modifies") != token.end()) {
-					tokenizeModifies(token);
-					token.erase(token.begin());
-					token.erase(token.begin());
-					token.erase(token.begin());
-				}
-
-                                
-
-				if (find(token.begin(), token.end(), "Uses") != token.end()) {
-					tokenizeUses(token);
-					token.erase(token.begin());
-					token.erase(token.begin());
-					token.erase(token.begin());
-				}
+		if (token.size() > 0) {
+			if (token[0] == "such" && token[1] == "that") {
+				token.erase(token.begin());
+				token.erase(token.begin());
+				while (0 < token.size())
+				{
+					if (find(token.begin(), token.end(), "Modifies") != token.end()) {
+						tokenizeModifies(token);
+						token.erase(token.begin());
+						token.erase(token.begin());
+						token.erase(token.begin());
+					}
 
 
-				if (find(token.begin(), token.end(), "Parent*") != token.end()) {
-					tokenizeParentT(token);
-					token.erase(token.begin());
-					token.erase(token.begin());
-					token.erase(token.begin());
-				}
-				else if (find(token.begin(), token.end(), "Parent") != token.end()) {
-					tokenizeParent(token);
-					token.erase(token.begin());
-					token.erase(token.begin());
-					token.erase(token.begin());
-				}
 
-				if (find(token.begin(), token.end(), "Follows*") != token.end()) {
-					tokenizeFollowsT(token);
-					token.erase(token.begin());
-					token.erase(token.begin());
-					token.erase(token.begin());
-				}
-				else if (find(token.begin(), token.end(), "Follows") != token.end()) {
-					tokenizeFollows(token);
-					token.erase(token.begin());
-					token.erase(token.begin());
-					token.erase(token.begin());
+					if (find(token.begin(), token.end(), "Uses") != token.end()) {
+						tokenizeUses(token);
+						token.erase(token.begin());
+						token.erase(token.begin());
+						token.erase(token.begin());
+					}
+
+
+					if (find(token.begin(), token.end(), "Parent*") != token.end()) {
+						tokenizeParentT(token);
+						token.erase(token.begin());
+						token.erase(token.begin());
+						token.erase(token.begin());
+					}
+					else if (find(token.begin(), token.end(), "Parent") != token.end()) {
+						tokenizeParent(token);
+						token.erase(token.begin());
+						token.erase(token.begin());
+						token.erase(token.begin());
+					}
+
+					if (find(token.begin(), token.end(), "Follows*") != token.end()) {
+						tokenizeFollowsT(token);
+						token.erase(token.begin());
+						token.erase(token.begin());
+						token.erase(token.begin());
+					}
+					else if (find(token.begin(), token.end(), "Follows") != token.end()) {
+						tokenizeFollows(token);
+						token.erase(token.begin());
+						token.erase(token.begin());
+						token.erase(token.begin());
+					}
 				}
 			}
 		}
