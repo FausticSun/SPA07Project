@@ -3,14 +3,10 @@
 #include <PKB.h>
 #include <iostream>
 #include <list>
-#include <stdio.h>
 #include <string>
 #include <vector>
 
 using namespace std;
-
-typedef string QueryTokens;
-typedef string Clause;
 
 enum class DesignEntityType {
   Stmt,
@@ -34,26 +30,17 @@ enum class RelationshipType {
   ModifiesP,
 };
 
-class Query {
-public:
-  Query();
-  Query(list<string> des, string tar, Clause rel, Clause pat);
-  ~Query();
-  list<string> DesignEntities;
-  string targetDesignEntities;
-  Clause relClause;
-  Clause patClause;
-};
-
 class PqlEvaluator {
 public:
-  PqlEvaluator();
+  PqlEvaluator(const PKB& pkb);
   ~PqlEvaluator();
-  QueryTokens getParsedQuery();
-  int getQueryCount();
-  Query evaluateQuery();
+  list<string> evaluateQuery(string query);
+  list<Relation> getUses(Entity first, Entity second);
+  list<Relation> getModifies(Entity first, Entity second);
+  list<Relation> getFollows(Entity first, Entity second);
+  list<Relation> getParents(Entity first, Entity second);
 
 private:
-  list<QueryTokens> queries;
-  int queryCount;
+  PKB mypkb;
+  
 };
