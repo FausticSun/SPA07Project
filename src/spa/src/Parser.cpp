@@ -1,9 +1,7 @@
-#include "Lexer.h"
 #include "Parser.h"
+#include "Lexer.h"
 
 Parser::Parser() : token() {}
-
-Parser::~Parser() {}
 
 std::queue<Token> Parser::parse(std::string filePath) {
   Lexer lexer;
@@ -15,14 +13,15 @@ std::queue<Token> Parser::parse(std::string filePath) {
   return tokenQueue;
 }
 
-TNode *Parser::buildAst(std::queue<Token> &tokenQueue) {
+std::unique_ptr<TNode> Parser::buildAst(std::queue<Token> &tokenQueue) {
   this->tokenQueue = tokenQueue;
-  vector<TNode *> procedureTNodes;
+  vector<std::unique_ptr<TNode>> procedureTNodes;
   while (!this->tokenQueue.empty()) {
-	  expectToken("procedure");
-	  procedureTNodes.push_back(createTNodeProcedure());
+    expectToken("procedure");
+    procedureTNodes.push_back(std::move(createTNodeProcedure()));
   }
-  return createTNode(TNodeType::Program, procedureTNodes);
+  return std::unique_ptr<TNode>(
+      new TNode(TNodeType::Program, std::move(procedureTNodes)));
 }
 
 void Parser::getNextToken() {
@@ -35,77 +34,83 @@ void Parser::expectToken(std::string expectedToken) {
   getNextToken();
   if (token.name != expectedToken) {
     throw std::logic_error("Expected '" + expectedToken + "' but got '" +
-                      token.name + "'");
+                           token.name + "'");
   }
 }
 
-TNode *Parser::createTNodeProcedure() {
+std::unique_ptr<TNode> Parser::createTNodeProcedure() {
   getNextToken();
-  TNode *procedureTNode =
-      new TNode(TNodeType::Procedure, token.name);
+  std::string procName = token.name;
   expectToken("{");
-  TNode *stmtLstTNode = createTNodeStatementList();
+  std::unique_ptr<TNode> stmtLstTNode = createTNodeStatementList();
   expectToken("}");
-  procedureTNode->setChildren({stmtLstTNode});
-  return procedureTNode;
+  return std::unique_ptr<TNode>(
+      new TNode(TNodeType::Procedure, procName, {std::move(stmtLstTNode)}));
 }
 
-TNode *Parser::createTNodeAssign() {
-  TNode *variableTNode =
-      new TNode(TNodeType::Variable, token.name);
+std::unique_ptr<TNode> Parser::createTNodeAssign() {
+  std::unique_ptr<TNode> variableTNode =
+      std::unique_ptr<TNode>(new TNode(TNodeType::Variable, token.name));
   expectToken("=");
-  TNode *expressionTNode = createTNodeExpression();
+  std::unique_ptr<TNode> expressionTNode = createTNodeExpression();
   expectToken(";");
-  return createTNode(TNodeType::Assign, {variableTNode, expressionTNode});
+  return std::unique_ptr<TNode>(
+      new TNode(TNodeType::Assign,
+                {std::move(variableTNode), std::move(expressionTNode)}));
 }
 
-TNode *Parser::createTNodeRead() {
+std::unique_ptr<TNode> Parser::createTNodeRead() {
   getNextToken(); // token holding var_name
-  TNode *variableTNode =
-      new TNode(TNodeType::Variable, token.name);
+  std::unique_ptr<TNode> variableTNode =
+      std::unique_ptr<TNode>(new TNode(TNodeType::Variable, token.name));
   expectToken(";");
-  return createTNode(TNodeType::Read, {variableTNode});
+  return std::unique_ptr<TNode>(
+      new TNode(TNodeType::Read, {std::move(variableTNode)}));
 }
 
-TNode *Parser::createTNodePrint() {
+std::unique_ptr<TNode> Parser::createTNodePrint() {
   getNextToken(); // token holding var_name
-  TNode *variableTNode =
-      new TNode(TNodeType::Variable, token.name);
+  std::unique_ptr<TNode> variableTNode =
+      std::unique_ptr<TNode>(new TNode(TNodeType::Variable, token.name));
   expectToken(";");
-  return createTNode(TNodeType::Print, {variableTNode});
+  return std::unique_ptr<TNode>(
+      new TNode(TNodeType::Print, {std::move(variableTNode)}));
 }
 
-TNode *Parser::createTNodeWhile() {
+std::unique_ptr<TNode> Parser::createTNodeWhile() {
   expectToken("(");
-  TNode *condExpressionTNode = createTNodeConditionExpression();
+  std::unique_ptr<TNode> condExpressionTNode = createTNodeConditionExpression();
   expectToken(")");
   expectToken("{");
-  TNode *stmtLstTNode = createTNodeStatementList();
+  std::unique_ptr<TNode> stmtLstTNode = createTNodeStatementList();
   expectToken("}");
-  return createTNode(TNodeType::While, {condExpressionTNode, stmtLstTNode});
+  return std::unique_ptr<TNode>(
+      new TNode(TNodeType::While,
+                {std::move(condExpressionTNode), std::move(stmtLstTNode)}));
 }
 
-TNode *Parser::createTNodeIf() {
+std::unique_ptr<TNode> Parser::createTNodeIf() {
   expectToken("(");
-  TNode *condExpressionTNode = createTNodeConditionExpression();
+  std::unique_ptr<TNode> condExpressionTNode = createTNodeConditionExpression();
   expectToken(")");
   expectToken("then");
   expectToken("{");
-  TNode *thenStmtLstTNode = createTNodeStatementList();
+  std::unique_ptr<TNode> thenStmtLstTNode = createTNodeStatementList();
   expectToken("}");
   expectToken("else");
   expectToken("{");
-  TNode *elseStmtLstTNode = createTNodeStatementList();
+  std::unique_ptr<TNode> elseStmtLstTNode = createTNodeStatementList();
   expectToken("}");
-  return createTNode(TNodeType::If,
-                     {condExpressionTNode, thenStmtLstTNode, elseStmtLstTNode});
+  return std::unique_ptr<TNode>(
+      new TNode(TNodeType::While,
+                {std::move(condExpressionTNode), std::move(thenStmtLstTNode),
+                 std::move(elseStmtLstTNode)}));
 }
 
-TNode *Parser::createTNodeStatementList() {
-  TNode *stmtLstTNode = new TNode(TNodeType::StatementList);
-  std::vector<TNode *> stmtTNodes;
+std::unique_ptr<TNode> Parser::createTNodeStatementList() {
+  std::vector<std::unique_ptr<TNode>> stmtTNodes;
   while (tokenQueue.front().name != "}") {
-    stmtTNodes.push_back(createTNodeStatement());
+    stmtTNodes.push_back(std::move(createTNodeStatement()));
     if (tokenQueue.empty()) {
       throw std::logic_error("Missing '}'");
     }
@@ -113,11 +118,11 @@ TNode *Parser::createTNodeStatementList() {
   if (stmtTNodes.empty()) {
     throw std::logic_error("Expected at least 1 statement but got 0");
   }
-  stmtLstTNode->setChildren(stmtTNodes);
-  return stmtLstTNode;
+  return std::unique_ptr<TNode>(
+      new TNode(TNodeType::StatementList, std::move(stmtTNodes)));
 }
 
-TNode *Parser::createTNodeStatement() {
+std::unique_ptr<TNode> Parser::createTNodeStatement() {
   getNextToken(); // holding token after { or ;
   switch (token.type) {
   case TokenType::Identifier:
@@ -131,17 +136,18 @@ TNode *Parser::createTNodeStatement() {
   case TokenType::If:
     return createTNodeIf();
   default:
-    throw std::invalid_argument("Expected TokenType to be 'IDENTIFIER', 'Read', "
-		"'Print', 'While' or 'If' but got '" +
-		token.name + "'");
+    throw std::invalid_argument(
+        "Expected TokenType to be 'IDENTIFIER', 'Read', "
+        "'Print', 'While' or 'If' but got '" +
+        token.name + "'");
   }
 }
 
-TNode *Parser::createTNodeConditionExpression() {
-  TNode *condExpressionTNode;
-  TNode *leftCondExpressionTNode;
-  TNode *rightCondExpressionTNode;
-  TNode *previousTNode = NULL;
+std::unique_ptr<TNode> Parser::createTNodeConditionExpression() {
+  std::unique_ptr<TNode> condExpressionTNode;
+  std::unique_ptr<TNode> leftCondExpressionTNode;
+  std::unique_ptr<TNode> rightCondExpressionTNode;
+  std::unique_ptr<TNode> previousTNode = NULL;
   TokenType nextTokenType;
   switch (tokenQueue.front().type) {
   case TokenType::ExclamationMark:
@@ -149,124 +155,138 @@ TNode *Parser::createTNodeConditionExpression() {
     expectToken("(");
     condExpressionTNode = createTNodeConditionExpression();
     expectToken(")");
-    return createTNode(TNodeType::Not, {condExpressionTNode});
+    return std::unique_ptr<TNode>(
+        new TNode(TNodeType::Not, {std::move(condExpressionTNode)}));
   case TokenType::OpenParenthesis:
     expectToken("(");
     leftCondExpressionTNode = createTNodeConditionExpression();
     expectToken(")");
-	nextTokenType = tokenQueue.front().type;
-	while (nextTokenType == TokenType::And || nextTokenType == TokenType::Or) {
-		switch (nextTokenType) {
-		case TokenType::And:
-			expectToken("&&");
-			expectToken("(");
-			rightCondExpressionTNode = createTNodeConditionExpression();
-			expectToken(")");
-			if (previousTNode == NULL) {
-				previousTNode =
-					createTNode(TNodeType::And, 
-						{ leftCondExpressionTNode, rightCondExpressionTNode });
-			}
-			else {
-				previousTNode =
-					createTNode(TNodeType::And, 
-						{ previousTNode, rightCondExpressionTNode });
-			}
-			break;
-		case TokenType::Or:
-			expectToken("||");
-			expectToken("(");
-			rightCondExpressionTNode = createTNodeConditionExpression();
-			expectToken(")");
-			if (previousTNode == NULL) {
-				previousTNode =
-					createTNode(TNodeType::Or,
-						{ leftCondExpressionTNode, rightCondExpressionTNode });
-			}
-			else {
-				previousTNode =
-					createTNode(TNodeType::Or,
-						{ previousTNode, rightCondExpressionTNode });
-			}
-			break;
-		}
-		nextTokenType = tokenQueue.front().type;
-	}
-	return previousTNode;
+    nextTokenType = tokenQueue.front().type;
+    while (nextTokenType == TokenType::And || nextTokenType == TokenType::Or) {
+      switch (nextTokenType) {
+      case TokenType::And:
+        expectToken("&&");
+        expectToken("(");
+        rightCondExpressionTNode = createTNodeConditionExpression();
+        expectToken(")");
+        if (previousTNode == NULL) {
+          previousTNode = std::unique_ptr<TNode>(
+              new TNode(TNodeType::And, {std::move(leftCondExpressionTNode),
+                                         std::move(rightCondExpressionTNode)}));
+
+        } else {
+          previousTNode = std::unique_ptr<TNode>(
+              new TNode(TNodeType::And, {std::move(previousTNode),
+                                         std::move(rightCondExpressionTNode)}));
+        }
+        break;
+      case TokenType::Or:
+        expectToken("||");
+        expectToken("(");
+        rightCondExpressionTNode = createTNodeConditionExpression();
+        expectToken(")");
+        if (previousTNode == NULL) {
+          previousTNode = std::unique_ptr<TNode>(
+              new TNode(TNodeType::Or, {std::move(leftCondExpressionTNode),
+                                        std::move(rightCondExpressionTNode)}));
+        } else {
+          previousTNode = std::unique_ptr<TNode>(
+              new TNode(TNodeType::Or, {std::move(previousTNode),
+                                        std::move(rightCondExpressionTNode)}));
+        }
+        break;
+      }
+      nextTokenType = tokenQueue.front().type;
+    }
+    return previousTNode;
   default:
     return createTNodeRelativeExpression();
   }
 }
 
-TNode *Parser::createTNodeRelativeExpression() {
-  TNode *leftRelFactor = createTNodeRelativeFactor();
-  TNode *rightRelFactor;
+std::unique_ptr<TNode> Parser::createTNodeRelativeExpression() {
+  std::unique_ptr<TNode> leftRelFactor = createTNodeRelativeFactor();
+  std::unique_ptr<TNode> rightRelFactor;
   switch (tokenQueue.front().type) {
   case TokenType::Greater:
     rightRelFactor = createTNodeRelativeFactor();
-    return createTNode(TNodeType::Greater, {leftRelFactor, rightRelFactor});
+    return std::unique_ptr<TNode>(
+        new TNode(TNodeType::Greater,
+                  {std::move(leftRelFactor), std::move(rightRelFactor)}));
   case TokenType::GreaterThanOrEqual:
     rightRelFactor = createTNodeRelativeFactor();
-    return createTNode(TNodeType::GreaterThanOrEqual,
-                       {leftRelFactor, rightRelFactor});
+    return std::unique_ptr<TNode>(
+        new TNode(TNodeType::GreaterThanOrEqual,
+                  {std::move(leftRelFactor), std::move(rightRelFactor)}));
   case TokenType::Lesser:
     rightRelFactor = createTNodeRelativeFactor();
-    return createTNode(TNodeType::Lesser, {leftRelFactor, rightRelFactor});
+    return std::unique_ptr<TNode>(
+        new TNode(TNodeType::Lesser,
+                  {std::move(leftRelFactor), std::move(rightRelFactor)}));
   case TokenType::LesserThanOrEqual:
     rightRelFactor = createTNodeRelativeFactor();
-    return createTNode(TNodeType::LesserThanOrEqual,
-                       {leftRelFactor, rightRelFactor});
+    return std::unique_ptr<TNode>(
+        new TNode(TNodeType::LesserThanOrEqual,
+                  {std::move(leftRelFactor), std::move(rightRelFactor)}));
   case TokenType::Equal:
     rightRelFactor = createTNodeRelativeFactor();
-    return createTNode(TNodeType::Equal, {leftRelFactor, rightRelFactor});
+    return std::unique_ptr<TNode>(
+        new TNode(TNodeType::Equal,
+                  {std::move(leftRelFactor), std::move(rightRelFactor)}));
   case TokenType::NotEqual:
     rightRelFactor = createTNodeRelativeFactor();
-    return createTNode(TNodeType::NotEqual, {leftRelFactor, rightRelFactor});
+    return std::unique_ptr<TNode>(
+        new TNode(TNodeType::NotEqual,
+                  {std::move(leftRelFactor), std::move(rightRelFactor)}));
   default:
     expectToken(">, >=, <, <=, ==, !=");
   }
 }
 
-TNode *Parser::createTNodeRelativeFactor() {
+std::unique_ptr<TNode> Parser::createTNodeRelativeFactor() {
   getNextToken();
   switch (token.type) {
   case TokenType::Identifier:
-    return new TNode(TNodeType::Variable, token.name);
+    return std::unique_ptr<TNode>(new TNode(TNodeType::Variable, token.name));
   case TokenType::Constant:
-    return new TNode(TNodeType::Constant, token.name);
+    return std::unique_ptr<TNode>(new TNode(TNodeType::Constant, token.name));
   default:
     return createTNodeExpression();
   }
 }
 
-TNode *Parser::createTNodeExpression() {
-  TNode *leftTermTNode = createTNodeTerm();
-  TNode *previousTNode = NULL;
+std::unique_ptr<TNode> Parser::createTNodeExpression() {
+  std::unique_ptr<TNode> leftTermTNode = createTNodeTerm();
+  std::unique_ptr<TNode> previousTNode = NULL;
   TokenType nextTokenType = tokenQueue.front().type;
   while (nextTokenType == TokenType::Plus ||
          nextTokenType == TokenType::Minus) {
-    TNode *rightTermTNode;
+    std::unique_ptr<TNode> rightTermTNode;
     switch (nextTokenType) {
     case TokenType::Plus:
       expectToken("+");
       rightTermTNode = createTNodeTerm();
       if (previousTNode == NULL) {
-        previousTNode =
-            createTNode(TNodeType::Plus, {leftTermTNode, rightTermTNode});
+        previousTNode = std::unique_ptr<TNode>(
+            new TNode(TNodeType::Plus,
+                      {std::move(leftTermTNode), std::move(rightTermTNode)}));
       } else {
-        previousTNode =
-            createTNode(TNodeType::Plus, {previousTNode, rightTermTNode});
+        previousTNode = std::unique_ptr<TNode>(
+            new TNode(TNodeType::Plus,
+                      {std::move(previousTNode), std::move(rightTermTNode)}));
       }
       break;
     case TokenType::Minus:
       expectToken("-");
       rightTermTNode = createTNodeTerm();
       if (previousTNode == NULL) {
-        previousTNode =
-            createTNode(TNodeType::Minus, {leftTermTNode, rightTermTNode});
+        previousTNode = std::unique_ptr<TNode>(
+            new TNode(TNodeType::Minus,
+                      {std::move(leftTermTNode), std::move(rightTermTNode)}));
       } else {
-        previousTNode =
-            createTNode(TNodeType::Minus, {previousTNode, rightTermTNode});
+        previousTNode = std::unique_ptr<TNode>(
+            new TNode(TNodeType::Minus,
+                      {std::move(previousTNode), std::move(rightTermTNode)}));
       }
       break;
     }
@@ -279,46 +299,52 @@ TNode *Parser::createTNodeExpression() {
   }
 }
 
-TNode *Parser::createTNodeTerm() {
-  TNode *leftFactorTNode = createTNodeFactor();
-  TNode *previousTNode = NULL;
+std::unique_ptr<TNode> Parser::createTNodeTerm() {
+  std::unique_ptr<TNode> leftFactorTNode = createTNodeFactor();
+  std::unique_ptr<TNode> previousTNode = NULL;
   TokenType nextTokenType = tokenQueue.front().type;
   while (nextTokenType == TokenType::Multiply ||
          nextTokenType == TokenType::Divide ||
          nextTokenType == TokenType::Mod) {
-    TNode *rightFactorTNode;
+    std::unique_ptr<TNode> rightFactorTNode;
     switch (nextTokenType) {
     case TokenType::Multiply:
       expectToken("*");
       rightFactorTNode = createTNodeFactor();
       if (previousTNode == NULL) {
-        previousTNode = createTNode(TNodeType::Multiply,
-                                    {leftFactorTNode, rightFactorTNode});
+        previousTNode = std::unique_ptr<TNode>(
+            new TNode(TNodeType::Multiply, {std::move(leftFactorTNode),
+                                            std::move(rightFactorTNode)}));
       } else {
-        previousTNode =
-            createTNode(TNodeType::Multiply, {previousTNode, rightFactorTNode});
+        previousTNode = std::unique_ptr<TNode>(
+            new TNode(TNodeType::Multiply,
+                      {std::move(previousTNode), std::move(rightFactorTNode)}));
       }
       break;
     case TokenType::Divide:
       expectToken("/");
       rightFactorTNode = createTNodeFactor();
       if (previousTNode == NULL) {
-        previousTNode =
-            createTNode(TNodeType::Divide, {leftFactorTNode, rightFactorTNode});
+        previousTNode = std::unique_ptr<TNode>(
+            new TNode(TNodeType::Divide, {std::move(leftFactorTNode),
+                                          std::move(rightFactorTNode)}));
       } else {
-        previousTNode =
-            createTNode(TNodeType::Divide, {previousTNode, rightFactorTNode});
+        previousTNode = std::unique_ptr<TNode>(
+            new TNode(TNodeType::Divide,
+                      {std::move(previousTNode), std::move(rightFactorTNode)}));
       }
       break;
     case TokenType::Mod:
       expectToken("%");
       rightFactorTNode = createTNodeFactor();
       if (previousTNode == NULL) {
-        previousTNode =
-            createTNode(TNodeType::Mod, {leftFactorTNode, rightFactorTNode});
+        previousTNode = std::unique_ptr<TNode>(
+            new TNode(TNodeType::Mod, {std::move(leftFactorTNode),
+                                       std::move(rightFactorTNode)}));
       } else {
-        previousTNode =
-            createTNode(TNodeType::Mod, {previousTNode, rightFactorTNode});
+        previousTNode = std::unique_ptr<TNode>(
+            new TNode(TNodeType::Mod,
+                      {std::move(previousTNode), std::move(rightFactorTNode)}));
       }
       break;
     }
@@ -331,24 +357,16 @@ TNode *Parser::createTNodeTerm() {
   }
 }
 
-TNode *Parser::createTNodeFactor() {
+std::unique_ptr<TNode> Parser::createTNodeFactor() {
   getNextToken();
   switch (token.type) {
   case TokenType::Identifier:
-    return new TNode(TNodeType::Variable, token.name);
+    return std::unique_ptr<TNode>(new TNode(TNodeType::Variable, token.name));
   case TokenType::Constant:
-    return new TNode(TNodeType::Constant, token.name);
+    return std::unique_ptr<TNode>(new TNode(TNodeType::Constant, token.name));
   case TokenType::OpenParenthesis:
-    TNode *expressionTNode = createTNodeExpression();
+    std::unique_ptr<TNode> expressionTNode = createTNodeExpression();
     expectToken(")");
     return expressionTNode;
   }
 }
-
-TNode *Parser::createTNode(TNodeType type, std::vector<TNode *> children) {
-  TNode *tNode = new TNode(type);
-  tNode->setChildren(children);
-  return tNode;
-}
-
-int Parse() { return 0; }

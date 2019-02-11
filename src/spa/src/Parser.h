@@ -8,28 +8,26 @@
 class Parser {
 public:
   Parser();
-  ~Parser();
   std::queue<Token> parse(std::string);
-  TNode *buildAst(std::queue<Token> &tokenQueue);
+  std::unique_ptr<TNode> buildAst(std::queue<Token> &tokenQueue);
 
 private:
   std::queue<Token> tokenQueue;
   Token token;
   void getNextToken();
   void expectToken(std::string);
-  TNode *createTNodeProcedure();
-  TNode *createTNodeAssign();
-  TNode *createTNodeRead();
-  TNode *createTNodePrint();
-  TNode *createTNodeWhile();
-  TNode *createTNodeIf();
-  TNode *createTNodeStatement();
-  TNode *createTNodeStatementList();
-  TNode *createTNodeConditionExpression();
-  TNode *createTNodeRelativeExpression();
-  TNode *createTNodeRelativeFactor();
-  TNode *createTNodeExpression();
-  TNode *createTNodeTerm();
-  TNode *createTNodeFactor();
-  TNode *createTNode(TNodeType, std::vector<TNode *>);
+  std::unique_ptr<TNode> createTNodeProcedure();
+  std::unique_ptr<TNode> createTNodeAssign();
+  std::unique_ptr<TNode> createTNodeRead();
+  std::unique_ptr<TNode> createTNodePrint();
+  std::unique_ptr<TNode> createTNodeWhile();
+  std::unique_ptr<TNode> createTNodeIf();
+  std::unique_ptr<TNode> createTNodeStatement();
+  std::unique_ptr<TNode> createTNodeStatementList();
+  std::unique_ptr<TNode> createTNodeConditionExpression();
+  std::unique_ptr<TNode> createTNodeRelativeExpression();
+  std::unique_ptr<TNode> createTNodeRelativeFactor();
+  std::unique_ptr<TNode> createTNodeExpression();
+  std::unique_ptr<TNode> createTNodeTerm();
+  std::unique_ptr<TNode> createTNodeFactor();
 };
