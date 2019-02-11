@@ -9,5 +9,5 @@ private:
 
 public:
   DesignExtractor(TNode *AST);
-  PKB getPKB(TNode *AST);
+  PKB getPKB();
 };

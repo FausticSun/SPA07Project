@@ -2,7 +2,7 @@
 
 DesignExtractor::DesignExtractor(TNode *AST) : pkb() { traverseAST(AST); }
 
-PKB DesignExtractor::getPKB(TNode *AST) { return pkb; }
+PKB DesignExtractor::getPKB() { return pkb; }
 
 void DesignExtractor::traverseAST(TNode *AST) {
   switch (AST->type) {
