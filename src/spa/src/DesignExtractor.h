@@ -5,9 +5,9 @@
 class DesignExtractor {
 private:
   PKB pkb;
-  void traverseAST(TNode *AST);
+  void traverseAST(const std::unique_ptr<TNode> &AST);
 
 public:
-  DesignExtractor(TNode *AST);
+  DesignExtractor(const std::unique_ptr<TNode> &AST);
   PKB getPKB();
 };
