@@ -4,7 +4,8 @@
 SCENARIO("Design Extractor extracts design abstractions from an AST into a PKB",
          "[DesignExtractor]") {
   GIVEN("An AST of an empty program") {
-    TNode *AST = new TNode(TNodeType::Program);
+    std::unique_ptr<TNode> AST =
+        std::unique_ptr<TNode>(new TNode(TNodeType::Program, ""));
     DesignExtractor de(AST);
     WHEN("The PKB is retrieved") {
       PKB pkb = de.getPKB();
@@ -15,10 +16,28 @@ SCENARIO("Design Extractor extracts design abstractions from an AST into a PKB",
     }
   }
   GIVEN("An AST of a program with 3 empty procedures") {
-    TNode *AST = new TNode(TNodeType::Program);
-    AST->children.push_back(new TNode(TNodeType::Procedure, "Proc1"));
-    AST->children.push_back(new TNode(TNodeType::Procedure, "Proc2"));
-    AST->children.push_back(new TNode(TNodeType::Procedure, "Proc3"));
+    std::vector<std::unique_ptr<TNode>> childNodes;
+
+    childNodes.emplace_back(new TNode(TNodeType::StatementList, ""));
+    std::unique_ptr<TNode> proc1 = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Procedure, "Proc1", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::StatementList, ""));
+    std::unique_ptr<TNode> proc2 = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Procedure, "Proc2", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::StatementList, ""));
+    std::unique_ptr<TNode> proc3 = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Procedure, "Proc3", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(proc1));
+    childNodes.push_back(std::move(proc2));
+    childNodes.push_back(std::move(proc3));
+    std::unique_ptr<TNode> AST = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Program, std::move(childNodes)));
 
     DesignExtractor de(AST);
     WHEN("The PKB is retrieved") {
@@ -34,10 +53,5 @@ SCENARIO("Design Extractor extracts design abstractions from an AST into a PKB",
         REQUIRE(pkb.getVarTable().size() == 0);
       }
     }
-  }
-  GIVEN("An AST of a program with a procedure with 3 variables") {
-    TNode *var1 = new TNode(TNodeType::Variable, "x");
-    TNode *proc = new TNode(TNodeType::Procedure, "main");
-    TNode *AST = new TNode(TNodeType::Program);
   }
 }
