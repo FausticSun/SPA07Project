@@ -1,6 +1,8 @@
 #pragma once
 
+#include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 enum class TNodeType {
@@ -37,13 +39,13 @@ enum class TNodeType {
 };
 
 struct TNode {
-  explicit TNode(const TNodeType type, const std::string &name = "",
-                 std::vector<std::unique_ptr<TNode>> &&children = {})
-      : type(type), name(name), children(children){};
+  explicit TNode(const TNodeType type, std::string name = "",
+                 std::vector<std::unique_ptr<TNode>> children = {})
+      : type(type), name(std::move(name)), children(std::move(children)){};
   explicit TNode(const TNodeType type,
-                 std::vector<std::unique_ptr<TNode>> &&children = {},
-                 const std::string &name = "")
-      : type(type), name(name), children(children){};
+                 std::vector<std::unique_ptr<TNode>> children = {},
+                 std::string name = "")
+      : type(type), name(std::move(name)), children(std::move(children)){};
   TNodeType type;
   std::string name;
   std::vector<std::unique_ptr<TNode>> children;
