@@ -1,7 +1,7 @@
 #include "Parser.h"
 #include "Lexer.h"
 
-Parser::Parser() = default;
+Parser::Parser() : statementNumber(1){};
 
 std::queue<Token> Parser::parse(std::string filePath) {
   Lexer lexer;
@@ -51,6 +51,7 @@ std::unique_ptr<TNode> Parser::createTNodeProcedure() {
 }
 
 std::unique_ptr<TNode> Parser::createTNodeAssign() {
+  int statementNumber = assignStatementNumber();
   std::unique_ptr<TNode> variableTNode =
       std::unique_ptr<TNode>(new TNode(TNodeType::Variable, token.name));
   expectToken("=");
@@ -60,10 +61,11 @@ std::unique_ptr<TNode> Parser::createTNodeAssign() {
   childNodes.push_back(std::move(variableTNode));
   childNodes.push_back(std::move(expressionTNode));
   return std::unique_ptr<TNode>(
-      new TNode(TNodeType::Assign, std::move(childNodes)));
+      new TNode(TNodeType::Assign, std::move(childNodes), "", statementNumber));
 }
 
 std::unique_ptr<TNode> Parser::createTNodeRead() {
+  int statementNumber = assignStatementNumber();
   getNextToken(); // token holding var_name
   std::unique_ptr<TNode> variableTNode =
       std::unique_ptr<TNode>(new TNode(TNodeType::Variable, token.name));
@@ -71,10 +73,11 @@ std::unique_ptr<TNode> Parser::createTNodeRead() {
   vector<std::unique_ptr<TNode>> childNodes;
   childNodes.push_back(std::move(variableTNode));
   return std::unique_ptr<TNode>(
-      new TNode(TNodeType::Read, std::move(childNodes)));
+      new TNode(TNodeType::Read, std::move(childNodes), "", statementNumber));
 }
 
 std::unique_ptr<TNode> Parser::createTNodePrint() {
+  int statementNumber = assignStatementNumber();
   getNextToken(); // token holding var_name
   std::unique_ptr<TNode> variableTNode =
       std::unique_ptr<TNode>(new TNode(TNodeType::Variable, token.name));
@@ -82,10 +85,11 @@ std::unique_ptr<TNode> Parser::createTNodePrint() {
   vector<std::unique_ptr<TNode>> childNodes;
   childNodes.push_back(std::move(variableTNode));
   return std::unique_ptr<TNode>(
-      new TNode(TNodeType::Print, std::move(childNodes)));
+      new TNode(TNodeType::Print, std::move(childNodes), "", statementNumber));
 }
 
 std::unique_ptr<TNode> Parser::createTNodeWhile() {
+  int statementNumber = assignStatementNumber();
   expectToken("(");
   std::unique_ptr<TNode> condExpressionTNode = createTNodeConditionExpression();
   expectToken(")");
@@ -96,10 +100,11 @@ std::unique_ptr<TNode> Parser::createTNodeWhile() {
   childNodes.push_back(std::move(condExpressionTNode));
   childNodes.push_back(std::move(stmtLstTNode));
   return std::unique_ptr<TNode>(
-      new TNode(TNodeType::While, std::move(childNodes)));
+      new TNode(TNodeType::While, std::move(childNodes), "", statementNumber));
 }
 
 std::unique_ptr<TNode> Parser::createTNodeIf() {
+  int statementNumber = assignStatementNumber();
   expectToken("(");
   std::unique_ptr<TNode> condExpressionTNode = createTNodeConditionExpression();
   expectToken(")");
@@ -116,7 +121,7 @@ std::unique_ptr<TNode> Parser::createTNodeIf() {
   childNodes.push_back(std::move(thenStmtLstTNode));
   childNodes.push_back(std::move(elseStmtLstTNode));
   return std::unique_ptr<TNode>(
-      new TNode(TNodeType::If, std::move(childNodes)));
+      new TNode(TNodeType::If, std::move(childNodes), "", statementNumber));
 }
 
 std::unique_ptr<TNode> Parser::createTNodeStatementList() {
@@ -407,3 +412,5 @@ std::unique_ptr<TNode> Parser::createTNodeFactor() {
     return expressionTNode;
   }
 }
+
+int Parser::assignStatementNumber() { return statementNumber++; }
