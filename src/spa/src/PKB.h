@@ -1,57 +1,32 @@
 #pragma once
 
 #include "Relation.h"
-#include <Token.h>
-#include <queue>
+#include <map>
 #include <set>
 #include <string>
-#include <unordered_set>
-#include <vector>
-
-using namespace std;
-typedef short PROC;
-
-class TNode;
-
-class VarTable { // no need to #include "VarTable.h" as all I need is pointer
-public: 
-	VarTable();
-	VarTable* buildVarTable(queue<Token*> tokens);
-	bool contains(string s);
-	unordered_set<string> getVarList();
- 	string toString();
-	int add(string s); //for testing
-
-private:
-  unordered_set<string> varList;
-  int numOfVars;
-};
-
-class ProcTable {
-public:
-  ProcTable();
-  ProcTable *buildProcTable(queue<Token *> tokens);
-  bool contains(string s);
-  unordered_set<string> getProcList();
-  string toString();
-
-private:
-  unordered_set<string> procList;
-  int numOfProcs;
-  int add(string s);
-};
 
 class PKB {
 private:
   std::set<std::string> varTable;
   std::set<std::string> procTable;
-  std::set<Relation> relTable;
+  std::map<Entity, std::set<Entity>> followsTable;
+  std::map<Entity, std::set<Entity>> followedByTable;
+  std::map<Entity, std::set<Entity>> parentTable;
+  std::map<Entity, std::set<Entity>> parentOfTable;
+  std::map<Entity, std::set<Entity>> usesTable;
+  std::map<Entity, std::set<Entity>> usedByTable;
+  std::map<Entity, std::set<Entity>> modifiesTable;
+  std::map<Entity, std::set<Entity>> modifiedByTable;
 
 public:
-  PKB(const std::set<std::string> &variableTable = {},
-      const std::set<std::string> &procedureTable = {},
-      const std::set<Relation> &relationTable = {});
+  PKB();
+  void insertVar(std::string);
+  void insertProc(std::string);
+  void setFollows(Entity, Entity);
+  void setParent(Entity, Entity);
+  void setUsed(Entity, Entity);
+  void setModified(Entity, Entity);
+
   const std::set<std::string> getVarTable() const;
   const std::set<std::string> getProcTable() const;
-  const std::set<Relation> getRelTable() const;
 };
