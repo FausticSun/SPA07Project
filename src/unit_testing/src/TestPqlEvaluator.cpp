@@ -1,7 +1,7 @@
 
 #include "PqlEvaluator.h"
-#include <algorithm>
 #include "catch.hpp"
+#include <algorithm>
 using namespace std;
 
 SCENARIO("Selecting variable command") {

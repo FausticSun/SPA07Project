@@ -40,13 +40,17 @@ enum class TNodeType {
 
 struct TNode {
   explicit TNode(const TNodeType type, std::string name = "",
-                 std::vector<std::unique_ptr<TNode>> children = {})
-      : type(type), name(std::move(name)), children(std::move(children)){};
+                 std::vector<std::unique_ptr<TNode>> children = {},
+                 int statementNumber = 0)
+      : type(type), name(std::move(name)), children(std::move(children)),
+        statementNumber(statementNumber){};
   explicit TNode(const TNodeType type,
                  std::vector<std::unique_ptr<TNode>> children = {},
-                 std::string name = "")
-      : type(type), name(std::move(name)), children(std::move(children)){};
+                 std::string name = "", int statementNumber = 0)
+      : type(type), name(std::move(name)), children(std::move(children)),
+        statementNumber(statementNumber){};
   TNodeType type;
   std::string name;
   std::vector<std::unique_ptr<TNode>> children;
+  int statementNumber;
 };

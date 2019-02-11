@@ -12,6 +12,7 @@ public:
   std::unique_ptr<TNode> buildAst(std::queue<Token> &tokenQueue);
 
 private:
+  int statementNumber;
   std::queue<Token> tokenQueue;
   Token token;
   void getNextToken();
@@ -30,4 +31,5 @@ private:
   std::unique_ptr<TNode> createTNodeExpression();
   std::unique_ptr<TNode> createTNodeTerm();
   std::unique_ptr<TNode> createTNodeFactor();
+  int assignStatementNumber();
 };

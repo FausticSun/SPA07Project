@@ -34,6 +34,10 @@ SCENARIO("Procedure with one assignment statement") {
     REQUIRE(constantTNode->type == TNodeType::Constant);
     REQUIRE(constantTNode->name == "0");
   }
+
+  SECTION("Assign is assigned statement number 1") {
+    REQUIRE(assignTNode->statementNumber == 1);
+  }
 }
 
 SCENARIO("Procedure with one read statement") {
@@ -64,6 +68,10 @@ SCENARIO("Procedure with one read statement") {
     REQUIRE(variableTNode->type == TNodeType::Variable);
     REQUIRE(variableTNode->name == "x");
   }
+
+  SECTION("Read is assigned statement number 1") {
+    REQUIRE(readTNode->statementNumber == 1);
+  }
 }
 
 SCENARIO("Procedure with one print statement") {
@@ -93,6 +101,10 @@ SCENARIO("Procedure with one print statement") {
     const std::unique_ptr<TNode> &variableTNode = printTNode->children.front();
     REQUIRE(variableTNode->type == TNodeType::Variable);
     REQUIRE(variableTNode->name == "x");
+  }
+
+  SECTION("Print is assigned statement number 1") {
+    REQUIRE(printTNode->statementNumber == 1);
   }
 }
 
@@ -146,13 +158,17 @@ SCENARIO("Procedure with one while statement") {
     REQUIRE(constantTNode->name == "0");
   }
 
+  const std::unique_ptr<TNode> &readTNode = whileStmtLstTNode->children.front();
   SECTION("WhileStatementList has one Read child") {
-    const std::unique_ptr<TNode> &readTNode =
-        whileStmtLstTNode->children.front();
     const std::unique_ptr<TNode> &variableTNode = readTNode->children.front();
     REQUIRE(readTNode->type == TNodeType::Read);
     REQUIRE(variableTNode->type == TNodeType::Variable);
     REQUIRE(variableTNode->name == "x");
+  }
+
+  SECTION("Statement numbers are assigned accordingly") {
+    REQUIRE(whileTNode->statementNumber == 1);
+    REQUIRE(readTNode->statementNumber == 2);
   }
 }
 
@@ -214,23 +230,26 @@ SCENARIO("Procedure with one if statement") {
     REQUIRE(constantTNode->type == TNodeType::Constant);
     REQUIRE(constantTNode->name == "0");
   }
-
+  const std::unique_ptr<TNode> &readXTNode = thenStmtLstTNode->children.front();
   SECTION("ThenStatementList has one Read child") {
-    const std::unique_ptr<TNode> &readXTNode =
-        thenStmtLstTNode->children.front();
     const std::unique_ptr<TNode> &variableTNode = readXTNode->children.front();
     REQUIRE(readXTNode->type == TNodeType::Read);
     REQUIRE(variableTNode->type == TNodeType::Variable);
     REQUIRE(variableTNode->name == "x");
   }
 
+  const std::unique_ptr<TNode> &readYTNode = elseStmtLstTNode->children.front();
   SECTION("ElseStatementList has one Read child") {
-    const std::unique_ptr<TNode> &readYTNode =
-        elseStmtLstTNode->children.front();
     const std::unique_ptr<TNode> &variableTNode = readYTNode->children.front();
     REQUIRE(readYTNode->type == TNodeType::Read);
     REQUIRE(variableTNode->type == TNodeType::Variable);
     REQUIRE(variableTNode->name == "y");
+  }
+
+  SECTION("Statement numbers are assigned accordingly") {
+    REQUIRE(ifTNode->statementNumber == 1);
+    REQUIRE(readXTNode->statementNumber == 2);
+    REQUIRE(readYTNode->statementNumber == 3);
   }
 }
 
