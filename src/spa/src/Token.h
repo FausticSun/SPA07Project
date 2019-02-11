@@ -2,7 +2,6 @@
 
 #include <string>
 
-
 enum class TokenType {
   Assign,
   If,
