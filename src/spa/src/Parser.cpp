@@ -61,7 +61,7 @@ void Parser::expectToken(string expectedToken) {
 
 TNode* Parser::createTNodeProcedure() {
 	getNextToken();
-	TNode* procedureTNode = new TNode(TNodeType::Procedure, token->getName(), token->getStatementNumber());
+	TNode* procedureTNode = new TNode(TNodeType::Procedure, token->getName());
 	expectToken("{");
 	TNode* stmtLstTNode = createTNodeStatementList();
 	expectToken("}");
@@ -70,7 +70,7 @@ TNode* Parser::createTNodeProcedure() {
 }
 
 TNode* Parser::createTNodeAssign() {
-	TNode* variableTNode = new TNode(TNodeType::Variable, token->getName(), token->getStatementNumber());
+	TNode* variableTNode = new TNode(TNodeType::Variable, token->getName());
 	expectToken("=");
 	TNode* expressionTNode = createTNodeExpression();
 	expectToken(";");
@@ -79,14 +79,14 @@ TNode* Parser::createTNodeAssign() {
 
 TNode* Parser::createTNodeRead() {
 	getNextToken(); // token holding var_name
-	TNode* variableTNode = new TNode(TNodeType::Variable, token->getName(), token->getStatementNumber());
+	TNode* variableTNode = new TNode(TNodeType::Variable, token->getName());
 	expectToken(";");
 	return createTNode(TNodeType::Read, { variableTNode });
 }
 
 TNode* Parser::createTNodePrint() {
 	getNextToken(); // token holding var_name
-	TNode* variableTNode = new TNode(TNodeType::Variable, token->getName(), token->getStatementNumber());
+	TNode* variableTNode = new TNode(TNodeType::Variable, token->getName());
 	expectToken(";");
 	return createTNode(TNodeType::Print, { variableTNode });
 }
@@ -215,9 +215,9 @@ TNode* Parser::createTNodeRelativeFactor() {
 	getNextToken();
 	switch (token->getType()) {
 	case TokenType::Identifier:
-		return new TNode(TNodeType::Variable, token->getName(), token->getStatementNumber());
+		return new TNode(TNodeType::Variable, token->getName());
 	case TokenType::Constant:
-		return new TNode(TNodeType::Constant, token->getName(), token->getStatementNumber());
+		return new TNode(TNodeType::Constant, token->getName());
 	default:
 		return createTNodeExpression();
 	}
@@ -308,9 +308,9 @@ TNode* Parser::createTNodeFactor() {
 	getNextToken();
 	switch (token->getType()) {
 	case TokenType::Identifier:
-		return new TNode(TNodeType::Variable, token->getName(), token->getStatementNumber());
+		return new TNode(TNodeType::Variable, token->getName());
 	case TokenType::Constant:
-		return new TNode(TNodeType::Constant, token->getName(), token->getStatementNumber());
+		return new TNode(TNodeType::Constant, token->getName());
 	case TokenType::OpenParenthesis:
 		TNode* expressionTNode = createTNodeExpression();
 		expectToken(")");

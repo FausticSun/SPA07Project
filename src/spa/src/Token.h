@@ -37,11 +37,10 @@ enum class TokenType
 
 class Token {
 public:
-	Token(TokenType, string, int);
+	Token(TokenType, string);
 	~Token();
 	TokenType getType();
 	string getName();
-	int getStatementNumber();
 
 private:
 	TokenType type;

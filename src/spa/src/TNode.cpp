@@ -1,9 +1,8 @@
 #include "TNode.h"
 
-TNode::TNode(TNodeType type, string name, int statementNumber) {
+TNode::TNode(TNodeType type, string name) {
 	this->type = type;
 	this->name = name;
-	this->statementNumber = statementNumber;
 }
 
 TNode::~TNode() {}
@@ -14,10 +13,6 @@ TNodeType TNode::getType() {
 
 string TNode::getName() {
 	return name;
-}
-
-int TNode::getStatementNumber() {
-	return statementNumber;
 }
 
 vector<TNode*> TNode::getChildren() {

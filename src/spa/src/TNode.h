@@ -42,17 +42,15 @@ enum class TNodeType
 
 class TNode {
 public:
-	TNode(TNodeType, string = "", int statementNumber = 0);
+	TNode(TNodeType, string = "");
 	~TNode();
 	TNodeType getType();
 	string getName();
-	int getStatementNumber();
 	vector<TNode*> getChildren();
 	void setChildren(vector<TNode*>);
 
 private:
 	TNodeType type;
 	string name;
-	int statementNumber;
 	vector<TNode*> children;
 };

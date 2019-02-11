@@ -17,7 +17,6 @@ public:
 	vector<Token*> tokenize(string);
 
 private:
-	int statementLine;
 	vector<string> vectorize(string);
 	vector<Token*> tokenizeProcedure(vector<string>);
 	vector<Token*> tokenizeAssignment(vector<string>);

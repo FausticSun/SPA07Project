@@ -12,7 +12,6 @@ using namespace std;
 #include "PKB.h"
 
 Lexer::Lexer() {
-	int statementLine = 0;
 }
 
 Lexer::~Lexer() {}
@@ -24,19 +23,15 @@ vector<Token*> Lexer::tokenize(string input) {
 
 	//identifying different types of statement
 	if (find(tokens.begin(), tokens.end(), "procedure") != tokens.end()) {
-		statementLine = 0;
 		return tokenizeProcedure(tokens);
 	}
 	else if (find(tokens.begin(), tokens.end(), "=") != tokens.end()) {
-		statementLine++;
 		return tokenizeAssignment(tokens);
 	}
 	else if (find(tokens.begin(), tokens.end(), "read") != tokens.end()) {
-		statementLine++;
 		return tokenizeRead(tokens);
 	}
 	else if (find(tokens.begin(), tokens.end(), "print") != tokens.end()) {
-		statementLine++;
 		return tokenizePrint(tokens);
 	}
 	else {
@@ -71,16 +66,16 @@ vector<string> Lexer::vectorize(string input) {
 
 vector<Token*> Lexer::tokenizeProcedure(vector<string> tokens) {
 	vector<Token*> toAST;
-	toAST.push_back(new Token(TokenType::Procedure, "procedure", statementLine));
+	toAST.push_back(new Token(TokenType::Procedure, "procedure"));
 	toAST.push_back(pushIdentifier(tokens[1]));
-	toAST.push_back(new Token(TokenType::Separator, "{", statementLine));
+	toAST.push_back(new Token(TokenType::Separator, "{"));
 
 	return toAST;
 }
 
 vector<Token*> Lexer::tokenizeAssignment(vector<string> tokens) {
 	vector<Token*> toAST;
-	toAST.push_back(new Token(TokenType::Assign, "assign", statementLine));
+	toAST.push_back(new Token(TokenType::Assign, "assign"));
 
 	for (auto i : tokens) {
 		toAST.push_back(pushToken(i));
@@ -91,7 +86,7 @@ vector<Token*> Lexer::tokenizeAssignment(vector<string> tokens) {
 
 vector<Token*> Lexer::tokenizeRead(vector<string> tokens) {
 	vector<Token*> toAST;
-	toAST.push_back(new Token(TokenType::Read, "read", statementLine));
+	toAST.push_back(new Token(TokenType::Read, "read"));
 	tokens.erase(tokens.begin());
 
 	for (auto i : tokens) {
@@ -103,7 +98,7 @@ vector<Token*> Lexer::tokenizeRead(vector<string> tokens) {
 
 vector<Token*> Lexer::tokenizePrint(vector<string> tokens) {
 	vector<Token*> toAST;
-	toAST.push_back(new Token(TokenType::Print, "print", statementLine));
+	toAST.push_back(new Token(TokenType::Print, "print"));
 	tokens.erase(tokens.begin());
 
 	for (auto i : tokens) {
@@ -115,16 +110,16 @@ vector<Token*> Lexer::tokenizePrint(vector<string> tokens) {
 
 Token* Lexer::pushToken(string s) {
 	if (isConstant(s)) {
-		return new Token(TokenType::Constant, s, statementLine);
+		return new Token(TokenType::Constant, s);
 	}
 	else if (isSeparator(s)) {
-		return new Token(TokenType::Separator, s, statementLine);
+		return new Token(TokenType::Separator, s);
 	}
 	else if (isOperator(s)) {
 		return pushOperator(s);
 	}
 	else if (isIdentifier(s)) {
-		return new Token(TokenType::Identifier, s, statementLine);
+		return new Token(TokenType::Identifier, s);
 	}
 	else {
 		throw "Invalid Identifier";
@@ -134,7 +129,7 @@ Token* Lexer::pushToken(string s) {
 Token* Lexer::pushIdentifier(string s) {
 
 	if (isIdentifier(s)) {
-		return new Token(TokenType::Identifier, s, statementLine);
+		return new Token(TokenType::Identifier, s);
 	}
 	else {
 		throw "Invalid Identifier";
@@ -145,25 +140,25 @@ Token* Lexer::pushIdentifier(string s) {
 
 Token* Lexer::pushOperator(string s) {
 	if (s == "+") {
-		return new Token(TokenType::Plus, s, statementLine);
+		return new Token(TokenType::Plus, s);
 	}
 	else if (s == "-") {
-		return new Token(TokenType::Minus, s, statementLine);
+		return new Token(TokenType::Minus, s);
 	}
 	else if (s == "*") {
-		return new Token(TokenType::Multiply, s, statementLine);
+		return new Token(TokenType::Multiply, s);
 	}
 	else if (s == "/") {
-		return new Token(TokenType::Divide, s, statementLine);
+		return new Token(TokenType::Divide, s);
 	}
 	else if (s == "=") {
-		return new Token(TokenType::Equal, s, statementLine);
+		return new Token(TokenType::Equal, s);
 	}
 	else if (s == "(") {
-		return new Token(TokenType::OpenParenthesis, s, statementLine);
+		return new Token(TokenType::OpenParenthesis, s);
 	}
 	else if (s == ")") {
-		return new Token(TokenType::CloseParenthesis, s, statementLine);
+		return new Token(TokenType::CloseParenthesis, s);
 	}
 
 }
