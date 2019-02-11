@@ -48,8 +48,6 @@ public:
   int getStatementNumber();
   vector<TNode *> getChildren();
   void setChildren(vector<TNode *>);
-
-private:
   TNodeType type;
   string name;
   int statementNumber;
