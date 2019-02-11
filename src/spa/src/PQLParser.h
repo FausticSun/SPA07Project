@@ -7,20 +7,20 @@
 using namespace std;
 
 /*DeclarationType {
-	Variable,
-	Procedure
+        Variable,
+        Procedure
 
 };*/
 
 /*{
-	Follows,
-	Follows*,
-	Parent,
-	Parent*,
-	UsesS,
-	UsesP,
-	ModifiesS,
-	ModifiesP
+        Follows,
+        Follows*,
+        Parent,
+        Parent*,
+        UsesS,
+        UsesP,
+        ModifiesS,
+        ModifiesP
 };*/
 
 enum class RelationType
@@ -94,7 +94,4 @@ private:
 	void tokenizeModifiesP(vector<string>);
 	void tokenizeUses(vector<string>);
 	void tokenizeUsesP(vector<string>);
-
-
-
 };

@@ -1,16 +1,13 @@
 #include "PQLParser.h"
+#include <algorithm>
+#include <queue>
 #include <string.h>
 #include <string>
 #include <vector>
-#include <queue>
-#include <algorithm>
 
 using namespace std;
 
-PQLParser::PQLParser(string input)
-{
-	Tokenize(input);
-}
+PQLParser::PQLParser(string input) { Tokenize(input); }
 
 void PQLParser::Tokenize(string input)
 {
@@ -146,20 +143,17 @@ void PQLParser::Tokenize(string input)
 	
 }
 
-}
+    if (find(token.begin(), token.end(), "variable") != token.end()) {
+      tokenizeVariable(token);
+      token.erase(token.begin());
+      token.erase(token.begin());
+    }
 
-vector<string> PQLParser::vectorize(string input)
-{
-	vector<string> tokens;
-	char *p;
-	char *temp = (char*)input.c_str();
-	p = strtok(temp, " ;");
-	while (p) {
-		tokens.push_back(p);
-		p = strtok(NULL, " ;");
-	}
-	return tokens;
-}
+    if (find(token.begin(), token.end(), "select") != token.end()) {
+      tokenizeSelect(token);
+      token.erase(token.begin());
+      token.erase(token.begin());
+    }
 
 bool isInt(string s)
 {
@@ -305,5 +299,4 @@ void PQLParser::tokenizeModifies(vector<string> token)
 		selectQueue.push(make_tuple(RelationType::ModifiesP, token[1], token[2]));
 	}
 }
-
 
