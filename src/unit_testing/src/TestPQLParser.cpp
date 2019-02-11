@@ -3,7 +3,7 @@
 #include"catch.hpp"
 
 using namespace std;
-/*
+
 TEST_CASE("Testing basic declaration variable")
 {
 	const string input = "variable a;";
@@ -23,7 +23,7 @@ TEST_CASE("Testing basic declaration variable")
 	}
 
 }
-*/
+
 
 TEST_CASE("Testing basic select")
 {
@@ -39,7 +39,7 @@ TEST_CASE("Testing basic select")
 	}
 
 }
-/*
+
 TEST_CASE("Testing basic declaration variable and select this variable")
 {
 	const string input = "variable a; select a";
@@ -108,6 +108,6 @@ TEST_CASE("Testing basic declaration procedure and select this procedure")
 	}
 
 }
-*/
+
 
 
