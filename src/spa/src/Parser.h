@@ -1,23 +1,22 @@
 #pragma once
+
 #include "TNode.h"
 #include "Token.h"
 
 #include <queue>
 
-using std::queue;
-
 class Parser {
 public:
   Parser();
   ~Parser();
-  queue<Token> parse(string);
-  TNode *buildAST(queue<Token> &tokenQueue);
+  std::queue<Token> parse(std::string);
+  TNode *buildAst(std::queue<Token> &tokenQueue);
 
 private:
-  queue<Token> tokenQueue;
+  std::queue<Token> tokenQueue;
   Token token;
   void getNextToken();
-  void expectToken(string);
+  void expectToken(std::string);
   TNode *createTNodeProcedure();
   TNode *createTNodeAssign();
   TNode *createTNodeRead();
@@ -32,5 +31,5 @@ private:
   TNode *createTNodeExpression();
   TNode *createTNodeTerm();
   TNode *createTNodeFactor();
-  TNode *createTNode(TNodeType, vector<TNode *>);
+  TNode *createTNode(TNodeType, std::vector<TNode *>);
 };
