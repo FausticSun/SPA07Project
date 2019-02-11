@@ -1,20 +1,20 @@
 #pragma once
 
 #include "Relation.h"
+#include <Token.h>
+#include <queue>
 #include <set>
 #include <string>
-#include <vector>
 #include <unordered_set>
-#include <queue>
-#include <Token.h>
+#include <vector>
 
 using namespace std;
 typedef short PROC;
 
 class TNode;
 
-class VarTable {  // no need to #include "VarTable.h" as all I need is pointer
-public:
+class VarTable { // no need to #include "VarTable.h" as all I need is pointer
+public: 
 	VarTable();
 	VarTable* buildVarTable(queue<Token*> tokens);
 	bool contains(string s);
@@ -23,24 +23,23 @@ public:
 	int add(string s); //for testing
 
 private:
-	unordered_set<string> varList;
-	int numOfVars;
+  unordered_set<string> varList;
+  int numOfVars;
 };
 
 class ProcTable {
 public:
-	ProcTable();
-	ProcTable* buildProcTable(queue<Token*> tokens);
-	bool contains(string s);
-	unordered_set<string> getProcList();
-	string toString();
+  ProcTable();
+  ProcTable *buildProcTable(queue<Token *> tokens);
+  bool contains(string s);
+  unordered_set<string> getProcList();
+  string toString();
 
 private:
-	unordered_set<string> procList;
-	int numOfProcs;
-	int add(string s);
+  unordered_set<string> procList;
+  int numOfProcs;
+  int add(string s);
 };
-
 
 class PKB {
 private:
@@ -49,10 +48,9 @@ private:
   std::set<Relation> relTable;
 
 public:
-  PKB();
-  void setPKB(const std::set<std::string> &variableTable = {},
-              const std::set<std::string> &procedureTable = {},
-              const std::set<Relation> &relationTable = {});
+  PKB(const std::set<std::string> &variableTable = {},
+      const std::set<std::string> &procedureTable = {},
+      const std::set<Relation> &relationTable = {});
   const std::set<std::string> getVarTable() const;
   const std::set<std::string> getProcTable() const;
   const std::set<Relation> getRelTable() const;
