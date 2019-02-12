@@ -6,10 +6,11 @@ PqlEvaluator::~PqlEvaluator() = default;
 
 list<string> PqlEvaluator::evaluateQuery(string query) {
   string target;
+  list<string> results;
   
 
 
-  return;
+  return results;
 }
 
 struct find_by_EntityType {
@@ -37,7 +38,7 @@ public:
   }
   bool operator()(const Relation& rel)
   {
-    return rel.leftEntity.name == name;
+    return rel.leftEntity.name != name;
   }
 private:
   string name;
@@ -52,7 +53,7 @@ public:
 	}
 	bool operator()(const Relation& rel)
 	{
-		return rel.rightEntity.name == name;
+		return rel.rightEntity.name != name;
 	}
 private:
 	string name;

@@ -59,6 +59,17 @@ SCENARIO("test") {
 	SECTION("test")
 	{
 		list<Relation> r1 = pe.getFollows(a1, a2);
+		cout << r1.size()<<endl;
+		cout << r1.front().leftEntity.name << endl;
+		cout << r1.front().rightEntity.name << endl;
+		list<Relation> r2 = pe.getFollows(a3, a2);
+		cout << r2.size() << endl;
+		cout << r2.front().leftEntity.name << endl;
+		cout << r2.front().rightEntity.name << endl;
+		list<Relation> r3 = pe.getFollows(a4, a5);
+		cout << r3.size() << endl;
+		cout << r3.front().leftEntity.name << endl;
+		cout << r3.front().rightEntity.name << endl;
 	
 	}
 }
