@@ -10,6 +10,7 @@ enum class StatementType { Stmt, Assign, If, While, Read, Call, Print };
 
 class PKB {
 private:
+  int stmtCount;
   std::set<std::string> varTable;
   std::set<std::string> procTable;
   std::map<StatementType, std::set<std::string>> stmtTable;
@@ -37,9 +38,9 @@ public:
   void setUsed(std::string, std::string);
   void setModified(std::string, std::string);
 
-  const std::set<std::string> getVarTable() const;
-  const std::set<std::string> getProcTable() const;
-  const std::set<std::string> getStatementsOfType(StatementType) const;
+  const std::set<std::string> &getVarTable() const;
+  const std::set<std::string> &getProcTable() const;
+  const std::set<std::string> &getStatementsOfType(StatementType) const;
   bool follows(std::string, std::string);
   std::set<std::string> getFollows(std::string);
   std::set<std::string> getFollowedBy(std::string);
