@@ -41,6 +41,7 @@ public:
   const std::set<std::string> &getVarTable() const;
   const std::set<std::string> &getProcTable() const;
   const std::set<std::string> &getStatementsOfType(StatementType) const;
+  StatementType getStatementType(std::string);
   bool follows(std::string, std::string);
   std::set<std::string> getFollows(std::string);
   std::set<std::string> getFollowedBy(std::string);
