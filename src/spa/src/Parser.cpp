@@ -1,21 +1,10 @@
 #include "Parser.h"
-#include "Lexer.h"
 
 Parser::Parser() : statementNumber(1){};
 
-std::queue<Token> Parser::parse(std::string filePath) {
-  Lexer lexer;
-  std::vector<Token> tokens = lexer.tokenizeFile(filePath);
-  std::queue<Token> tokenQueue;
-  for (Token token : tokens) {
-    tokenQueue.push(token);
-  }
-  return tokenQueue;
-}
-
 std::unique_ptr<TNode> Parser::buildAst(std::queue<Token> &tokenQueue) {
   this->tokenQueue = tokenQueue;
-  vector<std::unique_ptr<TNode>> procedureTNodes;
+  std::vector<std::unique_ptr<TNode>> procedureTNodes;
   while (!this->tokenQueue.empty()) {
     expectToken("procedure");
     procedureTNodes.push_back(std::move(createTNodeProcedure()));
@@ -44,7 +33,7 @@ std::unique_ptr<TNode> Parser::createTNodeProcedure() {
   expectToken("{");
   std::unique_ptr<TNode> stmtLstTNode = createTNodeStatementList();
   expectToken("}");
-  vector<std::unique_ptr<TNode>> childNodes;
+  std::vector<std::unique_ptr<TNode>> childNodes;
   childNodes.push_back(std::move(stmtLstTNode));
   return std::unique_ptr<TNode>(
       new TNode(TNodeType::Procedure, procName, std::move(childNodes)));
@@ -57,7 +46,7 @@ std::unique_ptr<TNode> Parser::createTNodeAssign() {
   expectToken("=");
   std::unique_ptr<TNode> expressionTNode = createTNodeExpression();
   expectToken(";");
-  vector<std::unique_ptr<TNode>> childNodes;
+  std::vector<std::unique_ptr<TNode>> childNodes;
   childNodes.push_back(std::move(variableTNode));
   childNodes.push_back(std::move(expressionTNode));
   return std::unique_ptr<TNode>(
@@ -70,7 +59,7 @@ std::unique_ptr<TNode> Parser::createTNodeRead() {
   std::unique_ptr<TNode> variableTNode =
       std::unique_ptr<TNode>(new TNode(TNodeType::Variable, token.name));
   expectToken(";");
-  vector<std::unique_ptr<TNode>> childNodes;
+  std::vector<std::unique_ptr<TNode>> childNodes;
   childNodes.push_back(std::move(variableTNode));
   return std::unique_ptr<TNode>(
       new TNode(TNodeType::Read, std::move(childNodes), "", statementNumber));
@@ -82,7 +71,7 @@ std::unique_ptr<TNode> Parser::createTNodePrint() {
   std::unique_ptr<TNode> variableTNode =
       std::unique_ptr<TNode>(new TNode(TNodeType::Variable, token.name));
   expectToken(";");
-  vector<std::unique_ptr<TNode>> childNodes;
+  std::vector<std::unique_ptr<TNode>> childNodes;
   childNodes.push_back(std::move(variableTNode));
   return std::unique_ptr<TNode>(
       new TNode(TNodeType::Print, std::move(childNodes), "", statementNumber));
@@ -96,7 +85,7 @@ std::unique_ptr<TNode> Parser::createTNodeWhile() {
   expectToken("{");
   std::unique_ptr<TNode> stmtLstTNode = createTNodeStatementList();
   expectToken("}");
-  vector<std::unique_ptr<TNode>> childNodes;
+  std::vector<std::unique_ptr<TNode>> childNodes;
   childNodes.push_back(std::move(condExpressionTNode));
   childNodes.push_back(std::move(stmtLstTNode));
   return std::unique_ptr<TNode>(
@@ -116,7 +105,7 @@ std::unique_ptr<TNode> Parser::createTNodeIf() {
   expectToken("{");
   std::unique_ptr<TNode> elseStmtLstTNode = createTNodeStatementList();
   expectToken("}");
-  vector<std::unique_ptr<TNode>> childNodes;
+  std::vector<std::unique_ptr<TNode>> childNodes;
   childNodes.push_back(std::move(condExpressionTNode));
   childNodes.push_back(std::move(thenStmtLstTNode));
   childNodes.push_back(std::move(elseStmtLstTNode));
@@ -166,7 +155,7 @@ std::unique_ptr<TNode> Parser::createTNodeConditionExpression() {
   std::unique_ptr<TNode> rightCondExpressionTNode;
   std::unique_ptr<TNode> previousTNode = NULL;
   TokenType nextTokenType;
-  vector<std::unique_ptr<TNode>> childNodes;
+  std::vector<std::unique_ptr<TNode>> childNodes;
   switch (tokenQueue.front().type) {
   case TokenType::ExclamationMark:
     expectToken("!");
@@ -230,7 +219,7 @@ std::unique_ptr<TNode> Parser::createTNodeConditionExpression() {
 std::unique_ptr<TNode> Parser::createTNodeRelativeExpression() {
   std::unique_ptr<TNode> leftRelFactor = createTNodeRelativeFactor();
   std::unique_ptr<TNode> rightRelFactor;
-  vector<std::unique_ptr<TNode>> childNodes;
+  std::vector<std::unique_ptr<TNode>> childNodes;
   switch (tokenQueue.front().type) {
   case TokenType::Greater:
     rightRelFactor = createTNodeRelativeFactor();
@@ -292,7 +281,7 @@ std::unique_ptr<TNode> Parser::createTNodeExpression() {
   while (nextTokenType == TokenType::Plus ||
          nextTokenType == TokenType::Minus) {
     std::unique_ptr<TNode> rightTermTNode;
-    vector<std::unique_ptr<TNode>> childNodes;
+    std::vector<std::unique_ptr<TNode>> childNodes;
     switch (nextTokenType) {
     case TokenType::Plus:
       expectToken("+");
@@ -342,7 +331,7 @@ std::unique_ptr<TNode> Parser::createTNodeTerm() {
          nextTokenType == TokenType::Divide ||
          nextTokenType == TokenType::Mod) {
     std::unique_ptr<TNode> rightFactorTNode;
-    vector<std::unique_ptr<TNode>> childNodes;
+    std::vector<std::unique_ptr<TNode>> childNodes;
     switch (nextTokenType) {
     case TokenType::Multiply:
       expectToken("*");
