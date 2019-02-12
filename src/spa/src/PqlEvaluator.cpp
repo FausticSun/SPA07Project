@@ -14,3 +14,38 @@ list<string> PqlEvaluator::evaluateQuery(string query) {
   return results;
 }
 
+set<string> PqlEvaluator::getData(Clause c)
+{
+  set<string> results;
+  if(c.clauseType==ClauseType::ModifiesS)
+  {
+    
+  }
+  else if(c.clauseType == ClauseType::UsesS)
+  {
+    
+  }
+  else if (c.clauseType == ClauseType::Parent)
+  {
+
+  }
+  else if (c.clauseType == ClauseType::ParentT)
+  {
+
+  }
+  else if (c.clauseType == ClauseType::Follows)
+  {
+
+  }
+  else if (c.clauseType == ClauseType::FollowsT)
+  {
+
+  }
+  else if(c.clauseType == ClauseType::AssignPatt)
+  {
+    
+  }
+ 
+}
+
+

@@ -5,6 +5,7 @@
 #include <list>
 #include <string>
 #include <vector>
+#include "Query.h"
 
 using namespace std;
 
@@ -35,12 +36,14 @@ public:
   PqlEvaluator(const PKB& pkb);
   ~PqlEvaluator();
   list<string> evaluateQuery(string query);
-  list<Relation> getUses(Entity first, Entity second);
-  list<Relation> getModifies(Entity first, Entity second);
-  list<Relation> getFollows(Entity first, Entity second);
-  list<Relation> getParents(Entity first, Entity second);
+  
 
 private:
   PKB mypkb;
+  set<string> getData(Clause c);
+  /*list<Relation> getUses(Entity first, Entity second);
+  list<Relation> getModifies(Entity first, Entity second);
+  list<Relation> getFollows(Entity first, Entity second);
+  list<Relation> getParents(Entity first, Entity second);*/
   
 };
