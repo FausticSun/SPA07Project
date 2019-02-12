@@ -157,17 +157,6 @@ void PQLParser::Tokenize(string input)
 
 	}
 
-	if (find(token.begin(), token.end(), "variable") != token.end()) {
-		tokenizeVariable(token);
-		token.erase(token.begin());
-		token.erase(token.begin());
-	}
-
-	if (find(token.begin(), token.end(), "select") != token.end()) {
-		tokenizeSelect(token);
-		token.erase(token.begin());
-		token.erase(token.begin());
-	}
 }
 bool isInt(string s)
 {
