@@ -5,7 +5,8 @@
 class DesignExtractor {
 private:
   std::unique_ptr<PKB> pkb;
-  void traverseAST(std::unique_ptr<TNode> &AST);
+  void traverseAST(std::unique_ptr<TNode> &AST, std::vector<int> parents = {});
+  void handleStmtLst(std::unique_ptr<TNode> &AST);
 
 public:
   DesignExtractor(std::unique_ptr<TNode> &AST);
