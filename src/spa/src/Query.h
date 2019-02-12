@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include <vector>
 
 enum class QueryEntityType {
   Stmt,
@@ -42,6 +43,6 @@ struct Clause {
 
 struct Query {
   Query();
-  vector<QueryEntityType> selectors;
-  vector<Clause> clauses;
+  std::vector<QueryEntityType> selectors;
+  std::vector<Clause> clauses;
 };
