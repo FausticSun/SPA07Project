@@ -1,56 +1,56 @@
 #pragma once
 
-#include <vector>
+#include <memory>
 #include <string>
+#include <utility>
+#include <vector>
 
-using std::vector;
-using std::string;
-
-enum class TNodeType
-{
-	Program,
-	Procedure,
-	StatementList,
-	Assign,
-	Call,
-	Print,
-	Read,
-	If,
-	Then,
-	Else,
-	While,
-	Variable,
-	Constant,
-	SemiColon,
-	OpenCurlyBrace,
-	CloseCurlyBrace,
-	Plus,
-	Minus,
-	Multiply,
-	Divide,
-	Mod,
-	Greater,
-	GreaterThanOrEqual,
-	Lesser,
-	LesserThanOrEqual,
-	Equal,
-	NotEqual,
-	Not,
-	And,
-	Or
+enum class TNodeType {
+  Program,
+  Procedure,
+  StatementList,
+  Assign,
+  Call,
+  Print,
+  Read,
+  If,
+  Then,
+  Else,
+  While,
+  Variable,
+  Constant,
+  SemiColon,
+  OpenCurlyBrace,
+  CloseCurlyBrace,
+  Plus,
+  Minus,
+  Multiply,
+  Divide,
+  Mod,
+  Greater,
+  GreaterThanOrEqual,
+  Lesser,
+  LesserThanOrEqual,
+  Equal,
+  NotEqual,
+  Not,
+  And,
+  Or
 };
 
-class TNode {
-public:
-	TNode(TNodeType, string = "");
-	~TNode();
-	TNodeType getType();
-	string getName();
-	vector<TNode*> getChildren();
-	void setChildren(vector<TNode*>);
-
-private:
-	TNodeType type;
-	string name;
-	vector<TNode*> children;
+struct TNode {
+  explicit TNode(const TNodeType type, std::string name = "",
+                 std::vector<std::unique_ptr<TNode>> children = {},
+                 int statementNumber = 0)
+      : type(type), name(std::move(name)), children(std::move(children)),
+        statementNumber(statementNumber){};
+  explicit TNode(const TNodeType type,
+                 std::vector<std::unique_ptr<TNode>> children = {},
+                 std::string name = "", int statementNumber = 0)
+      : type(type), name(std::move(name)), children(std::move(children)),
+        statementNumber(statementNumber){};
+  TNodeType type;
+  std::string name;
+  std::vector<std::unique_ptr<TNode>> children;
+  int statementNumber;
 };

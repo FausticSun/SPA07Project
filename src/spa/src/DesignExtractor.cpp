@@ -1,15 +1,23 @@
-#pragma once
+#include "DesignExtractor.h"
 
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <vector>
+DesignExtractor::DesignExtractor(std::unique_ptr<TNode> &AST) : pkb(new PKB()) {
+  traverseAST(AST);
+}
 
-using namespace std;
+std::unique_ptr<PKB> DesignExtractor::getPKB() { return std::move(pkb); }
 
-
-#include "PKB.h"
-
-int DesignExtractor () {
-	return 0;
+void DesignExtractor::traverseAST(std::unique_ptr<TNode> &AST) {
+  switch (AST->type) {
+  case TNodeType::Procedure:
+    pkb->insertProc(AST->name);
+    break;
+  case TNodeType::Variable:
+    pkb->insertVar(AST->name);
+    break;
+  default:
+    for (std::unique_ptr<TNode> &child : AST->children) {
+      traverseAST(child);
+    }
+    break;
+  }
 }

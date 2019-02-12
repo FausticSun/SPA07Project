@@ -1,20 +1,15 @@
-#pragma once
-
-#include<stdio.h>
-#include <iostream>
-#include <string>
-#include <vector>
-
-using namespace std;
-
 #include "PKB.h"
-#include "TNode.h"
 
-int PKB::setProcToAST(PROC p, TNode* r) {
-	return NULL;
-}
+PKB::PKB()
+    : varTable(), procTable(), followsTable(), followedByTable(), parentTable(),
+      parentOfTable(), usesTable(), usedByTable(), modifiesTable(),
+      modifiedByTable() {}
 
-TNode* PKB::getRootAST (PROC p){
+void PKB::insertVar(const std::string var) { varTable.insert(var); }
 
-	return NULL;
+void PKB::insertProc(const std::string proc) { procTable.insert(proc); }
+
+const std::set<std::string> PKB::getVarTable() const { return this->varTable; }
+const std::set<std::string> PKB::getProcTable() const {
+  return this->procTable;
 }
