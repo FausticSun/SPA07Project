@@ -9,6 +9,20 @@ using namespace std;
 
 PQLParser::PQLParser(string input) { Tokenize(input); }
 
+vector<string> PQLParser::vectorize(string input)
+{
+	vector<string> tokens;
+
+	char *p;
+	char *temp = (char*)input.c_str();
+	p = strtok(temp, " ;");
+	while (p) {
+		tokens.push_back(p);
+		p = strtok(NULL, " ;");
+	}
+	return tokens;
+}
+
 void PQLParser::Tokenize(string input)
 {
 	vector<string> token = vectorize(input);
