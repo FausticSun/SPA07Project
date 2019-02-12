@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Relation.h"
-#include <datetimeapi.h>
 #include <map>
 #include <set>
 #include <string>
