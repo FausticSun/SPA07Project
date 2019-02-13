@@ -1,6 +1,7 @@
 #pragma once
 
 #include <PKB.h>
+#include <Query.h>
 #include <iostream>
 #include <list>
 #include <string>
@@ -9,27 +10,21 @@
 
 using namespace std;
 
-enum class DesignEntityType {
-  Stmt,
-  Read,
-  Print,
-  Call,
-  While,
-  If,
-  Assign,
-  Variable,
-  Constant,
-  Procedure,
+class ClauseResult
+{
+public:
+	ClauseResult(bool isbool, bool bvalue, vector<QueryEntity> titles = {}, vector<vector<string>> resultTable={})
+          :isBool(isbool),
+          bValue(bvalue),
+          titles(titles),
+          resultTable(resultTable){
+	  };
+	bool isBool;
+	bool bValue;
+	vector<QueryEntity> titles;
+	vector<vector<string>> resultTable;
 };
-enum class RelationshipType {
-  Follows,
-  FollowsT,
-  Parent,
-  Uses,
-  UsesP,
-  ModifiesS,
-  ModifiesP,
-};
+
 
 class PqlEvaluator {
 public:
@@ -37,13 +32,20 @@ public:
   ~PqlEvaluator();
   list<string> evaluateQuery(string query);
   
-
 private:
   PKB mypkb;
-  set<string> getData(Clause c);
-  /*list<Relation> getUses(Entity first, Entity second);
-  list<Relation> getModifies(Entity first, Entity second);
-  list<Relation> getFollows(Entity first, Entity second);
-  list<Relation> getParents(Entity first, Entity second);*/
+  list<string> executeQuery(vector<Clause> &clauses);
+  ClauseResult getModifies(Clause c);
+  ClauseResult getUses(Clause c);
+  ClauseResult getParent(Clause c);
+  ClauseResult getParentS(Clause c);
+  ClauseResult getFollows(Clause c);
+  ClauseResult getFollowsS(Clause c);
+  ClauseResult getAssPatern(Clause c);
+  bool isSynonym(QueryEntityType q);
+  /*map<string, QueryEntityType> executeDeclaration(const vector<QueryEntity> &selectors);
+  vector<ClauseResult> excuteClauses(const vector<Clause> &clauses);
+  int analyseClauseConstants(const Clause &clause);*/
+
   
 };

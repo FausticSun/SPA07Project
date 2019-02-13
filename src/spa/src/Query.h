@@ -15,7 +15,11 @@ enum class QueryEntityType {
   Procedure,
   Expression,
   Boolean,
+  Line,
+  Name,
+  Underscore,
 };
+
 enum class ClauseType {
   Follows,
   FollowsT,
@@ -28,21 +32,33 @@ enum class ClauseType {
 
 struct QueryEntity {
   QueryEntity(QueryEntityType type, std::string name = "")
-      : type(type), name(name){};
+    : type(type),
+      name(name) {
+  };
   QueryEntityType type;
   std::string name;
 };
 
-struct Clause {
-  Clause(ClauseType clauseType, QueryEntity firstRef, QueryEntity secondRef)
-      : clauseType(ClauseType), firstRef(firstRef), secondRef(secondRef){};
+class Clause {
+public:
+  Clause(ClauseType clauseType,std::vector<QueryEntity> parameters)
+    : clauseType(clauseType),
+      parameters(parameters) {
+  };
   ClauseType clauseType;
-  QueryEntity firstRef;
-  QueryEntity secondRef;
+  std::vector<QueryEntity> parameters;
+
+  bool isValid();
 };
 
-struct Query {
+class Query {
+public:
   Query();
-  std::vector<QueryEntityType> selectors;
+  ~Query();
+  std::string target;
+  std::vector<QueryEntity> selectors;
   std::vector<Clause> clauses;
+
+  bool isValid();
+  bool isEntity(QueryEntityType q);
 };
