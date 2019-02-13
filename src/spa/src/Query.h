@@ -32,26 +32,26 @@ enum class ClauseType {
 	AssignPatt,
 };
 
-class QueryEntity {
-public:
-	QueryEntity(QueryEntityType type, std::string name = "")
-		: type(type),
-		name(name) {
-	};
-	QueryEntityType type;
-	std::string name;
+struct QueryEntity {
+  QueryEntity(QueryEntityType type, std::string name = "")
+    : type(type),
+      name(name) {
+  };
+  QueryEntityType type;
+  std::string name;
 };
 
 class Clause {
 public:
-	Clause(ClauseType clauseType, std::vector<QueryEntity> parameters)
-		: clauseType(clauseType),
-		parameters(parameters) {
-	};
-	ClauseType clauseType;
-	std::vector<QueryEntity> parameters;
 
-	bool isValid();
+  Clause(ClauseType clauseType,std::vector<QueryEntity> parameters)
+    : clauseType(clauseType),
+      parameters(parameters) {
+  };
+  ClauseType clauseType;
+  std::vector<QueryEntity> parameters;
+
+  bool isValid();
 };
 
 class Query {
