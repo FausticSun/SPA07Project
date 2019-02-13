@@ -4,6 +4,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <vector>
 
 enum class StatementType { Stmt, Assign, If, While, Read, Call, Print };
 
@@ -44,15 +45,19 @@ public:
   bool follows(std::string, std::string);
   std::set<std::string> getFollows(std::string);
   std::set<std::string> getFollowedBy(std::string);
+  std::vector<std::vector<std::string>> getFollowsTable();
   bool followsT(std::string, std::string);
   std::set<std::string> getFollowsT(std::string);
   std::set<std::string> getFollowedByT(std::string);
+  std::vector<std::vector<std::string>> getFollowsTTable();
   bool parent(std::string, std::string);
   std::set<std::string> getParent(std::string);
   std::set<std::string> getParentOf(std::string);
+  std::vector<std::vector<std::string>> getParentTable();
   bool parentT(std::string, std::string);
   std::set<std::string> getParentT(std::string);
   std::set<std::string> getParentOfT(std::string);
+  std::vector<std::vector<std::string>> getParentTTable();
   bool uses(std::string, std::string);
   std::set<std::string> getUses(std::string);
   std::set<std::string> getUsedBy(std::string);
