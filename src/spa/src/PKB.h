@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Relation.h"
-#include <datetimeapi.h>
 #include <map>
 #include <set>
 #include <string>
@@ -35,12 +34,13 @@ public:
   void insertStatement(std::string, StatementType);
   void setFollows(std::string, std::string);
   void setParent(std::string, std::string);
-  void setUsed(std::string, std::string);
-  void setModified(std::string, std::string);
+  void setUses(std::string, std::string);
+  void setModifies(std::string, std::string);
 
   const std::set<std::string> &getVarTable() const;
   const std::set<std::string> &getProcTable() const;
   const std::set<std::string> &getStatementsOfType(StatementType) const;
+  StatementType getStatementType(std::string);
   bool follows(std::string, std::string);
   std::set<std::string> getFollows(std::string);
   std::set<std::string> getFollowedBy(std::string);

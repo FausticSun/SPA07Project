@@ -139,6 +139,7 @@ void PQLParser::Tokenize(string input) {
     token.erase(token.begin());
   }
 }
+vector<string> PQLParser::vectorize(string) { return vector<string>(); }
 bool isInt(string s) {
   if (s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+')))
     return false;
