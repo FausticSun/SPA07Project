@@ -43,6 +43,7 @@ private:
   ClauseResult getFollowsS(Clause c);
   ClauseResult getAssPatern(Clause c);
   bool isSynonym(QueryEntityType q);
+  bool isUnderscore(QueryEntityType q);
   /*map<string, QueryEntityType> executeDeclaration(const vector<QueryEntity> &selectors);
   vector<ClauseResult> excuteClauses(const vector<Clause> &clauses);
   int analyseClauseConstants(const Clause &clause);*/
