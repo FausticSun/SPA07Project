@@ -66,15 +66,6 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
 		  result.push_back(tuple);
 		  iterr++;
 	  }
-	  if (!result.empty())
-	  {
-		  ClauseResult clauseResult(false, false, titles, result);
-		  return clauseResult;
-	  }
-	  else
-	  {
-		  return ClauseResult(false, false);
-	  }
   }
   if (isSynonym(qe1.type) && isConstant(qe2.type))
   {
@@ -89,16 +80,6 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
 		  result.push_back(tuple);
 		  iterr++;
 	  }
-	  if (!result.empty())
-	  {
-		  ClauseResult clauseResult(false, false, titles, result);
-		  return clauseResult;
-	  }
-	  else
-	  {
-		  return ClauseResult(false, false);
-	  }
-
   }
   if (isSynonym(qe1.type) && isSynonym(qe2.type))
   {
@@ -120,15 +101,6 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
 		  }
 		  iterr1++;
 	  }
-	  if (!result.empty())
-	  {
-		  ClauseResult clauseResult(false, false, titles, result);
-		  return clauseResult;
-	  }
-	  else
-	  {
-		  return ClauseResult(false, false);
-	  }
   }
   if (isConstant(qe1.type) && isUnderscore(qe2.type))
   {
@@ -143,16 +115,6 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
 		  result.push_back(tuple);
 		  iterr++;
 	  }
-	  if (!result.empty())
-	  {
-		  ClauseResult clauseResult(false, false, titles, result);
-		  return clauseResult;
-	  }
-	  else
-	  {
-		  return ClauseResult(false, false);
-	  }
-
   }
   if (isSynonym(qe1.type) && isUnderscore(qe2.type))
   {
@@ -174,16 +136,15 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
 		  }
 		  iterr1++;
 	  }
-	  if (!result.empty())
-	  {
-		  ClauseResult clauseResult(false, false, titles, result);
-		  return clauseResult;
-	  }
-	  else
-	  {
-		  return ClauseResult(false, false);
-	  }
-
+  }
+  if (!result.empty())
+  {
+	  ClauseResult clauseResult(false, false, titles, result);
+	  return clauseResult;
+  }
+  else
+  {
+	  return ClauseResult(false, false);
   }
 
 
@@ -220,15 +181,6 @@ ClauseResult PqlEvaluator::getModifies(Clause c) {
 			  result.push_back(tuple);
 			  iterr++;
           }
-          if(!result.empty())
-          {
-			  ClauseResult clauseResult(false, false, titles, result);
-			  return clauseResult;
-          }else
-          {
-			  return ClauseResult(false, false);
-          }
-
 	}
 	if (isSynonym(qe1.type) && isConstant(qe2.type))
 	{
@@ -243,16 +195,6 @@ ClauseResult PqlEvaluator::getModifies(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isSynonym(qe1.type) && isSynonym(qe2.type))
 	{
@@ -274,16 +216,6 @@ ClauseResult PqlEvaluator::getModifies(Clause c) {
 			}
 			iterr1++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isConstant(qe1.type) && isUnderscore(qe2.type))
 	{
@@ -298,16 +230,6 @@ ClauseResult PqlEvaluator::getModifies(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isSynonym(qe1.type) && isUnderscore(qe2.type))
 	{
@@ -329,16 +251,15 @@ ClauseResult PqlEvaluator::getModifies(Clause c) {
 			}
 			iterr1++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
+	}
+	if (!result.empty())
+	{
+		ClauseResult clauseResult(false, false, titles, result);
+		return clauseResult;
+	}
+	else
+	{
+		return ClauseResult(false, false);
 	}
 }
 
@@ -373,16 +294,6 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isSynonym(qe1.type) && isConstant(qe2.type))
 	{
@@ -397,16 +308,6 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isSynonym(qe1.type) && isSynonym(qe2.type))
 	{
@@ -428,16 +329,6 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
 			}
 			iterr1++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isConstant(qe1.type) && isUnderscore(qe2.type))
 	{
@@ -452,16 +343,6 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isUnderscore(qe1.type) && isConstant(qe2.type))
 	{
@@ -476,16 +357,6 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		} 
-
 	}
 	if (isUnderscore(qe1.type) && isSynonym(qe2.type))
 	{
@@ -507,17 +378,6 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
 			}
 			iterr1++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
-
 	}
 	if (isSynonym(qe1.type) && isUnderscore(qe2.type))
 	{
@@ -539,22 +399,20 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
 			}
 			iterr1++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
-
 	}
 	if (isUnderscore(qe1.type) && isUnderscore(qe2.type))
 	{
 		//("_","_") wait for pkb to return whole table
 
+	}
+	if (!result.empty())
+	{
+		ClauseResult clauseResult(false, false, titles, result);
+		return clauseResult;
+	}
+	else
+	{
+		return ClauseResult(false, false);
 	}
 }
 
@@ -589,16 +447,6 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isSynonym(qe1.type) && isConstant(qe2.type))
 	{
@@ -613,16 +461,6 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isSynonym(qe1.type) && isSynonym(qe2.type))
 	{
@@ -644,16 +482,6 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
 			}
 			iterr1++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isConstant(qe1.type) && isUnderscore(qe2.type))
 	{
@@ -668,16 +496,6 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isUnderscore(qe1.type) && isConstant(qe2.type))
 	{
@@ -692,16 +510,6 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isUnderscore(qe1.type) && isSynonym(qe2.type))
 	{
@@ -723,17 +531,6 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
 			}
 			iterr1++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
-
 	}
 	if (isSynonym(qe1.type) && isUnderscore(qe2.type))
 	{
@@ -755,22 +552,20 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
 			}
 			iterr1++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
-
 	}
 	if (isUnderscore(qe1.type) && isUnderscore(qe2.type))
 	{
 		//("_","_") wait for pkb to return whole table
 
+	}
+	if (!result.empty())
+	{
+		ClauseResult clauseResult(false, false, titles, result);
+		return clauseResult;
+	}
+	else
+	{
+		return ClauseResult(false, false);
 	}
 }
 
@@ -805,16 +600,6 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isSynonym(qe1.type) && isConstant(qe2.type))
 	{
@@ -829,16 +614,6 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isSynonym(qe1.type) && isSynonym(qe2.type))
 	{
@@ -860,16 +635,6 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
 			}
 			iterr1++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isConstant(qe1.type) && isUnderscore(qe2.type))
 	{
@@ -884,16 +649,6 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isUnderscore(qe1.type) && isConstant(qe2.type))
 	{
@@ -908,16 +663,6 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isUnderscore(qe1.type) && isSynonym(qe2.type))
 	{
@@ -939,17 +684,6 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
 			}
 			iterr1++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
-
 	}
 	if (isSynonym(qe1.type) && isUnderscore(qe2.type))
 	{
@@ -971,22 +705,20 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
 			}
 			iterr1++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
-
 	}
 	if (isUnderscore(qe1.type) && isUnderscore(qe2.type))
 	{
 		//("_","_") wait for pkb to return whole table
 
+	}
+	if (!result.empty())
+	{
+		ClauseResult clauseResult(false, false, titles, result);
+		return clauseResult;
+	}
+	else
+	{
+		return ClauseResult(false, false);
 	}
 }
 
@@ -1045,16 +777,6 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isSynonym(qe1.type) && isSynonym(qe2.type))
 	{
@@ -1076,16 +798,6 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
 			}
 			iterr1++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isConstant(qe1.type) && isUnderscore(qe2.type))
 	{
@@ -1100,16 +812,6 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isUnderscore(qe1.type) && isConstant(qe2.type))
 	{
@@ -1124,16 +826,6 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
 			result.push_back(tuple);
 			iterr++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
 	}
 	if (isUnderscore(qe1.type) && isSynonym(qe2.type))
 	{
@@ -1155,17 +847,6 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
 			}
 			iterr1++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
-
 	}
 	if (isSynonym(qe1.type) && isUnderscore(qe2.type))
 	{
@@ -1187,22 +868,20 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
 			}
 			iterr1++;
 		}
-		if (!result.empty())
-		{
-			ClauseResult clauseResult(false, false, titles, result);
-			return clauseResult;
-		}
-		else
-		{
-			return ClauseResult(false, false);
-		}
-
-
 	}
 	if (isUnderscore(qe1.type) && isUnderscore(qe2.type))
 	{
 		//("_","_") wait for pkb to return whole table
 
+	}
+	if (!result.empty())
+	{
+		ClauseResult clauseResult(false, false, titles, result);
+		return clauseResult;
+	}
+	else
+	{
+		return ClauseResult(false, false);
 	}
 }
 
