@@ -34,8 +34,8 @@ public:
   void insertStatement(std::string, StatementType);
   void setFollows(std::string, std::string);
   void setParent(std::string, std::string);
-  void setUses(std::string, std::string);
-  void setModifies(std::string, std::string);
+  void setUses(int, std::string);
+  void setModifies(int, std::string);
 
   const std::set<std::string> &getVarTable() const;
   const std::set<std::string> &getProcTable() const;
