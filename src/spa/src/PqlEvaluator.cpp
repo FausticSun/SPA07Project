@@ -45,7 +45,6 @@ list<string> PqlEvaluator::executeQuery(vector<Clause> &clauses) {
   {
     
   }
-  
 
 }
 
@@ -974,6 +973,8 @@ ClauseResult PqlEvaluator::getAssPatern(Clause c) {
     //("_","_")
 
   }
+	return ClauseResult(false, false);
+
 }
 
 bool PqlEvaluator::isSynonym(QueryEntityType q) {
