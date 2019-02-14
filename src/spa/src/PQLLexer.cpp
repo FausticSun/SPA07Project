@@ -1,17 +1,18 @@
-#include "PQLParser.h"
+#include "PQLLexer.h"
 #include <algorithm>
 #include <queue>
 #include <string.h>
 #include <string>
 #include <vector>
 
+//modifies and uses(left emplty), pattern a is not a actual assignemnt, type, how to check errors
 using namespace std;
 
-PQLParser::PQLParser(string input) { Tokenize(input); }
+PQLLexer::PQLLexer(string input) { Tokenize(input); }
 
-vector<string> PQLParser::vectorize(string input)
+vector<string> PQLLexer::vectorize(string input)
 {
-	vector<string> tokens;
+	vector<string> tokens;     
 
 	char *p;
 	char *temp = (char*)input.c_str();
@@ -23,7 +24,7 @@ vector<string> PQLParser::vectorize(string input)
 	return tokens;
 }
 
-void PQLParser::Tokenize(string input)
+void PQLLexer::Tokenize(string input)
 {
 	vector<string> token = vectorize(input);
 	while (0 < token.size()) {
@@ -170,115 +171,115 @@ bool isInt(string s)
 	return (*p == 0);
 }
 
-queue<pair<DeclarationType, string>> PQLParser::getDeclarationQueue()
+queue<pair<DeclarationType, string>> PQLLexer::getDeclarationQueue()
 {
 	return declarationQueue;
 }
 
-queue<tuple<RelationType, string, string>> PQLParser::getSelectQueue()
+queue<tuple<RelationType, string, string>> PQLLexer::getSelectQueue()
 {
 	return selectQueue;
 }
 
-string PQLParser::getTarget()
+string PQLLexer::getTarget()
 {
 	return target;
 }
 
 
-void PQLParser::tokenizeVariable(vector<string> token)
+void PQLLexer::tokenizeVariable(vector<string> token)
 {
 	declarationQueue.push(make_pair(DeclarationType::Variable, token[1]));
 }
 
 
-void PQLParser::tokenizeProcedure(vector<string> token)
+void PQLLexer::tokenizeProcedure(vector<string> token)
 {
 	declarationQueue.push(make_pair(DeclarationType::Procedure, token[1]));
 }
 
 
-void PQLParser::tokenizeRead(vector<string> token)
+void PQLLexer::tokenizeRead(vector<string> token)
 {
 	declarationQueue.push(make_pair(DeclarationType::Read, token[1]));
 }
 
 
-void PQLParser::tokenizePrint(vector<string> token)
+void PQLLexer::tokenizePrint(vector<string> token)
 {
 	declarationQueue.push(make_pair(DeclarationType::Print, token[1]));
 }
 
 
-void PQLParser::tokenizeWhile(vector<string> token)
+void PQLLexer::tokenizeWhile(vector<string> token)
 {
 	declarationQueue.push(make_pair(DeclarationType::While, token[1]));
 }
 
 
-void PQLParser::tokenizeIf(vector<string> token)
+void PQLLexer::tokenizeIf(vector<string> token)
 {
 	declarationQueue.push(make_pair(DeclarationType::If, token[1]));
 }
 
 
-void PQLParser::tokenizeAssign(vector<string> token)
+void PQLLexer::tokenizeAssign(vector<string> token)
 {
 	declarationQueue.push(make_pair(DeclarationType::Assign, token[1]));
 }
 
 
-void PQLParser::tokenizeStmt(vector<string> token)
+void PQLLexer::tokenizeStmt(vector<string> token)
 {
 	declarationQueue.push(make_pair(DeclarationType::Stmt, token[1]));
 }
 
 
-void PQLParser::tokenizeCall(vector<string> token)
+void PQLLexer::tokenizeCall(vector<string> token)
 {
 	declarationQueue.push(make_pair(DeclarationType::Call, token[1]));
 }
 
 
-void PQLParser::tokenizeConstant(vector<string> token)
+void PQLLexer::tokenizeConstant(vector<string> token)
 {
 	declarationQueue.push(make_pair(DeclarationType::Constant, token[1]));
 }
 
-void PQLParser::tokenizeSelect(vector<string> token) {
+void PQLLexer::tokenizeSelect(vector<string> token) {
 	target = token[1];
 }
 
 
 
-void PQLParser::tokenizePattern(vector<string>)
+void PQLLexer::tokenizePattern(vector<string>)
 {
 }
 
-void PQLParser::tokenizeFollows(vector<string> token)
+void PQLLexer::tokenizeFollows(vector<string> token)
 {
 	selectQueue.push(make_tuple(RelationType::Follows, token[1], token[2]));
 }
 
 
-void PQLParser::tokenizeFollowsT(vector<string> token)
+void PQLLexer::tokenizeFollowsT(vector<string> token)
 {
 	selectQueue.push(make_tuple(RelationType::FollowsT, token[1], token[2]));
 }
 
 
-void PQLParser::tokenizeParent(vector<string> token)
+void PQLLexer::tokenizeParent(vector<string> token)
 {
 	selectQueue.push(make_tuple(RelationType::Parent, token[1], token[2]));
 }
 
 
-void PQLParser::tokenizeParentT(vector<string> token)
+void PQLLexer::tokenizeParentT(vector<string> token)
 {
 	selectQueue.push(make_tuple(RelationType::ParentT, token[1], token[2]));
 }
 
-void PQLParser::tokenizeUses(vector<string> token)
+void PQLLexer::tokenizeUses(vector<string> token)
 {
 	if (isInt(token[0]))
 	{
@@ -291,7 +292,7 @@ void PQLParser::tokenizeUses(vector<string> token)
 }
 
 
-void PQLParser::tokenizeModifies(vector<string> token)
+void PQLLexer::tokenizeModifies(vector<string> token)
 {
 	if (isInt(token[0]))
 	{

@@ -60,9 +60,9 @@ enum class DeclarationType
 };
 */
 
-class PQLParser {
+class PQLLexer {
 public:
-	PQLParser(string input);
+	PQLLexer(string input);
 	queue<pair<DeclarationType, string>> getDeclarationQueue();
 	queue<tuple<RelationType, string, string>> getSelectQueue();
 	string getTarget();
