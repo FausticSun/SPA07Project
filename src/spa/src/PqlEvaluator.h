@@ -45,6 +45,10 @@ private:
   bool isSynonym(QueryEntityType q);
   bool isUnderscore(QueryEntityType q);
   bool isConstant(QueryEntityType q);
+  bool validateStmt(string result, QueryEntityType q);
+  bool isVar(string input);
+  bool isPro(string input);
+  bool isCons(string input);
   StatementType convertQType(QueryEntityType q);
 
   /*map<string, QueryEntityType> executeDeclaration(const vector<QueryEntity> &selectors);
