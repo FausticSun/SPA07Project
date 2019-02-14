@@ -1,6 +1,48 @@
 #include <PqlEvaluator.h>
 #include "PQLParser.h"
 
+bool checkForFalse(vector<ClauseResult> clauseResults)
+{
+	vector<ClauseResult>::iterator iter = clauseResults.begin();
+	for (iter; iter != clauseResults.end(); iter++)
+	{
+		if ((iter->isBool == true) && (iter->bValue == false))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool isAllTrue(vector<ClauseResult> clauseResults)
+{
+	vector<ClauseResult>::iterator iter = clauseResults.begin();
+	for (iter; iter != clauseResults.end(); iter++)
+	{
+		if ((iter->isBool == false))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+vector<ClauseResult> removeBoolean(vector<ClauseResult> clauseResults)
+{
+	vector<ClauseResult>::iterator iter = clauseResults.begin();
+	for (iter; iter != clauseResults.end();)
+	{
+		if (iter->isBool == true)
+		{
+			iter = clauseResults.erase(iter);
+		}
+		else
+		{
+			iter++;
+		}
+	}
+	return clauseResults;
+}
+
 PqlEvaluator::PqlEvaluator(const PKB &pkb) { this->mypkb = pkb; }
 
 PqlEvaluator::~PqlEvaluator() = default;
@@ -45,7 +87,7 @@ list<string> PqlEvaluator::executeQuery(vector<Clause> &clauses) {
   {
     
   }
-
+  return results;
 }
 
 ClauseResult PqlEvaluator::getUses(Clause c) {
@@ -1024,48 +1066,7 @@ bool PqlEvaluator::validateStmt(string result, QueryEntityType q) {
   else if (q == QueryEntityType::Print) return st == StatementType::Print;
 }
 
-bool PqlEvaluator::isCons(string result,QueryEntityType q){}
-bool PqlEvaluator::isVar(string result,QueryEntityType q) {}
-bool PqlEvaluator::isPro(string result,QueryEntityType q) {}
+bool PqlEvaluator::isCons(string result, QueryEntityType q) { return false; }
+bool PqlEvaluator::isVar(string result,QueryEntityType q) { return false; }
+bool PqlEvaluator::isPro(string result,QueryEntityType q) { return false; }
 
-bool checkForFalse(vector<ClauseResult> clauseResults)
-{
-	vector<ClauseResult>::iterator iter = clauseResults.begin();
-  for(iter;iter!=clauseResults.end();iter++)
-  {
-    if((iter->isBool==true)&&(iter->bValue==false))
-    {
-		return true;
-    }
-  }
-  return false;
-}
-
-bool isAllTrue(vector<ClauseResult> clauseResults)
-{
-	vector<ClauseResult>::iterator iter = clauseResults.begin();
-	for (iter; iter != clauseResults.end(); iter++)
-	{
-		if ((iter->isBool == false))
-		{
-			return false;
-		}
-	}
-	return true;
-}
-vector<ClauseResult> removeBoolean(vector<ClauseResult> clauseResults)
-{
-	vector<ClauseResult>::iterator iter = clauseResults.begin();
-  for(iter;iter!=clauseResults.end();)
-  {
-    if(iter->isBool==true)
-    {
-		iter = clauseResults.erase(iter);
-    }
-	else
-	{
-		iter++;
-	}
-  }
-  return clauseResults;
-}
