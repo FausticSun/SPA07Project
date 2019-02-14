@@ -8,6 +8,7 @@ private:
   void traverseAST(std::unique_ptr<TNode> &AST);
   void extractUses(std::unique_ptr<TNode> &AST, int parent);
   void extractModifies(std::unique_ptr<TNode> &AST, int parent);
+  void deriveUsesAndModifies();
 
 public:
   DesignExtractor(std::unique_ptr<TNode> &AST);

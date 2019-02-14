@@ -51,3 +51,18 @@ void DesignExtractor::extractUses(std::unique_ptr<TNode> &AST, int parent) {
 void DesignExtractor::extractModifies(std::unique_ptr<TNode> &AST, int parent) {
   pkb->setModifies(parent, AST->name);
 }
+
+void DesignExtractor::deriveUsesAndModifies() {
+  for (auto type : {StatementType::While, StatementType::If}) {
+    const std::set<std::string> stmts = pkb->getStatementsOfType(type);
+    for (auto stmt : stmts) {
+      const std::set<std::string> containerStmts = pkb->getParentT(stmt);
+      for (auto containerStmt : containerStmts) {
+	const std::set<std::string> vars = pkb->getUses(containerStmt);
+        for (auto var : vars) {
+          pkb->setUses(std::stoi(var), var);
+        }
+      }
+    }
+  }
+}
