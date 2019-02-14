@@ -6,8 +6,7 @@ DesignExtractor::DesignExtractor(std::unique_ptr<TNode> &AST) : pkb(new PKB()) {
 
 std::unique_ptr<PKB> DesignExtractor::getPKB() { return std::move(pkb); }
 
-void DesignExtractor::traverseAST(std::unique_ptr<TNode> &AST,
-                                  std::vector<int> parents) {
+void DesignExtractor::traverseAST(std::unique_ptr<TNode> &AST) {
   switch (AST->type) {
   case TNodeType::Procedure:
     pkb->insertProc(AST->name);
@@ -15,11 +14,21 @@ void DesignExtractor::traverseAST(std::unique_ptr<TNode> &AST,
   case TNodeType::Variable:
     pkb->insertVar(AST->name);
     break;
-  case TNodeType::StatementList:
-    handleStmtLst(AST);
   case TNodeType::If:
+    extractUses(AST->children.front(), AST->statementNumber);
     break;
   case TNodeType::While:
+    extractUses(AST->children.front(), AST->statementNumber);
+    break;
+  case TNodeType::Assign:
+    extractUses(AST->children.back(), AST->statementNumber);
+    extractModifies(AST->children.front(), AST->statementNumber);
+    break;
+  case TNodeType::Print:
+    extractUses(AST->children.front(), AST->statementNumber);
+    break;
+  case TNodeType::Read:
+    extractModifies(AST->children.front(), AST->statementNumber);
     break;
   default:
     break;
@@ -29,4 +38,16 @@ void DesignExtractor::traverseAST(std::unique_ptr<TNode> &AST,
   }
 }
 
-void DesignExtractor::handleStmtLst(std::unique_ptr<TNode> &AST) {}
+void DesignExtractor::extractUses(std::unique_ptr<TNode> &AST, int parent) {
+  if (AST->children.empty() && AST->type == TNodeType::Variable) {
+    pkb->setUses(parent, AST->name);
+    return;
+  }
+  for (auto &tNode : AST->children) {
+    extractUses(tNode, parent);
+  }
+}
+
+void DesignExtractor::extractModifies(std::unique_ptr<TNode> &AST, int parent) {
+  pkb->setModifies(parent, AST->name);
+}
