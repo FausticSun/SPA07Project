@@ -36,11 +36,8 @@ class PQLParser {
 public:
 	PQLParser();
 	std::queue<Token> parse(std::string);
-	void buildQuery(std::queue<Token> &tokenQueue);
+	Query buildQuery(std::queue<Token> &tokenQueue);
 	Query getQuery();
-	std::string target;
-	std::vector<QueryEntity> selectors;
-	std::vector<Clause> clauses;
 
 private:
 	std::vector<string> expectedEntityTokens = { "variable", "procedure", "if", "while", "read", "print", "call",
@@ -51,13 +48,16 @@ private:
 	std::queue<Token> tokenQueue;
 	Token token;
 	std::map<std::string, QueryEntityType> entityMaps;
-
+	QueryEntity target;
+	std::vector<QueryEntity> selectors;
+	std::vector<Clause> clauses;
 
 	void getNextToken();
 	void expectToken(std::string);
 	void expectTokenIn(std::vector<string>);
 	void setQueryTarget();
 	void tokenizeSelect();
+
 	void insertQueryEntityVariable();
 	void insertQueryEntityProcedure();
 	void insertQueryEntityStmt();
@@ -78,7 +78,7 @@ private:
 	void insertClauseModifiesS();
 	void insertClauseUseS();
 
-	void constructQuery();
+	Query constructQuery();
 
 	/*void Tokenize(string input);
 	void tokenizeVariable(vector<string>);

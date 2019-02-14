@@ -19,7 +19,6 @@ enum class QueryEntityType {
 	Line,
 	Name,
 	Underscore,
-        Progline,
 };
 
 enum class ClauseType {
@@ -33,6 +32,11 @@ enum class ClauseType {
 };
 
 struct QueryEntity {
+	QueryEntity()
+	{
+		this->type = QueryEntityType::Assign; //default
+		this->name = "";
+	};
   QueryEntity(QueryEntityType type, std::string name = "")
     : type(type),
       name(name) {
@@ -58,20 +62,24 @@ class Query {
 public:
 	Query();
 	~Query();
-	std::string target;
+	QueryEntity target;
 	std::vector<QueryEntity> selectors;
 	std::vector<Clause> clauses;
 
-        void setQuery(std::vector<QueryEntity> s, std::vector<Clause> c)
+        void setQuery(QueryEntity t, std::vector<QueryEntity> s, std::vector<Clause> c)
         {
 
-		//this->target = t;
+		this->target = t;
                 for (int i = 0; i < s.size(); i++)
                 {   
-                        
 			QueryEntity qe = QueryEntity(s[i].type, s[i].name);
 			this->selectors.push_back(qe);
                 }
+		for (int j = 0; j < c.size(); j++)
+		{
+			Clause cl = Clause(c[j].clauseType, c[j].parameters);
+			this->clauses.push_back(cl);
+		}
         }
 	bool isValid();
 	bool isEntity(QueryEntityType q);

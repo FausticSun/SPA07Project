@@ -23,7 +23,7 @@ Query PQLParser::getQuery()
 	return query;
 }
 
-void PQLParser::buildQuery(std::queue<Token> &tokenQueue) {
+Query PQLParser::buildQuery(std::queue<Token> &tokenQueue) {
 	this->tokenQueue = tokenQueue;
 	while (!this->tokenQueue.empty()) {
 		getNextToken();
@@ -37,61 +37,50 @@ void PQLParser::buildQuery(std::queue<Token> &tokenQueue) {
 		if (token.name == "variable")
 		{
 			insertQueryEntityVariable();
-			expectToken(";");
 		}
 		else if (token.name == "procedure")
 		{
 			insertQueryEntityProcedure();
-			expectToken(";");
 		}
 		else if (token.name == "read")
 		{
 			insertQueryEntityRead();
-			expectToken(";");
 		}
 		else if (token.name == "print")
 		{
 			insertQueryEntityPrint();
-			expectToken(";");
 		}
 		else if (token.name == "stmt")
 		{
 			insertQueryEntityStmt();
-			expectToken(";");
 		}
 		else if (token.name == "call")
 		{
 			insertQueryEntityCall();
-			expectToken(";");
 		}
 		else if (token.name == "assign")
 		{
 			insertQueryEntityAssign();
-			expectToken(";");
 		}
 		else if (token.name == "constant")
 		{
 			insertQueryEntityConstant();
-			expectToken(";");
 		}
 		else if (token.name == "if")
 		{
 			insertQueryEntityIf();
-			expectToken(";");
 		}
 		else if (token.name == "while")
 		{
 			insertQueryEntityWhile();
-			expectToken(";");
 		}
 		else
 		{
 			insertQueryEntityProgline();
-			expectToken(";");
 		}
 
 	}
-	constructQuery();
+	return constructQuery();
 }
 
 void PQLParser::getNextToken() {
@@ -127,7 +116,16 @@ void PQLParser::expectTokenIn(std::vector<string> expectedTokens) {
 void PQLParser::setQueryTarget()
 {
 	getNextToken();
-	this->target = token.name;
+	std::map<std::string, QueryEntityType>::iterator it = entityMaps.find(token.name);
+	if (it != entityMaps.end())
+	{
+		QueryEntity qe = QueryEntity(it->second, token.name);
+		this->target = qe;
+	}
+	else
+	{
+		throw std::logic_error("No matched synonym have been declared.");
+	}
 }
 
 void PQLParser::tokenizeSelect()
@@ -179,6 +177,7 @@ void PQLParser::tokenizeSelect()
 		}
 		else
 		{
+                  //pattern
 		}
 	}
 }
@@ -189,6 +188,17 @@ void PQLParser::insertQueryEntityVariable()
 	QueryEntity qe = QueryEntity(QueryEntityType::Variable, token.name);
 	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Variable));
 	this->selectors.push_back(qe);
+	getNextToken();
+        if (token.name == ",")
+        {
+	      insertQueryEntityVariable();
+        } else
+        {
+          if (token.name != ";")
+          {
+	      throw std::logic_error("Expected ';' but got '" + token.name + "'");
+          }
+        }
 }
 
 void PQLParser::insertQueryEntityProcedure()
@@ -197,6 +207,18 @@ void PQLParser::insertQueryEntityProcedure()
 	QueryEntity qe = QueryEntity(QueryEntityType::Procedure, token.name);
 	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Procedure));
 	this->selectors.push_back(qe);
+	getNextToken();
+	if (token.name == ",")
+	{
+		insertQueryEntityProcedure();
+	}
+	else
+	{
+		if (token.name != ";")
+		{
+			throw std::logic_error("Expected ';' but got '" + token.name + "'");
+		}
+	}
 }
 
 void PQLParser::insertQueryEntityRead()
@@ -205,6 +227,18 @@ void PQLParser::insertQueryEntityRead()
 	QueryEntity qe = QueryEntity(QueryEntityType::Read, token.name);
 	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Read));
 	this->selectors.push_back(qe);
+	getNextToken();
+	if (token.name == ",")
+	{
+		insertQueryEntityRead();
+	}
+	else
+	{
+		if (token.name != ";")
+		{
+			throw std::logic_error("Expected ';' but got '" + token.name + "'");
+		}
+	}
 }
 
 void PQLParser::insertQueryEntityPrint()
@@ -213,6 +247,18 @@ void PQLParser::insertQueryEntityPrint()
 	QueryEntity qe = QueryEntity(QueryEntityType::Print, token.name);
 	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Print));
 	this->selectors.push_back(qe);
+	getNextToken();
+	if (token.name == ",")
+	{
+		insertQueryEntityPrint();
+	}
+	else
+	{
+		if (token.name != ";")
+		{
+			throw std::logic_error("Expected ';' but got '" + token.name + "'");
+		}
+	}
 }
 
 void PQLParser::insertQueryEntityIf()
@@ -221,6 +267,18 @@ void PQLParser::insertQueryEntityIf()
 	QueryEntity qe = QueryEntity(QueryEntityType::If, token.name);
 	this->entityMaps.insert(make_pair(token.name, QueryEntityType::If));
 	this->selectors.push_back(qe);
+	getNextToken();
+	if (token.name == ",")
+	{
+		insertQueryEntityIf();
+	}
+	else
+	{
+		if (token.name != ";")
+		{
+			throw std::logic_error("Expected ';' but got '" + token.name + "'");
+		}
+	}
 }
 
 void PQLParser::insertQueryEntityWhile()
@@ -229,6 +287,18 @@ void PQLParser::insertQueryEntityWhile()
 	QueryEntity qe = QueryEntity(QueryEntityType::While, token.name);
 	this->entityMaps.insert(make_pair(token.name, QueryEntityType::While));
 	this->selectors.push_back(qe);
+	getNextToken();
+	if (token.name == ",")
+	{
+		insertQueryEntityWhile();
+	}
+	else
+	{
+		if (token.name != ";")
+		{
+			throw std::logic_error("Expected ';' but got '" + token.name + "'");
+		}
+	}
 }
 
 void PQLParser::insertQueryEntityAssign()
@@ -237,6 +307,18 @@ void PQLParser::insertQueryEntityAssign()
 	QueryEntity qe = QueryEntity(QueryEntityType::Assign, token.name);
 	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Assign));
 	this->selectors.push_back(qe);
+	getNextToken();
+	if (token.name == ",")
+	{
+		insertQueryEntityAssign();
+	}
+	else
+	{
+		if (token.name != ";")
+		{
+			throw std::logic_error("Expected ';' but got '" + token.name + "'");
+		}
+	}
 }
 
 void PQLParser::insertQueryEntityCall()
@@ -245,6 +327,18 @@ void PQLParser::insertQueryEntityCall()
 	QueryEntity qe = QueryEntity(QueryEntityType::Call, token.name);
 	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Call));
 	this->selectors.push_back(qe);
+	getNextToken();
+	if (token.name == ",")
+	{
+		insertQueryEntityCall();
+	}
+	else
+	{
+		if (token.name != ";")
+		{
+			throw std::logic_error("Expected ';' but got '" + token.name + "'");
+		}
+	}
 }
 
 void PQLParser::insertQueryEntityStmt()
@@ -253,6 +347,18 @@ void PQLParser::insertQueryEntityStmt()
 	QueryEntity qe = QueryEntity(QueryEntityType::Stmt, token.name);
 	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Stmt));
 	this->selectors.push_back(qe);
+	getNextToken();
+	if (token.name == ",")
+	{
+		insertQueryEntityStmt();
+	}
+	else
+	{
+		if (token.name != ";")
+		{
+			throw std::logic_error("Expected ';' but got '" + token.name + "'");
+		}
+	}
 }
 
 void PQLParser::insertQueryEntityConstant()
@@ -261,14 +367,38 @@ void PQLParser::insertQueryEntityConstant()
 	QueryEntity qe = QueryEntity(QueryEntityType::Constant, token.name);
 	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Constant));
 	this->selectors.push_back(qe);
+	getNextToken();
+	if (token.name == ",")
+	{
+		insertQueryEntityConstant();
+	}
+	else
+	{
+		if (token.name != ";")
+		{
+			throw std::logic_error("Expected ';' but got '" + token.name + "'");
+		}
+	}
 }
 
 void PQLParser::insertQueryEntityProgline()
 {
 	getNextToken();
-	QueryEntity qe = QueryEntity(QueryEntityType::Progline, token.name);
-	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Progline));
+	QueryEntity qe = QueryEntity(QueryEntityType::Stmt, token.name);
+	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Stmt));
 	this->selectors.push_back(qe);
+	getNextToken();
+	if (token.name == ",")
+	{
+		insertQueryEntityProgline();
+	}
+	else
+	{
+		if (token.name != ";")
+		{
+			throw std::logic_error("Expected ';' but got '" + token.name + "'");
+		}
+	}
 }
 
 bool isInt(string s) {
@@ -302,12 +432,14 @@ QueryEntity PQLParser::determineQueryEntity()
                 if (it != entityMaps.end())
                 {
 			QueryEntityType qet = it->second;
+                  if (qet == QueryEntityType::Constant)
+                  {
+		      throw std::invalid_argument("invalid to have constant synonym as the argument for clauses");
+                  }
 			return QueryEntity(qet, token.name);
-                } else
-                {
-			throw std::logic_error("No matched synonym have been declared.");
                 }
-		
+                throw std::logic_error("No matched synonym have been declared.");
+
     }
 }
 
@@ -373,13 +505,12 @@ void PQLParser::insertClauseUseS()
 	this->clauses.push_back(c);
 }
 
-void PQLParser::constructQuery()
+Query PQLParser::constructQuery()
 {
-	vector<QueryEntity> s(selectors);
-	vector<Clause> c(clauses);
 	Query q = Query();
-	q.setQuery(s, c);
+	q.setQuery(target, selectors, clauses);
 	this->query = q;
+	return q;
 }
 
 //void PQLParser::Tokenize(string input) {
