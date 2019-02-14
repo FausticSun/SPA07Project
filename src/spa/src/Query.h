@@ -19,7 +19,6 @@ enum class QueryEntityType {
 	Line,
 	Name,
 	Underscore,
-  Progline,
 };
 
 enum class ClauseType {
