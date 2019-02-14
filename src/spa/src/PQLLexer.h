@@ -23,7 +23,7 @@ using namespace std;
         ModifiesP
 };*/
 
-enum class RelationType
+enum class TokenType
 {
 	Follows,
 	FollowsT,
@@ -32,11 +32,7 @@ enum class RelationType
 	UsesS,
 	UsesP,
 	ModifiesS,
-	ModifiesP
-};
-
-enum class DeclarationType
-{
+	ModifiesP,
 	Variable,
 	Procedure,
 	Read,
@@ -63,14 +59,12 @@ enum class DeclarationType
 class PQLLexer {
 public:
 	PQLLexer(string input);
-	queue<pair<DeclarationType, string>> getDeclarationQueue();
-	queue<tuple<RelationType, string, string>> getSelectQueue();
+	queue<pair<TokenType, string>> getTokenQueue();
 	string getTarget();
 
 private:
 	string target;
-	queue<pair<DeclarationType, string>> declarationQueue;
-	queue<tuple<RelationType, string, string>> selectQueue;
+	queue<pair<TokenType, string>> tokenQueue;
 	void Tokenize(string input);
 	vector<string> vectorize(string);
 	void tokenizeVariable(vector<string>);

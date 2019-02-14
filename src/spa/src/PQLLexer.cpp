@@ -16,10 +16,10 @@ vector<string> PQLLexer::vectorize(string input)
 
 	char *p;
 	char *temp = (char*)input.c_str();
-	p = strtok(temp, " ;");
+	p = strtok(temp, " ");
 	while (p) {
 		tokens.push_back(p);
-		p = strtok(NULL, " ;");
+		p = strtok(NULL, " ");
 	}
 	return tokens;
 }
@@ -28,7 +28,7 @@ void PQLLexer::Tokenize(string input)
 {
 	vector<string> token = vectorize(input);
 	while (0 < token.size()) {
-		if (find(token.begin(), token.end(), "procedure") != token.end()) {
+		if (token[0] == "procedure") {
 			tokenizeProcedure(token);
 			token.erase(token.begin());
 			token.erase(token.begin());
@@ -171,31 +171,41 @@ bool isInt(string s)
 	return (*p == 0);
 }
 
-queue<pair<DeclarationType, string>> PQLLexer::getDeclarationQueue()
+queue<pair<TokenType, string>> PQLLexer::getTokenQueue()
 {
-	return declarationQueue;
+	return tokenQueue;
 }
 
-queue<tuple<RelationType, string, string>> PQLLexer::getSelectQueue()
-{
-	return selectQueue;
-}
 
 string PQLLexer::getTarget()
 {
 	return target;
 }
 
+string PQLLexer::SplitSemi(string s)
+{
+	s = s.substr(0, s.length - 1);
+	return s;
+}
+
 
 void PQLLexer::tokenizeVariable(vector<string> token)
 {
-	declarationQueue.push(make_pair(DeclarationType::Variable, token[1]));
+	string variableName;
+	variableName = token[1];
+	variableName = SplitSemi(variableName);
+	tokenQueue.push(make_pair(TokenType::Variable, variableName));
+	tokenQueue.push(make_pair(TokenType::Separator, ";"));
 }
 
 
 void PQLLexer::tokenizeProcedure(vector<string> token)
 {
-	declarationQueue.push(make_pair(DeclarationType::Procedure, token[1]));
+	string procedureName;
+	procedureName = token[1];
+	procedureName = SplitSemi(procedureName);
+	tokenQueue.push(make_pair(TokenType::Procedure, procedureName));
+	tokenQueue.push(make_pair(TokenType::Separator, ";"));
 }
 
 
