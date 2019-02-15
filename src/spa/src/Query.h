@@ -54,8 +54,6 @@ public:
 
 class Query {
 public:
-  Query();
-  ~Query();
   QueryEntity target;
   std::vector<QueryEntity> selectors;
   std::vector<Clause> clauses;

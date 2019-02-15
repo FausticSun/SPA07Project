@@ -8,9 +8,6 @@ bool Clause::isValid() {
   return true;
 }
 
-Query::Query() = default;
-Query::~Query() = default;
-
 bool Query::isValid() {
   if (!clauses.empty()) {
     for (std::vector<Clause>::iterator iter = clauses.begin();
