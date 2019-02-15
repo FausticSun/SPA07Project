@@ -27,7 +27,7 @@ vector<string> PQLLexer::vectorize(string input)
 void PQLLexer::Tokenize(string input)
 {
 	vector<string> token = vectorize(input);
-	while (0 < token.size()) {
+	while (!token.empty()) {
 		if (token[0] == "procedure") {
 			tokenizeProcedure(token);
 			token.erase(token.begin());
@@ -191,10 +191,10 @@ string PQLLexer::SplitSemi(string s)
 
 void PQLLexer::tokenizeVariable(vector<string> token)
 {
-	string variableName;
-	variableName = token[1];
+	string variableName = token[1];
 	variableName = SplitSemi(variableName);
-	tokenQueue.push(make_pair(TokenType::Variable, variableName));
+	tokenQueue.push(make_pair(TokenType::Keyword, "variable"));
+	tokenQueue.push(make_pair(TokenType::Identifier, variableName));
 	tokenQueue.push(make_pair(TokenType::Separator, ";"));
 }
 
@@ -204,7 +204,8 @@ void PQLLexer::tokenizeProcedure(vector<string> token)
 	string procedureName;
 	procedureName = token[1];
 	procedureName = SplitSemi(procedureName);
-	tokenQueue.push(make_pair(TokenType::Procedure, procedureName));
+	tokenQueue.push(make_pair(TokenType::Keyword, "procedure"));
+	tokenQueue.push(make_pair(TokenType::Identifier, procedureName));
 	tokenQueue.push(make_pair(TokenType::Separator, ";"));
 }
 

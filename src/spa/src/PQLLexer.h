@@ -21,7 +21,7 @@ using namespace std;
         UsesP,
         ModifiesS,
         ModifiesP
-};*/
+};
 
 enum class TokenType
 {
@@ -42,11 +42,12 @@ enum class TokenType
 	Stmt,
 	Assign,
 	Call,
-	Constant
-};
+	Constant,
+        Separator
+};*/
 
-/*
-enum class DeclarationType
+
+enum class TokenType
 {
 	Identifier,
 	Keyword,
@@ -54,7 +55,7 @@ enum class DeclarationType
 	Operator,
 	Literal,
 };
-*/
+
 
 class PQLLexer {
 public:
@@ -67,6 +68,7 @@ private:
 	queue<pair<TokenType, string>> tokenQueue;
 	void Tokenize(string input);
 	vector<string> vectorize(string);
+	string SplitSemi(string);
 	void tokenizeVariable(vector<string>);
 	void tokenizeCall(vector<string>);
 	void tokenizeAssign(vector<string>);
