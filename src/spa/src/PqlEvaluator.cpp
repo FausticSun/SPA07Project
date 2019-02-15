@@ -33,6 +33,17 @@ vector<ClauseResult> removeBoolean(vector<ClauseResult> clauseResults) {
   }
   return clauseResults;
 }
+
+bool isPartial(string s) {
+	char ending = '_';
+	if (s.size() > 2 && s[0] == ending && s[s.size() - 1] == ending) {
+		return true;
+	}
+	return false;
+}
+string removeUnderscore(string s) {
+	return s.substr(1, s.size() - 2);
+}
 bool ClauseResult::contains(QueryEntity &q)
 {
   for(int i=0;i<titles.size();i++)
@@ -111,11 +122,22 @@ list<string> PqlEvaluator::executeQuery(Query &q) {
 	  MergeTables mt(temp);
 	  ClauseResult finalTable = mt.getResultTables();
     if(finalTable.contains(q.target)) {
-      
-    }
+		int index;
+		for(int i =0;i<finalTable.titles.size();i++) {
+		  if(finalTable.titles[i].type == q.target.type && finalTable.titles[i].name == q.target.name) {
+			  index = i;
+			  break;
+		  }
+		}
+      for(unsigned j=0;j < finalTable.resultTable.size();j++) {
+		  results.push_back(finalTable.resultTable[j][index]);
+        }
+      }
 	else if(finalTable.resultTable.empty()) {
 		return results;
-	}else{}
+	}else {
+		return executeSimpleQuery(q.target.type);
+	}
   }
   return results;
 }
@@ -144,8 +166,9 @@ list<string> PqlEvaluator::executeSimpleQuery(QueryEntityType q)
 	  set<string> vars = mypkb.getStatementsOfType(convertQType(q));
 	  list<string> temp(vars.begin(), vars.end());
 	  results = temp;
+	  return results;
   }
-	return results;
+	
 }
 
 ClauseResult PqlEvaluator::getUses(Clause c) {
@@ -156,8 +179,8 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
   QueryEntity qe1 = *iter1;
   QueryEntity qe2 = *iter2;
   vector<QueryEntity> titles;
-  titles.push_back(qe1);
-  titles.push_back(qe2);
+  //titles.push_back(qe1);
+  //titles.push_back(qe2);
   vector<vector<string>> result;
 
   if (isConstant(qe1.type) && isConstant(qe2.type)) {
@@ -170,11 +193,12 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
     //(constant,synonym)
     set<string> used = mypkb.getUses(qe1.name);
     set<string>::iterator iterr = used.begin();
+	titles.push_back(qe2);
     while (iterr != used.end()) {
 
       if (validateType(*iterr, qe2.type)) {
         vector<string> tuple;
-        tuple.push_back(qe1.name);
+        /*tuple.push_back(qe1.name);*/
         tuple.push_back(*iterr);
         result.push_back(tuple);
         iterr++;
@@ -189,11 +213,12 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
     //(synonym,constant)
     set<string> uses = mypkb.getUsedBy(qe2.name);
     set<string>::iterator iterr = uses.begin();
+	titles.push_back(qe1);
     while (iterr != uses.end()) {
       if (validateType(*iterr, qe1.type)) {
         vector<string> tuple;
         tuple.push_back(*iterr);
-        tuple.push_back(qe2.name);
+        /*tuple.push_back(qe2.name);*/
         result.push_back(tuple);
         iterr++;
       } else {
@@ -207,6 +232,8 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
     //(synonym,synonym)
     StatementType st = convertQType(qe1.type);
     set<string> uses = mypkb.getStatementsOfType(st);
+	titles.push_back(qe1);
+	titles.push_back(qe2);
     set<string>::iterator iterr1 = uses.begin();
     while (iterr1 != uses.end()) {
       set<string> used = mypkb.getUses(*iterr1);
@@ -229,19 +256,24 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
   if (isConstant(qe1.type) && isUnderscore(qe2.type)) {
     //(constant,"_") same as (constant,synonmy)
     set<string> used = mypkb.getUses(qe1.name);
-    set<string>::iterator iterr = used.begin();
-    while (iterr != used.end()) {
+    if(used.empty()) {
+		return ClauseResult(true, false);
+    }
+    /*set<string>::iterator iterr = used.begin();*/
+    
+    /*while (iterr != used.end()) {
       vector<string> tuple;
       tuple.push_back(qe1.name);
       tuple.push_back(*iterr);
       result.push_back(tuple);
       iterr++;
-    }
+    }*/
   }
   if (isSynonym(qe1.type) && isUnderscore(qe2.type)) {
     //(synonym,"_") same as (synonym,synonym)
     StatementType st = convertQType(qe1.type);
     set<string> uses = mypkb.getStatementsOfType(st);
+	titles.push_back(qe1);
     set<string>::iterator iterr1 = uses.begin();
     while (iterr1 != uses.end()) {
       set<string> used = mypkb.getUses(*iterr1);
@@ -518,7 +550,7 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
   }
   if (isUnderscore(qe1.type) && isUnderscore(qe2.type)) {
     //("_","_") wait for pkb to return whole table
-
+	  result = mypkb.getParentTable();
   }
   if (!result.empty()) {
     ClauseResult clauseResult(false, false, titles, result);
@@ -667,7 +699,7 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
   }
   if (isUnderscore(qe1.type) && isUnderscore(qe2.type)) {
     //("_","_") wait for pkb to return whole table
-
+	  result = mypkb.getParentTTable();
   }
   if (!result.empty()) {
     ClauseResult clauseResult(false, false, titles, result);
@@ -816,7 +848,7 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
   }
   if (isUnderscore(qe1.type) && isUnderscore(qe2.type)) {
     //("_","_") wait for pkb to return whole table
-
+	  result = mypkb.getFollowsTable();
   }
   if (!result.empty()) {
     ClauseResult clauseResult(false, false, titles, result);
@@ -965,7 +997,7 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
   }
   if (isUnderscore(qe1.type) && isUnderscore(qe2.type)) {
     //("_","_") wait for pkb to return whole table
-
+	  result = mypkb.getFollowsTTable();
   }
   if (!result.empty()) {
     ClauseResult clauseResult(false, false, titles, result);
@@ -982,7 +1014,127 @@ ClauseResult PqlEvaluator::getAssPatern(Clause c) {
   vector<QueryEntity> titles;
   titles.push_back(qe1);
   titles.push_back(qe2);
-  vector<vector<string>> result; 
+  titles.push_back(qe3);
+  vector<vector<string>> result;
+
+  if(isConstant(qe2.type)&&isConstant(qe3.type)) {
+	  set<string> ass;
+    if(isPartial(qe3.name)) {
+	ass = mypkb.getAssignMatches(qe2.name, removeUnderscore(qe3.name), true);
+    }
+	else {
+		ass = mypkb.getAssignMatches(qe2.name, qe3.name, false);
+	}
+	set<string>::iterator iterr = ass.begin();
+    while(iterr!=ass.end()) {
+		vector<string> tuple;
+		tuple.push_back(*iterr);
+		result.push_back(tuple);
+		iterr++;
+    }
+  }
+
+  if(isSynonym(qe2.type) && isConstant(qe3.type)) {
+	  StatementType st = convertQType(qe2.type);
+	  set<string> var = mypkb.getStatementsOfType(st);
+	  set<string>::iterator iterr1 = var.begin();
+    if(isPartial(qe3.name)) {
+		set<string> ass;
+		while (iterr1 != var.end()) {
+			ass = mypkb.getAssignMatches(*iterr1,removeUnderscore(qe3.name),true);
+			set<string>::iterator iterr2 = ass.begin();
+			
+                  while(iterr2!=ass.end()) {
+					  vector<string> tuple;
+					  tuple.push_back(*iterr1);
+					  tuple.push_back(*iterr2);
+					  result.push_back(tuple);
+					  iterr2++;
+                  }
+				  iterr1++;
+		}
+    }
+	else {
+		set<string> ass;
+          while(iterr1!=var.end()) {
+			  ass = mypkb.getAssignMatches(*iterr1, qe3.name, false);
+			  set<string>::iterator iterr2 = ass.begin();
+			  
+            while(iterr2!=ass.end()) {
+				vector<string> tuple;
+				tuple.push_back(*iterr1);
+				tuple.push_back(*iterr2);
+				result.push_back(tuple);
+				iterr2++;
+            }
+			iterr1++;
+          }
+	}
+    
+  }
+
+  if(isSynonym(qe2.type) && isUnderscore(qe3.type)) {
+	  StatementType st = convertQType(qe2.type);
+	  set<string> var = mypkb.getStatementsOfType(st);
+	  set<string>::iterator iterr1 = var.begin();
+    while(iterr1!=var.end()) {
+		set<string> ass = mypkb.getAssignMatches(*iterr1, "", false);
+		set<string>::iterator iterr2 = ass.begin();
+		
+      while(iterr2!=ass.end()) {
+		  vector<string> tuple;
+		  tuple.push_back(*iterr1);
+		  tuple.push_back(*iterr2);
+		  result.push_back(tuple);
+		  iterr2++;
+      }
+		iterr1++;
+      
+    }
+  }
+  if (isConstant(qe2.type) && isUnderscore(qe3.type)) {
+	 set<string> ass = mypkb.getAssignMatches(qe2.name, "", false);
+	 set<string>::iterator iterr = ass.begin();
+    while(iterr!=ass.end()) {
+		vector<string> tuple;
+		tuple.push_back(*iterr);
+		result.push_back(tuple);
+		iterr++;
+    }
+  }
+  if (isUnderscore(qe2.type) && isUnderscore(qe3.type)) {
+	  set<string> ass = mypkb.getAssignMatches("", "", false);
+	  set<string>::iterator iterr = ass.begin();
+    while(iterr!=ass.end()) {
+		vector<string> tuple;
+		tuple.push_back(*iterr);
+		result.push_back(tuple);
+		iterr++;
+    }
+  }
+  if (isUnderscore(qe2.type) && isConstant(qe3.type)) {
+	  set<string> ass;
+    if(isPartial(qe3.name)) {
+		ass = mypkb.getAssignMatches("", removeUnderscore(qe3.name), true);
+    }
+	else {
+		ass = mypkb.getAssignMatches("", qe3.name, false);
+	}
+	set<string>::iterator iterr = ass.begin();
+    while(iterr!=ass.end()) {
+		vector<string> tuple;
+		tuple.push_back(*iterr);
+		result.push_back(tuple);
+		iterr++;
+    }
+  }
+  if (!result.empty()) {
+	  ClauseResult clauseResult(false, false, titles, result);
+	  return clauseResult;
+  }
+  else {
+	  return ClauseResult(false, false);
+  }
 
 }
 
