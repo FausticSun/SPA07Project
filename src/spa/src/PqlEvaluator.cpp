@@ -1,51 +1,41 @@
 #include <PqlEvaluator.h>
 #include "PQLParser.h"
 
-bool checkForFalse(vector<ClauseResult> clauseResults)
-{
-	vector<ClauseResult>::iterator iter = clauseResults.begin();
-	for (iter; iter != clauseResults.end(); iter++)
-	{
-		if ((iter->isBool == true) && (iter->bValue == false))
-		{
-			return true;
-		}
-	}
-	return false;
+bool checkForFalse(vector<ClauseResult> clauseResults) {
+  vector<ClauseResult>::iterator iter = clauseResults.begin();
+  for (iter; iter != clauseResults.end(); iter++) {
+    if ((iter->isBool == true) && (iter->bValue == false)) {
+      return true;
+    }
+  }
+  return false;
 }
 
-bool isAllTrue(vector<ClauseResult> clauseResults)
-{
-	vector<ClauseResult>::iterator iter = clauseResults.begin();
-	for (iter; iter != clauseResults.end(); iter++)
-	{
-		if ((iter->isBool == false))
-		{
-			return false;
-		}
-	}
-	return true;
-}
-vector<ClauseResult> removeBoolean(vector<ClauseResult> clauseResults)
-{
-	vector<ClauseResult>::iterator iter = clauseResults.begin();
-	for (iter; iter != clauseResults.end();)
-	{
-		if (iter->isBool == true)
-		{
-			iter = clauseResults.erase(iter);
-		}
-		else
-		{
-			iter++;
-		}
-	}
-	return clauseResults;
+bool isAllTrue(vector<ClauseResult> clauseResults) {
+  vector<ClauseResult>::iterator iter = clauseResults.begin();
+  for (iter; iter != clauseResults.end(); iter++) {
+    if ((iter->isBool == false)) {
+      return false;
+    }
+  }
+  return true;
 }
 
-PqlEvaluator::PqlEvaluator(const PKB &pkb) { this->mypkb = pkb; }
+vector<ClauseResult> removeBoolean(vector<ClauseResult> clauseResults) {
+  vector<ClauseResult>::iterator iter = clauseResults.begin();
+  for (iter; iter != clauseResults.end();) {
+    if (iter->isBool == true) {
+      iter = clauseResults.erase(iter);
+    } else {
+      iter++;
+    }
+  }
+  return clauseResults;
+}
 
-PqlEvaluator::~PqlEvaluator() = default;
+//PqlEvaluator::PqlEvaluator(const PKB &pkb) { this->mypkb = pkb; }
+//
+//PqlEvaluator::~PqlEvaluator() = default;
 
 list<string> PqlEvaluator::evaluateQuery(string query) {
   string target;
@@ -55,37 +45,33 @@ list<string> PqlEvaluator::evaluateQuery(string query) {
 }
 
 list<string> PqlEvaluator::executeQuery(vector<Clause> &clauses) {
-	vector<ClauseResult> clauseResults;
-	list<string> results;
+  vector<ClauseResult> clauseResults;
+  list<string> results;
   vector<Clause>::iterator iter = clauses.begin();
   for (iter; iter != clauses.end(); iter++) {
     if (iter->clauseType == ClauseType::ModifiesS) {
-		clauseResults.push_back(getModifies(*iter));
+      clauseResults.push_back(getModifies(*iter));
     } else if (iter->clauseType == ClauseType::UsesS) {
-		clauseResults.push_back(getUses(*iter));
+      clauseResults.push_back(getUses(*iter));
     } else if (iter->clauseType == ClauseType::Parent) {
-		clauseResults.push_back(getParent(*iter));
+      clauseResults.push_back(getParent(*iter));
     } else if (iter->clauseType == ClauseType::ParentT) {
-		clauseResults.push_back(getParentS(*iter));
+      clauseResults.push_back(getParentS(*iter));
     } else if (iter->clauseType == ClauseType::Follows) {
-		clauseResults.push_back(getFollows(*iter));
+      clauseResults.push_back(getFollows(*iter));
     } else if (iter->clauseType == ClauseType::FollowsT) {
-		clauseResults.push_back(getFollowsS(*iter));
+      clauseResults.push_back(getFollowsS(*iter));
     } else if (iter->clauseType == ClauseType::AssignPatt) {
-		clauseResults.push_back(getAssPatern(*iter));
+      clauseResults.push_back(getAssPatern(*iter));
     }
 
   }
-  if(checkForFalse(clauseResults))
-  {
-	  return results;
-  }else if(isAllTrue(clauseResults))
-  {
+  if (checkForFalse(clauseResults)) {
+    return results;
+  } else if (isAllTrue(clauseResults)) {
     //return simple query  
-  }
-  else
-  {
-    
+  } else {
+
   }
   return results;
 }
@@ -113,22 +99,18 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
     set<string> used = mypkb.getUses(qe1.name);
     set<string>::iterator iterr = used.begin();
     while (iterr != used.end()) {
-      
-      if(validateType(*iterr,qe2.type))
-      {
-		  vector<string> tuple;
-		  tuple.push_back(qe1.name);
-		  tuple.push_back(*iterr);
-		  result.push_back(tuple);
-		  iterr++;
+
+      if (validateType(*iterr, qe2.type)) {
+        vector<string> tuple;
+        tuple.push_back(qe1.name);
+        tuple.push_back(*iterr);
+        result.push_back(tuple);
+        iterr++;
+      } else {
+        iterr++;
+        continue;
       }
-	  else
-	  {
-		  iterr++;
-		  continue;
-	  }
-      
-      
+
     }
   }
   if (isSynonym(qe1.type) && isConstant(qe2.type)) {
@@ -136,20 +118,17 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
     set<string> uses = mypkb.getUsedBy(qe2.name);
     set<string>::iterator iterr = uses.begin();
     while (iterr != uses.end()) {
-    if (validateType(*iterr, qe1.type))
-      {
-		  vector<string> tuple;
-		  tuple.push_back(*iterr);
-		  tuple.push_back(qe2.name);
-		  result.push_back(tuple);
-		  iterr++;
+      if (validateType(*iterr, qe1.type)) {
+        vector<string> tuple;
+        tuple.push_back(*iterr);
+        tuple.push_back(qe2.name);
+        result.push_back(tuple);
+        iterr++;
+      } else {
+        iterr++;
+        continue;
       }
-	  else
-	  {
-		  iterr++;
-		  continue;
-	  }
-      
+
     }
   }
   if (isSynonym(qe1.type) && isSynonym(qe2.type)) {
@@ -161,19 +140,16 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
       set<string> used = mypkb.getUses(*iterr1);
       set<string>::iterator iterr2 = used.begin();
       while (iterr2 != used.end()) {
-        if(validateType(*iterr2, qe2.type))
-        {
-			vector<string> tuple;
-			tuple.push_back(*iterr1);
-			tuple.push_back(*iterr2);
-			result.push_back(tuple);
-			iterr2++;
+        if (validateType(*iterr2, qe2.type)) {
+          vector<string> tuple;
+          tuple.push_back(*iterr1);
+          tuple.push_back(*iterr2);
+          result.push_back(tuple);
+          iterr2++;
+        } else {
+          iterr2++;
+          continue;
         }
-		else
-		{
-		  iterr2++;
-		  continue;
-		}
       }
       iterr1++;
     }
@@ -239,20 +215,17 @@ ClauseResult PqlEvaluator::getModifies(Clause c) {
     set<string> modified = mypkb.getModifies(qe1.name);
     set<string>::iterator iterr = modified.begin();
     while (iterr != modified.end()) {
-      if(validateType(*iterr,qe2.type))
-      {
-		  vector<string> tuple;
-		  tuple.push_back(qe1.name);
-		  tuple.push_back(*iterr);
-		  result.push_back(tuple);
-		  iterr++;
+      if (validateType(*iterr, qe2.type)) {
+        vector<string> tuple;
+        tuple.push_back(qe1.name);
+        tuple.push_back(*iterr);
+        result.push_back(tuple);
+        iterr++;
+      } else {
+        iterr++;
+        continue;
       }
-	  else
-	  {
-		  iterr++;
-		  continue; 
-	  }
-      
+
     }
   }
   if (isSynonym(qe1.type) && isConstant(qe2.type)) {
@@ -260,20 +233,17 @@ ClauseResult PqlEvaluator::getModifies(Clause c) {
     set<string> modifies = mypkb.getModifiedBy(qe1.name);
     set<string>::iterator iterr = modifies.begin();
     while (iterr != modifies.end()) {
-      if(validateType(*iterr,qe1.type))
-      {
-		  vector<string> tuple;
-		  tuple.push_back(qe1.name);
-		  tuple.push_back(*iterr);
-		  result.push_back(tuple);
-		  iterr++;
+      if (validateType(*iterr, qe1.type)) {
+        vector<string> tuple;
+        tuple.push_back(qe1.name);
+        tuple.push_back(*iterr);
+        result.push_back(tuple);
+        iterr++;
+      } else {
+        iterr++;
+        continue;
       }
-	  else
-	  {
-		  iterr++;
-		  continue;
-	  }
-      
+
     }
   }
   if (isSynonym(qe1.type) && isSynonym(qe2.type)) {
@@ -285,20 +255,17 @@ ClauseResult PqlEvaluator::getModifies(Clause c) {
       set<string> modified = mypkb.getModifies(*iterr1);
       set<string>::iterator iterr2 = modified.begin();
       while (iterr2 != modified.end()) {
-        if(validateType(*iterr2,qe2.type))
-        {
-			vector<string> tuple;
-			tuple.push_back(*iterr1);
-			tuple.push_back(*iterr2);
-			result.push_back(tuple);
-			iterr2++;
+        if (validateType(*iterr2, qe2.type)) {
+          vector<string> tuple;
+          tuple.push_back(*iterr1);
+          tuple.push_back(*iterr2);
+          result.push_back(tuple);
+          iterr2++;
+        } else {
+          iterr2++;
+          continue;
         }
-		else
-		{
-			iterr2++;
-			continue;
-		}
-        
+
       }
       iterr1++;
     }
@@ -363,19 +330,16 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
     set<string> children = mypkb.getParent(qe1.name);
     set<string>::iterator iterr = children.begin();
     while (iterr != children.end()) {
-      if(validateType(*iterr,qe2.type))
-      {
-		  vector<string> tuple;
-		  tuple.push_back(qe1.name);
-		  tuple.push_back(*iterr);
-		  result.push_back(tuple);
-		  iterr++;
+      if (validateType(*iterr, qe2.type)) {
+        vector<string> tuple;
+        tuple.push_back(qe1.name);
+        tuple.push_back(*iterr);
+        result.push_back(tuple);
+        iterr++;
+      } else {
+        iterr++;
+        continue;
       }
-	  else
-	  {
-		  iterr++;
-		  continue;
-	  }
     }
   }
   if (isSynonym(qe1.type) && isConstant(qe2.type)) {
@@ -383,20 +347,17 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
     set<string> parents = mypkb.getParentOf(qe2.name);
     set<string>::iterator iterr = parents.begin();
     while (iterr != parents.end()) {
-      if(validateType(*iterr,qe1.type))
-      {
-		  vector<string> tuple;
-		  tuple.push_back(*iterr);
-		  tuple.push_back(qe2.name);
-		  result.push_back(tuple);
-		  iterr++;
+      if (validateType(*iterr, qe1.type)) {
+        vector<string> tuple;
+        tuple.push_back(*iterr);
+        tuple.push_back(qe2.name);
+        result.push_back(tuple);
+        iterr++;
+      } else {
+        iterr++;
+        continue;
       }
-	  else
-	  {
-		  iterr++;
-	          continue;
-	  }
-      
+
     }
   }
   if (isSynonym(qe1.type) && isSynonym(qe2.type)) {
@@ -408,20 +369,17 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
       set<string> children = mypkb.getParent(*iterr1);
       set<string>::iterator iterr2 = children.begin();
       while (iterr2 != children.end()) {
-        if(validateType(*iterr2,qe2.type))
-        {
-			vector<string> tuple;
-			tuple.push_back(*iterr1);
-			tuple.push_back(*iterr2);
-			result.push_back(tuple);
-			iterr2++;
+        if (validateType(*iterr2, qe2.type)) {
+          vector<string> tuple;
+          tuple.push_back(*iterr1);
+          tuple.push_back(*iterr2);
+          result.push_back(tuple);
+          iterr2++;
+        } else {
+          iterr2++;
+          continue;
         }
-		else
-		{
-			iterr2++;
-			continue;
-		}
-        
+
       }
       iterr1++;
     }
@@ -520,20 +478,17 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
     set<string> children = mypkb.getParentT(qe1.name);
     set<string>::iterator iterr = children.begin();
     while (iterr != children.end()) {
-      if(validateType(*iterr,qe2.type))
-      {
-		  vector<string> tuple;
-		  tuple.push_back(qe1.name);
-		  tuple.push_back(*iterr);
-		  result.push_back(tuple);
-		  iterr++;
+      if (validateType(*iterr, qe2.type)) {
+        vector<string> tuple;
+        tuple.push_back(qe1.name);
+        tuple.push_back(*iterr);
+        result.push_back(tuple);
+        iterr++;
+      } else {
+        iterr++;
+        continue;
       }
-	  else
-	  {
-		  iterr++;
-		  continue;
-	  }
-      
+
     }
   }
   if (isSynonym(qe1.type) && isConstant(qe2.type)) {
@@ -541,20 +496,17 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
     set<string> parents = mypkb.getParentOfT(qe2.name);
     set<string>::iterator iterr = parents.begin();
     while (iterr != parents.end()) {
-      if(validateType(*iterr,qe1.type))
-      {
-		  vector<string> tuple;
-		  tuple.push_back(*iterr);
-		  tuple.push_back(qe2.name);
-		  result.push_back(tuple);
-		  iterr++;
+      if (validateType(*iterr, qe1.type)) {
+        vector<string> tuple;
+        tuple.push_back(*iterr);
+        tuple.push_back(qe2.name);
+        result.push_back(tuple);
+        iterr++;
+      } else {
+        iterr++;
+        continue;
       }
-	  else
-	  {
-		  iterr++;
-		  continue;
-	  }
-      
+
     }
   }
   if (isSynonym(qe1.type) && isSynonym(qe2.type)) {
@@ -566,20 +518,17 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
       set<string> children = mypkb.getParentT(*iterr1);
       set<string>::iterator iterr2 = children.begin();
       while (iterr2 != children.end()) {
-        if(validateType(*iterr2,qe2.type))
-        {
-			vector<string> tuple;
-			tuple.push_back(*iterr1);
-			tuple.push_back(*iterr2);
-			result.push_back(tuple);
-			iterr2++;
+        if (validateType(*iterr2, qe2.type)) {
+          vector<string> tuple;
+          tuple.push_back(*iterr1);
+          tuple.push_back(*iterr2);
+          result.push_back(tuple);
+          iterr2++;
+        } else {
+          iterr2++;
+          continue;
         }
-		else
-		{
-			iterr2++;
-			continue;
-		}
-        
+
       }
       iterr1++;
     }
@@ -678,20 +627,17 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
     set<string> s2 = mypkb.getFollows(qe1.name);
     set<string>::iterator iterr = s2.begin();
     while (iterr != s2.end()) {
-      if(validateType(*iterr,qe2.type))
-      {
-		  vector<string> tuple;
-		  tuple.push_back(qe1.name);
-		  tuple.push_back(*iterr);
-		  result.push_back(tuple);
-		  iterr++;
+      if (validateType(*iterr, qe2.type)) {
+        vector<string> tuple;
+        tuple.push_back(qe1.name);
+        tuple.push_back(*iterr);
+        result.push_back(tuple);
+        iterr++;
+      } else {
+        iterr++;
+        continue;
       }
-	  else
-	  {
-		  iterr++;
-		  continue;
-	  }
-      
+
     }
   }
   if (isSynonym(qe1.type) && isConstant(qe2.type)) {
@@ -699,20 +645,17 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
     set<string> s1 = mypkb.getFollowedBy(qe2.name);
     set<string>::iterator iterr = s1.begin();
     while (iterr != s1.end()) {
-      if(validateType(*iterr,qe1.type))
-      {
-		  vector<string> tuple;
-		  tuple.push_back(*iterr);
-		  tuple.push_back(qe2.name);
-		  result.push_back(tuple);
-		  iterr++;
+      if (validateType(*iterr, qe1.type)) {
+        vector<string> tuple;
+        tuple.push_back(*iterr);
+        tuple.push_back(qe2.name);
+        result.push_back(tuple);
+        iterr++;
+      } else {
+        iterr++;
+        continue;
       }
-	  else
-	  {
-		  iterr++;
-		  continue;
-	  }
-     
+
     }
   }
   if (isSynonym(qe1.type) && isSynonym(qe2.type)) {
@@ -724,20 +667,17 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
       set<string> s2 = mypkb.getFollows(*iterr1);
       set<string>::iterator iterr2 = s2.begin();
       while (iterr2 != s2.end()) {
-        if(validateType(*iterr2,qe2.type))
-        {
-			vector<string> tuple;
-			tuple.push_back(*iterr1);
-			tuple.push_back(*iterr2);
-			result.push_back(tuple);
-			iterr2++;
+        if (validateType(*iterr2, qe2.type)) {
+          vector<string> tuple;
+          tuple.push_back(*iterr1);
+          tuple.push_back(*iterr2);
+          result.push_back(tuple);
+          iterr2++;
+        } else {
+          iterr2++;
+          continue;
         }
-		else
-		{
-			iterr2++;
-			continue;
-		}
-        
+
       }
       iterr1++;
     }
@@ -836,20 +776,17 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
     set<string> s2 = mypkb.getFollowsT(qe1.name);
     set<string>::iterator iterr = s2.begin();
     while (iterr != s2.end()) {
-      if(validateType(*iterr,qe2.type))
-      {
-		  vector<string> tuple;
-		  tuple.push_back(qe1.name);
-		  tuple.push_back(*iterr);
-		  result.push_back(tuple);
-		  iterr++;
+      if (validateType(*iterr, qe2.type)) {
+        vector<string> tuple;
+        tuple.push_back(qe1.name);
+        tuple.push_back(*iterr);
+        result.push_back(tuple);
+        iterr++;
+      } else {
+        iterr++;
+        continue;
       }
-	  else
-	  {
-		  iterr++;
-		  continue;
-	  }
-      
+
     }
   }
   if (isSynonym(qe1.type) && isConstant(qe2.type)) {
@@ -857,20 +794,17 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
     set<string> s1 = mypkb.getFollowedByT(qe2.name);
     set<string>::iterator iterr = s1.begin();
     while (iterr != s1.end()) {
-      if(validateType(*iterr,qe1.type))
-      {
-		  vector<string> tuple;
-		  tuple.push_back(*iterr);
-		  tuple.push_back(qe2.name);
-		  result.push_back(tuple);
-		  iterr++;
+      if (validateType(*iterr, qe1.type)) {
+        vector<string> tuple;
+        tuple.push_back(*iterr);
+        tuple.push_back(qe2.name);
+        result.push_back(tuple);
+        iterr++;
+      } else {
+        iterr++;
+        continue;
       }
-	  else
-	  {
-		  iterr++;
-		  continue;
-	  }
-      
+
     }
   }
   if (isSynonym(qe1.type) && isSynonym(qe2.type)) {
@@ -882,20 +816,17 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
       set<string> s2 = mypkb.getFollowsT(*iterr1);
       set<string>::iterator iterr2 = s2.begin();
       while (iterr2 != s2.end()) {
-        if(validateType(*iterr2,qe2.type))
-        {
-			vector<string> tuple;
-			tuple.push_back(*iterr1);
-			tuple.push_back(*iterr2);
-			result.push_back(tuple);
-			iterr2++;
+        if (validateType(*iterr2, qe2.type)) {
+          vector<string> tuple;
+          tuple.push_back(*iterr1);
+          tuple.push_back(*iterr2);
+          result.push_back(tuple);
+          iterr2++;
+        } else {
+          iterr2++;
+          continue;
         }
-		else
-		{
-			iterr2++;
-			continue;
-		}
-        
+
       }
       iterr1++;
     }
@@ -1015,7 +946,7 @@ ClauseResult PqlEvaluator::getAssPatern(Clause c) {
     //("_","_")
 
   }
-	return ClauseResult(false, false);
+  return ClauseResult(false, false);
 
 }
 
@@ -1044,21 +975,19 @@ StatementType PqlEvaluator::convertQType(QueryEntityType q) {
   if (q == QueryEntityType::Stmt) return StatementType::Stmt;
 }
 
-bool PqlEvaluator::validateType(string result,QueryEntityType q)
-{
-	return validateStmt(result, q) || isVar(result, q) || isPro(result, q);
+bool PqlEvaluator::validateType(string result, QueryEntityType q) {
+  return validateStmt(result, q) || isVar(result, q) || isPro(result, q);
 }
 
 bool PqlEvaluator::validateStmt(string result, QueryEntityType q) {
   StatementType st = mypkb.getStatementType(result);
   //Stmt, Assign, If, While, Read, Call, Print
   if (q == QueryEntityType::Stmt) {
-	  return st == StatementType::While || st == StatementType::If ||
-		  st == StatementType::Read || st == StatementType::Print ||
-		  st == StatementType::Call || st == StatementType::Assign ||
-		  st == StatementType::Stmt;
-  }
-  else if (q == QueryEntityType::Assign) return st == StatementType::Assign;
+    return st == StatementType::While || st == StatementType::If ||
+           st == StatementType::Read || st == StatementType::Print ||
+           st == StatementType::Call || st == StatementType::Assign ||
+           st == StatementType::Stmt;
+  } else if (q == QueryEntityType::Assign) return st == StatementType::Assign;
   else if (q == QueryEntityType::If) return st == StatementType::If;
   else if (q == QueryEntityType::While) return st == StatementType::While;
   else if (q == QueryEntityType::Read) return st == StatementType::Read;
@@ -1066,7 +995,7 @@ bool PqlEvaluator::validateStmt(string result, QueryEntityType q) {
   else if (q == QueryEntityType::Print) return st == StatementType::Print;
 }
 
-bool PqlEvaluator::isCons(string result, QueryEntityType q) { return false; }
-bool PqlEvaluator::isVar(string result,QueryEntityType q) { return false; }
-bool PqlEvaluator::isPro(string result,QueryEntityType q) { return false; }
 
+bool PqlEvaluator::isCons(string result, QueryEntityType q) { return false; }
+bool PqlEvaluator::isVar(string result, QueryEntityType q) { return false; }
+bool PqlEvaluator::isPro(string result, QueryEntityType q) { return false; }

@@ -28,11 +28,11 @@ public:
 
 class PqlEvaluator {
 public:
-  PqlEvaluator(const PKB& pkb);
-  ~PqlEvaluator();
+ /* PqlEvaluator(const PKB& pkb);
+  ~PqlEvaluator();*/
   list<string> evaluateQuery(string query);
   
-private:
+
   PKB mypkb;
   list<string> executeQuery(vector<Clause> &clauses);
   ClauseResult getModifies(Clause c);
@@ -51,6 +51,7 @@ private:
   bool isPro(string result, QueryEntityType q);
   bool isCons(string result, QueryEntityType q);
   StatementType convertQType(QueryEntityType q);
+  
 
   /*map<string, QueryEntityType> executeDeclaration(const vector<QueryEntity> &selectors);
   vector<ClauseResult> excuteClauses(const vector<Clause> &clauses);
