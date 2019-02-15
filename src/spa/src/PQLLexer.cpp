@@ -35,7 +35,7 @@ void PQLLexer::Tokenize(string input)
 		}
 
 
-		if (find(token.begin(), token.end(), "variable") != token.end()) {
+		if (token[0] == "variable") {
 			tokenizeVariable(token);
 			token.erase(token.begin());
 			token.erase(token.begin());
@@ -212,49 +212,89 @@ void PQLLexer::tokenizeProcedure(vector<string> token)
 
 void PQLLexer::tokenizeRead(vector<string> token)
 {
-	declarationQueue.push(make_pair(DeclarationType::Read, token[1]));
+	string readName;
+	readName = token[1];
+	readName = SplitSemi(readName);
+	tokenQueue.push(make_pair(TokenType::Keyword, "read"));
+	tokenQueue.push(make_pair(TokenType::Identifier, readName));
+	tokenQueue.push(make_pair(TokenType::Separator, ";"));
 }
 
 
 void PQLLexer::tokenizePrint(vector<string> token)
 {
-	declarationQueue.push(make_pair(DeclarationType::Print, token[1]));
+	string printName;
+	printName = token[1];
+	printName = SplitSemi(printName);
+	tokenQueue.push(make_pair(TokenType::Keyword, "print"));
+	tokenQueue.push(make_pair(TokenType::Identifier, printName));
+	tokenQueue.push(make_pair(TokenType::Separator, ";")); 
 }
 
 
 void PQLLexer::tokenizeWhile(vector<string> token)
 {
-	declarationQueue.push(make_pair(DeclarationType::While, token[1]));
+	string whileName;
+	whileName = token[1];
+	whileName = SplitSemi(whileName);
+	tokenQueue.push(make_pair(TokenType::Keyword, "while"));
+	tokenQueue.push(make_pair(TokenType::Identifier, whileName));
+	tokenQueue.push(make_pair(TokenType::Separator, ";"));
 }
 
 
 void PQLLexer::tokenizeIf(vector<string> token)
 {
-	declarationQueue.push(make_pair(DeclarationType::If, token[1]));
+	string ifName;
+	ifName = token[1];
+	ifName = SplitSemi(ifName);
+	tokenQueue.push(make_pair(TokenType::Keyword, "if"));
+	tokenQueue.push(make_pair(TokenType::Identifier, ifName));
+	tokenQueue.push(make_pair(TokenType::Separator, ";"));
 }
 
 
 void PQLLexer::tokenizeAssign(vector<string> token)
 {
-	declarationQueue.push(make_pair(DeclarationType::Assign, token[1]));
+	string assignName;
+	assignName = token[1];
+	assignName = SplitSemi(assignName);
+	tokenQueue.push(make_pair(TokenType::Keyword, "assign"));
+	tokenQueue.push(make_pair(TokenType::Identifier, assignName));
+	tokenQueue.push(make_pair(TokenType::Separator, ";"));
 }
 
 
 void PQLLexer::tokenizeStmt(vector<string> token)
 {
-	declarationQueue.push(make_pair(DeclarationType::Stmt, token[1]));
+	string stmtName;
+	stmtName = token[1];
+	stmtName = SplitSemi(stmtName);
+	tokenQueue.push(make_pair(TokenType::Keyword, "stmt"));
+	tokenQueue.push(make_pair(TokenType::Identifier, stmtName));
+	tokenQueue.push(make_pair(TokenType::Separator, ";"));
 }
 
 
 void PQLLexer::tokenizeCall(vector<string> token)
 {
-	declarationQueue.push(make_pair(DeclarationType::Call, token[1]));
+	string callName;
+	callName = token[1];
+	callName = SplitSemi(callName);
+	tokenQueue.push(make_pair(TokenType::Keyword, "call"));
+	tokenQueue.push(make_pair(TokenType::Identifier, callName));
+	tokenQueue.push(make_pair(TokenType::Separator, ";"));
 }
 
 
 void PQLLexer::tokenizeConstant(vector<string> token)
 {
-	declarationQueue.push(make_pair(DeclarationType::Constant, token[1]));
+	string constantName;
+	constantName = token[1];
+	constantName = SplitSemi(constantName);
+	tokenQueue.push(make_pair(TokenType::Keyword, "constant"));
+	tokenQueue.push(make_pair(TokenType::Identifier, constantName));
+	tokenQueue.push(make_pair(TokenType::Separator, ";"));
 }
 
 void PQLLexer::tokenizeSelect(vector<string> token) {
