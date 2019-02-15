@@ -1,4 +1,4 @@
-#include "MergeTables.h"
+#include <MergeTables.h>
 
 ClauseResult MergeTables::getResultTables()
 {

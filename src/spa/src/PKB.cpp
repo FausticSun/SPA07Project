@@ -40,7 +40,7 @@ const std::set<std::string> &PKB::getProcTable() const {
 }
 
 const std::set<std::string> &
-PKB::getStatementsOfType(StatementType type) const {
+PKB::getStatementsOfType(StatementType type) const{
   if (type == StatementType::Stmt) {
     std::set<std::string> allStmt;
     for (int i = 1; i <= stmtCount; i++) {

@@ -3,6 +3,7 @@
 #include <PqlEvaluator.h>
 #include<MergeTables.h>
 
+
 bool checkForFalse(vector<ClauseResult> clauseResults) {
   vector<ClauseResult>::iterator iter = clauseResults.begin();
   for (iter; iter != clauseResults.end(); iter++) {
@@ -59,7 +60,6 @@ bool ClauseResult::contains(QueryEntity &q)
 
 PqlEvaluator::PqlEvaluator(const PKB &pkb) { this->mypkb = pkb; }
 
-PqlEvaluator::~PqlEvaluator() = default;
 
 list<string> PqlEvaluator::evaluateQuery(string query) {
   list<string> results;
@@ -68,15 +68,7 @@ list<string> PqlEvaluator::evaluateQuery(string query) {
 	  PQLParser pp;
 	  queue<Token> tokens = pp.parse(query);
 	  Query q = pp.buildQuery(tokens);
-    if(q.clauses.empty())
-    {
-		results = executeSimpleQuery(q.target.type);
-    }
-	else
-	{
-		results = executeQuery(q);
-	}
-
+	  results = executeQuery(q);
   }
   catch(invalid_argument ia)
   {
@@ -94,6 +86,12 @@ list<string> PqlEvaluator::executeQuery(Query &q) {
 	vector<Clause> clauses = q.clauses;
   vector<ClauseResult> clauseResults;
   list<string> results;
+  if (q.clauses.empty())
+  {
+	  results = executeSimpleQuery(q.target.type);
+	  return results;
+  }
+
   vector<Clause>::iterator iter = clauses.begin();
   for (iter; iter != clauses.end(); iter++) {
     if (iter->clauseType == ClauseType::ModifiesS) {
@@ -161,10 +159,13 @@ list<string> PqlEvaluator::executeSimpleQuery(QueryEntityType q)
   }
   else if(q==QueryEntityType::Constant)
   {
+	  /*set<string> cons = mypkb.getConstTable();
+	  list<string> temp(cons.begin(), cons.end());*/
 	  return results;
   }else
   {
-	  set<string> vars = mypkb.getStatementsOfType(convertQType(q));
+	  mypkb.getStatementsOfType(convertQType(q));
+	 set<string> vars = mypkb.getStatementsOfType(convertQType(q));
 	  list<string> temp(vars.begin(), vars.end());
 	  results = temp;
 	  return results;
@@ -1180,5 +1181,5 @@ bool PqlEvaluator::validateStmt(string result, QueryEntityType q) {
 
 
 bool PqlEvaluator::isCons(string result, QueryEntityType q) { return false; }
-bool PqlEvaluator::isVar(string result, QueryEntityType q) { return mypkb.isVar(result) && q==QueryEntityType::Variable; }
-bool PqlEvaluator::isPro(string result, QueryEntityType q) { return mypkb.isVar(result) && q == QueryEntityType::Procedure; }
+bool PqlEvaluator::isVar(string result, QueryEntityType q) { return /*mypkb.isVar(result) &&*/ q==QueryEntityType::Variable; }
+bool PqlEvaluator::isPro(string result, QueryEntityType q) { return /*mypkb.isProc(result) &&*/ q == QueryEntityType::Procedure; }

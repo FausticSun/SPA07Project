@@ -5,35 +5,143 @@
 #include <algorithm>
 using namespace std;
 
+bool contains(list<string> &s, string q) {
+	list<string>::iterator iter = s.begin();
+	for (iter; iter != s.end(); iter++) {
+		if (*iter == q) {
+			return true;
+		}
+	}
+	return false;
+}
 
-SCENARIO("merging test") {
-	
-	vector<QueryEntity> titleA{ QueryEntity(QueryEntityType::Stmt,"s")
-	,QueryEntity(QueryEntityType::Variable,"a") };
-	vector<QueryEntity> titleB{ QueryEntity(QueryEntityType::Stmt,"s")
-	  ,QueryEntity(QueryEntityType::Stmt,"s1") };
-	vector<vector<string>> tableA{ {"1","a"},{"1","b"},{"1","c"},{"1","d"}, {"2","a"},{"3","b"}};
-	vector<vector<string>> tableB{ {"1","2"},{"1","4"},{"10","5"},{"1","7"}, {"5","9"},{"4","10"}};
-	ClauseResult a(false, false,titleA,tableA);
-	ClauseResult b(false, false,titleB,tableB);
-	vector<ClauseResult> clauseResults{ a,b };
-	MergeTables mt(clauseResults);
-	ClauseResult tem = mt.getResultTables();
-  SECTION("output result")
-  {
-    for(int i=0;i<tem.titles.size();i++)
-    {
-		cout << tem.titles[i].name << " ";
-    }
-	cout << endl;
-	  for (int i = 0; i < tem.resultTable.size(); i++)
-	  {
-		  for (int j = 0; j < tem.resultTable[i].size(); j++)
-		  {
-			  cout << tem.resultTable[i][j] << " ";
-		  }
-		  cout << endl;
-	  }
+SCENARIO("Simple Query") {
+	PKB pkb;
+	/*pkb.insertConstant();*/
+	pkb.insertStatement("1",StatementType::Assign);
+	pkb.insertStatement("2", StatementType::If);
+	pkb.insertStatement("3", StatementType::While);
+	pkb.insertStatement("4", StatementType::Stmt);
+	pkb.insertStatement("5", StatementType::Call);
+	pkb.insertStatement("6", StatementType::Print);
+	pkb.insertStatement("7", StatementType::Read);
+	pkb.insertStatement("8", StatementType::Assign);
+	pkb.insertStatement("9", StatementType::Assign);
+	pkb.insertProc("main");
+	pkb.insertProc("one");
+	pkb.insertProc("two");
+	pkb.insertProc("three");
+	pkb.insertProc("four");
+	pkb.insertVar("a");
+	pkb.insertVar("x");
+	pkb.insertVar("y");
+	pkb.insertVar("z");
+	pkb.insertVar("i");
+	PqlEvaluator pe(pkb);
+  SECTION("test") {
+	const set<string> var=pkb.getStatementsOfType(StatementType::Stmt);
   }
+  SECTION("Get stmt") {
+	  Query q;
+	  QueryEntity stmt(QueryEntityType::Stmt, "s");
+	  vector<QueryEntity> sele;
+	  vector<Clause> clause;
+	  sele.push_back(stmt);
+	  q.setQuery(stmt, sele, clause);
+	  list<string> result = pe.executeQuery(q);
+	  REQUIRE(result.size() == 9);
+	  /*REQUIRE(contains(result,"1"));
+	  REQUIRE(contains(result, "2"));
+	  REQUIRE(contains(result, "3"));
+	  REQUIRE(contains(result, "4"));
+	  REQUIRE(contains(result, "5"));
+	  REQUIRE(contains(result, "6"));
+	  REQUIRE(contains(result, "7"));
+	  REQUIRE(contains(result, "8"));
+	  REQUIRE(contains(result, "9"));*/
+  }
+  SECTION("Get if") {
+	  Query q;
+	  QueryEntity stmt(QueryEntityType::If, "s");
+	  q.selectors.push_back(stmt);
+	  q.target = stmt;
+	  list<string> result = pe.executeQuery(q);
+	  REQUIRE(result.size() == 1);
+	  REQUIRE(contains(result, "2"));
+  }
+  SECTION("Get while") {
+	  Query q;
+	  QueryEntity stmt(QueryEntityType::While, "s");
+	  q.selectors.push_back(stmt);
+	  q.target = stmt;
+	  list<string> result = pe.executeQuery(q);
+	  REQUIRE(result.size() == 1);
+	  REQUIRE(contains(result, "3"));
+  }
+  SECTION("Get call") {
+	  Query q;
+	  QueryEntity stmt(QueryEntityType::Call, "s");
+	  q.selectors.push_back(stmt);
+	  q.target = stmt;
+	  list<string> result = pe.executeQuery(q);
+	  REQUIRE(result.size() == 1);
+	  REQUIRE(contains(result, "5"));
+  }
+  SECTION("Get print") {
+	  Query q;
+	  QueryEntity stmt(QueryEntityType::Print, "s");
+	  q.selectors.push_back(stmt);
+	  q.target = stmt;
+	  list<string> result = pe.executeQuery(q);
+	  REQUIRE(result.size() == 1);
+	  REQUIRE(contains(result, "6"));
+  }
+  SECTION("Get read") {
+	  Query q;
+	  QueryEntity stmt(QueryEntityType::Read, "s");
+	  q.selectors.push_back(stmt);
+	  q.target = stmt;
+	  list<string> result = pe.executeQuery(q);
+	  REQUIRE(result.size() == 1);
+	  REQUIRE(contains(result, "7"));
+  }
+  SECTION("Get assign") {
+	  Query q;
+	  QueryEntity stmt(QueryEntityType::Assign, "s");
+	  q.selectors.push_back(stmt);
+	  q.target = stmt;
+	  list<string> result = pe.executeQuery(q);
+	  REQUIRE(result.size() == 3);
+	  REQUIRE(contains(result, "1"));
+	  REQUIRE(contains(result, "8"));
+	  REQUIRE(contains(result, "9"));
+  }
+  SECTION("Get var") {
+	  Query q;
+	  QueryEntity var(QueryEntityType::Variable, "s");
+	  q.selectors.push_back(var);
+	  q.target = var;
+	  list<string> result = pe.executeQuery(q);
+	  REQUIRE(result.size() == 5);
+	  REQUIRE(contains(result, "i"));
+	  REQUIRE(contains(result, "x"));
+	  REQUIRE(contains(result, "y"));
+	  REQUIRE(contains(result, "z"));
+	  REQUIRE(contains(result, "a"));
+  }
+  SECTION("Get pro") {
+	  Query q;
+	  QueryEntity pro(QueryEntityType::Procedure, "s");
+	  q.selectors.push_back(pro);
+	  q.target = pro;
+	  list<string> result = pe.executeQuery(q);
+	  REQUIRE(result.size() == 5);
+	  REQUIRE(contains(result, "main"));
+	  REQUIRE(contains(result, "one"));
+	  REQUIRE(contains(result, "two"));
+	  REQUIRE(contains(result, "three"));
+	  REQUIRE(contains(result, "four"));
+  }
+
   
 }

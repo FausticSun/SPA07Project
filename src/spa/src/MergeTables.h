@@ -1,11 +1,11 @@
 #pragma once
 
-#include "PqlEvaluator.h"
+#include <PqlEvaluator.h>
 
 class MergeTables
 {
 public:
-	MergeTables(const vector<ClauseResult> &clauseResults):tables(clauseResults){};
+	MergeTables(vector<ClauseResult> &clauseResults) { this->tables = clauseResults; };
 	ClauseResult getResultTables();
 private:
 	ClauseResult MergeTwoTables(ClauseResult &cR1, ClauseResult &cR2);

@@ -29,12 +29,11 @@ public:
 class PqlEvaluator {
 public:
   PqlEvaluator(const PKB &pkb);
-  ~PqlEvaluator();
   list<string> evaluateQuery(string query);
+  list<string> executeQuery(Query &q);
 
 private:
   PKB mypkb;
-  list<string> executeQuery(Query &q);
   list<string> executeSimpleQuery(QueryEntityType q);
   ClauseResult getModifies(Clause c);
   ClauseResult getUses(Clause c);
