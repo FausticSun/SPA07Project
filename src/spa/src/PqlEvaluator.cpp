@@ -110,6 +110,12 @@ list<string> PqlEvaluator::executeQuery(Query &q) {
 	  vector<ClauseResult> temp = removeBoolean(clauseResults);
 	  MergeTables mt(temp);
 	  ClauseResult finalTable = mt.getResultTables();
+    if(finalTable.contains(q.target)) {
+      
+    }
+	else if(finalTable.resultTable.empty()) {
+		return results;
+	}else{}
   }
   return results;
 }
