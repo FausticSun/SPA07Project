@@ -34,16 +34,16 @@ private:
 public:
   void insertVar(const std::string &);
   void insertProc(const std::string &);
-  void insertStatement(const std::string &, StatementType);
-  void setFollows(int, int);
+  void insertStatement(const std::string &, StatementType);  void setFollows(int, int);
   void setFollowsT(int, int);
   void setParent(int, int);
   void setParentT(int, int);
-  void setUses(int, std::string);
-  void setModifies(int, std::string);
-
+  void setUses(std::string, std::string);
+  void setModifies(std::string, std::string);
   const std::set<std::string> &getVarTable() const;
   const std::set<std::string> &getProcTable() const;
+  bool isVar(std::string);
+  bool isProc(std::string);
   const std::set<std::string> &getStatementsOfType(StatementType) const;
   StatementType getStatementType(std::string);
   bool follows(std::string, std::string);
