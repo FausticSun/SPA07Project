@@ -12,7 +12,7 @@ public:
   void setRelation(std::string, std::string);
   bool hasForwardRelation(std::string, std::string);
   bool hasReverseRelation(std::string, std::string);
-  std::set<std::string> getForwardRelation(std::string);
-  std::set<std::string> getReverseRelation(std::string);
+  std::set<std::string> getForwardRelations(std::string);
+  std::set<std::string> getReverseRelations(std::string);
   std::vector<std::vector<std::string>> getTable();
 };
