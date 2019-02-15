@@ -1,6 +1,7 @@
-#include <PqlEvaluator.h>
 #include "PQLParser.h"
-#include "MergeTables.h"
+
+#include <PqlEvaluator.h>
+#include<MergeTables.h>
 
 bool checkForFalse(vector<ClauseResult> clauseResults) {
   vector<ClauseResult>::iterator iter = clauseResults.begin();
@@ -184,7 +185,7 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
   vector<vector<string>> result;
 
   if (isConstant(qe1.type) && isConstant(qe2.type)) {
-    //both are constants
+    // both are constants
     bool bValue = mypkb.uses(qe1.name, qe2.name);
     ClauseResult clauseResult(true, bValue);
     return clauseResult;
@@ -206,7 +207,6 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
         iterr++;
         continue;
       }
-
     }
   }
   if (isSynonym(qe1.type) && isConstant(qe2.type)) {
@@ -225,7 +225,6 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
         iterr++;
         continue;
       }
-
     }
   }
   if (isSynonym(qe1.type) && isSynonym(qe2.type)) {
@@ -294,7 +293,6 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
   } else {
     return ClauseResult(false, false);
   }
-
 }
 
 ClauseResult PqlEvaluator::getModifies(Clause c) {
@@ -308,11 +306,10 @@ ClauseResult PqlEvaluator::getModifies(Clause c) {
   titles.push_back(qe2);
   vector<vector<string>> result;
   if (isConstant(qe1.type) && isConstant(qe2.type)) {
-    //both are constants
+    // both are constants
     bool bValue = mypkb.modifies(qe1.name, qe2.name);
     ClauseResult clauseResult(true, bValue);
     return clauseResult;
-
   }
   if (isConstant(qe1.type) && isSynonym(qe2.type)) {
     //(constant,synonym)
@@ -329,7 +326,6 @@ ClauseResult PqlEvaluator::getModifies(Clause c) {
         iterr++;
         continue;
       }
-
     }
   }
   if (isSynonym(qe1.type) && isConstant(qe2.type)) {
@@ -347,7 +343,6 @@ ClauseResult PqlEvaluator::getModifies(Clause c) {
         iterr++;
         continue;
       }
-
     }
   }
   if (isSynonym(qe1.type) && isSynonym(qe2.type)) {
@@ -369,7 +364,6 @@ ClauseResult PqlEvaluator::getModifies(Clause c) {
           iterr2++;
           continue;
         }
-
       }
       iterr1++;
     }
@@ -423,7 +417,7 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
   titles.push_back(qe2);
   vector<vector<string>> result;
   if (isConstant(qe1.type) && isConstant(qe2.type)) {
-    //both are constants
+    // both are constants
     bool bValue = mypkb.parent(qe1.name, qe2.name);
     ClauseResult clauseResult(true, bValue);
     return clauseResult;
@@ -461,7 +455,6 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
         iterr++;
         continue;
       }
-
     }
   }
   if (isSynonym(qe1.type) && isSynonym(qe2.type)) {
@@ -483,7 +476,6 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
           iterr2++;
           continue;
         }
-
       }
       iterr1++;
     }
@@ -571,7 +563,7 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
   titles.push_back(qe2);
   vector<vector<string>> result;
   if (isConstant(qe1.type) && isConstant(qe2.type)) {
-    //both are constants
+    // both are constants
     bool bValue = mypkb.parent(qe1.name, qe2.name);
     ClauseResult clauseResult(true, bValue);
     return clauseResult;
@@ -592,7 +584,6 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
         iterr++;
         continue;
       }
-
     }
   }
   if (isSynonym(qe1.type) && isConstant(qe2.type)) {
@@ -610,7 +601,6 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
         iterr++;
         continue;
       }
-
     }
   }
   if (isSynonym(qe1.type) && isSynonym(qe2.type)) {
@@ -632,7 +622,6 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
           iterr2++;
           continue;
         }
-
       }
       iterr1++;
     }
@@ -720,7 +709,7 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
   titles.push_back(qe2);
   vector<vector<string>> result;
   if (isConstant(qe1.type) && isConstant(qe2.type)) {
-    //both are constants
+    // both are constants
     bool bValue = mypkb.follows(qe1.name, qe2.name);
     ClauseResult clauseResult(true, bValue);
     return clauseResult;
@@ -741,7 +730,6 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
         iterr++;
         continue;
       }
-
     }
   }
   if (isSynonym(qe1.type) && isConstant(qe2.type)) {
@@ -759,7 +747,6 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
         iterr++;
         continue;
       }
-
     }
   }
   if (isSynonym(qe1.type) && isSynonym(qe2.type)) {
@@ -781,7 +768,6 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
           iterr2++;
           continue;
         }
-
       }
       iterr1++;
     }
@@ -869,7 +855,7 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
   titles.push_back(qe2);
   vector<vector<string>> result;
   if (isConstant(qe1.type) && isConstant(qe2.type)) {
-    //both are constants
+    // both are constants
     bool bValue = mypkb.follows(qe1.name, qe2.name);
     ClauseResult clauseResult(true, bValue);
     return clauseResult;
@@ -890,7 +876,6 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
         iterr++;
         continue;
       }
-
     }
   }
   if (isSynonym(qe1.type) && isConstant(qe2.type)) {
@@ -908,7 +893,6 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
         iterr++;
         continue;
       }
-
     }
   }
   if (isSynonym(qe1.type) && isSynonym(qe2.type)) {
@@ -930,7 +914,6 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
           iterr2++;
           continue;
         }
-
       }
       iterr1++;
     }
@@ -1150,7 +1133,6 @@ bool PqlEvaluator::isSynonym(QueryEntityType q) {
 
 bool PqlEvaluator::isUnderscore(QueryEntityType q) {
   return q == QueryEntityType::Underscore;
-
 }
 
 bool PqlEvaluator::isConstant(QueryEntityType q) {
@@ -1160,13 +1142,20 @@ bool PqlEvaluator::isConstant(QueryEntityType q) {
 }
 
 StatementType PqlEvaluator::convertQType(QueryEntityType q) {
-  if (q == QueryEntityType::While) return StatementType::While;
-  if (q == QueryEntityType::If) return StatementType::If;
-  if (q == QueryEntityType::Read) return StatementType::Read;
-  if (q == QueryEntityType::Print) return StatementType::Print;
-  if (q == QueryEntityType::Call) return StatementType::Call;
-  if (q == QueryEntityType::Assign) return StatementType::Assign;
-  if (q == QueryEntityType::Stmt) return StatementType::Stmt;
+  if (q == QueryEntityType::While)
+    return StatementType::While;
+  if (q == QueryEntityType::If)
+    return StatementType::If;
+  if (q == QueryEntityType::Read)
+    return StatementType::Read;
+  if (q == QueryEntityType::Print)
+    return StatementType::Print;
+  if (q == QueryEntityType::Call)
+    return StatementType::Call;
+  if (q == QueryEntityType::Assign)
+    return StatementType::Assign;
+  if (q == QueryEntityType::Stmt)
+    return StatementType::Stmt;
 }
 
 bool PqlEvaluator::validateType(string result, QueryEntityType q) {
@@ -1175,7 +1164,7 @@ bool PqlEvaluator::validateType(string result, QueryEntityType q) {
 
 bool PqlEvaluator::validateStmt(string result, QueryEntityType q) {
   StatementType st = mypkb.getStatementType(result);
-  //Stmt, Assign, If, While, Read, Call, Print
+  // Stmt, Assign, If, While, Read, Call, Print
   if (q == QueryEntityType::Stmt) {
     return st == StatementType::While || st == StatementType::If ||
            st == StatementType::Read || st == StatementType::Print ||

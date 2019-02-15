@@ -22,6 +22,7 @@ private:
   int stmtCount;
   std::set<std::string> varTable;
   std::set<std::string> procTable;
+  std::set<std::string> constTable;
   std::map<StatementType, std::set<std::string>> stmtTable;
   RelationTable followsTable;
   RelationTable followsTTable;
@@ -35,6 +36,7 @@ public:
   void insertVar(const std::string &);
   void insertProc(const std::string &);
   void insertStatement(const std::string &, StatementType);
+  void insertConstant(int);
   void setFollows(int, int);
   void setFollowsT(int, int);
   void setParent(int, int);
@@ -43,6 +45,7 @@ public:
   void setModifies(int, std::string);
   const std::set<std::string> &getVarTable() const;
   const std::set<std::string> &getProcTable() const;
+  const std::set<std::string> &getConstTable() const;
   bool isVar(std::string);
   bool isProc(std::string);
   const std::set<std::string> &getStatementsOfType(StatementType) const;

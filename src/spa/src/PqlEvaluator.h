@@ -1,17 +1,16 @@
 #pragma once
 
+#include "Query.h"
 #include <PKB.h>
 #include <Query.h>
 #include <iostream>
 #include <list>
 #include <string>
 #include <vector>
-#include "Query.h"
 
 using namespace std;
 
-class ClauseResult
-{
+class ClauseResult {
 public:
 	ClauseResult(bool isbool, bool bvalue, vector<QueryEntity> titles = {}, vector<vector<string>> resultTable={})
           :isBool(isbool),
@@ -27,14 +26,13 @@ public:
 	bool contains(QueryEntity &q);
 };
 
-
 class PqlEvaluator {
 public:
-  PqlEvaluator(const PKB& pkb);
+  PqlEvaluator(const PKB &pkb);
   ~PqlEvaluator();
   list<string> evaluateQuery(string query);
-  
 
+private:
   PKB mypkb;
   list<string> executeQuery(Query &q);
   list<string> executeSimpleQuery(QueryEntityType q);
@@ -56,9 +54,7 @@ public:
   StatementType convertQType(QueryEntityType q);
   
 
-  /*map<string, QueryEntityType> executeDeclaration(const vector<QueryEntity> &selectors);
-  vector<ClauseResult> excuteClauses(const vector<Clause> &clauses);
-  int analyseClauseConstants(const Clause &clause);*/
-
-  
+  /*map<string, QueryEntityType> executeDeclaration(const vector<QueryEntity>
+  &selectors); vector<ClauseResult> excuteClauses(const vector<Clause>
+  &clauses); int analyseClauseConstants(const Clause &clause);*/
 };
