@@ -1,5 +1,6 @@
 #include <PqlEvaluator.h>
 #include "PQLParser.h"
+#include "MergeTables.h"
 
 bool checkForFalse(vector<ClauseResult> clauseResults) {
   vector<ClauseResult>::iterator iter = clauseResults.begin();
@@ -32,19 +33,53 @@ vector<ClauseResult> removeBoolean(vector<ClauseResult> clauseResults) {
   }
   return clauseResults;
 }
+bool ClauseResult::contains(QueryEntity &q)
+{
+  for(int i=0;i<titles.size();i++)
+  {
+    if(titles[i].name==q.name && titles[i].type==q.type)
+    {
+		return true;
+    }
+  }
+  return false;
+}
 
-//PqlEvaluator::PqlEvaluator(const PKB &pkb) { this->mypkb = pkb; }
-//
-//PqlEvaluator::~PqlEvaluator() = default;
+PqlEvaluator::PqlEvaluator(const PKB &pkb) { this->mypkb = pkb; }
+
+PqlEvaluator::~PqlEvaluator() = default;
 
 list<string> PqlEvaluator::evaluateQuery(string query) {
-  string target;
   list<string> results;
+  try
+  {
+	  PQLParser pp;
+	  queue<Token> tokens = pp.parse(query);
+	  Query q = pp.buildQuery(tokens);
+    if(q.clauses.empty())
+    {
+		results = executeSimpleQuery(q.target.type);
+    }
+	else
+	{
+		results = executeQuery(q);
+	}
+
+  }
+  catch(invalid_argument ia)
+  {
+	  return results;
+  }
+  catch(logic_error le)
+  {
+	  return results;
+  }
 
   return results;
 }
 
-list<string> PqlEvaluator::executeQuery(vector<Clause> &clauses) {
+list<string> PqlEvaluator::executeQuery(Query &q) {
+	vector<Clause> clauses = q.clauses;
   vector<ClauseResult> clauseResults;
   list<string> results;
   vector<Clause>::iterator iter = clauses.begin();
@@ -69,11 +104,42 @@ list<string> PqlEvaluator::executeQuery(vector<Clause> &clauses) {
   if (checkForFalse(clauseResults)) {
     return results;
   } else if (isAllTrue(clauseResults)) {
-    //return simple query  
+    //return simple query
+	  return executeSimpleQuery(q.target.type);
   } else {
-
+	  vector<ClauseResult> temp = removeBoolean(clauseResults);
+	  MergeTables mt(temp);
+	  ClauseResult finalTable = mt.getResultTables();
   }
   return results;
+}
+
+list<string> PqlEvaluator::executeSimpleQuery(QueryEntityType q)
+{
+
+	list<string> results;
+  if(q==QueryEntityType::Variable)
+  {
+	  set<string> vars = mypkb.getVarTable();
+	  list<string> temp(vars.begin(), vars.end());
+	  results = temp;
+  }
+  else if(q==QueryEntityType::Procedure)
+  {
+	  set<string> vars = mypkb.getProcTable();
+	  list<string> temp(vars.begin(), vars.end());
+	  results = temp;
+  }
+  else if(q==QueryEntityType::Constant)
+  {
+	  return results;
+  }else
+  {
+	  set<string> vars = mypkb.getStatementsOfType(convertQType(q));
+	  list<string> temp(vars.begin(), vars.end());
+	  results = temp;
+  }
+	return results;
 }
 
 ClauseResult PqlEvaluator::getUses(Clause c) {
@@ -904,55 +970,24 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
 }
 
 ClauseResult PqlEvaluator::getAssPatern(Clause c) {
-  vector<QueryEntity>::iterator iter1 = c.parameters.begin();
-  vector<QueryEntity>::iterator iter2 = c.parameters.begin();
-  iter2++;
-  QueryEntity qe1 = *iter1;
-  QueryEntity qe2 = *iter2;
-  if (isConstant(qe1.type) && isConstant(qe2.type)) {
-    //both are constants
-
-  }
-
-  if (isConstant(qe1.type) && isSynonym(qe2.type)) {
-    //(constant,synonym)
-
-  }
-  if (isSynonym(qe1.type) && isConstant(qe2.type)) {
-    //(synonym,constant)
-
-  }
-  if (isSynonym(qe1.type) && isSynonym(qe2.type)) {
-    //(synonym,synonym)
-
-  }
-  if (isConstant(qe1.type) && isUnderscore(qe2.type)) {
-    //(constant,"_")
-
-  }
-  if (isUnderscore(qe1.type) && isConstant(qe2.type)) {
-    //("_",constant)
-
-  }
-  if (isUnderscore(qe1.type) && isSynonym(qe2.type)) {
-    //("_",synonym)
-
-  }
-  if (isSynonym(qe1.type) && isUnderscore(qe2.type)) {
-    //(synonym,"_")
-
-  }
-  if (isUnderscore(qe1.type) && isUnderscore(qe2.type)) {
-    //("_","_")
-
-  }
-  return ClauseResult(false, false);
+  QueryEntity qe1 = c.parameters[0];
+  QueryEntity qe2 = c.parameters[1];
+  QueryEntity qe3 = c.parameters[2];
+  vector<QueryEntity> titles;
+  titles.push_back(qe1);
+  titles.push_back(qe2);
+  vector<vector<string>> result; 
 
 }
 
 bool PqlEvaluator::isSynonym(QueryEntityType q) {
-  return q != QueryEntityType::Line && q != QueryEntityType::Name &&
-         q != QueryEntityType::Expression && q != QueryEntityType::Boolean;
+	//¡®stmt¡¯ | ¡®read¡¯ | ¡®print¡¯ | ¡®call¡¯ |
+   //¡®while¡¯ | ¡®if¡¯ | ¡®assign¡¯ | ¡®variable¡¯ | ¡®constant¡¯ |¡®procedure
+	return q == QueryEntityType::Stmt || q == QueryEntityType::Read ||
+		q == QueryEntityType::Print || q == QueryEntityType::Call ||
+		q == QueryEntityType::While || q == QueryEntityType::If ||
+		q == QueryEntityType::Assign || q == QueryEntityType::Variable ||
+		q == QueryEntityType::Constant || q == QueryEntityType::Procedure;
 }
 
 bool PqlEvaluator::isUnderscore(QueryEntityType q) {
@@ -961,7 +996,8 @@ bool PqlEvaluator::isUnderscore(QueryEntityType q) {
 }
 
 bool PqlEvaluator::isConstant(QueryEntityType q) {
-  return !isSynonym(q) && !isUnderscore(q);
+	return q == QueryEntityType::Expression || q == QueryEntityType::Boolean ||
+		q == QueryEntityType::Line || q == QueryEntityType::Name;
 
 }
 
@@ -997,5 +1033,5 @@ bool PqlEvaluator::validateStmt(string result, QueryEntityType q) {
 
 
 bool PqlEvaluator::isCons(string result, QueryEntityType q) { return false; }
-bool PqlEvaluator::isVar(string result, QueryEntityType q) { return false; }
-bool PqlEvaluator::isPro(string result, QueryEntityType q) { return false; }
+bool PqlEvaluator::isVar(string result, QueryEntityType q) { return mypkb.isVar(result) && q==QueryEntityType::Variable; }
+bool PqlEvaluator::isPro(string result, QueryEntityType q) { return mypkb.isVar(result) && q == QueryEntityType::Procedure; }

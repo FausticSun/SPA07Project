@@ -23,18 +23,21 @@ public:
 	bool bValue;
 	vector<QueryEntity> titles;
 	vector<vector<string>> resultTable;
+	void normalize();
+	bool contains(QueryEntity &q);
 };
 
 
 class PqlEvaluator {
 public:
- /* PqlEvaluator(const PKB& pkb);
-  ~PqlEvaluator();*/
+  PqlEvaluator(const PKB& pkb);
+  ~PqlEvaluator();
   list<string> evaluateQuery(string query);
   
 
   PKB mypkb;
-  list<string> executeQuery(vector<Clause> &clauses);
+  list<string> executeQuery(Query &q);
+  list<string> executeSimpleQuery(QueryEntityType q);
   ClauseResult getModifies(Clause c);
   ClauseResult getUses(Clause c);
   ClauseResult getParent(Clause c);
