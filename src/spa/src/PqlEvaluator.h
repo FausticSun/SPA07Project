@@ -42,6 +42,7 @@ private:
   ClauseResult getFollows(Clause c);
   ClauseResult getFollowsS(Clause c);
   ClauseResult getAssPatern(Clause c);
+  set<string> getdataByTtype(QueryEntityType q);
   bool isSynonym(QueryEntityType q);
   bool isUnderscore(QueryEntityType q);
   bool isConstant(QueryEntityType q);

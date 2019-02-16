@@ -38,6 +38,9 @@ struct QueryEntity {
   };
   QueryEntity(QueryEntityType type, std::string name = "")
       : type(type), name(name){};
+  bool operator==(QueryEntity other) {
+	  return this->type == other.type && this->name == other.name;
+  }
   QueryEntityType type;
   std::string name;
 };

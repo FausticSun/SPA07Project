@@ -4,11 +4,6 @@ ClauseResult MergeTables::getResultTables()
 {
 	vector<ClauseResult> clauseResults = tables;
 
-		for (int i = 0; i < clauseResults.size(); i++) {
-			if (clauseResults[i].resultTable.empty()) {
-				clauseResults.erase(clauseResults.begin() + i);
-			}
-		}
 		if (clauseResults.size() == 0) {
 			ClauseResult a(false, false);
 			return a;
@@ -73,6 +68,9 @@ ClauseResult MergeTables::MergeTwoTables(ClauseResult &cR1, ClauseResult &cR2) {
 					results.push_back(temp);
 				}
 			}
+			ClauseResult clauseResult(false, false, titles, results);
+			return clauseResult;
+
 		}
 		else {
 			//have common columns
@@ -82,6 +80,7 @@ ClauseResult MergeTables::MergeTwoTables(ClauseResult &cR1, ClauseResult &cR2) {
 					vector<string> temp(cR1.resultTable[i].begin(),
 						cR1.resultTable[i].end());
 					flag = true;
+            
 					for (int m = 0; m < Cols.size(); m++) {
 						if (cR1.resultTable[i][Cols[m]] != cR2.resultTable[j][commonCols[Cols[m]]]
 							) {
