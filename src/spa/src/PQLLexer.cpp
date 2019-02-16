@@ -100,47 +100,33 @@ void PQLLexer::Tokenize(string input) {
         if (token[0] == "such" && token[1] == "that") {
           token.erase(token.begin());
           token.erase(token.begin());
-          while (0 < token.size()) {
+          while (!token.empty()) {
             if (find(token.begin(), token.end(), "Modifies") != token.end()) {
               tokenizeModifies(token);
-              token.erase(token.begin());
-              token.erase(token.begin());
-              token.erase(token.begin());
             }
 
             if (find(token.begin(), token.end(), "Uses") != token.end()) {
               tokenizeUses(token);
-              token.erase(token.begin());
-              token.erase(token.begin());
-              token.erase(token.begin());
+
             }
 
             if (find(token.begin(), token.end(), "Parent*") != token.end()) {
               tokenizeParentT(token);
-              token.erase(token.begin());
-              token.erase(token.begin());
-              token.erase(token.begin());
+
             } else if (find(token.begin(), token.end(), "Parent") != token.end()
             ) {
               tokenizeParent(token);
-              token.erase(token.begin());
-              token.erase(token.begin());
-              token.erase(token.begin());
             }
 
             if (find(token.begin(), token.end(), "Follows*") != token.end()) {
               tokenizeFollowsT(token);
-              token.erase(token.begin());
-              token.erase(token.begin());
-              token.erase(token.begin());
-            } else if (find(token.begin(), token.end(), "Follows") != token.
-                       end()) {
+            } else if (find(token.begin(), token.end(), "Follows") != token.end()) {
               tokenizeFollows(token);
-              token.erase(token.begin());
-              token.erase(token.begin());
-              token.erase(token.begin());
             }
           }
+        } else if (token[0] == "pattern")
+        {
+          
         }
       }
     }
@@ -285,9 +271,18 @@ bool PQLLexer::tokenContainSemi(string token) {
 	return (token.substr(token.length() - 1, token.length()) == ";");
 }
 
-void expectionOfSelect()
+void expectionOfSelect(vector<string> token)
 {
-  if 
+  if (token[0] == "such" && token[1] == "that")
+  {
+    
+  } else if (token[0] == "pattern")
+  {
+    
+  } else
+  {
+	  throw invalid_argument("expect such that or pattern");
+  }
 }
 
 void PQLLexer::tokenizeSelect(vector<string> token) {
@@ -317,7 +312,7 @@ void PQLLexer::tokenizeSelect(vector<string> token) {
 		token.erase(token.begin());
 		end = true;
     }
-	expectionOfSelect();
+	expectionOfSelect(token);
   }
 
 }
@@ -327,37 +322,549 @@ void PQLLexer::tokenizePattern(vector<string>) {
 }
 
 void PQLLexer::tokenizeFollows(vector<string> token) {
-  selectQueue.push(make_tuple(RelationType::Follows, token[1], token[2]));
+  tokenQueue.push(make_pair(TokenType::Keyword, "follows"));
+
+  int check = 1;
+  int n0, n1, n2, n3, iter = 0;
+  string s;
+  // KEYWORD, "(" "," ")" ";"
+
+   while (!token.empty() && check == 1)
+   {
+     if (token[iter].find(")"))
+     {
+		 check = 0;
+     }
+   }
+   s = token[0];
+    for (int i = 1; i <=iter; i++)
+    {
+		s = s + token[i];
+    }
+    for (int i = 0; i < iter + 1; i++)
+    {
+		token.erase(token.begin());
+    }
+            for (int i = 0; i < s.length(); i++)
+            {
+              // no space
+              if (s.at(i) == '(')
+              {
+				  n0 = i;
+              }
+	         if (token[0].at(i) == ',')
+			  {
+				  n1 = i;
+			  }
+			  if (token[0].at(i) == ')')
+			  {
+				  n2 = i;
+			  }
+			  tokenQueue.push(make_pair(TokenType::Keyword, "follows"));
+			  tokenQueue.push(make_pair(TokenType::Separator, "("));
+                  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n0, n1-1)));
+		  tokenQueue.push(make_pair(TokenType::Separator, ","));
+		  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n1, n2 - 1)));
+		  tokenQueue.push(make_pair(TokenType::Separator, ")"));
+            }
+  if(s.find(";"))
+  {
+	  tokenQueue.push(make_pair(TokenType::Separator, ";"));
+  } else if(token[0].find(";"))
+  {
+	  tokenQueue.push(make_pair(TokenType::Separator, ";"));
+              token.erase(token.begin());
+  }
+  else
+  {
+    if (token[0] == "pattern")
+    {
+      
+    } else
+    {
+		throw "should be ; or pattern";
+    }
+  }
+         
+  
 }
 
 
 void PQLLexer::tokenizeFollowsT(vector<string> token) {
-  selectQueue.push(make_tuple(RelationType::FollowsT, token[1], token[2]));
+	tokenQueue.push(make_pair(TokenType::Keyword, "followsT"));
+
+	int check = 1;
+	int n0, n1, n2, n3, iter = 0;
+	string s;
+	// KEYWORD, "(" "," ")" ";"
+
+	while (!token.empty() && check == 1)
+	{
+		if (token[iter].find(")"))
+		{
+			check = 0;
+		}
+	}
+	s = token[0];
+	for (int i = 1; i <= iter; i++)
+	{
+		s = s + token[i];
+	}
+	for (int i = 0; i < iter + 1; i++)
+	{
+		token.erase(token.begin());
+	}
+	for (int i = 0; i < s.length(); i++)
+	{
+		// no space
+		if (s.at(i) == '(')
+		{
+			n0 = i;
+		}
+		if (token[0].at(i) == ',')
+		{
+			n1 = i;
+		}
+		if (token[0].at(i) == ')')
+		{
+			n2 = i;
+		}
+		tokenQueue.push(make_pair(TokenType::Keyword, "followsT"));
+		tokenQueue.push(make_pair(TokenType::Separator, "("));
+		tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n0, n1 - 1)));
+		tokenQueue.push(make_pair(TokenType::Separator, ","));
+		tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n1, n2 - 1)));
+		tokenQueue.push(make_pair(TokenType::Separator, ")"));
+	}
+	if (s.find(";"))
+	{
+		tokenQueue.push(make_pair(TokenType::Separator, ";"));
+	}
+	else if (token[0].find(";"))
+	{
+		tokenQueue.push(make_pair(TokenType::Separator, ";"));
+		token.erase(token.begin());
+	}
+	else
+	{
+		if (token[0] == "pattern")
+		{
+
+		}
+		else
+		{
+			throw "should be ; or pattern";
+		}
+	}
 }
 
 
 void PQLLexer::tokenizeParent(vector<string> token) {
-  selectQueue.push(make_tuple(RelationType::Parent, token[1], token[2]));
+	tokenQueue.push(make_pair(TokenType::Keyword, "parent"));
+
+	int check = 1;
+	int n0, n1, n2, n3, iter = 0;
+	string s;
+	// KEYWORD, "(" "," ")" ";"
+
+	while (!token.empty() && check == 1)
+	{
+		if (token[iter].find(")"))
+		{
+			check = 0;
+		}
+	}
+	s = token[0];
+	for (int i = 1; i <= iter; i++)
+	{
+		s = s + token[i];
+	}
+	for (int i = 0; i < iter + 1; i++)
+	{
+		token.erase(token.begin());
+	}
+	for (int i = 0; i < s.length(); i++)
+	{
+		// no space
+		if (s.at(i) == '(')
+		{
+			n0 = i;
+		}
+		if (token[0].at(i) == ',')
+		{
+			n1 = i;
+		}
+		if (token[0].at(i) == ')')
+		{
+			n2 = i;
+		}
+		tokenQueue.push(make_pair(TokenType::Keyword, "parent"));
+		tokenQueue.push(make_pair(TokenType::Separator, "("));
+		tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n0, n1 - 1)));
+		tokenQueue.push(make_pair(TokenType::Separator, ","));
+		tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n1, n2 - 1)));
+		tokenQueue.push(make_pair(TokenType::Separator, ")"));
+	}
+	if (s.find(";"))
+	{
+		tokenQueue.push(make_pair(TokenType::Separator, ";"));
+	}
+	else if (token[0].find(";"))
+	{
+		tokenQueue.push(make_pair(TokenType::Separator, ";"));
+		token.erase(token.begin());
+	}
+	else
+	{
+		if (token[0] == "pattern")
+		{
+
+		}
+		else
+		{
+			throw "should be ; or pattern";
+		}
+	}
 }
 
 
 void PQLLexer::tokenizeParentT(vector<string> token) {
-  selectQueue.push(make_tuple(RelationType::ParentT, token[1], token[2]));
+	tokenQueue.push(make_pair(TokenType::Keyword, "parentT"));
+
+	int check = 1;
+	int n0, n1, n2, n3, iter = 0;
+	string s;
+	// KEYWORD, "(" "," ")" ";"
+
+	while (!token.empty() && check == 1)
+	{
+		if (token[iter].find(")"))
+		{
+			check = 0;
+		}
+	}
+	s = token[0];
+	for (int i = 1; i <= iter; i++)
+	{
+		s = s + token[i];
+	}
+	for (int i = 0; i < iter + 1; i++)
+	{
+		token.erase(token.begin());
+	}
+	for (int i = 0; i < s.length(); i++)
+	{
+		// no space
+		if (s.at(i) == '(')
+		{
+			n0 = i;
+		}
+		if (token[0].at(i) == ',')
+		{
+			n1 = i;
+		}
+		if (token[0].at(i) == ')')
+		{
+			n2 = i;
+		}
+		tokenQueue.push(make_pair(TokenType::Keyword, "parentT"));
+		tokenQueue.push(make_pair(TokenType::Separator, "("));
+		tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n0, n1 - 1)));
+		tokenQueue.push(make_pair(TokenType::Separator, ","));
+		tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n1, n2 - 1)));
+		tokenQueue.push(make_pair(TokenType::Separator, ")"));
+	}
+	if (s.find(";"))
+	{
+		tokenQueue.push(make_pair(TokenType::Separator, ";"));
+	}
+	else if (token[0].find(";"))
+	{
+		tokenQueue.push(make_pair(TokenType::Separator, ";"));
+		token.erase(token.begin());
+	}
+	else
+	{
+		if (token[0] == "pattern")
+		{
+
+		}
+		else
+		{
+			throw "should be ; or pattern";
+		}
+	}
 }
 
 void PQLLexer::tokenizeUses(vector<string> token) {
   if (isInt(token[0])) {
-    selectQueue.push(make_tuple(RelationType::UsesS, token[1], token[2]));
+	  tokenQueue.push(make_pair(TokenType::Keyword, "useS"));
+
+	  int check = 1;
+	  int n0, n1, n2, n3, iter = 0;
+	  string s;
+	  // KEYWORD, "(" "," ")" ";"
+
+	  while (!token.empty() && check == 1)
+	  {
+		  if (token[iter].find(")"))
+		  {
+			  check = 0;
+		  }
+	  }
+	  s = token[0];
+	  for (int i = 1; i <= iter; i++)
+	  {
+		  s = s + token[i];
+	  }
+	  for (int i = 0; i < iter + 1; i++)
+	  {
+		  token.erase(token.begin());
+	  }
+	  for (int i = 0; i < s.length(); i++)
+	  {
+		  // no space
+		  if (s.at(i) == '(')
+		  {
+			  n0 = i;
+		  }
+		  if (token[0].at(i) == ',')
+		  {
+			  n1 = i;
+		  }
+		  if (token[0].at(i) == ')')
+		  {
+			  n2 = i;
+		  }
+		  tokenQueue.push(make_pair(TokenType::Keyword, "useS"));
+		  tokenQueue.push(make_pair(TokenType::Separator, "("));
+		  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n0, n1 - 1)));
+		  tokenQueue.push(make_pair(TokenType::Separator, ","));
+		  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n1, n2 - 1)));
+		  tokenQueue.push(make_pair(TokenType::Separator, ")"));
+	  }
+	  if (s.find(";"))
+	  {
+		  tokenQueue.push(make_pair(TokenType::Separator, ";"));
+	  }
+	  else if (token[0].find(";"))
+	  {
+		  tokenQueue.push(make_pair(TokenType::Separator, ";"));
+		  token.erase(token.begin());
+	  }
+	  else
+	  {
+		  if (token[0] == "pattern")
+		  {
+
+		  }
+		  else
+		  {
+			  throw "should be ; or pattern";
+		  }
+	  }
   } else {
-    selectQueue.push(make_tuple(RelationType::UsesP, token[1], token[2]));
+	  tokenQueue.push(make_pair(TokenType::Keyword, "usesP"));
+
+	  int check = 1;
+	  int n0, n1, n2, n3, iter = 0;
+	  string s;
+	  // KEYWORD, "(" "," ")" ";"
+
+	  while (!token.empty() && check == 1)
+	  {
+		  if (token[iter].find(")"))
+		  {
+			  check = 0;
+		  }
+	  }
+	  s = token[0];
+	  for (int i = 1; i <= iter; i++)
+	  {
+		  s = s + token[i];
+	  }
+	  for (int i = 0; i < iter + 1; i++)
+	  {
+		  token.erase(token.begin());
+	  }
+	  for (int i = 0; i < s.length(); i++)
+	  {
+		  // no space
+		  if (s.at(i) == '(')
+		  {
+			  n0 = i;
+		  }
+		  if (token[0].at(i) == ',')
+		  {
+			  n1 = i;
+		  }
+		  if (token[0].at(i) == ')')
+		  {
+			  n2 = i;
+		  }
+		  tokenQueue.push(make_pair(TokenType::Keyword, "usesP"));
+		  tokenQueue.push(make_pair(TokenType::Separator, "("));
+		  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n0, n1 - 1)));
+		  tokenQueue.push(make_pair(TokenType::Separator, ","));
+		  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n1, n2 - 1)));
+		  tokenQueue.push(make_pair(TokenType::Separator, ")"));
+	  }
+	  if (s.find(";"))
+	  {
+		  tokenQueue.push(make_pair(TokenType::Separator, ";"));
+	  }
+	  else if (token[0].find(";"))
+	  {
+		  tokenQueue.push(make_pair(TokenType::Separator, ";"));
+		  token.erase(token.begin());
+	  }
+	  else
+	  {
+		  if (token[0] == "pattern")
+		  {
+
+		  }
+		  else
+		  {
+			  throw "should be ; or pattern";
+		  }
+	  }
   }
 }
 
 
 void PQLLexer::tokenizeModifies(vector<string> token) {
   if (isInt(token[0])) {
-    selectQueue.push(make_tuple(RelationType::ModifiesS, token[1], token[2]));
+	  tokenQueue.push(make_pair(TokenType::Keyword, "modifiesS"));
+
+	  int check = 1;
+	  int n0, n1, n2, n3, iter = 0;
+	  string s;
+	  // KEYWORD, "(" "," ")" ";"
+
+	  while (!token.empty() && check == 1)
+	  {
+		  if (token[iter].find(")"))
+		  {
+			  check = 0;
+		  }
+	  }
+	  s = token[0];
+	  for (int i = 1; i <= iter; i++)
+	  {
+		  s = s + token[i];
+	  }
+	  for (int i = 0; i < iter + 1; i++)
+	  {
+		  token.erase(token.begin());
+	  }
+	  for (int i = 0; i < s.length(); i++)
+	  {
+		  // no space
+		  if (s.at(i) == '(')
+		  {
+			  n0 = i;
+		  }
+		  if (token[0].at(i) == ',')
+		  {
+			  n1 = i;
+		  }
+		  if (token[0].at(i) == ')')
+		  {
+			  n2 = i;
+		  }
+		  tokenQueue.push(make_pair(TokenType::Keyword, "modifiesS"));
+		  tokenQueue.push(make_pair(TokenType::Separator, "("));
+		  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n0, n1 - 1)));
+		  tokenQueue.push(make_pair(TokenType::Separator, ","));
+		  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n1, n2 - 1)));
+		  tokenQueue.push(make_pair(TokenType::Separator, ")"));
+	  }
+	  if (s.find(";"))
+	  {
+		  tokenQueue.push(make_pair(TokenType::Separator, ";"));
+	  }
+	  else if (token[0].find(";"))
+	  {
+		  tokenQueue.push(make_pair(TokenType::Separator, ";"));
+		  token.erase(token.begin());
+	  }
+	  else
+	  {
+		  if (token[0] == "pattern")
+		  {
+
+		  }
+		  else
+		  {
+			  throw "should be ; or pattern";
+		  }
+	  }
   } else {
-    selectQueue.push(make_tuple(RelationType::ModifiesP, token[1], token[2]));
+	  tokenQueue.push(make_pair(TokenType::Keyword, "modifiesP"));
+
+	  int check = 1;
+	  int n0, n1, n2, n3, iter = 0;
+	  string s;
+	  // KEYWORD, "(" "," ")" ";"
+
+	  while (!token.empty() && check == 1)
+	  {
+		  if (token[iter].find(")"))
+		  {
+			  check = 0;
+		  }
+	  }
+	  s = token[0];
+	  for (int i = 1; i <= iter; i++)
+	  {
+		  s = s + token[i];
+	  }
+	  for (int i = 0; i < iter + 1; i++)
+	  {
+		  token.erase(token.begin());
+	  }
+	  for (int i = 0; i < s.length(); i++)
+	  {
+		  // no space
+		  if (s.at(i) == '(')
+		  {
+			  n0 = i;
+		  }
+		  if (token[0].at(i) == ',')
+		  {
+			  n1 = i;
+		  }
+		  if (token[0].at(i) == ')')
+		  {
+			  n2 = i;
+		  }
+		  tokenQueue.push(make_pair(TokenType::Keyword, "modifiesP"));
+		  tokenQueue.push(make_pair(TokenType::Separator, "("));
+		  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n0, n1 - 1)));
+		  tokenQueue.push(make_pair(TokenType::Separator, ","));
+		  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(n1, n2 - 1)));
+		  tokenQueue.push(make_pair(TokenType::Separator, ")"));
+	  }
+	  if (s.find(";"))
+	  {
+		  tokenQueue.push(make_pair(TokenType::Separator, ";"));
+	  }
+	  else if (token[0].find(";"))
+	  {
+		  tokenQueue.push(make_pair(TokenType::Separator, ";"));
+		  token.erase(token.begin());
+	  }
+	  else
+	  {
+		  if (token[0] == "pattern")
+		  {
+
+		  }
+		  else
+		  {
+			  throw "should be ; or pattern";
+		  }
+	  }
   }
 }
