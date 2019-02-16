@@ -3,6 +3,7 @@
 #include<string>
 #include<queue>
 #include<tuple>
+#include<iostream>
 
 using namespace std;
 
@@ -83,14 +84,14 @@ private:
   void tokenizeIf(vector<string>);
 
   void tokenizeProcedure(vector<string>);
-  void tokenizeSelect(vector<string>);
+  vector<string> tokenizeSelect(vector<string>);
   void tokenizePattern(vector<string>);
-  void tokenizeParent(vector<string>);
-  void tokenizeParentT(vector<string>);
-  void tokenizeFollows(vector<string>);
-  void tokenizeFollowsT(vector<string>);
-  void tokenizeModifies(vector<string>);
-  void tokenizeModifiesP(vector<string>);
-  void tokenizeUses(vector<string>);
-  void tokenizeUsesP(vector<string>);
+  vector<string> tokenizeParent(vector<string>);
+  vector<string> tokenizeParentT(vector<string>);
+  vector<string> tokenizeFollows(vector<string>);
+  vector<string> tokenizeFollowsT(vector<string>);
+  vector<string> tokenizeModifies(vector<string>);
+  vector<string> tokenizeModifiesP(vector<string>);
+  vector<string> tokenizeUses(vector<string>);
+  vector<string> tokenizeUsesP(vector<string>);
 };
