@@ -36,11 +36,16 @@ struct QueryEntity {
     this->type = QueryEntityType::Assign; // default
     this->name = "";
   };
+
   QueryEntity(QueryEntityType type, std::string name = "")
-      : type(type), name(name){};
+    : type(type),
+      name(name) {
+  };
+
   bool operator==(QueryEntity other) {
-	  return this->type == other.type && this->name == other.name;
+    return this->type == other.type && this->name == other.name;
   }
+
   QueryEntityType type;
   std::string name;
 };
@@ -48,7 +53,9 @@ struct QueryEntity {
 class Clause {
 public:
   Clause(ClauseType clauseType, std::vector<QueryEntity> parameters)
-      : clauseType(clauseType), parameters(parameters){};
+    : clauseType(clauseType),
+      parameters(parameters) {
+  };
   ClauseType clauseType;
   std::vector<QueryEntity> parameters;
 
@@ -74,6 +81,7 @@ public:
       this->clauses.push_back(cl);
     }
   }
+
   bool isValid();
   bool isEntity(QueryEntityType q);
 };

@@ -12,18 +12,19 @@ using namespace std;
 
 class ClauseResult {
 public:
-	ClauseResult(bool isbool, bool bvalue, vector<QueryEntity> titles = {}, vector<vector<string>> resultTable={})
-          :isBool(isbool),
-          bValue(bvalue),
-          titles(titles),
-          resultTable(resultTable){
-	  };
-	bool isBool;
-	bool bValue;
-	vector<QueryEntity> titles;
-	vector<vector<string>> resultTable;
-	void normalize();
-	bool contains(QueryEntity &q);
+  ClauseResult(bool isbool, bool bvalue, vector<QueryEntity> titles = {},
+               vector<vector<string>> resultTable = {})
+    : isBool(isbool),
+      bValue(bvalue),
+      titles(titles),
+      resultTable(resultTable) {
+  };
+  bool isBool;
+  bool bValue;
+  vector<QueryEntity> titles;
+  vector<vector<string>> resultTable;
+  void normalize();
+  bool contains(QueryEntity &q);
 };
 
 class PqlEvaluator {
@@ -52,7 +53,6 @@ private:
   bool isPro(string result, QueryEntityType q);
   bool isCons(string result, QueryEntityType q);
   StatementType convertQType(QueryEntityType q);
-  
 
   /*map<string, QueryEntityType> executeDeclaration(const vector<QueryEntity>
   &selectors); vector<ClauseResult> excuteClauses(const vector<Clause>
