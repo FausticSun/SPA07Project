@@ -233,8 +233,7 @@ TEST_CASE("Testing basic declaration procedure and select this procedure")
 
 }
 
-*/
-=======
+
   WHEN("Parsed") {
     REQUIRE(selectors.size() == 1);
     QueryEntity qe = selectors.front();
@@ -365,3 +364,4 @@ SCENARIO("Including one such that clause") {
 //
 //  SECTION("Target is a") { REQUIRE(t == "a"); }
 //}
+*/
