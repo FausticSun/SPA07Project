@@ -43,12 +43,12 @@ public:
   void setParentT(int, int);
   void setUses(int, std::string);
   void setModifies(int, std::string);
-  const std::set<std::string> &getVarTable() const;
-  const std::set<std::string> &getProcTable() const;
-  const std::set<std::string> &getConstTable() const;
+  const std::set<std::string> getVarTable() const;
+  const std::set<std::string> getProcTable() const;
+  const std::set<std::string> getConstTable() const;
   bool isVar(std::string);
   bool isProc(std::string);
-  const std::set<std::string> &getStatementsOfType(StatementType)const;
+  const std::set<std::string> getStatementsOfType(StatementType)const;
   StatementType getStatementType(std::string);
   bool follows(std::string, std::string);
   std::set<std::string> getFollows(std::string);

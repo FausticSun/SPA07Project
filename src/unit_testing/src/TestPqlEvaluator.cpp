@@ -38,9 +38,6 @@ SCENARIO("Simple Query") {
 	pkb.insertVar("z");
 	pkb.insertVar("i");
 	PqlEvaluator pe(pkb);
-  SECTION("test") {
-	const set<string> var=pkb.getStatementsOfType(StatementType::Stmt);
-  }
   SECTION("Get stmt") {
 	  Query q;
 	  QueryEntity stmt(QueryEntityType::Stmt, "s");
@@ -50,7 +47,7 @@ SCENARIO("Simple Query") {
 	  q.setQuery(stmt, sele, clause);
 	  list<string> result = pe.executeQuery(q);
 	  REQUIRE(result.size() == 9);
-	  /*REQUIRE(contains(result,"1"));
+	  REQUIRE(contains(result,"1"));
 	  REQUIRE(contains(result, "2"));
 	  REQUIRE(contains(result, "3"));
 	  REQUIRE(contains(result, "4"));
@@ -58,31 +55,37 @@ SCENARIO("Simple Query") {
 	  REQUIRE(contains(result, "6"));
 	  REQUIRE(contains(result, "7"));
 	  REQUIRE(contains(result, "8"));
-	  REQUIRE(contains(result, "9"));*/
+	  REQUIRE(contains(result, "9"));
   }
   SECTION("Get if") {
 	  Query q;
 	  QueryEntity stmt(QueryEntityType::If, "s");
-	  q.selectors.push_back(stmt);
-	  q.target = stmt;
+	  vector<QueryEntity> sele;
+	  vector<Clause> clause;
+	  sele.push_back(stmt);
+	  q.setQuery(stmt, sele, clause);
 	  list<string> result = pe.executeQuery(q);
 	  REQUIRE(result.size() == 1);
 	  REQUIRE(contains(result, "2"));
   }
-  SECTION("Get while") {
+ SECTION("Get while") {
 	  Query q;
 	  QueryEntity stmt(QueryEntityType::While, "s");
-	  q.selectors.push_back(stmt);
-	  q.target = stmt;
+	  vector<QueryEntity> sele;
+	  vector<Clause> clause;
+	  sele.push_back(stmt);
+	  q.setQuery(stmt, sele, clause);
 	  list<string> result = pe.executeQuery(q);
 	  REQUIRE(result.size() == 1);
 	  REQUIRE(contains(result, "3"));
   }
-  SECTION("Get call") {
+    SECTION("Get call") {
 	  Query q;
 	  QueryEntity stmt(QueryEntityType::Call, "s");
-	  q.selectors.push_back(stmt);
-	  q.target = stmt;
+	  vector<QueryEntity> sele;
+	  vector<Clause> clause;
+	  sele.push_back(stmt);
+	  q.setQuery(stmt, sele, clause);
 	  list<string> result = pe.executeQuery(q);
 	  REQUIRE(result.size() == 1);
 	  REQUIRE(contains(result, "5"));
@@ -90,8 +93,10 @@ SCENARIO("Simple Query") {
   SECTION("Get print") {
 	  Query q;
 	  QueryEntity stmt(QueryEntityType::Print, "s");
-	  q.selectors.push_back(stmt);
-	  q.target = stmt;
+	  vector<QueryEntity> sele;
+	  vector<Clause> clause;
+	  sele.push_back(stmt);
+	  q.setQuery(stmt, sele, clause);
 	  list<string> result = pe.executeQuery(q);
 	  REQUIRE(result.size() == 1);
 	  REQUIRE(contains(result, "6"));
@@ -99,8 +104,10 @@ SCENARIO("Simple Query") {
   SECTION("Get read") {
 	  Query q;
 	  QueryEntity stmt(QueryEntityType::Read, "s");
-	  q.selectors.push_back(stmt);
-	  q.target = stmt;
+	  vector<QueryEntity> sele;
+	  vector<Clause> clause;
+	  sele.push_back(stmt);
+	  q.setQuery(stmt, sele, clause);
 	  list<string> result = pe.executeQuery(q);
 	  REQUIRE(result.size() == 1);
 	  REQUIRE(contains(result, "7"));
@@ -108,8 +115,10 @@ SCENARIO("Simple Query") {
   SECTION("Get assign") {
 	  Query q;
 	  QueryEntity stmt(QueryEntityType::Assign, "s");
-	  q.selectors.push_back(stmt);
-	  q.target = stmt;
+	  vector<QueryEntity> sele;
+	  vector<Clause> clause;
+	  sele.push_back(stmt);
+	  q.setQuery(stmt, sele, clause);
 	  list<string> result = pe.executeQuery(q);
 	  REQUIRE(result.size() == 3);
 	  REQUIRE(contains(result, "1"));
@@ -119,8 +128,10 @@ SCENARIO("Simple Query") {
   SECTION("Get var") {
 	  Query q;
 	  QueryEntity var(QueryEntityType::Variable, "s");
-	  q.selectors.push_back(var);
-	  q.target = var;
+	  vector<QueryEntity> sele;
+	  vector<Clause> clause;
+	  sele.push_back(var);
+	  q.setQuery(var, sele, clause);
 	  list<string> result = pe.executeQuery(q);
 	  REQUIRE(result.size() == 5);
 	  REQUIRE(contains(result, "i"));
@@ -132,8 +143,10 @@ SCENARIO("Simple Query") {
   SECTION("Get pro") {
 	  Query q;
 	  QueryEntity pro(QueryEntityType::Procedure, "s");
-	  q.selectors.push_back(pro);
-	  q.target = pro;
+	  vector<QueryEntity> sele;
+	  vector<Clause> clause;
+	  sele.push_back(pro);
+	  q.setQuery(pro, sele, clause);
 	  list<string> result = pe.executeQuery(q);
 	  REQUIRE(result.size() == 5);
 	  REQUIRE(contains(result, "main"));

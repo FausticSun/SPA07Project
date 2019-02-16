@@ -88,8 +88,7 @@ list<string> PqlEvaluator::executeQuery(Query &q) {
   list<string> results;
   if (q.clauses.empty())
   {
-	  results = executeSimpleQuery(q.target.type);
-	  return results;
+	  return executeSimpleQuery(q.target.type);
   }
 
   vector<Clause>::iterator iter = clauses.begin();
@@ -144,8 +143,9 @@ list<string> PqlEvaluator::executeQuery(Query &q) {
 list<string> PqlEvaluator::executeSimpleQuery(QueryEntityType q)
 {
 
-	list<string> results;
-  if(q==QueryEntityType::Variable)
+  list<string> results;
+
+  if(q == QueryEntityType::Variable)
   {
 	  set<string> vars = mypkb.getVarTable();
 	  list<string> temp(vars.begin(), vars.end());
@@ -164,12 +164,12 @@ list<string> PqlEvaluator::executeSimpleQuery(QueryEntityType q)
 	  return results;
   }else
   {
-	  mypkb.getStatementsOfType(convertQType(q));
-	 set<string> vars = mypkb.getStatementsOfType(convertQType(q));
+	  set<string> vars = mypkb.getStatementsOfType(convertQType(q));
 	  list<string> temp(vars.begin(), vars.end());
 	  results = temp;
 	  return results;
   }
+  return results;
 	
 }
 
