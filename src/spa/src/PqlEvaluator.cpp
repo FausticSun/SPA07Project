@@ -88,7 +88,10 @@ list<string> PqlEvaluator::executeQuery(Query &q) {
   list<string> results;
   if (q.clauses.empty())
   {
-	  return executeSimpleQuery(q.target.type);
+	  results = executeSimpleQuery(q.target.type);
+	  results.sort();
+	  results.unique();
+	  return results;
   }
 
   vector<Clause>::iterator iter = clauses.begin();
@@ -114,7 +117,10 @@ list<string> PqlEvaluator::executeQuery(Query &q) {
     return results;
   } else if (isAllTrue(clauseResults)) {
     //return simple query
-	  return executeSimpleQuery(q.target.type);
+	  results = executeSimpleQuery(q.target.type);
+	  results.sort();
+	  results.unique();
+	  return results;
   } else {
 	  vector<ClauseResult> temp = removeBoolean(clauseResults);
 	  MergeTables mt(temp);
@@ -134,9 +140,14 @@ list<string> PqlEvaluator::executeQuery(Query &q) {
 	else if(finalTable.resultTable.empty()) {
 		return results;
 	}else {
-		return executeSimpleQuery(q.target.type);
+		results = executeSimpleQuery(q.target.type);
+		results.sort();
+		results.unique();
+		return results;
 	}
   }
+  results.sort();
+  results.unique();
   return results;
 }
 
@@ -322,7 +333,6 @@ ClauseResult PqlEvaluator::getModifies(Clause c) {
     while (iterr != modifies.end()) {
       if (validateType(*iterr, qe1.type)) {
         vector<string> tuple;
-        tuple.push_back(qe1.name);
         tuple.push_back(*iterr);
         result.push_back(tuple);
       }
@@ -743,9 +753,11 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
           vector<string> tuple;
           tuple.push_back(*iterr1);
           tuple.push_back(*iterr2);
-          result.push_back(tuple);        }
+          result.push_back(tuple);
+        }
+		iterr2++;
       }
-	  iterr2++;
+	  
       iterr1++;
     }
   }
@@ -844,7 +856,7 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
   vector<vector<string>> result;
   if (isConstant(qe1.type) && isConstant(qe2.type)) {
     // both are constants
-    bool bValue = mypkb.follows(qe1.name, qe2.name);
+    bool bValue = mypkb.followsT(qe1.name, qe2.name);
     ClauseResult clauseResult(true, bValue);
     return clauseResult;
   }
