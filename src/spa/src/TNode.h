@@ -1,10 +1,9 @@
 #pragma once
 
+#include <memory>
 #include <string>
+#include <utility>
 #include <vector>
-
-using std::string;
-using std::vector;
 
 enum class TNodeType {
   Program,
@@ -39,19 +38,19 @@ enum class TNodeType {
   Or
 };
 
-class TNode {
-public:
-  TNode(TNodeType, string = "", int statementNumber = 0);
-  ~TNode();
-  TNodeType getType();
-  string getName();
-  int getStatementNumber();
-  vector<TNode *> getChildren();
-  void setChildren(vector<TNode *>);
-
-private:
+struct TNode {
+  explicit TNode(const TNodeType type, std::string name = "",
+                 std::vector<std::unique_ptr<TNode>> children = {},
+                 int statementNumber = 0)
+      : type(type), name(std::move(name)), children(std::move(children)),
+        statementNumber(statementNumber){};
+  explicit TNode(const TNodeType type,
+                 std::vector<std::unique_ptr<TNode>> children = {},
+                 std::string name = "", int statementNumber = 0)
+      : type(type), name(std::move(name)), children(std::move(children)),
+        statementNumber(statementNumber){};
   TNodeType type;
-  string name;
+  std::string name;
+  std::vector<std::unique_ptr<TNode>> children;
   int statementNumber;
-  vector<TNode *> children;
 };

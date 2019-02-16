@@ -2,8 +2,6 @@
 
 #include <string>
 
-using std::string;
-
 enum class TokenType {
   Assign,
   If,
@@ -36,9 +34,8 @@ enum class TokenType {
 
 struct Token {
   TokenType type;
-  string name;
-  int statementNumber;
-  Token() : type(TokenType::Assign), name(""), statementNumber(0){};
-  Token(const TokenType type, const string &name, const int statementNumber)
-      : type(type), name(name), statementNumber(statementNumber) {}
+  std::string name;
+  Token() : type(TokenType::Assign), name(""){};
+  Token(const TokenType type, const std::string &name)
+      : type(type), name(name) {}
 };

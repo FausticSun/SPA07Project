@@ -1,57 +1,79 @@
 #pragma once
 
-#include "Relation.h"
-#include <Token.h>
-#include <queue>
+#include "RelationTable.h"
+#include <map>
 #include <set>
 #include <string>
-#include <unordered_set>
 #include <vector>
 
-using namespace std;
-typedef short PROC;
-
-class TNode;
-
-class VarTable { // no need to #include "VarTable.h" as all I need is pointer
-public: 
-	VarTable();
-	VarTable* buildVarTable(queue<Token*> tokens);
-	bool contains(string s);
-	unordered_set<string> getVarList();
- 	string toString();
-	int add(string s); //for testing
-
-private:
-  unordered_set<string> varList;
-  int numOfVars;
-};
-
-class ProcTable {
-public:
-  ProcTable();
-  ProcTable *buildProcTable(queue<Token *> tokens);
-  bool contains(string s);
-  unordered_set<string> getProcList();
-  string toString();
-
-private:
-  unordered_set<string> procList;
-  int numOfProcs;
-  int add(string s);
+enum class StatementType {
+  Stmt,
+  Assign,
+  If,
+  While,
+  Read,
+  Call,
+  Print,
+  Invalid
 };
 
 class PKB {
 private:
+  int stmtCount;
   std::set<std::string> varTable;
   std::set<std::string> procTable;
-  std::set<Relation> relTable;
+  std::set<std::string> constTable;
+  std::map<StatementType, std::set<std::string>> stmtTable;
+  RelationTable followsTable;
+  RelationTable followsTTable;
+  RelationTable parentTable;
+  RelationTable parentTTable;
+  RelationTable usesTable;
+  RelationTable modifiesTable;
+  std::map<std::string, std::pair<std::string, std::string>> assignTable;
 
 public:
-  PKB(const std::set<std::string> &variableTable = {},
-      const std::set<std::string> &procedureTable = {},
-      const std::set<Relation> &relationTable = {});
-  const std::set<std::string> getVarTable() const;
-  const std::set<std::string> getProcTable() const;
-  const std::set<Relation> getRelTable() const;
+  void insertVar(const std::string &);
+  void insertProc(const std::string &);
+  void insertStatement(const std::string &, StatementType);
+  void insertConstant(int);
+  void setFollows(int, int);
+  void setFollowsT(int, int);
+  void setParent(int, int);
+  void setParentT(int, int);
+  void setUses(int, std::string);
+  void setModifies(int, std::string);
+  const std::set<std::string> &getVarTable() const;
+  const std::set<std::string> &getProcTable() const;
+  const std::set<std::string> &getConstTable() const;
+  bool isVar(std::string);
+  bool isProc(std::string);
+  const std::set<std::string> &getStatementsOfType(StatementType) const;
+  StatementType getStatementType(std::string);
+  bool follows(std::string, std::string);
+  std::set<std::string> getFollows(std::string);
+  std::set<std::string> getFollowedBy(std::string);
+  std::vector<std::vector<std::string>> getFollowsTable();
+  bool followsT(std::string, std::string);
+  std::set<std::string> getFollowsT(std::string);
+  std::set<std::string> getFollowedByT(std::string);
+  std::vector<std::vector<std::string>> getFollowsTTable();
+  bool parent(std::string, std::string);
+  std::set<std::string> getParent(std::string);
+  std::set<std::string> getParentOf(std::string);
+  std::vector<std::vector<std::string>> getParentTable();
+  bool parentT(std::string, std::string);
+  std::set<std::string> getParentT(std::string);
+  std::set<std::string> getParentOfT(std::string);
+  std::vector<std::vector<std::string>> getParentTTable();
+  bool uses(std::string, std::string);
+  std::set<std::string> getUses(std::string);
+  std::set<std::string> getUsedBy(std::string);
+  bool modifies(std::string, std::string);
+  std::set<std::string> getModifies(std::string);
+  std::set<std::string> getModifiedBy(std::string);
+  bool matchAssign(std::string stmtNo, std::string var, std::string expr,
+                   bool partial);
+  std::set<std::string> getAssignMatches(std::string var, std::string expr,
+                                         bool partial);
 };
