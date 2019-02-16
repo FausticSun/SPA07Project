@@ -66,21 +66,7 @@ public:
 	std::vector<QueryEntity> selectors;
 	std::vector<Clause> clauses;
 
-        void setQuery(QueryEntity t, std::vector<QueryEntity> s, std::vector<Clause> c)
-        {
-
-		this->target = t;
-                for (int i = 0; i < s.size(); i++)
-                {   
-			QueryEntity qe = QueryEntity(s[i].type, s[i].name);
-			this->selectors.push_back(qe);
-                }
-		for (int j = 0; j < c.size(); j++)
-		{
-			Clause cl = Clause(c[j].clauseType, c[j].parameters);
-			this->clauses.push_back(cl);
-		}
-        }
+	void setQuery(QueryEntity, std::vector<QueryEntity>, std::vector<Clause>);
 	bool isValid();
 	bool isEntity(QueryEntityType q);
 };

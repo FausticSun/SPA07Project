@@ -11,6 +11,22 @@ bool Clause::isValid()
 Query::Query() = default;
 Query::~Query() = default;
 
+void Query::setQuery(QueryEntity t, std::vector<QueryEntity> s, std::vector<Clause> c)
+{
+
+	this->target = t;
+	for (int i = 0; i < s.size(); i++)
+	{
+		QueryEntity qe = QueryEntity(s[i].type, s[i].name);
+		this->selectors.push_back(qe);
+	}
+	for (int j = 0; j < c.size(); j++)
+	{
+		Clause cl = Clause(c[j].clauseType, c[j].parameters);
+		this->clauses.push_back(cl);
+	}
+}
+
 bool Query::isValid()
 {
   if (!clauses.empty()) {

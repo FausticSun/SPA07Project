@@ -71,6 +71,9 @@ private:
 	void insertQueryEntityProgline();
 
 	QueryEntity determineQueryEntity();
+	void checkFPValidity(QueryEntity, QueryEntity);
+	void checkModifiesValidity(QueryEntity, QueryEntity);
+	void checkUsesValidity(QueryEntity, QueryEntity);
 	void insertClauseFollows();
 	void insertClauseFollowsT();
 	void insertClauseParent();
@@ -78,6 +81,8 @@ private:
 	void insertClauseModifiesS();
 	void insertClauseUseS();
 
+	void insertClausePattern();
+	QueryEntity parseExpression();
 	Query constructQuery();
 
 	/*void Tokenize(string input);
