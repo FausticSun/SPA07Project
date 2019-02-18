@@ -8,8 +8,7 @@
 
 using namespace std;
 
-PQLParser::PQLParser() {
-}
+PQLParser::PQLParser() {}
 
 std::queue<Token> PQLParser::parse(std::string query) {
 	/*PQLLexer pqlLexer;
@@ -19,69 +18,43 @@ std::queue<Token> PQLParser::parse(std::string query) {
 	return std::queue<Token>{};
 }
 
-Query PQLParser::getQuery()
-{
-	return query;
-}
+Query PQLParser::getQuery() { return query; }
 
 Query PQLParser::buildQuery(std::queue<Token> &tokenQueue) {
-	this->tokenQueue = tokenQueue;
-	while (!this->tokenQueue.empty()) {
-		getNextToken();
-                if (token.name == "Select")
-                {
-			setQueryTarget();
-			tokenizeSelect();
-			break;
-                }
-		expectTokenIn(this->expectedEntityTokens);
-		if (token.name == "variable")
-		{
-			insertQueryEntityVariable();
-		}
-		else if (token.name == "procedure")
-		{
-			insertQueryEntityProcedure();
-		}
-		else if (token.name == "read")
-		{
-			insertQueryEntityRead();
-		}
-		else if (token.name == "print")
-		{
-			insertQueryEntityPrint();
-		}
-		else if (token.name == "stmt")
-		{
-			insertQueryEntityStmt();
-		}
-		else if (token.name == "call")
-		{
-			insertQueryEntityCall();
-		}
-		else if (token.name == "assign")
-		{
-			insertQueryEntityAssign();
-		}
-		else if (token.name == "constant")
-		{
-			insertQueryEntityConstant();
-		}
-		else if (token.name == "if")
-		{
-			insertQueryEntityIf();
-		}
-		else if (token.name == "while")
-		{
-			insertQueryEntityWhile();
-		}
-		else
-		{
-			insertQueryEntityProgline();
-		}
-
-	}
-	return constructQuery();
+  this->tokenQueue = tokenQueue;
+  while (!this->tokenQueue.empty()) {
+    getNextToken();
+    if (token.name == "Select") {
+      setQueryTarget();
+      tokenizeSelect();
+      break;
+    }
+    expectTokenIn(this->expectedEntityTokens);
+    if (token.name == "variable") {
+      insertQueryEntityVariable();
+    } else if (token.name == "procedure") {
+      insertQueryEntityProcedure();
+    } else if (token.name == "read") {
+      insertQueryEntityRead();
+    } else if (token.name == "print") {
+      insertQueryEntityPrint();
+    } else if (token.name == "stmt") {
+      insertQueryEntityStmt();
+    } else if (token.name == "call") {
+      insertQueryEntityCall();
+    } else if (token.name == "assign") {
+      insertQueryEntityAssign();
+    } else if (token.name == "constant") {
+      insertQueryEntityConstant();
+    } else if (token.name == "if") {
+      insertQueryEntityIf();
+    } else if (token.name == "while") {
+      insertQueryEntityWhile();
+    } else {
+      insertQueryEntityProgline();
+    }
+  }
+  return constructQuery();
 }
 
 void PQLParser::getNextToken() {
@@ -95,42 +68,37 @@ void PQLParser::getNextToken() {
 }
 
 void PQLParser::expectToken(std::string expectedToken) {
-	getNextToken();
-	if (token.name != expectedToken) {
-		throw std::logic_error("Expected '" + expectedToken + "' but got '" +
-			token.name + "'");
-	}
+  getNextToken();
+  if (token.name != expectedToken) {
+    throw std::logic_error("Expected '" + expectedToken + "' but got '" +
+                           token.name + "'");
+  }
 }
 
 void PQLParser::expectTokenIn(std::vector<string> expectedTokens) {
-	bool isIn = false;
-	for (int i = 0; i < expectedTokens.size(); i++)
-	{
-		if (token.name == expectedTokens[i]) {
-			isIn = true;
-			break;
-		}
-	}
-	if (!isIn)
-	{
-		throw std::logic_error("Expected query entity type but got '" + token.name + "'");
-	}
-
+  bool isIn = false;
+  for (int i = 0; i < expectedTokens.size(); i++) {
+    if (token.name == expectedTokens[i]) {
+      isIn = true;
+      break;
+    }
+  }
+  if (!isIn) {
+    throw std::logic_error("Expected query entity type but got '" + token.name +
+                           "'");
+  }
 }
 
-void PQLParser::setQueryTarget()
-{
-	getNextToken();
-	std::map<std::string, QueryEntityType>::iterator it = entityMaps.find(token.name);
-	if (it != entityMaps.end())
-	{
-		QueryEntity qe = QueryEntity(it->second, token.name);
-		this->target = qe;
-	}
-	else
-	{
-		throw std::logic_error("No matched synonym have been declared.");
-	}
+void PQLParser::setQueryTarget() {
+  getNextToken();
+  std::map<std::string, QueryEntityType>::iterator it =
+      entityMaps.find(token.name);
+  if (it != entityMaps.end()) {
+    QueryEntity qe = QueryEntity(it->second, token.name);
+    this->target = qe;
+  } else {
+    throw std::logic_error("No matched synonym have been declared.");
+  }
 }
 
 void PQLParser::tokenizeSelect()
@@ -187,233 +155,179 @@ void PQLParser::tokenizeSelect()
 	}
 }
 
-void PQLParser::insertQueryEntityVariable()
-{
-	getNextToken();
-	QueryEntity qe = QueryEntity(QueryEntityType::Variable, token.name);
-	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Variable));
-	this->selectors.push_back(qe);
-	getNextToken();
-        if (token.name == ",")
-        {
-	      insertQueryEntityVariable();
-        } else
-        {
-          if (token.name != ";")
-          {
-	      throw std::logic_error("Expected ';' but got '" + token.name + "'");
-          }
-        }
+void PQLParser::insertQueryEntityVariable() {
+  getNextToken();
+  QueryEntity qe = QueryEntity(QueryEntityType::Variable, token.name);
+  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Variable));
+  this->selectors.push_back(qe);
+  getNextToken();
+  if (token.name == ",") {
+    insertQueryEntityVariable();
+  } else {
+    if (token.name != ";") {
+      throw std::logic_error("Expected ';' but got '" + token.name + "'");
+    }
+  }
 }
 
-void PQLParser::insertQueryEntityProcedure()
-{
-	getNextToken();
-	QueryEntity qe = QueryEntity(QueryEntityType::Procedure, token.name);
-	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Procedure));
-	this->selectors.push_back(qe);
-	getNextToken();
-	if (token.name == ",")
-	{
-		insertQueryEntityProcedure();
-	}
-	else
-	{
-		if (token.name != ";")
-		{
-			throw std::logic_error("Expected ';' but got '" + token.name + "'");
-		}
-	}
+void PQLParser::insertQueryEntityProcedure() {
+  getNextToken();
+  QueryEntity qe = QueryEntity(QueryEntityType::Procedure, token.name);
+  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Procedure));
+  this->selectors.push_back(qe);
+  getNextToken();
+  if (token.name == ",") {
+    insertQueryEntityProcedure();
+  } else {
+    if (token.name != ";") {
+      throw std::logic_error("Expected ';' but got '" + token.name + "'");
+    }
+  }
 }
 
-void PQLParser::insertQueryEntityRead()
-{
-	getNextToken();
-	QueryEntity qe = QueryEntity(QueryEntityType::Read, token.name);
-	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Read));
-	this->selectors.push_back(qe);
-	getNextToken();
-	if (token.name == ",")
-	{
-		insertQueryEntityRead();
-	}
-	else
-	{
-		if (token.name != ";")
-		{
-			throw std::logic_error("Expected ';' but got '" + token.name + "'");
-		}
-	}
+void PQLParser::insertQueryEntityRead() {
+  getNextToken();
+  QueryEntity qe = QueryEntity(QueryEntityType::Read, token.name);
+  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Read));
+  this->selectors.push_back(qe);
+  getNextToken();
+  if (token.name == ",") {
+    insertQueryEntityRead();
+  } else {
+    if (token.name != ";") {
+      throw std::logic_error("Expected ';' but got '" + token.name + "'");
+    }
+  }
 }
 
-void PQLParser::insertQueryEntityPrint()
-{
-	getNextToken();
-	QueryEntity qe = QueryEntity(QueryEntityType::Print, token.name);
-	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Print));
-	this->selectors.push_back(qe);
-	getNextToken();
-	if (token.name == ",")
-	{
-		insertQueryEntityPrint();
-	}
-	else
-	{
-		if (token.name != ";")
-		{
-			throw std::logic_error("Expected ';' but got '" + token.name + "'");
-		}
-	}
+void PQLParser::insertQueryEntityPrint() {
+  getNextToken();
+  QueryEntity qe = QueryEntity(QueryEntityType::Print, token.name);
+  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Print));
+  this->selectors.push_back(qe);
+  getNextToken();
+  if (token.name == ",") {
+    insertQueryEntityPrint();
+  } else {
+    if (token.name != ";") {
+      throw std::logic_error("Expected ';' but got '" + token.name + "'");
+    }
+  }
 }
 
-void PQLParser::insertQueryEntityIf()
-{
-	getNextToken();
-	QueryEntity qe = QueryEntity(QueryEntityType::If, token.name);
-	this->entityMaps.insert(make_pair(token.name, QueryEntityType::If));
-	this->selectors.push_back(qe);
-	getNextToken();
-	if (token.name == ",")
-	{
-		insertQueryEntityIf();
-	}
-	else
-	{
-		if (token.name != ";")
-		{
-			throw std::logic_error("Expected ';' but got '" + token.name + "'");
-		}
-	}
+void PQLParser::insertQueryEntityIf() {
+  getNextToken();
+  QueryEntity qe = QueryEntity(QueryEntityType::If, token.name);
+  this->entityMaps.insert(make_pair(token.name, QueryEntityType::If));
+  this->selectors.push_back(qe);
+  getNextToken();
+  if (token.name == ",") {
+    insertQueryEntityIf();
+  } else {
+    if (token.name != ";") {
+      throw std::logic_error("Expected ';' but got '" + token.name + "'");
+    }
+  }
 }
 
-void PQLParser::insertQueryEntityWhile()
-{
-	getNextToken();
-	QueryEntity qe = QueryEntity(QueryEntityType::While, token.name);
-	this->entityMaps.insert(make_pair(token.name, QueryEntityType::While));
-	this->selectors.push_back(qe);
-	getNextToken();
-	if (token.name == ",")
-	{
-		insertQueryEntityWhile();
-	}
-	else
-	{
-		if (token.name != ";")
-		{
-			throw std::logic_error("Expected ';' but got '" + token.name + "'");
-		}
-	}
+void PQLParser::insertQueryEntityWhile() {
+  getNextToken();
+  QueryEntity qe = QueryEntity(QueryEntityType::While, token.name);
+  this->entityMaps.insert(make_pair(token.name, QueryEntityType::While));
+  this->selectors.push_back(qe);
+  getNextToken();
+  if (token.name == ",") {
+    insertQueryEntityWhile();
+  } else {
+    if (token.name != ";") {
+      throw std::logic_error("Expected ';' but got '" + token.name + "'");
+    }
+  }
 }
 
-void PQLParser::insertQueryEntityAssign()
-{
-	getNextToken();
-	QueryEntity qe = QueryEntity(QueryEntityType::Assign, token.name);
-	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Assign));
-	this->selectors.push_back(qe);
-	getNextToken();
-	if (token.name == ",")
-	{
-		insertQueryEntityAssign();
-	}
-	else
-	{
-		if (token.name != ";")
-		{
-			throw std::logic_error("Expected ';' but got '" + token.name + "'");
-		}
-	}
+void PQLParser::insertQueryEntityAssign() {
+  getNextToken();
+  QueryEntity qe = QueryEntity(QueryEntityType::Assign, token.name);
+  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Assign));
+  this->selectors.push_back(qe);
+  getNextToken();
+  if (token.name == ",") {
+    insertQueryEntityAssign();
+  } else {
+    if (token.name != ";") {
+      throw std::logic_error("Expected ';' but got '" + token.name + "'");
+    }
+  }
 }
 
-void PQLParser::insertQueryEntityCall()
-{
-	getNextToken();
-	QueryEntity qe = QueryEntity(QueryEntityType::Call, token.name);
-	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Call));
-	this->selectors.push_back(qe);
-	getNextToken();
-	if (token.name == ",")
-	{
-		insertQueryEntityCall();
-	}
-	else
-	{
-		if (token.name != ";")
-		{
-			throw std::logic_error("Expected ';' but got '" + token.name + "'");
-		}
-	}
+void PQLParser::insertQueryEntityCall() {
+  getNextToken();
+  QueryEntity qe = QueryEntity(QueryEntityType::Call, token.name);
+  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Call));
+  this->selectors.push_back(qe);
+  getNextToken();
+  if (token.name == ",") {
+    insertQueryEntityCall();
+  } else {
+    if (token.name != ";") {
+      throw std::logic_error("Expected ';' but got '" + token.name + "'");
+    }
+  }
 }
 
-void PQLParser::insertQueryEntityStmt()
-{
-	getNextToken();
-	QueryEntity qe = QueryEntity(QueryEntityType::Stmt, token.name);
-	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Stmt));
-	this->selectors.push_back(qe);
-	getNextToken();
-	if (token.name == ",")
-	{
-		insertQueryEntityStmt();
-	}
-	else
-	{
-		if (token.name != ";")
-		{
-			throw std::logic_error("Expected ';' but got '" + token.name + "'");
-		}
-	}
+void PQLParser::insertQueryEntityStmt() {
+  getNextToken();
+  QueryEntity qe = QueryEntity(QueryEntityType::Stmt, token.name);
+  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Stmt));
+  this->selectors.push_back(qe);
+  getNextToken();
+  if (token.name == ",") {
+    insertQueryEntityStmt();
+  } else {
+    if (token.name != ";") {
+      throw std::logic_error("Expected ';' but got '" + token.name + "'");
+    }
+  }
 }
 
-void PQLParser::insertQueryEntityConstant()
-{
-	getNextToken();
-	QueryEntity qe = QueryEntity(QueryEntityType::Constant, token.name);
-	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Constant));
-	this->selectors.push_back(qe);
-	getNextToken();
-	if (token.name == ",")
-	{
-		insertQueryEntityConstant();
-	}
-	else
-	{
-		if (token.name != ";")
-		{
-			throw std::logic_error("Expected ';' but got '" + token.name + "'");
-		}
-	}
+void PQLParser::insertQueryEntityConstant() {
+  getNextToken();
+  QueryEntity qe = QueryEntity(QueryEntityType::Constant, token.name);
+  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Constant));
+  this->selectors.push_back(qe);
+  getNextToken();
+  if (token.name == ",") {
+    insertQueryEntityConstant();
+  } else {
+    if (token.name != ";") {
+      throw std::logic_error("Expected ';' but got '" + token.name + "'");
+    }
+  }
 }
 
-void PQLParser::insertQueryEntityProgline()
-{
-	getNextToken();
-	QueryEntity qe = QueryEntity(QueryEntityType::Stmt, token.name);
-	this->entityMaps.insert(make_pair(token.name, QueryEntityType::Stmt));
-	this->selectors.push_back(qe);
-	getNextToken();
-	if (token.name == ",")
-	{
-		insertQueryEntityProgline();
-	}
-	else
-	{
-		if (token.name != ";")
-		{
-			throw std::logic_error("Expected ';' but got '" + token.name + "'");
-		}
-	}
+void PQLParser::insertQueryEntityProgline() {
+  getNextToken();
+  QueryEntity qe = QueryEntity(QueryEntityType::Stmt, token.name);
+  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Stmt));
+  this->selectors.push_back(qe);
+  getNextToken();
+  if (token.name == ",") {
+    insertQueryEntityProgline();
+  } else {
+    if (token.name != ";") {
+      throw std::logic_error("Expected ';' but got '" + token.name + "'");
+    }
+  }
 }
 
 bool isInt(string s) {
-	if (s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+')))
-		return false;
+  if (s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+')))
+    return false;
 
-	char *p;
-	strtol(s.c_str(), &p, 10);
+  char *p;
+  strtol(s.c_str(), &p, 10);
 
-	return (*p == 0);
+  return (*p == 0);
 }
 
 QueryEntity PQLParser::determineQueryEntity()
