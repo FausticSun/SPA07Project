@@ -62,7 +62,7 @@ list<string> PqlEvaluator::evaluateQuery(string query) {
   list<string> results;
   try {
     PQLParser pp;
-    queue<Token> tokens = pp.parse(query);
+    queue<QueryToken> tokens = pp.parse(query);
     Query q = pp.buildQuery(tokens);
     results = executeQuery(q);
   } catch (invalid_argument ia) {

@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Query.h"
-#include "Token.h"
+#include "PQLLexer.h"
+#include "QueryToken.h"
 #include <map>
 #include <queue>
 #include <string>
@@ -35,8 +36,8 @@ enum class DeclarationType {
 class PQLParser {
 public:
   PQLParser();
-  std::queue<Token> parse(std::string);
-  Query buildQuery(std::queue<Token> &tokenQueue);
+  std::queue<QueryToken> parse(std::string);
+  Query buildQuery(std::queue<QueryToken> &tokenQueue);
   Query getQuery();
 
 private:
@@ -47,8 +48,8 @@ private:
   std::vector<string> expectedClauseTokens = {
       "Follows", "Follows*", "Parent", "Parent*", "Uses", "Modifies"};
   Query query;
-  std::queue<Token> tokenQueue;
-  Token token;
+  std::queue<QueryToken> tokenQueue;
+  QueryToken token;
   std::map<std::string, QueryEntityType> entityMaps;
   QueryEntity target;
   std::vector<QueryEntity> selectors;

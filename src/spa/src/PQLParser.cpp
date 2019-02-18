@@ -10,17 +10,22 @@ using namespace std;
 
 PQLParser::PQLParser() {}
 
-std::queue<Token> PQLParser::parse(std::string query) {
-	/*PQLLexer pqlLexer;
-	std::queue<Token> tokens = pqlLexer.getTokenQueue(query);
-	std::queue<Token> tokens;
-	return tokens;*/
-	return std::queue<Token>{};
+std::queue<QueryToken> PQLParser::parse(std::string query) {
+	PQLLexer pqlLexer = PQLLexer(query);
+	queue<pair<TokenType, string>> allTokens = pqlLexer.getTokenQueue();
+	std::queue<QueryToken> tokens;
+	while (!allTokens.empty())
+	{
+		pair<TokenType, string> pair = allTokens.front();
+		tokens.push(QueryToken(pair.first, pair.second));
+		allTokens.pop();
+	}
+	return tokens;
 }
 
 Query PQLParser::getQuery() { return query; }
 
-Query PQLParser::buildQuery(std::queue<Token> &tokenQueue) {
+Query PQLParser::buildQuery(std::queue<QueryToken> &tokenQueue) {
   this->tokenQueue = tokenQueue;
   while (!this->tokenQueue.empty()) {
     getNextToken();
@@ -62,7 +67,7 @@ void PQLParser::getNextToken() {
         {
 		throw std::logic_error("Token Queue is empty!");
         }
-	Token nextToken = tokenQueue.front();
+	QueryToken nextToken = tokenQueue.front();
 	tokenQueue.pop();
 	token = nextToken;
 }

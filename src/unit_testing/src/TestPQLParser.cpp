@@ -5,10 +5,10 @@
 using namespace std;
 
 SCENARIO("Only declare one variable a") {
-  queue<Token> tokens;
-  tokens.push(Token(TokenType::Identifier, "variable"));
-  tokens.push(Token(TokenType::Identifier, "a"));
-  tokens.push(Token(TokenType::Identifier, ";"));
+  queue<QueryToken> tokens;
+  tokens.push(QueryToken(TokenType::Identifier, "variable"));
+  tokens.push(QueryToken(TokenType::Identifier, "a"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
   PQLParser p = PQLParser();
   const Query q = p.buildQuery(tokens);
   const std::vector<QueryEntity> selectors = q.selectors;
@@ -25,12 +25,12 @@ SCENARIO("Only declare one variable a") {
 }
 
 SCENARIO("Declare 2 variables a and b") {
-	queue<Token> tokens;
-	tokens.push(Token(TokenType::Identifier, "variable"));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, ","));
-	tokens.push(Token(TokenType::Identifier, "b"));
-	tokens.push(Token(TokenType::Identifier, ";"));
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "variable"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "b"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
 	PQLParser p = PQLParser();
 	const Query q = p.buildQuery(tokens);
 	const std::vector<QueryEntity> selectors = q.selectors;
@@ -50,16 +50,16 @@ SCENARIO("Declare 2 variables a and b") {
 }
 
 SCENARIO("Declare several different type of query entities, one for each") {
-	queue<Token> tokens;
-	tokens.push(Token(TokenType::Identifier, "variable"));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "procedure"));
-	tokens.push(Token(TokenType::Identifier, "p"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "stmt"));
-	tokens.push(Token(TokenType::Identifier, "s"));
-	tokens.push(Token(TokenType::Identifier, ";"));
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "variable"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "procedure"));
+	tokens.push(QueryToken(TokenType::Identifier, "p"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "stmt"));
+	tokens.push(QueryToken(TokenType::Identifier, "s"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
 	PQLParser p = PQLParser();
 	const Query q = p.buildQuery(tokens);
 	const std::vector<QueryEntity> selectors = q.selectors;
@@ -82,24 +82,24 @@ SCENARIO("Declare several different type of query entities, one for each") {
 }
 
 SCENARIO("Declare several different type of query entities, several for each") {
-	queue<Token> tokens;
-	tokens.push(Token(TokenType::Identifier, "read"));
-	tokens.push(Token(TokenType::Identifier, "r1"));
-	tokens.push(Token(TokenType::Identifier, ","));
-	tokens.push(Token(TokenType::Identifier, "r2"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "if"));
-	tokens.push(Token(TokenType::Identifier, "ifs1"));
-	tokens.push(Token(TokenType::Identifier, ","));
-	tokens.push(Token(TokenType::Identifier, "ifs2"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "constant"));
-	tokens.push(Token(TokenType::Identifier, "c1"));
-	tokens.push(Token(TokenType::Identifier, ","));
-	tokens.push(Token(TokenType::Identifier, "c2"));
-	tokens.push(Token(TokenType::Identifier, ","));
-	tokens.push(Token(TokenType::Identifier, "c3"));
-	tokens.push(Token(TokenType::Identifier, ";"));
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "read"));
+	tokens.push(QueryToken(TokenType::Identifier, "r1"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "r2"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "if"));
+	tokens.push(QueryToken(TokenType::Identifier, "ifs1"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "ifs2"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "constant"));
+	tokens.push(QueryToken(TokenType::Identifier, "c1"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "c2"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "c3"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
 	PQLParser p = PQLParser();
 	const Query q = p.buildQuery(tokens);
 	const std::vector<QueryEntity> selectors = q.selectors;
@@ -134,12 +134,12 @@ SCENARIO("Declare several different type of query entities, several for each") {
 }
 
 SCENARIO("Select all variables") {
-	queue<Token> tokens;
-	tokens.push(Token(TokenType::Identifier, "variable"));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "Select"));
-	tokens.push(Token(TokenType::Identifier, "a"));
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "variable"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
 	PQLParser p = PQLParser();
 	const Query q = p.buildQuery(tokens);
 	const std::vector<QueryEntity> selectors = q.selectors;
@@ -164,19 +164,19 @@ SCENARIO("Select all variables") {
 SCENARIO("Including one such that clause") {
 	SECTION("One valid Follows clause")
 	{
-		queue<Token> tokens;
-		tokens.push(Token(TokenType::Identifier, "assign"));
-		tokens.push(Token(TokenType::Identifier, "a"));
-		tokens.push(Token(TokenType::Identifier, ";"));
-		tokens.push(Token(TokenType::Identifier, "Select"));
-		tokens.push(Token(TokenType::Identifier, "a"));
-		tokens.push(Token(TokenType::Identifier, "such that"));
-		tokens.push(Token(TokenType::Identifier, "Follows"));
-		tokens.push(Token(TokenType::Identifier, "("));
-		tokens.push(Token(TokenType::Identifier, "a"));
-		tokens.push(Token(TokenType::Identifier, ","));
-		tokens.push(Token(TokenType::Identifier, "5"));
-		tokens.push(Token(TokenType::Identifier, ")"));
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "assign"));
+		tokens.push(QueryToken(TokenType::Identifier, "a"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "a"));
+		tokens.push(QueryToken(TokenType::Identifier, "such that"));
+		tokens.push(QueryToken(TokenType::Identifier, "Follows"));
+		tokens.push(QueryToken(TokenType::Identifier, "("));
+		tokens.push(QueryToken(TokenType::Identifier, "a"));
+		tokens.push(QueryToken(TokenType::Identifier, ","));
+		tokens.push(QueryToken(TokenType::Identifier, "5"));
+		tokens.push(QueryToken(TokenType::Identifier, ")"));
 		PQLParser p = PQLParser();
 		Query q = p.buildQuery(tokens);
 		std::vector<QueryEntity> selectors = q.selectors;
@@ -211,19 +211,19 @@ SCENARIO("Including one such that clause") {
 	}
 	SECTION("One valid Follows* clause")
 	{
-		queue<Token> tokens;
-		tokens.push(Token(TokenType::Identifier, "while"));
-		tokens.push(Token(TokenType::Identifier, "w"));
-		tokens.push(Token(TokenType::Identifier, ";"));
-		tokens.push(Token(TokenType::Identifier, "Select"));
-		tokens.push(Token(TokenType::Identifier, "w"));
-		tokens.push(Token(TokenType::Identifier, "such that"));
-		tokens.push(Token(TokenType::Identifier, "Follows*"));
-		tokens.push(Token(TokenType::Identifier, "("));
-		tokens.push(Token(TokenType::Identifier, "w"));
-		tokens.push(Token(TokenType::Identifier, ","));
-		tokens.push(Token(TokenType::Identifier, "_"));
-		tokens.push(Token(TokenType::Identifier, ")"));
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "while"));
+		tokens.push(QueryToken(TokenType::Identifier, "w"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "w"));
+		tokens.push(QueryToken(TokenType::Identifier, "such that"));
+		tokens.push(QueryToken(TokenType::Identifier, "Follows*"));
+		tokens.push(QueryToken(TokenType::Identifier, "("));
+		tokens.push(QueryToken(TokenType::Identifier, "w"));
+		tokens.push(QueryToken(TokenType::Identifier, ","));
+		tokens.push(QueryToken(TokenType::Identifier, "_"));
+		tokens.push(QueryToken(TokenType::Identifier, ")"));
 		PQLParser p = PQLParser();
 		Query q = p.buildQuery(tokens);
 		std::vector<QueryEntity> selectors = q.selectors;
@@ -257,19 +257,19 @@ SCENARIO("Including one such that clause") {
 	}
 	SECTION("One valid Parent clause")
 	{
-		queue<Token> tokens;
-		tokens.push(Token(TokenType::Identifier, "call"));
-		tokens.push(Token(TokenType::Identifier, "c"));
-		tokens.push(Token(TokenType::Identifier, ";"));
-		tokens.push(Token(TokenType::Identifier, "Select"));
-		tokens.push(Token(TokenType::Identifier, "c"));
-		tokens.push(Token(TokenType::Identifier, "such that"));
-		tokens.push(Token(TokenType::Identifier, "Parent"));
-		tokens.push(Token(TokenType::Identifier, "("));
-		tokens.push(Token(TokenType::Identifier, "_"));
-		tokens.push(Token(TokenType::Identifier, ","));
-		tokens.push(Token(TokenType::Identifier, "c"));
-		tokens.push(Token(TokenType::Identifier, ")"));
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "call"));
+		tokens.push(QueryToken(TokenType::Identifier, "c"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "c"));
+		tokens.push(QueryToken(TokenType::Identifier, "such that"));
+		tokens.push(QueryToken(TokenType::Identifier, "Parent"));
+		tokens.push(QueryToken(TokenType::Identifier, "("));
+		tokens.push(QueryToken(TokenType::Identifier, "_"));
+		tokens.push(QueryToken(TokenType::Identifier, ","));
+		tokens.push(QueryToken(TokenType::Identifier, "c"));
+		tokens.push(QueryToken(TokenType::Identifier, ")"));
 		PQLParser p = PQLParser();
 		Query q = p.buildQuery(tokens);
 		std::vector<QueryEntity> selectors = q.selectors;
@@ -303,19 +303,19 @@ SCENARIO("Including one such that clause") {
 	}
 	SECTION("One valid Parent* clause")
 	{
-		queue<Token> tokens;
-		tokens.push(Token(TokenType::Identifier, "print"));
-		tokens.push(Token(TokenType::Identifier, "pr"));
-		tokens.push(Token(TokenType::Identifier, ";"));
-		tokens.push(Token(TokenType::Identifier, "Select"));
-		tokens.push(Token(TokenType::Identifier, "pr"));
-		tokens.push(Token(TokenType::Identifier, "such that"));
-		tokens.push(Token(TokenType::Identifier, "Parent*"));
-		tokens.push(Token(TokenType::Identifier, "("));
-		tokens.push(Token(TokenType::Identifier, "_"));
-		tokens.push(Token(TokenType::Identifier, ","));
-		tokens.push(Token(TokenType::Identifier, "pr"));
-		tokens.push(Token(TokenType::Identifier, ")"));
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "print"));
+		tokens.push(QueryToken(TokenType::Identifier, "pr"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "pr"));
+		tokens.push(QueryToken(TokenType::Identifier, "such that"));
+		tokens.push(QueryToken(TokenType::Identifier, "Parent*"));
+		tokens.push(QueryToken(TokenType::Identifier, "("));
+		tokens.push(QueryToken(TokenType::Identifier, "_"));
+		tokens.push(QueryToken(TokenType::Identifier, ","));
+		tokens.push(QueryToken(TokenType::Identifier, "pr"));
+		tokens.push(QueryToken(TokenType::Identifier, ")"));
 		PQLParser p = PQLParser();
 		Query q = p.buildQuery(tokens);
 		std::vector<QueryEntity> selectors = q.selectors;
@@ -349,22 +349,22 @@ SCENARIO("Including one such that clause") {
 	}
 	SECTION("One valid Modifies clause")
 	{
-		queue<Token> tokens;
-		tokens.push(Token(TokenType::Identifier, "prog_line"));
-		tokens.push(Token(TokenType::Identifier, "pl"));
-		tokens.push(Token(TokenType::Identifier, ";"));
-		tokens.push(Token(TokenType::Identifier, "variable"));
-		tokens.push(Token(TokenType::Identifier, "v"));
-		tokens.push(Token(TokenType::Identifier, ";"));
-		tokens.push(Token(TokenType::Identifier, "Select"));
-		tokens.push(Token(TokenType::Identifier, "pl"));
-		tokens.push(Token(TokenType::Identifier, "such that"));
-		tokens.push(Token(TokenType::Identifier, "Modifies"));
-		tokens.push(Token(TokenType::Identifier, "("));
-		tokens.push(Token(TokenType::Identifier, "10"));
-		tokens.push(Token(TokenType::Identifier, ","));
-		tokens.push(Token(TokenType::Identifier, "v"));
-		tokens.push(Token(TokenType::Identifier, ")"));
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "prog_line"));
+		tokens.push(QueryToken(TokenType::Identifier, "pl"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "variable"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "pl"));
+		tokens.push(QueryToken(TokenType::Identifier, "such that"));
+		tokens.push(QueryToken(TokenType::Identifier, "Modifies"));
+		tokens.push(QueryToken(TokenType::Identifier, "("));
+		tokens.push(QueryToken(TokenType::Identifier, "10"));
+		tokens.push(QueryToken(TokenType::Identifier, ","));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, ")"));
 		PQLParser p = PQLParser();
 		Query q = p.buildQuery(tokens);
 		std::vector<QueryEntity> selectors = q.selectors;
@@ -401,23 +401,23 @@ SCENARIO("Including one such that clause") {
 	}
 	SECTION("One valid Uses clause")
 	{
-		queue<Token> tokens;
-		tokens.push(Token(TokenType::Identifier, "variable"));
-		tokens.push(Token(TokenType::Identifier, "v"));
-		tokens.push(Token(TokenType::Identifier, ";"));
-		tokens.push(Token(TokenType::Identifier, "Select"));
-		tokens.push(Token(TokenType::Identifier, "v"));
-		tokens.push(Token(TokenType::Identifier, "such that"));
-		tokens.push(Token(TokenType::Identifier, "Uses"));
-		tokens.push(Token(TokenType::Identifier, "("));
-		tokens.push(Token(TokenType::Identifier, "\""));
-		tokens.push(Token(TokenType::Identifier, "proc1"));
-		tokens.push(Token(TokenType::Identifier, "\""));
-		tokens.push(Token(TokenType::Identifier, ","));
-		tokens.push(Token(TokenType::Identifier, "\""));
-		tokens.push(Token(TokenType::Identifier, "var1"));
-		tokens.push(Token(TokenType::Identifier, "\""));
-		tokens.push(Token(TokenType::Identifier, ")"));
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "variable"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, "such that"));
+		tokens.push(QueryToken(TokenType::Identifier, "Uses"));
+		tokens.push(QueryToken(TokenType::Identifier, "("));
+		tokens.push(QueryToken(TokenType::Identifier, "\""));
+		tokens.push(QueryToken(TokenType::Identifier, "proc1"));
+		tokens.push(QueryToken(TokenType::Identifier, "\""));
+		tokens.push(QueryToken(TokenType::Identifier, ","));
+		tokens.push(QueryToken(TokenType::Identifier, "\""));
+		tokens.push(QueryToken(TokenType::Identifier, "var1"));
+		tokens.push(QueryToken(TokenType::Identifier, "\""));
+		tokens.push(QueryToken(TokenType::Identifier, ")"));
 		PQLParser p = PQLParser();
 		Query q = p.buildQuery(tokens);
 		std::vector<QueryEntity> selectors = q.selectors;
@@ -452,31 +452,31 @@ SCENARIO("Including one such that clause") {
 }
 
 SCENARIO("Test pattern clause exact match") {
-	queue<Token> tokens;
-	tokens.push(Token(TokenType::Identifier, "assign"));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "variable"));
-	tokens.push(Token(TokenType::Identifier, "v"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "Select"));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, "pattern"));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, "("));
-	tokens.push(Token(TokenType::Identifier, "_"));
-	tokens.push(Token(TokenType::Identifier, ","));
-	tokens.push(Token(TokenType::Identifier, "\""));
-	tokens.push(Token(TokenType::Identifier, "v+x * (y8y +z)* t"));
-	tokens.push(Token(TokenType::Identifier, "\""));
-	tokens.push(Token(TokenType::Identifier, ")"));
-	tokens.push(Token(TokenType::Identifier, "such that"));
-	tokens.push(Token(TokenType::Identifier, "Modifies"));
-	tokens.push(Token(TokenType::Identifier, "("));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, ","));
-	tokens.push(Token(TokenType::Identifier, "v"));
-	tokens.push(Token(TokenType::Identifier, ")"));
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "assign"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "variable"));
+	tokens.push(QueryToken(TokenType::Identifier, "v"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, "pattern"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, "("));
+	tokens.push(QueryToken(TokenType::Identifier, "_"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, "v+x * (y8y +z)* t"));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, ")"));
+	tokens.push(QueryToken(TokenType::Identifier, "such that"));
+	tokens.push(QueryToken(TokenType::Identifier, "Modifies"));
+	tokens.push(QueryToken(TokenType::Identifier, "("));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "v"));
+	tokens.push(QueryToken(TokenType::Identifier, ")"));
 	PQLParser p = PQLParser();
 	Query q = p.buildQuery(tokens);
 	std::vector<Clause> clauses = q.clauses;
@@ -496,26 +496,26 @@ SCENARIO("Test pattern clause exact match") {
 }
 
 SCENARIO("Test pattern clause partial match") {
-	queue<Token> tokens;
-	tokens.push(Token(TokenType::Identifier, "assign"));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "variable"));
-	tokens.push(Token(TokenType::Identifier, "v"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "Select"));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, "pattern"));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, "("));
-	tokens.push(Token(TokenType::Identifier, "v"));
-	tokens.push(Token(TokenType::Identifier, ","));
-	tokens.push(Token(TokenType::Identifier, "_"));
-	tokens.push(Token(TokenType::Identifier, "\""));
-	tokens.push(Token(TokenType::Identifier, "(y+z)*t"));
-	tokens.push(Token(TokenType::Identifier, "\""));
-	tokens.push(Token(TokenType::Identifier, "_"));
-	tokens.push(Token(TokenType::Identifier, ")"));
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "assign"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "variable"));
+	tokens.push(QueryToken(TokenType::Identifier, "v"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, "pattern"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, "("));
+	tokens.push(QueryToken(TokenType::Identifier, "v"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "_"));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, "(y+z)*t"));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, "_"));
+	tokens.push(QueryToken(TokenType::Identifier, ")"));
 	PQLParser p = PQLParser();
 	Query q = p.buildQuery(tokens);
 	std::vector<Clause> clauses = q.clauses;
@@ -535,22 +535,22 @@ SCENARIO("Test pattern clause partial match") {
 }
 
 SCENARIO("Test pattern clause underscore") {
-	queue<Token> tokens;
-	tokens.push(Token(TokenType::Identifier, "assign"));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "variable"));
-	tokens.push(Token(TokenType::Identifier, "v"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "Select"));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, "pattern"));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, "("));
-	tokens.push(Token(TokenType::Identifier, "v"));
-	tokens.push(Token(TokenType::Identifier, ","));
-	tokens.push(Token(TokenType::Identifier, "_"));
-	tokens.push(Token(TokenType::Identifier, ")"));
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "assign"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "variable"));
+	tokens.push(QueryToken(TokenType::Identifier, "v"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, "pattern"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, "("));
+	tokens.push(QueryToken(TokenType::Identifier, "v"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "_"));
+	tokens.push(QueryToken(TokenType::Identifier, ")"));
 	PQLParser p = PQLParser();
 	Query q = p.buildQuery(tokens);
 	std::vector<Clause> clauses = q.clauses;
@@ -571,11 +571,11 @@ SCENARIO("Test pattern clause underscore") {
 
 // Scenarios that will throw exceptions
 SCENARIO("select nothing") {
-	queue<Token> tokens;
-	tokens.push(Token(TokenType::Identifier, "variable"));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "Select"));
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "variable"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
 	PQLParser p = PQLParser();
 	REQUIRE_THROWS_WITH(p.buildQuery(tokens), "Token Queue is empty!");
 }
@@ -583,214 +583,214 @@ SCENARIO("select nothing") {
 SCENARIO("select a entity that is not declared") {
 	SECTION("in the Select target")
 	{
-		queue<Token> tokens;
-		tokens.push(Token(TokenType::Identifier, "variable"));
-		tokens.push(Token(TokenType::Identifier, "a"));
-		tokens.push(Token(TokenType::Identifier, ";"));
-		tokens.push(Token(TokenType::Identifier, "Select"));
-		tokens.push(Token(TokenType::Identifier, "b"));
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "variable"));
+		tokens.push(QueryToken(TokenType::Identifier, "a"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "b"));
 		PQLParser p = PQLParser();
 		REQUIRE_THROWS_WITH(p.buildQuery(tokens), "No matched synonym have been declared.");
 	}
 	SECTION("in the such that clause")
 	{
-		queue<Token> tokens;
-		tokens.push(Token(TokenType::Identifier, "stmt"));
-		tokens.push(Token(TokenType::Identifier, "s"));
-		tokens.push(Token(TokenType::Identifier, ";"));
-		tokens.push(Token(TokenType::Identifier, "Select"));
-		tokens.push(Token(TokenType::Identifier, "s"));
-		tokens.push(Token(TokenType::Identifier, "such that"));
-		tokens.push(Token(TokenType::Identifier, "Parent*"));
-		tokens.push(Token(TokenType::Identifier, "("));
-		tokens.push(Token(TokenType::Identifier, "p"));
-		tokens.push(Token(TokenType::Identifier, ","));
-		tokens.push(Token(TokenType::Identifier, "_"));
-		tokens.push(Token(TokenType::Identifier, ")"));
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "stmt"));
+		tokens.push(QueryToken(TokenType::Identifier, "s"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "s"));
+		tokens.push(QueryToken(TokenType::Identifier, "such that"));
+		tokens.push(QueryToken(TokenType::Identifier, "Parent*"));
+		tokens.push(QueryToken(TokenType::Identifier, "("));
+		tokens.push(QueryToken(TokenType::Identifier, "p"));
+		tokens.push(QueryToken(TokenType::Identifier, ","));
+		tokens.push(QueryToken(TokenType::Identifier, "_"));
+		tokens.push(QueryToken(TokenType::Identifier, ")"));
 		PQLParser p = PQLParser();
 		REQUIRE_THROWS_WITH(p.buildQuery(tokens), "No matched synonym have been declared.");
 	}
 	SECTION("in the pattern clause")
 	{
-		queue<Token> tokens;
-		tokens.push(Token(TokenType::Identifier, "assign"));
-		tokens.push(Token(TokenType::Identifier, "a"));
-		tokens.push(Token(TokenType::Identifier, ";"));
-		tokens.push(Token(TokenType::Identifier, "Select"));
-		tokens.push(Token(TokenType::Identifier, "a"));
-		tokens.push(Token(TokenType::Identifier, "pattern"));
-		tokens.push(Token(TokenType::Identifier, "a1"));
-		tokens.push(Token(TokenType::Identifier, "("));
-		tokens.push(Token(TokenType::Identifier, "_"));
-		tokens.push(Token(TokenType::Identifier, ","));
-		tokens.push(Token(TokenType::Identifier, "_"));
-		tokens.push(Token(TokenType::Identifier, ")"));
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "assign"));
+		tokens.push(QueryToken(TokenType::Identifier, "a"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "a"));
+		tokens.push(QueryToken(TokenType::Identifier, "pattern"));
+		tokens.push(QueryToken(TokenType::Identifier, "a1"));
+		tokens.push(QueryToken(TokenType::Identifier, "("));
+		tokens.push(QueryToken(TokenType::Identifier, "_"));
+		tokens.push(QueryToken(TokenType::Identifier, ","));
+		tokens.push(QueryToken(TokenType::Identifier, "_"));
+		tokens.push(QueryToken(TokenType::Identifier, ")"));
 		PQLParser p = PQLParser();
 		REQUIRE_THROWS_WITH(p.buildQuery(tokens), "No matched synonym have been declared.");
 	}
 }
 
 SCENARIO("have underscore as the first argument for Modifies") {
-	queue<Token> tokens;
-	tokens.push(Token(TokenType::Identifier, "assign"));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "variable"));
-	tokens.push(Token(TokenType::Identifier, "v"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "Select"));
-	tokens.push(Token(TokenType::Identifier, "a"));
-	tokens.push(Token(TokenType::Identifier, "such that"));
-	tokens.push(Token(TokenType::Identifier, "Modifies"));
-	tokens.push(Token(TokenType::Identifier, "("));
-	tokens.push(Token(TokenType::Identifier, "_"));
-	tokens.push(Token(TokenType::Identifier, ","));
-	tokens.push(Token(TokenType::Identifier, "v"));
-	tokens.push(Token(TokenType::Identifier, ")"));
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "assign"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "variable"));
+	tokens.push(QueryToken(TokenType::Identifier, "v"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, "such that"));
+	tokens.push(QueryToken(TokenType::Identifier, "Modifies"));
+	tokens.push(QueryToken(TokenType::Identifier, "("));
+	tokens.push(QueryToken(TokenType::Identifier, "_"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "v"));
+	tokens.push(QueryToken(TokenType::Identifier, ")"));
 	PQLParser p = PQLParser();
 	REQUIRE_THROWS_WITH(p.buildQuery(tokens),
 		"semantically invalid to have underscore as the first argument for Modifies");
 }
 
 SCENARIO("have constant synonym as the argument for clauses") {
-	queue<Token> tokens;
-	tokens.push(Token(TokenType::Identifier, "constant"));
-	tokens.push(Token(TokenType::Identifier, "c"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "Select"));
-	tokens.push(Token(TokenType::Identifier, "c"));
-	tokens.push(Token(TokenType::Identifier, "such that"));
-	tokens.push(Token(TokenType::Identifier, "Uses"));
-	tokens.push(Token(TokenType::Identifier, "("));
-	tokens.push(Token(TokenType::Identifier, "\""));
-	tokens.push(Token(TokenType::Identifier, "proc1"));
-	tokens.push(Token(TokenType::Identifier, "\""));
-	tokens.push(Token(TokenType::Identifier, ","));
-	tokens.push(Token(TokenType::Identifier, "c"));
-	tokens.push(Token(TokenType::Identifier, ")"));
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "constant"));
+	tokens.push(QueryToken(TokenType::Identifier, "c"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
+	tokens.push(QueryToken(TokenType::Identifier, "c"));
+	tokens.push(QueryToken(TokenType::Identifier, "such that"));
+	tokens.push(QueryToken(TokenType::Identifier, "Uses"));
+	tokens.push(QueryToken(TokenType::Identifier, "("));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, "proc1"));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "c"));
+	tokens.push(QueryToken(TokenType::Identifier, ")"));
 	PQLParser p = PQLParser();
 	REQUIRE_THROWS_WITH(p.buildQuery(tokens), "invalid to have constant synonym as the argument for clauses");
 }
 
 SCENARIO("have procedure name as the first argument for Parent") {
-	queue<Token> tokens;
-	tokens.push(Token(TokenType::Identifier, "procedure"));
-	tokens.push(Token(TokenType::Identifier, "p"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "Select"));
-	tokens.push(Token(TokenType::Identifier, "p"));
-	tokens.push(Token(TokenType::Identifier, "such that"));
-	tokens.push(Token(TokenType::Identifier, "Parent"));
-	tokens.push(Token(TokenType::Identifier, "("));
-	tokens.push(Token(TokenType::Identifier, "\""));
-	tokens.push(Token(TokenType::Identifier, "p"));
-	tokens.push(Token(TokenType::Identifier, "\""));
-	tokens.push(Token(TokenType::Identifier, ","));
-	tokens.push(Token(TokenType::Identifier, "6"));
-	tokens.push(Token(TokenType::Identifier, ")"));
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "procedure"));
+	tokens.push(QueryToken(TokenType::Identifier, "p"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
+	tokens.push(QueryToken(TokenType::Identifier, "p"));
+	tokens.push(QueryToken(TokenType::Identifier, "such that"));
+	tokens.push(QueryToken(TokenType::Identifier, "Parent"));
+	tokens.push(QueryToken(TokenType::Identifier, "("));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, "p"));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "6"));
+	tokens.push(QueryToken(TokenType::Identifier, ")"));
 	PQLParser p = PQLParser();
 	REQUIRE_THROWS_WITH(p.buildQuery(tokens), "invalid argument combination for clauses");
 }
 
-SCENARIO("no token matched for one expect token") {
+SCENARIO("no QueryToken matched for one expect QueryToken") {
 	SECTION("no match for '('")
 	{
-		queue<Token> tokens;
-		tokens.push(Token(TokenType::Identifier, "procedure"));
-		tokens.push(Token(TokenType::Identifier, "p"));
-		tokens.push(Token(TokenType::Identifier, ";"));
-		tokens.push(Token(TokenType::Identifier, "Select"));
-		tokens.push(Token(TokenType::Identifier, "p"));
-		tokens.push(Token(TokenType::Identifier, "such that"));
-		tokens.push(Token(TokenType::Identifier, "Follows"));
-		tokens.push(Token(TokenType::Identifier, "\""));
-		tokens.push(Token(TokenType::Identifier, "p"));
-		tokens.push(Token(TokenType::Identifier, "\""));
-		tokens.push(Token(TokenType::Identifier, ","));
-		tokens.push(Token(TokenType::Identifier, "6"));
-		tokens.push(Token(TokenType::Identifier, ")"));
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "procedure"));
+		tokens.push(QueryToken(TokenType::Identifier, "p"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "p"));
+		tokens.push(QueryToken(TokenType::Identifier, "such that"));
+		tokens.push(QueryToken(TokenType::Identifier, "Follows"));
+		tokens.push(QueryToken(TokenType::Identifier, "\""));
+		tokens.push(QueryToken(TokenType::Identifier, "p"));
+		tokens.push(QueryToken(TokenType::Identifier, "\""));
+		tokens.push(QueryToken(TokenType::Identifier, ","));
+		tokens.push(QueryToken(TokenType::Identifier, "6"));
+		tokens.push(QueryToken(TokenType::Identifier, ")"));
 		PQLParser p = PQLParser();
 		REQUIRE_THROWS_WITH(p.buildQuery(tokens), "Expected '(' but got '\"'");
 	}
 	SECTION("no match for ';'")
 	{
-		queue<Token> tokens;
-		tokens.push(Token(TokenType::Identifier, "procedure"));
-		tokens.push(Token(TokenType::Identifier, "p"));
-		tokens.push(Token(TokenType::Identifier, "Select"));
-		tokens.push(Token(TokenType::Identifier, "p"));
-		tokens.push(Token(TokenType::Identifier, "such that"));
-		tokens.push(Token(TokenType::Identifier, "Follows"));
-		tokens.push(Token(TokenType::Identifier, "("));
-		tokens.push(Token(TokenType::Identifier, "\""));
-		tokens.push(Token(TokenType::Identifier, "p"));
-		tokens.push(Token(TokenType::Identifier, "\""));
-		tokens.push(Token(TokenType::Identifier, ","));
-		tokens.push(Token(TokenType::Identifier, "6"));
-		tokens.push(Token(TokenType::Identifier, ")"));
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "procedure"));
+		tokens.push(QueryToken(TokenType::Identifier, "p"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "p"));
+		tokens.push(QueryToken(TokenType::Identifier, "such that"));
+		tokens.push(QueryToken(TokenType::Identifier, "Follows"));
+		tokens.push(QueryToken(TokenType::Identifier, "("));
+		tokens.push(QueryToken(TokenType::Identifier, "\""));
+		tokens.push(QueryToken(TokenType::Identifier, "p"));
+		tokens.push(QueryToken(TokenType::Identifier, "\""));
+		tokens.push(QueryToken(TokenType::Identifier, ","));
+		tokens.push(QueryToken(TokenType::Identifier, "6"));
+		tokens.push(QueryToken(TokenType::Identifier, ")"));
 		PQLParser p = PQLParser();
 		REQUIRE_THROWS_WITH(p.buildQuery(tokens), "Expected ';' but got 'Select'");
 	}
 }
 
-SCENARIO("no token matched in a list of expect tokens") {
-	queue<Token> tokens;
-	tokens.push(Token(TokenType::Identifier, "p"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "Select"));
-	tokens.push(Token(TokenType::Identifier, "p"));
-	tokens.push(Token(TokenType::Identifier, "such that"));
-	tokens.push(Token(TokenType::Identifier, "Follows"));
-	tokens.push(Token(TokenType::Identifier, "("));
-	tokens.push(Token(TokenType::Identifier, "\""));
-	tokens.push(Token(TokenType::Identifier, "p"));
-	tokens.push(Token(TokenType::Identifier, "\""));
-	tokens.push(Token(TokenType::Identifier, ","));
-	tokens.push(Token(TokenType::Identifier, "6"));
-	tokens.push(Token(TokenType::Identifier, ")"));
+SCENARIO("no QueryToken matched in a list of expect tokens") {
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "p"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
+	tokens.push(QueryToken(TokenType::Identifier, "p"));
+	tokens.push(QueryToken(TokenType::Identifier, "such that"));
+	tokens.push(QueryToken(TokenType::Identifier, "Follows"));
+	tokens.push(QueryToken(TokenType::Identifier, "("));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, "p"));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "6"));
+	tokens.push(QueryToken(TokenType::Identifier, ")"));
 	PQLParser p = PQLParser();
 	REQUIRE_THROWS_WITH(p.buildQuery(tokens), "Expected query entity type but got 'p'");
 }
 
 SCENARIO("syn-assign is not assignment synonym in pattern clause")
 {
-	queue<Token> tokens;
-	tokens.push(Token(TokenType::Identifier, "variable"));
-	tokens.push(Token(TokenType::Identifier, "v"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "Select"));
-	tokens.push(Token(TokenType::Identifier, "v"));
-	tokens.push(Token(TokenType::Identifier, "pattern"));
-	tokens.push(Token(TokenType::Identifier, "v"));
-	tokens.push(Token(TokenType::Identifier, "("));
-	tokens.push(Token(TokenType::Identifier, "_"));
-	tokens.push(Token(TokenType::Identifier, ","));
-	tokens.push(Token(TokenType::Identifier, "_"));
-	tokens.push(Token(TokenType::Identifier, ")"));
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "variable"));
+	tokens.push(QueryToken(TokenType::Identifier, "v"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
+	tokens.push(QueryToken(TokenType::Identifier, "v"));
+	tokens.push(QueryToken(TokenType::Identifier, "pattern"));
+	tokens.push(QueryToken(TokenType::Identifier, "v"));
+	tokens.push(QueryToken(TokenType::Identifier, "("));
+	tokens.push(QueryToken(TokenType::Identifier, "_"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "_"));
+	tokens.push(QueryToken(TokenType::Identifier, ")"));
 	PQLParser p = PQLParser();
 	REQUIRE_THROWS_WITH(p.buildQuery(tokens), "syn-assign must be declared as synonym of assignment for pattern");
 }
 
 SCENARIO("wrong query entity type for the fisrt parameter of pattern")
 {
-	queue<Token> tokens;
-	tokens.push(Token(TokenType::Identifier, "assign"));
-	tokens.push(Token(TokenType::Identifier, "a1"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "procedure"));
-	tokens.push(Token(TokenType::Identifier, "p"));
-	tokens.push(Token(TokenType::Identifier, ";"));
-	tokens.push(Token(TokenType::Identifier, "Select"));
-	tokens.push(Token(TokenType::Identifier, "p"));
-	tokens.push(Token(TokenType::Identifier, "pattern"));
-	tokens.push(Token(TokenType::Identifier, "a1"));
-	tokens.push(Token(TokenType::Identifier, "("));
-	tokens.push(Token(TokenType::Identifier, "p"));
-	tokens.push(Token(TokenType::Identifier, ","));
-	tokens.push(Token(TokenType::Identifier, "\""));
-	tokens.push(Token(TokenType::Identifier, "v+ 3"));
-	tokens.push(Token(TokenType::Identifier, "\""));
-	tokens.push(Token(TokenType::Identifier, ")"));
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "assign"));
+	tokens.push(QueryToken(TokenType::Identifier, "a1"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "procedure"));
+	tokens.push(QueryToken(TokenType::Identifier, "p"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
+	tokens.push(QueryToken(TokenType::Identifier, "p"));
+	tokens.push(QueryToken(TokenType::Identifier, "pattern"));
+	tokens.push(QueryToken(TokenType::Identifier, "a1"));
+	tokens.push(QueryToken(TokenType::Identifier, "("));
+	tokens.push(QueryToken(TokenType::Identifier, "p"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, "v+ 3"));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, ")"));
 	PQLParser p = PQLParser();
 	REQUIRE_THROWS_WITH(p.buildQuery(tokens), "Invalid query entity type for fisrt parameter of pattern.");
 }
