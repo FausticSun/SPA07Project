@@ -12,10 +12,11 @@ PQLParser::PQLParser() {
 }
 
 std::queue<Token> PQLParser::parse(std::string query) {
-	PQLLexer pqlLexer;
+	/*PQLLexer pqlLexer;
 	std::queue<Token> tokens = pqlLexer.getTokenQueue(query);
 	std::queue<Token> tokens;
-	return tokens;
+	return tokens;*/
+	return std::queue<Token>{};
 }
 
 Query PQLParser::getQuery()
@@ -112,7 +113,7 @@ void PQLParser::expectTokenIn(std::vector<string> expectedTokens) {
 	}
 	if (!isIn)
 	{
-		throw std::logic_error("Expected query entity type but got '" + token.name + "'" + " " + expectedTokens[0]);
+		throw std::logic_error("Expected query entity type but got '" + token.name + "'");
 	}
 
 }
