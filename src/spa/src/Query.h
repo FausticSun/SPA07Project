@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include <queue>
 #include <vector>
 
 enum class QueryEntityType {
@@ -15,7 +16,11 @@ enum class QueryEntityType {
   Procedure,
   Expression,
   Boolean,
+  Line,
+  Name,
+  Underscore,
 };
+
 enum class ClauseType {
   Follows,
   FollowsT,
@@ -27,22 +32,44 @@ enum class ClauseType {
 };
 
 struct QueryEntity {
+  QueryEntity() {
+    this->type = QueryEntityType::Assign; // default
+    this->name = "";
+  };
+
   QueryEntity(QueryEntityType type, std::string name = "")
-      : type(type), name(name){};
+    : type(type),
+      name(name) {
+  };
+
+  bool operator==(QueryEntity other) {
+    return this->type == other.type && this->name == other.name;
+  }
+
   QueryEntityType type;
   std::string name;
 };
 
-struct Clause {
-  Clause(ClauseType clauseType, QueryEntity firstRef, QueryEntity secondRef)
-      : clauseType(ClauseType), firstRef(firstRef), secondRef(secondRef){};
+class Clause {
+public:
+  Clause(ClauseType clauseType, std::vector<QueryEntity> parameters)
+    : clauseType(clauseType),
+      parameters(parameters) {
+  };
   ClauseType clauseType;
-  QueryEntity firstRef;
-  QueryEntity secondRef;
+  std::vector<QueryEntity> parameters;
+
+  bool isValid();
 };
 
-struct Query {
-  Query();
-  std::vector<QueryEntityType> selectors;
+class Query {
+public:
+  QueryEntity target;
+  std::vector<QueryEntity> selectors;
   std::vector<Clause> clauses;
+  void setQuery(QueryEntity t, std::vector<QueryEntity> s,
+                std::vector<Clause> c);
+
+  bool isValid();
+  bool isEntity(QueryEntityType q);
 };

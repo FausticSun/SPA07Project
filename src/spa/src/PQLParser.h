@@ -1,37 +1,22 @@
 #pragma once
 
+#include "Query.h"
+#include "PQLLexer.h"
+#include "QueryToken.h"
+#include <map>
 #include <queue>
 #include <string>
-#include <tuple>
 
 using namespace std;
 
-/*DeclarationType {
-        Variable,
-        Procedure
-
-};*/
-
-/*{
-        Follows,
-        Follows*,
-        Parent,
-        Parent*,
-        UsesS,
-        UsesP,
-        ModifiesS,
-        ModifiesP
-};*/
-
-enum class RelationType {
-  Follows,
-  FollowsT,
-  Parent,
-  ParentT,
-  UsesS,
-  UsesP,
-  ModifiesS,
-  ModifiesP
+/*
+enum class DeclarationType
+{
+                Identifier,
+                Keyword,
+                Separator,
+                Operator,
+                Literal,
 };
 
 enum class DeclarationType {
@@ -46,31 +31,65 @@ enum class DeclarationType {
   Call,
   Constant
 };
-
-/*
-enum class DeclarationType
-{
-        Identifier,
-        Keyword,
-        Separator,
-        Operator,
-        Literal,
-};
 */
 
 class PQLParser {
 public:
-  PQLParser(string input);
-  queue<pair<DeclarationType, string>> getDeclarationQueue();
-  queue<tuple<RelationType, string, string>> getSelectQueue();
-  string getTarget();
+  PQLParser();
+  std::queue<QueryToken> parse(std::string);
+  Query buildQuery(std::queue<QueryToken> &tokenQueue);
+  Query getQuery();
 
 private:
-  string target;
-  queue<pair<DeclarationType, string>> declarationQueue;
-  queue<tuple<RelationType, string, string>> selectQueue;
-  void Tokenize(string input);
-  vector<string> vectorize(string);
+  std::vector<string> expectedEntityTokens = {
+      "variable", "procedure", "if",     "while",    "read",     "print",
+      "call",     "stmt",      "assign", "constant", "prog_line"};
+  std::vector<string> expectedIndicatorTokens = {"such that", "pattern"};
+  std::vector<string> expectedClauseTokens = {
+      "Follows", "Follows*", "Parent", "Parent*", "Uses", "Modifies"};
+  Query query;
+  std::queue<QueryToken> tokenQueue;
+  QueryToken token;
+  std::map<std::string, QueryEntityType> entityMaps;
+  QueryEntity target;
+  std::vector<QueryEntity> selectors;
+  std::vector<Clause> clauses;
+
+  void getNextToken();
+  void expectToken(std::string);
+  void expectTokenIn(std::vector<string>);
+  void setQueryTarget();
+  void tokenizeSelect();
+
+  void insertQueryEntityVariable();
+  void insertQueryEntityProcedure();
+  void insertQueryEntityStmt();
+  void insertQueryEntityRead();
+  void insertQueryEntityPrint();
+  void insertQueryEntityCall();
+  void insertQueryEntityAssign();
+  void insertQueryEntityIf();
+  void insertQueryEntityWhile();
+  void insertQueryEntityConstant();
+  void insertQueryEntityProgline();
+
+	QueryEntity determineQueryEntity();
+	void checkFPValidity(QueryEntity, QueryEntity);
+	void checkModifiesValidity(QueryEntity, QueryEntity);
+	void checkUsesValidity(QueryEntity, QueryEntity);
+	void insertClauseFollows();
+	void insertClauseFollowsT();
+	void insertClauseParent();
+	void insertClauseParentT();
+	void insertClauseModifiesS();
+	void insertClauseUseS();
+
+	void insertClausePattern();
+	QueryEntity parseExpression();
+	Query constructQuery();
+	bool isInt(string s);
+
+  /*void Tokenize(string input);
   void tokenizeVariable(vector<string>);
   void tokenizeCall(vector<string>);
   void tokenizeAssign(vector<string>);
@@ -91,5 +110,5 @@ private:
   void tokenizeModifies(vector<string>);
   void tokenizeModifiesP(vector<string>);
   void tokenizeUses(vector<string>);
-  void tokenizeUsesP(vector<string>);
+  void tokenizeUsesP(vector<string>);*/
 };
