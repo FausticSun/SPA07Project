@@ -72,15 +72,20 @@ private:
   void insertQueryEntityConstant();
   void insertQueryEntityProgline();
 
-  QueryEntity determineQueryEntity();
-  void insertClauseFollows();
-  void insertClauseFollowsT();
-  void insertClauseParent();
-  void insertClauseParentT();
-  void insertClauseModifiesS();
-  void insertClauseUseS();
+	QueryEntity determineQueryEntity();
+	void checkFPValidity(QueryEntity, QueryEntity);
+	void checkModifiesValidity(QueryEntity, QueryEntity);
+	void checkUsesValidity(QueryEntity, QueryEntity);
+	void insertClauseFollows();
+	void insertClauseFollowsT();
+	void insertClauseParent();
+	void insertClauseParentT();
+	void insertClauseModifiesS();
+	void insertClauseUseS();
 
-  Query constructQuery();
+	void insertClausePattern();
+	QueryEntity parseExpression();
+	Query constructQuery();
 
   /*void Tokenize(string input);
   void tokenizeVariable(vector<string>);
