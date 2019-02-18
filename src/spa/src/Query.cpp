@@ -8,8 +8,6 @@ bool Clause::isValid() {
   return true;
 }
 
-Query::Query() = default;
-Query::~Query() = default;
 
 void Query::setQuery(QueryEntity t, std::vector<QueryEntity> s, std::vector<Clause> c)
 {
