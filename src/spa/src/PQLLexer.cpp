@@ -72,12 +72,6 @@ void PQLLexer::Tokenize(string input) {
       token.erase(token.begin());
     }
 
-    if (token[0] == "call") {
-      tokenizeCall(token);
-      token.erase(token.begin());
-      token.erase(token.begin());
-    }
-
     if (token[0] == "assign") {
       tokenizeAssign(token);
       token.erase(token.begin());
@@ -421,39 +415,6 @@ vector<string> PQLLexer::tokenizeStmt(vector<string> token) {
 	}
 	return token;
 }
-
-
-vector<string> PQLLexer::tokenizeCall(vector<string> token) {
-	tokenQueue.push(make_pair(TokenType::Keyword, "call"));
-	token.erase(token.begin());
-	bool end = false;
-	while (!end) {
-		if (tokenContainCommas(token[0])) // first situation
-		{
-			tokenQueue.push(make_pair(TokenType::Identifier, SplitCommas(token[0])));
-			tokenQueue.push(make_pair(TokenType::Separator, ","));
-			token.erase(token.begin());
-		}
-		else if (tokenContainSemi(token[0])) // second situation
-		{
-			tokenQueue.push(make_pair(TokenType::Identifier, SplitSemi(token[0])));
-			tokenQueue.push(make_pair(TokenType::Separator, ";"));
-			token.erase(token.begin());
-			end = true;
-		}
-		else
-		{
-			tokenQueue.push(make_pair(TokenType::Identifier, token[0]));
-			token.erase(token.begin());
-			end = true;
-		}
-		if (!end) {
-			expectionOfSelect(token);
-		}
-	}
-	return token;
-}
-
 
 vector<string> PQLLexer::tokenizeConstant(vector<string> token) {
 	tokenQueue.push(make_pair(TokenType::Keyword, "constant"));

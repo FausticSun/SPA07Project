@@ -76,7 +76,6 @@ private:
   bool tokenContainCommas(string);
   bool tokenContainSemi(string);
   vector<string> tokenizeVariable(vector<string>);
-  vector<string> tokenizeCall(vector<string>);
   vector<string> tokenizeAssign(vector<string>);
   vector<string> tokenizeConstant(vector<string>);
   vector<string> tokenizeWhile(vector<string>);

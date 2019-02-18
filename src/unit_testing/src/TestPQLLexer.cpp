@@ -37,6 +37,70 @@ TEST_CASE("Testing basic declaration variable")
 	}
 }
 
+TEST_CASE("Testing constant a")
+{
+	const string input = "constant a; Select a;";
+	queue<pair<TokenType, string>> res;
+	PQLLexer p(input);
+
+	res = p.getTokenQueue();
+
+	SECTION("1") {
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "constant");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ";");
+		res.pop();
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "select");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ";");
+		res.pop();
+	}
+}
+
+TEST_CASE("Testing procedure a")
+{
+	const string input = "procedure a; Select a;";
+	queue<pair<TokenType, string>> res;
+	PQLLexer p(input);
+
+	res = p.getTokenQueue();
+
+	SECTION("1") {
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "procedure");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ";");
+		res.pop();
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "select");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ";");
+		res.pop();
+	}
+}
+
 TEST_CASE("Testing read a")
 {
 	const string input = "read a; Select a;";
