@@ -106,12 +106,12 @@ void PQLLexer::Tokenize(string input) {
 				token = tokenizeModifies(token);
             }
 
-            if (token[0] == "Uses") {
+             else if (token[0] == "Uses") {
 				token = tokenizeUses(token);
 
             }
 
-            if (token[0] == "Parent*") {
+             else if (token[0] == "Parent*") {
 				token = tokenizeParentT(token);
 
             } else if (token[0] == "Parent")
@@ -119,7 +119,7 @@ void PQLLexer::Tokenize(string input) {
 				token = tokenizeParent(token);
             }
 
-            if (token[0] == "Follows*") {
+            else if (token[0] == "Follows*") {
               token = tokenizeFollowsT(token);
             } else if (token[0] == "Follows") {
               token = tokenizeFollows(token);
@@ -487,11 +487,11 @@ vector<string> PQLLexer::tokenizeConstant(vector<string> token) {
 }
 
 bool PQLLexer::tokenContainCommas(string token) {
-  return (token.substr(token.length() - 1, token.length()) == ",");
+  return (token.find(",") != token.npos);
 }
 
 bool PQLLexer::tokenContainSemi(string token) {
-	return (token.substr(token.length() - 1, token.length()) == ";");
+	return (token.find(";") != token.npos);
 }
 
 void PQLLexer::expectionOfSelect(vector<string> token)
@@ -504,7 +504,7 @@ void PQLLexer::expectionOfSelect(vector<string> token)
     
   } else
   {
-	  throw invalid_argument("expect such that or patt|| token[0] == "Select"ern");
+	  throw invalid_argument("expect such that or pattern");
   }
 }
 
@@ -527,13 +527,13 @@ vector<string> PQLLexer::tokenizeSelect(vector<string> token) {
   // push the select, then for three situations: 1. "a, b". 2. "a;" 3. "a" 
   bool end = false;
   while (!end) {
-    if (tokenContainCommas(token[0])) // first situation
+    if (token[0].find(",") != token[0].npos) // first situation
     {
       tokenQueue.push(make_pair(TokenType::Identifier, SplitCommas(token[0])));
 	  target.push(token[0]);
       tokenQueue.push(make_pair(TokenType::Separator, ","));
 	  token.erase(token.begin());
-    } else if (tokenContainSemi(token[0])) // second situation
+    } else if (token[0].find(";") != token[0].npos) // second situation
     {
 		tokenQueue.push(make_pair(TokenType::Identifier, SplitSemi(token[0])));
 		target.push(token[0]);
@@ -544,10 +544,8 @@ vector<string> PQLLexer::tokenizeSelect(vector<string> token) {
     {
 		tokenQueue.push(make_pair(TokenType::Identifier, token[0]));
 		token.erase(token.begin());
-		if (token[0].find(",") != token[0].npos) {
 
-		}
-		else if (token[0].find(";")!=token[0].npos && token[0][0] == ';') {
+                if (token[0].find(";")!=token[0].npos && token[0][0] == ';') {
 			if (token[0].length() == 1) {
 				end = true;
 				tokenQueue.push(make_pair(TokenType::Separator, ";"));
@@ -558,14 +556,16 @@ vector<string> PQLLexer::tokenizeSelect(vector<string> token) {
 			}
 		}
 		else {
-			throw invalid_argument("No SemiColumn after the declaration.");
+			
 		}
+				end = true;
     }
 
 		
 
   }
-  expectionOfDeclaration(token);
+  if (!token.empty())
+  expectionOfSelect(token);
   return token;
 }
 
@@ -633,7 +633,7 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 			  tokenQueue.push(make_pair(TokenType::Identifier, first_s));
 		  } else
 		  {
-			  throw "first parameter format error";
+			  throw invalid_argument("first parameter format error");
 		  }
 		}
 		tokenQueue.push(make_pair(TokenType::Separator, ","));
@@ -645,7 +645,7 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 			  tokenQueue.push(make_pair(TokenType::Identifier, "_"));
                   } else
                   {
-					  throw "cannot have a variable on the right";
+					  throw invalid_argument("cannot have a variable on the right");
                   }
                 } else
                 {
@@ -686,7 +686,7 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 	else
 	{
 		
-		throw "should be end";
+		throw invalid_argument("should be end");
 		
 	}
 	return token;
@@ -743,7 +743,7 @@ vector<string> PQLLexer::tokenizeFollows(vector<string> token) {
 				  tokenQueue.push(make_pair(TokenType::Separator, ")"));
 			  } else
 			  {
-				  throw "lack , or ; or ( or )";
+				  throw invalid_argument("lack , or ; or ( or )");
 			  }
             
   if(s.find(";") != s.npos)
@@ -761,7 +761,7 @@ vector<string> PQLLexer::tokenizeFollows(vector<string> token) {
       
     } else
     {
-		throw "should be ; or pattern";
+		throw invalid_argument("should be ; or pattern");
     }
   }
   return token;
@@ -820,7 +820,7 @@ vector<string> PQLLexer::tokenizeFollowsT(vector<string> token) {
 	}
 	else
 	{
-		throw "lack , or ; or ( or )";
+		throw invalid_argument("lack , or ; or ( or )");
 	}
 
 	if (s.find(";") != s.npos)
@@ -840,7 +840,7 @@ vector<string> PQLLexer::tokenizeFollowsT(vector<string> token) {
 		}
 		else
 		{
-			throw "should be ; or pattern";
+			throw invalid_argument("should be ; or pattern");
 		}
 	}
 	return token;
@@ -899,7 +899,7 @@ vector<string> PQLLexer::tokenizeParent(vector<string> token) {
 	}
 	else
 	{
-		throw "lack , or ; or ( or )";
+		throw invalid_argument("lack , or ; or ( or )");
 	}
 
 	if (s.find(";") != s.npos)
@@ -919,7 +919,7 @@ vector<string> PQLLexer::tokenizeParent(vector<string> token) {
 		}
 		else
 		{
-			throw "should be ; or pattern";
+			throw invalid_argument("should be ; or pattern");
 		}
 	}
 	return token;
@@ -978,7 +978,7 @@ vector<string> PQLLexer::tokenizeParentT(vector<string> token) {
 	}
 	else
 	{
-		throw "lack , or ; or ( or )";
+		throw invalid_argument("lack , or ; or ( or )");
 	}
 
 	if (s.find(";") != s.npos)
@@ -998,7 +998,7 @@ vector<string> PQLLexer::tokenizeParentT(vector<string> token) {
 		}
 		else
 		{
-			throw "should be ; or pattern";
+			throw invalid_argument("should be ; or pattern");
 		}
 	}
 	return token;
@@ -1010,6 +1010,7 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 	int check = 1;
 	int n0 = -1, n1 = -1, n2 = -1, n3, iter = 0;
 	string s;
+	string second_s;
 	// KEYWORD, "(" "," ")" ";"
 
 	while (!token.empty() && check == 1)
@@ -1051,12 +1052,28 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 		tokenQueue.push(make_pair(TokenType::Separator, "("));
 		tokenQueue.push(make_pair(TokenType::Identifier, s.substr(n0 + 1, n1 - 1 - n0)));
 		tokenQueue.push(make_pair(TokenType::Separator, ","));
-		tokenQueue.push(make_pair(TokenType::Identifier, s.substr(n1 + 1, n2 - 1 - n1)));
+		second_s = s.substr(n1 + 1, n2 - 1 - n1);
+		if (second_s.length() == 1)
+		{
+
+			tokenQueue.push(make_pair(TokenType::Identifier, second_s));
+
+
+		}
+		else
+		{
+			if (second_s[0] == '\"' && second_s[second_s.length() - 1] == '\"')
+			{
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+				tokenQueue.push(make_pair(TokenType::Identifier, second_s.substr(1, second_s.length() - 2)));
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+			}
+		}
 		tokenQueue.push(make_pair(TokenType::Separator, ")"));
 	}
 	else
 	{
-		throw "lack , or ; or ( or )";
+		throw invalid_argument("lack , or ; or ( or )");
 	}
 
 	if (s.find(";") != s.npos)
@@ -1076,7 +1093,7 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 		}
 		else
 		{
-			throw "should be ; or pattern";
+			throw invalid_argument("should be ; or pattern");
 		}
 	}
 	return token;
@@ -1089,6 +1106,7 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 	int check = 1;
 	int n0 = -1, n1 = -1, n2 = -1, n3, iter = 0;
 	string s;
+	string second_s;
 	// KEYWORD, "(" "," ")" ";"
 
 	while (!token.empty() && check == 1)
@@ -1130,12 +1148,28 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 		tokenQueue.push(make_pair(TokenType::Separator, "("));
 		tokenQueue.push(make_pair(TokenType::Identifier, s.substr(n0 + 1, n1 - 1 - n0)));
 		tokenQueue.push(make_pair(TokenType::Separator, ","));
-		tokenQueue.push(make_pair(TokenType::Identifier, s.substr(n1 + 1, n2 - 1 - n1)));
+		second_s = s.substr(n1 + 1, n2 - 1 - n1);
+		if (second_s.length() == 1)
+		{
+
+			tokenQueue.push(make_pair(TokenType::Identifier, second_s));
+			
+
+		}
+		else
+		{
+                if (second_s[0] == '\"' && second_s[second_s.length() - 1] == '\"')
+			{
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+				tokenQueue.push(make_pair(TokenType::Identifier, second_s.substr(1, second_s.length() - 2)));
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+			}
+		}
 		tokenQueue.push(make_pair(TokenType::Separator, ")"));
 	}
 	else
 	{
-		throw "lack , or ; or ( or )";
+		throw invalid_argument("lack , or ; or ( or )");
 	}
 
 	if (s.find(";") != s.npos)
@@ -1155,7 +1189,7 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 		}
 		else
 		{
-			throw "should be ; or pattern";
+			throw invalid_argument("should be ; or pattern");
 		}
 	}
 	return token;
