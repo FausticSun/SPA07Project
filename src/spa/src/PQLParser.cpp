@@ -320,7 +320,7 @@ void PQLParser::insertQueryEntityProgline() {
   }
 }
 
-bool isInt(string s) {
+bool PQLParser::isInt(string s) {
   if (s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+')))
     return false;
 

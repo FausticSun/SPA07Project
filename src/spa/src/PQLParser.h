@@ -86,6 +86,7 @@ private:
 	void insertClausePattern();
 	QueryEntity parseExpression();
 	Query constructQuery();
+	bool isInt(string s);
 
   /*void Tokenize(string input);
   void tokenizeVariable(vector<string>);
