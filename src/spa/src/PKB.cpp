@@ -1,8 +1,26 @@
 #include "PKB.h"
 
-void PKB::insertVar(const std::string &var) { this->varTable.insert(var); }
+void PKB::insertVar(const std::string &var) {
+  if (this->procTable.find(var) == this->procTable.end()) {
+    this->varTable.insert(var);
+  } else {
+    throw std::invalid_argument(
+        var + " is already used for a Procedure. "
+              "Cannot have two procedures or variables having the same name.");
+  }
+}
 
-void PKB::insertProc(const std::string &proc) { this->procTable.insert(proc); }
+void PKB::insertProc(const std::string &proc) {
+  if (this->varTable.find(proc) == this->varTable.end() &&
+      this->procTable.find(proc) == this->procTable.end()) {
+    this->procTable.insert(proc);
+  } else {
+    throw std::invalid_argument(proc +
+                                " is already used for a Procedure or Variable. "
+                                "Cannot have two procedures or "
+                                "variables having the same name.");
+  }
+}
 
 void PKB::insertConstant(const int constant) {
   this->constTable.insert(std::to_string(constant));
@@ -45,9 +63,7 @@ void PKB::setModifies(std::string s, std::string t) {
   this->modifiesTable.setRelation(s, t);
 }
 
-const std::set<std::string> PKB::getVarTable() const {
-  return this->varTable;
-}
+const std::set<std::string> PKB::getVarTable() const { return this->varTable; }
 
 const std::set<std::string> PKB::getProcTable() const {
   return this->procTable;
@@ -57,8 +73,7 @@ const std::set<std::string> PKB::getConstTable() const {
   return this->constTable;
 }
 
-const std::set<std::string> 
-PKB::getStatementsOfType(StatementType type) const {
+const std::set<std::string> PKB::getStatementsOfType(StatementType type) const {
   if (type == StatementType::Stmt) {
     std::set<std::string> allStmt;
     for (int i = 1; i <= stmtCount; i++) {
@@ -66,11 +81,11 @@ PKB::getStatementsOfType(StatementType type) const {
     }
     return allStmt;
   } else {
-      if (this->stmtTable.find(type) != this->stmtTable.end()) {
-	return this->stmtTable.at(type);
-      } else {
-	return std::set<std::string>();
-      }
+    if (this->stmtTable.find(type) != this->stmtTable.end()) {
+      return this->stmtTable.at(type);
+    } else {
+      return std::set<std::string>();
+    }
   }
 }
 
