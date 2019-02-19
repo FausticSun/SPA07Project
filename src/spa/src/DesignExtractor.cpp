@@ -2,6 +2,7 @@
 
 DesignExtractor::DesignExtractor(std::unique_ptr<TNode> &AST) : pkb(new PKB()) {
   traverseAST(AST);
+  deriveUsesAndModifies();
 }
 
 std::unique_ptr<PKB> DesignExtractor::getPKB() { return std::move(pkb); }
@@ -15,28 +16,33 @@ void DesignExtractor::traverseAST(std::unique_ptr<TNode> &AST) {
     pkb->insertVar(AST->name);
     break;
   case TNodeType::If:
-    pkb->insertStatement(std::to_string(AST->statementNumber), StatementType::If);
+    pkb->insertStatement(std::to_string(AST->statementNumber),
+                         StatementType::If);
     extractParent(AST);
 
     extractUses(AST->children.front(), AST->statementNumber);
     break;
   case TNodeType::While:
-    pkb->insertStatement(std::to_string(AST->statementNumber), StatementType::While);
+    pkb->insertStatement(std::to_string(AST->statementNumber),
+                         StatementType::While);
     extractParent(AST);
 
     extractUses(AST->children.front(), AST->statementNumber);
     break;
   case TNodeType::Assign:
-    pkb->insertStatement(std::to_string(AST->statementNumber), StatementType::Assign);
+    pkb->insertStatement(std::to_string(AST->statementNumber),
+                         StatementType::Assign);
     extractUses(AST->children.back(), AST->statementNumber);
     extractModifies(AST->children.front(), AST->statementNumber);
     break;
   case TNodeType::Print:
-    pkb->insertStatement(std::to_string(AST->statementNumber), StatementType::Print);
+    pkb->insertStatement(std::to_string(AST->statementNumber),
+                         StatementType::Print);
     extractUses(AST->children.front(), AST->statementNumber);
     break;
   case TNodeType::Read:
-    pkb->insertStatement(std::to_string(AST->statementNumber), StatementType::Read);
+    pkb->insertStatement(std::to_string(AST->statementNumber),
+                         StatementType::Read);
     extractModifies(AST->children.front(), AST->statementNumber);
   case TNodeType::StatementList:
     extractFollows(AST);
@@ -112,6 +118,7 @@ void DesignExtractor::extractParent(std::unique_ptr<TNode> &AST) {
         extractParentT((*childIt), AST->statementNumber);
         break;
       default:
+        pkb->setParentT(AST->statementNumber, (*childIt)->statementNumber);
         break;
       }
     }
