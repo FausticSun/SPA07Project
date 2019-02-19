@@ -1,6 +1,9 @@
 #include "SPA.h"
 #include "DesignExtractor.h"
 #include "Lexer.h"
+#include "PQLEvaluator.h"
+#include "PQLLexer.h"
+#include "PQLParser.h"
 #include "Parser.h"
 #include "PqlEvaluator.h"
 #include <fstream>
@@ -16,10 +19,11 @@ void SPA::parseSIMPLEFile(std::string filename) {
   std::unique_ptr<PKB> newPKB = designExtractor.getPKB();
   pkb.swap(newPKB);
 }
-const std::list<std::string> SPA::evaluateQuery(std::string query) const {
-  // (void)query;
-  // PqlEvaluator pe(pkb);
-  // list<string> results = pe.evaluateQuery(query);
-  //  return results;
-  return {};
+const std::list<std::string> SPA::evaluateQuery(std::string queryString) const {
+  PQLParser pqlParser;
+  auto tokens = pqlParser.parse(queryString);
+  auto query = pqlParser.buildQuery(tokens);
+  PqlEvaluator pe(*pkb);
+  auto results = pe.executeQuery(query);
+  return results;
 }
