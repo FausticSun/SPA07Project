@@ -12,7 +12,7 @@ class Lexer {
 public:
   Lexer();
   ~Lexer();
-  vector<Token> tokenizeFile(string filePath);
+  queue<Token> tokenizeFile(string filePath);
   vector<Token> tokenize(string);
 
 private:
