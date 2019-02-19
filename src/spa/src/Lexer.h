@@ -16,15 +16,18 @@ public:
   vector<Token> tokenize(string);
 
 private:
-  int statementLine;
   vector<string> vectorize(string);
+  string convertQueueToString(queue<string>);
   vector<Token> tokenizeProcedure(vector<string>);
   vector<Token> tokenizeAssignment(vector<string>);
   vector<Token> tokenizeRead(vector<string>);
   vector<Token> tokenizePrint(vector<string>);
+  vector<Token> tokenizeIf(vector<string>);
+  vector<Token> tokenizeWhile(vector<string>);
   Token pushIdentifier(string);
+  Token pushSeparator(string);
   Token pushOperator(string);
-  Token pushToken(string);
+  Token getToken(string);
   bool isIdentifier(string);
   bool isSeparator(string);
   bool isOperator(string);
