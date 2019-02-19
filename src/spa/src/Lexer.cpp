@@ -24,10 +24,10 @@ queue<Token> Lexer::tokenizeFile(string filePath) {
   queue<Token> allTokensInFile;
   string line;
   while (getline(inputFile, line)) {
-	  vector<Token> allTokensInLine = tokenize(line);
-	  for (Token i : allTokensInLine) {
-		  allTokensInFile.push(i);
-	  }
+    vector<Token> allTokensInLine = tokenize(line);
+    for (Token i : allTokensInLine) {
+      allTokensInFile.push(i);
+    }
   }
   inputFile.close();
   return allTokensInFile;
@@ -45,75 +45,72 @@ vector<Token> Lexer::tokenize(string input) {
   } else if (find(tokens.begin(), tokens.end(), "read") != tokens.end()) {
     return tokenizeRead(tokens);
   } else if (find(tokens.begin(), tokens.end(), "print") != tokens.end()) {
-	  return tokenizePrint(tokens);
+    return tokenizePrint(tokens);
   } else if (find(tokens.begin(), tokens.end(), "if") != tokens.end()) {
-	  return tokenizeIf(tokens);
+    return tokenizeIf(tokens);
   } else if (find(tokens.begin(), tokens.end(), "while") != tokens.end()) {
-	  return tokenizeWhile(tokens);
+    return tokenizeWhile(tokens);
   } else {
     throw "Invalid statement";
   }
 }
 vector<string> Lexer::vectorize(string input) {
-	vector<string> tokens;
-	queue<string> current;
+  vector<string> tokens;
+  queue<string> current;
 
-	for (char& c : input) {
-		string temp;
-		temp.push_back(c);
+  for (char &c : input) {
+    string temp;
+    temp.push_back(c);
 
-		if (isspace(c)) {
-			if (!current.empty()) {
-				tokens.push_back(convertQueueToString(current));
-				queue<string> empty;
-				swap(current, empty);
-			}
-		}
-		else if (isSeparator(temp)) {
-			if (!current.empty()) {
-				tokens.push_back(convertQueueToString(current));
-				queue<string> empty;
-				swap(current, empty);
-			}
+    if (isspace(c)) {
+      if (!current.empty()) {
+        tokens.push_back(convertQueueToString(current));
+        queue<string> empty;
+        swap(current, empty);
+      }
+    } else if (isSeparator(temp)) {
+      if (!current.empty()) {
+        tokens.push_back(convertQueueToString(current));
+        queue<string> empty;
+        swap(current, empty);
+      }
 
-			tokens.push_back(temp);
-		}
-		else if (isOperator(temp)) { //current queue only contains Operator or Letter/Number
-			if (!current.empty()) {
-				if (!isOperator(current.back())) { //queue currently stores variable
-					tokens.push_back(convertQueueToString(current));
-					queue<string> empty;
-					swap(current, empty);
-				}
-			}
-			current.push(temp);
-		}
-		else { // is either letter or digit
-			if (!current.empty()) {
-				if (isOperator(current.back())) { // queue currently stores operators
-					tokens.push_back(convertQueueToString(current));
-					queue<string> empty;
-					swap(current, empty);
-				}
-			}
-			current.push(temp);
-		}
-	}
-	for (auto i : tokens) {
-		cout << i << " " ;
-	}
-	return tokens;
+      tokens.push_back(temp);
+    } else if (isOperator(temp)) { // current queue only contains Operator or
+                                   // Letter/Number
+      if (!current.empty()) {
+        if (!isOperator(current.back())) { // queue currently stores variable
+          tokens.push_back(convertQueueToString(current));
+          queue<string> empty;
+          swap(current, empty);
+        }
+      }
+      current.push(temp);
+    } else { // is either letter or digit
+      if (!current.empty()) {
+        if (isOperator(current.back())) { // queue currently stores operators
+          tokens.push_back(convertQueueToString(current));
+          queue<string> empty;
+          swap(current, empty);
+        }
+      }
+      current.push(temp);
+    }
+  }
+  for (auto i : tokens) {
+    cout << i << " ";
+  }
+  return tokens;
 }
 
-
 string Lexer::convertQueueToString(queue<string> q) {
-	string result;
-	while (!q.empty()) {
-		result += q.front();
-		q.pop();
-	}
+  string result;
+  while (!q.empty()) {
+    result += q.front();
+    q.pop();
+  }
 
-	return result;
+  return result;
 }
 
 vector<Token> Lexer::tokenizeProcedure(vector<string> tokens) {
@@ -127,7 +124,6 @@ vector<Token> Lexer::tokenizeProcedure(vector<string> tokens) {
 
 vector<Token> Lexer::tokenizeAssignment(vector<string> tokens) {
   vector<Token> toAST;
-  toAST.push_back(Token(TokenType::Assign, "assign"));
 
   for (auto i : tokens) {
     toAST.push_back(getToken(i));
@@ -161,34 +157,34 @@ vector<Token> Lexer::tokenizePrint(vector<string> tokens) {
 }
 
 vector<Token> Lexer::tokenizeIf(vector<string> tokens) {
-	vector<Token> toAST;
-	toAST.push_back(Token(TokenType::If, "if"));
-	tokens.erase(tokens.begin());
+  vector<Token> toAST;
+  toAST.push_back(Token(TokenType::If, "if"));
+  tokens.erase(tokens.begin());
 
-	for (auto i : tokens) {
-		toAST.push_back(getToken(i));
-	}
+  for (auto i : tokens) {
+    toAST.push_back(getToken(i));
+  }
 
-	return toAST;
+  return toAST;
 }
 
 vector<Token> Lexer::tokenizeWhile(vector<string> tokens) {
-	vector<Token> toAST;
-	toAST.push_back(Token(TokenType::While, "while"));
-	tokens.erase(tokens.begin());
+  vector<Token> toAST;
+  toAST.push_back(Token(TokenType::While, "while"));
+  tokens.erase(tokens.begin());
 
-	for (auto i : tokens) {
-		toAST.push_back(getToken(i));
-	}
+  for (auto i : tokens) {
+    toAST.push_back(getToken(i));
+  }
 
-	return toAST;
+  return toAST;
 }
 
 Token Lexer::getToken(string s) {
   if (isConstant(s)) {
     return Token(TokenType::Constant, s);
   } else if (isSeparator(s)) {
-	  return pushSeparator(s);
+    return pushSeparator(s);
   } else if (isOperator(s)) {
     return pushOperator(s);
   } else if (isIdentifier(s)) {
@@ -208,15 +204,13 @@ Token Lexer::pushIdentifier(string s) {
 }
 
 Token Lexer::pushSeparator(string s) {
-	if (s == "(") {
-		return Token(TokenType::OpenParenthesis, s);
-	}
-	else if (s == ")") {
-		return Token(TokenType::CloseParenthesis, s);
-	}
-	else {
-		return Token(TokenType::Separator, s);
-	}
+  if (s == "(") {
+    return Token(TokenType::OpenParenthesis, s);
+  } else if (s == ")") {
+    return Token(TokenType::CloseParenthesis, s);
+  } else {
+    return Token(TokenType::Separator, s);
+  }
 }
 
 Token Lexer::pushOperator(string s) {
@@ -235,15 +229,15 @@ Token Lexer::pushOperator(string s) {
   } else if (s == ">") {
     return Token(TokenType::Greater, s);
   } else if (s == "<") {
-	  return Token(TokenType::Lesser, s);
+    return Token(TokenType::Lesser, s);
   } else if (s == "==") {
-	  return Token(TokenType::Equal, s);
+    return Token(TokenType::Equal, s);
   } else if (s == ">=") {
-	  return Token(TokenType::GreaterThanOrEqual, s);
+    return Token(TokenType::GreaterThanOrEqual, s);
   } else if (s == "<=") {
-	  return Token(TokenType::LesserThanOrEqual, s);
+    return Token(TokenType::LesserThanOrEqual, s);
   } else if (s == "!=") {
-	  return Token(TokenType::NotEqual, s);
+    return Token(TokenType::NotEqual, s);
   }
 }
 
@@ -256,13 +250,13 @@ bool Lexer::isIdentifier(string s) {
 }
 
 bool Lexer::isSeparator(string s) {
-	return (s == ";" || s == "{" || s == "}" ||
-		s == "(" || s == ")");
+  return (s == ";" || s == "{" || s == "}" || s == "(" || s == ")");
 }
 
 bool Lexer::isOperator(string s) {
   return (s == "+" || s == "-" || s == "*" || s == "/" || s == "=" ||
-          s == "!" || s == ">" || s == "<" || s == "==" || s == ">=" || s == "<=" || s == "!=");
+          s == "!" || s == ">" || s == "<" || s == "==" || s == ">=" ||
+          s == "<=" || s == "!=");
 }
 
 bool Lexer::isConstant(string s) {
