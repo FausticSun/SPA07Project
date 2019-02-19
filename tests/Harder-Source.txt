@@ -1,0 +1,13 @@
+procedure main {
+  a = 2;
+  b = a;
+  c = a + b;
+  print z;
+  read y;
+  d = (a + b) * 3 / 4;
+  while (a == b){
+  g = g;
+  while (h == i){
+  print u;}
+  c = d;}
+  x = 1;}
