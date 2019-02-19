@@ -26,7 +26,7 @@ TEST_CASE("Testing basic declaration variable")
 		res.pop();
 
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "a");
@@ -56,7 +56,7 @@ TEST_CASE("Testing constant a")
 		res.pop();
 
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "a");
@@ -85,7 +85,7 @@ TEST_CASE("Testing procedure a")
 		res.pop();
 
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "a");
@@ -114,7 +114,7 @@ TEST_CASE("Testing read a")
 		res.pop();
 
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "a");
@@ -143,7 +143,7 @@ TEST_CASE("Testing print a")
 		res.pop();
 
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "a");
@@ -172,7 +172,7 @@ TEST_CASE("Testing while a")
 		res.pop();
 
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "a");
@@ -201,7 +201,7 @@ TEST_CASE("Testing if a")
 		res.pop();
 
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "a");
@@ -230,7 +230,7 @@ TEST_CASE("Testing assign a")
 		res.pop();
 
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "a");
@@ -238,7 +238,7 @@ TEST_CASE("Testing assign a")
 	}
 }
 
-TEST_CASE("Testing follows")
+TEST_CASE("Testing Follows")
 {
 	const string input = "assign a; while w; Select a such that Follows (w, a)";
 	queue<pair<TokenType, string>> res;
@@ -267,7 +267,7 @@ TEST_CASE("Testing follows")
 		REQUIRE(res.front().second == ";");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "a");
@@ -276,7 +276,7 @@ TEST_CASE("Testing follows")
 		REQUIRE(res.front().second == "such that");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "follows");
+		REQUIRE(res.front().second == "Follows");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == "(");
@@ -296,9 +296,9 @@ TEST_CASE("Testing follows")
 	}
 }
 
-TEST_CASE("Testing follows(1, s)")
+TEST_CASE("Testing Follows(1, s)")
 {
-	const string input = "assign a; statement s; variable v; Select s such that Follows (1, s)";
+	const string input = "assign a; stmt s; variable v; Select s such that Follows (1, s)";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -315,7 +315,7 @@ TEST_CASE("Testing follows(1, s)")
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");
 		res.pop();
-		REQUIRE(res.front().second == "statement");
+		REQUIRE(res.front().second == "stmt");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -333,7 +333,7 @@ TEST_CASE("Testing follows(1, s)")
 		REQUIRE(res.front().second == ";");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -342,7 +342,7 @@ TEST_CASE("Testing follows(1, s)")
 		REQUIRE(res.front().second == "such that");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "follows");
+		REQUIRE(res.front().second == "Follows");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == "(");
@@ -362,9 +362,9 @@ TEST_CASE("Testing follows(1, s)")
 	}
 }
 
-TEST_CASE("Testing follows*(1, s)")
+TEST_CASE("Testing Follows*(1, s)")
 {
-	const string input = "assign a; statement s; variable v; Select s such that Follows* (1, s)";
+	const string input = "assign a; stmt s; variable v; Select s such that Follows* (1, s)";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -381,7 +381,7 @@ TEST_CASE("Testing follows*(1, s)")
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");
 		res.pop();
-		REQUIRE(res.front().second == "statement");
+		REQUIRE(res.front().second == "stmt");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -399,7 +399,7 @@ TEST_CASE("Testing follows*(1, s)")
 		REQUIRE(res.front().second == ";");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -408,7 +408,7 @@ TEST_CASE("Testing follows*(1, s)")
 		REQUIRE(res.front().second == "such that");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "follows*");
+		REQUIRE(res.front().second == "Follows*");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == "(");
@@ -448,7 +448,7 @@ TEST_CASE("Testing + pattern")
 		REQUIRE(res.front().second == ";");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "a");
@@ -483,9 +483,9 @@ TEST_CASE("Testing + pattern")
 	}
 }
 
-TEST_CASE("Testing parents(3, s)")
+TEST_CASE("Testing Parents(3, s)")
 {
-	const string input = "assign a; statement s; variable v; Select s such that Parent (3, s)";
+	const string input = "assign a; stmt s; variable v; Select s such that Parent (3, s)";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -502,7 +502,7 @@ TEST_CASE("Testing parents(3, s)")
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");
 		res.pop();
-		REQUIRE(res.front().second == "statement");
+		REQUIRE(res.front().second == "stmt");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -520,7 +520,7 @@ TEST_CASE("Testing parents(3, s)")
 		REQUIRE(res.front().second == ";");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -529,7 +529,7 @@ TEST_CASE("Testing parents(3, s)")
 		REQUIRE(res.front().second == "such that");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "parent");
+		REQUIRE(res.front().second == "Parent");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == "(");
@@ -549,9 +549,9 @@ TEST_CASE("Testing parents(3, s)")
 	}
 }
 
-TEST_CASE("Testing parent*(3, s)")
+TEST_CASE("Testing Parent*(3, s)")
 {
-	const string input = "assign a; statement s; variable v; Select s such that Parent* (3, s)";
+	const string input = "assign a; stmt s; variable v; Select s such that Parent* (3, s)";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -568,7 +568,7 @@ TEST_CASE("Testing parent*(3, s)")
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");
 		res.pop();
-		REQUIRE(res.front().second == "statement");
+		REQUIRE(res.front().second == "stmt");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -586,7 +586,7 @@ TEST_CASE("Testing parent*(3, s)")
 		REQUIRE(res.front().second == ";");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -595,7 +595,7 @@ TEST_CASE("Testing parent*(3, s)")
 		REQUIRE(res.front().second == "such that");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "parent*");
+		REQUIRE(res.front().second == "Parent*");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == "(");
@@ -615,9 +615,9 @@ TEST_CASE("Testing parent*(3, s)")
 	}
 }
 
-TEST_CASE("Testing modifies(3, s)")
+TEST_CASE("Testing Modifies(3, s)")
 {
-	const string input = "assign a; statement s; variable v; Select s such that Modifies (3, s)";
+	const string input = "assign a; stmt s; variable v; Select s such that Modifies (3, s)";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -634,7 +634,7 @@ TEST_CASE("Testing modifies(3, s)")
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");
 		res.pop();
-		REQUIRE(res.front().second == "statement");
+		REQUIRE(res.front().second == "stmt");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -652,7 +652,7 @@ TEST_CASE("Testing modifies(3, s)")
 		REQUIRE(res.front().second == ";");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -661,7 +661,7 @@ TEST_CASE("Testing modifies(3, s)")
 		REQUIRE(res.front().second == "such that");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "modifies");
+		REQUIRE(res.front().second == "Modifies");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == "(");
@@ -681,9 +681,9 @@ TEST_CASE("Testing modifies(3, s)")
 	}
 }
 
-TEST_CASE("Testing modifies(a, 'x')")
+TEST_CASE("Testing Modifies(a, 'x')")
 {
-	const string input = "assign a; statement s; variable v; Select a such that Modifies (a, \"x\")";
+	const string input = "assign a; stmt s; variable v; Select a such that Modifies (a, \"x\")";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -700,7 +700,7 @@ TEST_CASE("Testing modifies(a, 'x')")
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");
 		res.pop();
-		REQUIRE(res.front().second == "statement");
+		REQUIRE(res.front().second == "stmt");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -718,7 +718,7 @@ TEST_CASE("Testing modifies(a, 'x')")
 		REQUIRE(res.front().second == ";");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "a");
@@ -727,7 +727,7 @@ TEST_CASE("Testing modifies(a, 'x')")
 		REQUIRE(res.front().second == "such that");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "modifies");
+		REQUIRE(res.front().second == "Modifies");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == "(");
@@ -753,9 +753,9 @@ TEST_CASE("Testing modifies(a, 'x')")
 	}
 }
 
-TEST_CASE("Testing uses(a, 'x')")
+TEST_CASE("Testing Uses(a, 'x')")
 {
-	const string input = "assign a; statement s; variable v; Select a such that Uses (a, \"x\")";
+	const string input = "assign a; stmt s; variable v; Select a such that Uses (a, \"x\")";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -772,7 +772,7 @@ TEST_CASE("Testing uses(a, 'x')")
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");
 		res.pop();
-		REQUIRE(res.front().second == "statement");
+		REQUIRE(res.front().second == "stmt");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -790,7 +790,7 @@ TEST_CASE("Testing uses(a, 'x')")
 		REQUIRE(res.front().second == ";");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "a");
@@ -799,7 +799,7 @@ TEST_CASE("Testing uses(a, 'x')")
 		REQUIRE(res.front().second == "such that");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "uses");
+		REQUIRE(res.front().second == "Uses");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == "(");
@@ -845,7 +845,7 @@ TEST_CASE("Testing + pattern1")
 		REQUIRE(res.front().second == ";");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "select");
+		REQUIRE(res.front().second == "Select");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "a");
@@ -889,12 +889,12 @@ SCENARIO("Only declare one variable a") {
   tokens.push(Token(TokenType::Identifier, ";"));
   PQLParser p = PQLParser();
   Query q = p.buildQuery(tokens);
-  std::vector<QueryEntity> selectors = q.selectors;
+  std::vector<QueryEntity> Selectors = q.Selectors;
 >>>>>>> develop:src/unit_testing/src/TestPQLParser.cpp
 
   WHEN("Parsed") {
-    REQUIRE(selectors.size() == 1);
-    QueryEntity qe = selectors.front();
+    REQUIRE(Selectors.size() == 1);
+    QueryEntity qe = Selectors.front();
     REQUIRE(qe.name == "a");
     REQUIRE(qe.type == QueryEntityType::Variable);
   }
@@ -909,12 +909,12 @@ SCENARIO("Declare 2 variables a and b") {
   tokens.push(Token(TokenType::Identifier, ";"));
   PQLParser p = PQLParser();
   Query q = p.buildQuery(tokens);
-  std::vector<QueryEntity> selectors = q.selectors;
+  std::vector<QueryEntity> Selectors = q.Selectors;
 
 <<<<<<< HEAD:src/unit_testing/src/TestPQLLexer.cpp
-TEST_CASE("Testing basic select")
+TEST_CASE("Testing basic Select")
 {
-	const string input = "select a";
+	const string input = "Select a";
 	//queue<tuple<RelationType, string, string>> res;
 	string t;
 	PQLLexer p(input);
@@ -927,9 +927,9 @@ TEST_CASE("Testing basic select")
 
 }
 
-TEST_CASE("Testing basic declaration variable and select this variable")
+TEST_CASE("Testing basic declaration variable and Select this variable")
 {
-	const string input = "variable a; select a";
+	const string input = "variable a; Select a";
 	queue<pair<DeclarationType, string>> resd;
 	queue<tuple<RelationType, string, string>> ress;
 	string t;
@@ -950,9 +950,9 @@ TEST_CASE("Testing basic declaration variable and select this variable")
 	}
 =======
   WHEN("Parsed") {
-    REQUIRE(selectors.size() == 2);
-    QueryEntity qe1 = selectors.front();
-    QueryEntity qe2 = selectors[1];
+    REQUIRE(Selectors.size() == 2);
+    QueryEntity qe1 = Selectors.front();
+    QueryEntity qe2 = Selectors[1];
     REQUIRE(qe1.name == "a");
     REQUIRE(qe1.type == QueryEntityType::Variable);
     REQUIRE(qe2.name == "b");
@@ -973,14 +973,14 @@ SCENARIO("Declare several different type of query entities, one for each") {
   tokens.push(Token(TokenType::Identifier, ";"));
   PQLParser p = PQLParser();
   Query q = p.buildQuery(tokens);
-  std::vector<QueryEntity> selectors = q.selectors;
+  std::vector<QueryEntity> Selectors = q.Selectors;
 >>>>>>> develop:src/unit_testing/src/TestPQLParser.cpp
 
   WHEN("Parsed") {
-    REQUIRE(selectors.size() == 3);
-    QueryEntity qe1 = selectors.front();
-    QueryEntity qe2 = selectors[1];
-    QueryEntity qe3 = selectors[2];
+    REQUIRE(Selectors.size() == 3);
+    QueryEntity qe1 = Selectors.front();
+    QueryEntity qe2 = Selectors[1];
+    QueryEntity qe3 = Selectors[2];
     REQUIRE(qe1.name == "a");
     REQUIRE(qe1.type == QueryEntityType::Variable);
     REQUIRE(qe2.name == "p");
@@ -994,7 +994,7 @@ SCENARIO("Declare several different type of query entities, one for each") {
 TEST_CASE("Testing basic declaration procedure")
 {
 	const string input = "procedure a;";
-	const string input1 = "select a";
+	const string input1 = "Select a";
 	queue<pair<DeclarationType, string>> res;
 	queue<tuple<RelationType, string, string>> res1;
 	string t;
@@ -1028,17 +1028,17 @@ SCENARIO("Declare several different type of query entities, several for each") {
   tokens.push(Token(TokenType::Identifier, ";"));
   PQLParser p = PQLParser();
   Query q = p.buildQuery(tokens);
-  std::vector<QueryEntity> selectors = q.selectors;
+  std::vector<QueryEntity> Selectors = q.Selectors;
 >>>>>>> develop:src/unit_testing/src/TestPQLParser.cpp
 
   WHEN("Parsed") {
-    REQUIRE(selectors.size() == 6);
-    QueryEntity qe1 = selectors.front();
-    QueryEntity qe2 = selectors[1];
-    QueryEntity qe3 = selectors[2];
-    QueryEntity qe4 = selectors[3];
-    QueryEntity qe5 = selectors[4];
-    QueryEntity qe6 = selectors[5];
+    REQUIRE(Selectors.size() == 6);
+    QueryEntity qe1 = Selectors.front();
+    QueryEntity qe2 = Selectors[1];
+    QueryEntity qe3 = Selectors[2];
+    QueryEntity qe4 = Selectors[3];
+    QueryEntity qe5 = Selectors[4];
+    QueryEntity qe6 = Selectors[5];
     REQUIRE(qe1.name == "r1");
     REQUIRE(qe1.type == QueryEntityType::Read);
     REQUIRE(qe2.name == "r2");
@@ -1063,13 +1063,13 @@ SCENARIO("Select all variables") {
   tokens.push(Token(TokenType::Identifier, "a"));
   PQLParser p = PQLParser();
   Query q = p.buildQuery(tokens);
-  std::vector<QueryEntity> selectors = q.selectors;
+  std::vector<QueryEntity> Selectors = q.Selectors;
   QueryEntity tar = q.target;
 
 <<<<<<< HEAD:src/unit_testing/src/TestPQLLexer.cpp
-TEST_CASE("Testing basic declaration procedure and select this procedure")
+TEST_CASE("Testing basic declaration procedure and Select this procedure")
 {
-	const string input = "procedure a; select a";
+	const string input = "procedure a; Select a";
 	queue<pair<DeclarationType, string>> resd;
 	queue<tuple<RelationType, string, string>> ress;
 	string t;
@@ -1093,8 +1093,8 @@ TEST_CASE("Testing basic declaration procedure and select this procedure")
 
 
   WHEN("Parsed") {
-    REQUIRE(selectors.size() == 1);
-    QueryEntity qe = selectors.front();
+    REQUIRE(Selectors.size() == 1);
+    QueryEntity qe = Selectors.front();
     REQUIRE(qe.name == "a");
     REQUIRE(qe.type == QueryEntityType::Variable);
     REQUIRE(tar.name == "a");
@@ -1102,7 +1102,7 @@ TEST_CASE("Testing basic declaration procedure and select this procedure")
   }
 }
 
-SCENARIO("Including one such that clause") {
+SCENARIO("Including one such that claUse") {
   queue<Token> tokens;
   tokens.push(Token(TokenType::Identifier, "assign"));
   tokens.push(Token(TokenType::Identifier, "a"));
@@ -1118,21 +1118,21 @@ SCENARIO("Including one such that clause") {
   tokens.push(Token(TokenType::Identifier, ")"));
   PQLParser p = PQLParser();
   Query q = p.buildQuery(tokens);
-  std::vector<QueryEntity> selectors = q.selectors;
-  std::vector<Clause> clauses = q.clauses;
+  std::vector<QueryEntity> Selectors = q.Selectors;
+  std::vector<ClaUse> claUses = q.claUses;
   QueryEntity tar = q.target;
 
   WHEN("Parsed") {
-    REQUIRE(selectors.size() == 1);
-    QueryEntity qe = selectors.front();
+    REQUIRE(Selectors.size() == 1);
+    QueryEntity qe = Selectors.front();
     REQUIRE(qe.name == "a");
     REQUIRE(qe.type == QueryEntityType::Assign);
     REQUIRE(tar.name == "a");
     REQUIRE(tar.type == QueryEntityType::Assign);
-    REQUIRE(clauses.size() == 1);
-    Clause c = clauses.front();
+    REQUIRE(claUses.size() == 1);
+    ClaUse c = claUses.front();
     std::vector<QueryEntity> parameters = c.parameters;
-    REQUIRE(c.clauseType == ClauseType::Follows);
+    REQUIRE(c.claUseType == ClaUseType::Follows);
     REQUIRE(parameters[0].name == "a");
     REQUIRE(parameters[0].type == QueryEntityType::Assign);
     REQUIRE(parameters[1].name == "5");
@@ -1158,8 +1158,8 @@ SCENARIO("Including one such that clause") {
 //  }
 //}
 //
-// TEST_CASE("Testing basic select") {
-//  const string input = "select a";
+// TEST_CASE("Testing basic Select") {
+//  const string input = "Select a";
 //  // queue<tuple<RelationType, string, string>> res;
 //  string t;
 //  PQLParser p(input);
@@ -1168,8 +1168,8 @@ SCENARIO("Including one such that clause") {
 //  SECTION("discover the targer is a") { REQUIRE(t == "a"); }
 //}
 //
-// TEST_CASE("Testing basic declaration variable and select this variable") {
-//  const string input = "variable a; select a";
+// TEST_CASE("Testing basic declaration variable and Select this variable") {
+//  const string input = "variable a; Select a";
 //  queue<pair<DeclarationType, string>> resd;
 //  queue<tuple<RelationType, string, string>> ress;
 //  string t;
@@ -1189,7 +1189,7 @@ SCENARIO("Including one such that clause") {
 //
 // TEST_CASE("Testing basic declaration procedure") {
 //  const string input = "procedure a;";
-//  const string input1 = "select a";
+//  const string input1 = "Select a";
 //  queue<pair<DeclarationType, string>> res;
 //  queue<tuple<RelationType, string, string>> res1;
 //  string t;
@@ -1205,8 +1205,8 @@ SCENARIO("Including one such that clause") {
 //  }
 //}
 //
-// TEST_CASE("Testing basic declaration procedure and select this procedure") {
-//  const string input = "procedure a; select a";
+// TEST_CASE("Testing basic declaration procedure and Select this procedure") {
+//  const string input = "procedure a; Select a";
 //  queue<pair<DeclarationType, string>> resd;
 //  queue<tuple<RelationType, string, string>> ress;
 //  string t;

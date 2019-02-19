@@ -38,7 +38,7 @@ void PQLLexer::Tokenize(string input) {
       tokenizeVariable(token);
       token.erase(token.begin());
       token.erase(token.begin());
-    } else if (token[0] == "statement") {
+    } else if (token[0] == "stmt") {
       tokenizeStmt(token);
       token.erase(token.begin());
       token.erase(token.begin());
@@ -342,7 +342,7 @@ vector<string> PQLLexer::tokenizeAssign(vector<string> token) {
 
 
 vector<string> PQLLexer::tokenizeStmt(vector<string> token) {
-  tokenQueue.push(make_pair(TokenType::Keyword, "statement"));
+  tokenQueue.push(make_pair(TokenType::Keyword, "stmt"));
   token.erase(token.begin());
   bool end = false;
   while (!end) {
@@ -416,7 +416,7 @@ void PQLLexer::expectionOfSelect(vector<string> token) {
 }
 
 void PQLLexer::expectionOfDeclaration(vector<string> token) {
-  if (token[0] == "Select" || token[0] == "statement" || token[0] == "read"
+  if (token[0] == "Select" || token[0] == "stmt" || token[0] == "read"
       || token[0] == "print" || token[0] == "while" || token[0] == "if"
       || token[0] == "assign" || token[0] == "variable" || token[0] ==
       "constant"
@@ -429,7 +429,7 @@ void PQLLexer::expectionOfDeclaration(vector<string> token) {
 
 vector<string> PQLLexer::tokenizeSelect(vector<string> token) {
 
-  tokenQueue.push(make_pair(TokenType::Keyword, "select"));
+  tokenQueue.push(make_pair(TokenType::Keyword, "Select"));
   token.erase(token.begin());
   // push the select, then for three situations: 1. "a, b". 2. "a;" 3. "a" 
   bool end = false;
@@ -607,7 +607,7 @@ vector<string> PQLLexer::tokenizeFollows(vector<string> token) {
     }
   }
   if (n0 != -1 && n1 != -1 && n2 != -1) {
-    tokenQueue.push(make_pair(TokenType::Keyword, "follows"));
+    tokenQueue.push(make_pair(TokenType::Keyword, "Follows"));
     tokenQueue.push(make_pair(TokenType::Separator, "("));
     tokenQueue.push(make_pair(TokenType::Identifier,
                               s.substr(n0 + 1, n1 - 1 - n0)));
@@ -669,7 +669,7 @@ vector<string> PQLLexer::tokenizeFollowsT(vector<string> token) {
 		}
 	}
 	if (n0 != -1 && n1 != -1 && n2 != -1) {
-		tokenQueue.push(make_pair(TokenType::Keyword, "follows*"));
+		tokenQueue.push(make_pair(TokenType::Keyword, "Follows*"));
 		tokenQueue.push(make_pair(TokenType::Separator, "("));
 		tokenQueue.push(make_pair(TokenType::Identifier,
 			s.substr(n0 + 1, n1 - 1 - n0)));
@@ -735,7 +735,7 @@ vector<string> PQLLexer::tokenizeParent(vector<string> token) {
 		}
 	}
 	if (n0 != -1 && n1 != -1 && n2 != -1) {
-		tokenQueue.push(make_pair(TokenType::Keyword, "parent"));
+		tokenQueue.push(make_pair(TokenType::Keyword, "Parent"));
 		tokenQueue.push(make_pair(TokenType::Separator, "("));
 		tokenQueue.push(make_pair(TokenType::Identifier,
 			s.substr(n0 + 1, n1 - 1 - n0)));
@@ -801,7 +801,7 @@ vector<string> PQLLexer::tokenizeParentT(vector<string> token) {
 		}
 	}
 	if (n0 != -1 && n1 != -1 && n2 != -1) {
-		tokenQueue.push(make_pair(TokenType::Keyword, "parent*"));
+		tokenQueue.push(make_pair(TokenType::Keyword, "Parent*"));
 		tokenQueue.push(make_pair(TokenType::Separator, "("));
 		tokenQueue.push(make_pair(TokenType::Identifier,
 			s.substr(n0 + 1, n1 - 1 - n0)));
@@ -876,7 +876,7 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 		}
 	}
 	if (n0 != -1 && n1 != -1 && n2 != -1) {
-		tokenQueue.push(make_pair(TokenType::Keyword, "uses"));
+		tokenQueue.push(make_pair(TokenType::Keyword, "Uses"));
 		tokenQueue.push(make_pair(TokenType::Separator, "("));
 		tokenQueue.push(make_pair(TokenType::Identifier, s.substr(n0 + 1, n1 - 1 - n0)));
 		tokenQueue.push(make_pair(TokenType::Separator, ","));
@@ -966,7 +966,7 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 		}
 	}
 	if (n0 != -1 && n1 != -1 && n2 != -1) {
-		tokenQueue.push(make_pair(TokenType::Keyword, "modifies"));
+		tokenQueue.push(make_pair(TokenType::Keyword, "Modifies"));
 		tokenQueue.push(make_pair(TokenType::Separator, "("));
 		tokenQueue.push(make_pair(TokenType::Identifier, s.substr(n0 + 1, n1 - 1 - n0)));
 		tokenQueue.push(make_pair(TokenType::Separator, ","));
