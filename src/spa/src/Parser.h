@@ -8,7 +8,6 @@
 class Parser {
 public:
   Parser();
-  std::queue<Token> parse(std::string);
   std::unique_ptr<TNode> buildAst(std::queue<Token> &tokenQueue);
 
 private:
