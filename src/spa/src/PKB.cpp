@@ -58,7 +58,11 @@ PKB::getStatementsOfType(StatementType type) const {
     }
     return allStmt;
   } else {
-    return this->stmtTable.at(type);
+      if (this->stmtTable.find(type) != this->stmtTable.end()) {
+	return this->stmtTable.at(type);
+      } else {
+	return std::set<std::string>();
+      }
   }
 }
 
