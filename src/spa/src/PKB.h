@@ -37,6 +37,7 @@ public:
   void insertProc(const std::string &);
   void insertStatement(const std::string &, StatementType);
   void insertConstant(int);
+  void insertAssign(int, std::string &, std::string &);
   void setFollows(int, int);
   void setFollowsT(int, int);
   void setParent(int, int);
