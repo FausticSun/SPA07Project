@@ -1,9 +1,9 @@
 #pragma once
 
-#include<string>
-#include<queue>
-#include<tuple>
-#include<iostream>
+#include "Token.h"
+#include <queue>
+#include <string>
+#include <tuple>
 
 using namespace std;
 
@@ -26,36 +26,26 @@ using namespace std;
 
 enum class TokenType
 {
-	Follows,
-	FollowsT,
-	Parent,
-	ParentT,
-	UsesS,
-	UsesP,
-	ModifiesS,
-	ModifiesP,
-	Variable,
-	Procedure,
-	Read,
-	Print,
-	While,
-	If,
-	Stmt,
-	Assign,
-	Call,
-	Constant,
+        Follows,
+        FollowsT,
+        Parent,
+        ParentT,
+        UsesS,
+        UsesP,
+        ModifiesS,
+        ModifiesP,
+        Variable,
+        Procedure,
+        Read,
+        Print,
+        While,
+        If,
+        Stmt,
+        Assign,
+        Call,
+        Constant,
         Separator
 };*/
-
-
-enum class TokenType {
-  Identifier,
-  Keyword,
-  Separator,
-  Operator,
-  Literal,
-};
-
 
 class PQLLexer {
 public:
