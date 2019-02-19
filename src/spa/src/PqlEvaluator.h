@@ -53,8 +53,4 @@ private:
   bool isPro(string result, QueryEntityType q);
   bool isCons(string result, QueryEntityType q);
   StatementType convertQType(QueryEntityType q);
-
-  /*map<string, QueryEntityType> executeDeclaration(const vector<QueryEntity>
-  &selectors); vector<ClauseResult> excuteClauses(const vector<Clause>
-  &clauses); int analyseClauseConstants(const Clause &clause);*/
 };

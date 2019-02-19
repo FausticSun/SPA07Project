@@ -156,8 +156,8 @@ list<string> PqlEvaluator::executeSimpleQuery(QueryEntityType q) {
     list<string> temp(vars.begin(), vars.end());
     results = temp;
   } else if (q == QueryEntityType::Constant) {
-    /*set<string> cons = mypkb.getConstTable();
-    list<string> temp(cons.begin(), cons.end());*/
+    set<string> vars = mypkb.getConstTable();
+    list<string> temp(vars.begin(), vars.end());
     return results;
   } else {
     set<string> vars = mypkb.getStatementsOfType(convertQType(q));
