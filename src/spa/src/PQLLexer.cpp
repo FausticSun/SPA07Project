@@ -79,23 +79,23 @@ void PQLLexer::Tokenize(string input) {
             token.erase(token.begin());
             token.erase(token.begin());
             while (!token.empty()) {
-              if (token[0] == "Modifies") {
+              if (token[0] == "Modifies" || (token[0].find("Modifies") != token[0].npos && token[0][8] == '(')) {
                 token = tokenizeModifies(token);
-              } else if (token[0] == "Uses") {
+              } else if (token[0] == "Uses" || (token[0].find("Uses") != token[0].npos && token[0][4] == '(')) {
                 token = tokenizeUses(token);
 
-              } else if (token[0] == "Parent*") {
+              } else if (token[0] == "Parent*" || (token[0].find("Parent*") != token[0].npos && token[0][7] == '(')) {
                 token = tokenizeParentT(token);
 
-              } else if (token[0] == "Parent") {
+              } else if (token[0] == "Parent" || (token[0].find("Parent") != token[0].npos && token[0][6] == '(')) {
                 token = tokenizeParent(token);
-              } else if (token[0] == "Follows*") {
+              } else if (token[0] == "Follows*" || (token[0].find("Follows*") != token[0].npos && token[0][8] == '(')) {
                 token = tokenizeFollowsT(token);
-              } else if (token[0] == "Follows") {
+              } else if (token[0] == "Follows" || (token[0].find("Follows") != token[0].npos && token[0][7] == '(')) {
                 token = tokenizeFollows(token);
               }
             }
-          } else if (token[0] == "pattern") {
+          } else if (token[0] == "pattern" || (token[0].find("pattern") != token[0].npos && token[0][7] == '(')) {
             token = tokenizePattern(token);
           }
         }
@@ -555,16 +555,24 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
     }
     tokenQueue.push(make_pair(TokenType::Separator, ")"));
   } else {
-    throw "lack , or ; or ( or )";
+    throw "lack , or ( or )";
   }
-
+  
   if (s.find(';') != s.npos) {
     /*tokenQueue.push(make_pair(TokenType::Separator, ";"));*/
 	  throw invalid_argument("no semicollumn");
-  } else if (!token.empty() && token[0].find(";") != token[0].npos) {
+  } else if (!token.empty() && token[0] == "such" && token[1].find("that") != token[1].npos) {
     /*tokenQueue.push(make_pair(TokenType::Separator, ";"));*/
-	  throw invalid_argument("no semicollumn");
-    token.erase(token.begin());
+	  tokenQueue.push(make_pair(TokenType::Keyword, "such that"));
+          if (token[1].length() != 4)
+          {
+	        token[1] = token[1].substr(4, token[1].length() - 4);
+			token.erase(token.begin());
+          } else
+          {
+			  token.erase(token.begin());
+			  token.erase(token.begin());
+          }
   } else {
 
 	
@@ -621,9 +629,20 @@ vector<string> PQLLexer::tokenizeFollows(vector<string> token) {
 
   if (s.find(";") != s.npos) {
 	  throw invalid_argument("no semicollumn");
-  } else if (!token.empty() && token[0].find(";") != token[0].npos) {
-	  throw invalid_argument("no semicollumn");
-    token.erase(token.begin());
+  }
+  else if (!token.empty() && token[0] == "such" && token[1].find("that") != token[1].npos) {
+	  /*tokenQueue.push(make_pair(TokenType::Separator, ";"));*/
+	  tokenQueue.push(make_pair(TokenType::Keyword, "such that"));
+	  if (token[1].length() != 4)
+	  {
+		  token[1] = token[1].substr(4, token[1].length() - 4);
+		  token.erase(token.begin());
+	  }
+	  else
+	  {
+		  token.erase(token.begin());
+		  token.erase(token.begin());
+	  }
   } else {
     //if (!token.empty() && token[0] == "pattern") {
 
@@ -685,9 +704,20 @@ vector<string> PQLLexer::tokenizeFollowsT(vector<string> token) {
 	if (s.find(";") != s.npos) {
 		throw invalid_argument("no semicollumn");
 	}
-	else if (!token.empty() && token[0].find(";") != token[0].npos) {
-		throw invalid_argument("no semicollumn");
-		token.erase(token.begin());
+
+	else if (!token.empty() && token[0] == "such" && token[1].find("that") != token[1].npos) {
+		/*tokenQueue.push(make_pair(TokenType::Separator, ";"));*/
+		tokenQueue.push(make_pair(TokenType::Keyword, "such that"));
+		if (token[1].length() != 4)
+		{
+			token[1] = token[1].substr(4, token[1].length() - 4);
+			token.erase(token.begin());
+		}
+		else
+		{
+			token.erase(token.begin());
+			token.erase(token.begin());
+		}
 	}
 	else {
 		//if (!token.empty() && token[0] == "pattern") {
@@ -751,9 +781,21 @@ vector<string> PQLLexer::tokenizeParent(vector<string> token) {
 	if (s.find(";") != s.npos) {
 		throw invalid_argument("no semicollumn");
 	}
-	else if (!token.empty() && token[0].find(";") != token[0].npos) {
-		throw invalid_argument("no semicollumn");
-		token.erase(token.begin());
+
+	else if (!token.empty() && token[0] == "such" && token[1].find("that") != token[1].npos) {
+		/*tokenQueue.push(make_pair(TokenType::Separator, ";"));*/
+		tokenQueue.push(make_pair(TokenType::Keyword, "such that"));
+		if (token[1].length() != 4)
+		{
+			token[1] = token[1].substr(4, token[1].length() - 4);
+			token.erase(token.begin());
+		}
+		else
+		{
+			token.erase(token.begin());
+			token.erase(token.begin());
+		}
+
 	}
 	else {
 		//if (!token.empty() && token[0] == "pattern") {
@@ -765,7 +807,8 @@ vector<string> PQLLexer::tokenizeParent(vector<string> token) {
 	}
 	return token;
 
-}
+	}
+
 
 
 vector<string> PQLLexer::tokenizeParentT(vector<string> token) {
@@ -908,10 +951,19 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 	{
 		throw invalid_argument("no semicollumn");
 	}
-	else if (!token.empty() && token[0].find(";") != token[0].npos)
-	{
-		throw invalid_argument("no semicollumn");
-		token.erase(token.begin());
+	else if (!token.empty() && token[0] == "such" && token[1].find("that") != token[1].npos) {
+		/*tokenQueue.push(make_pair(TokenType::Separator, ";"));*/
+		tokenQueue.push(make_pair(TokenType::Keyword, "such that"));
+		if (token[1].length() != 4)
+		{
+			token[1] = token[1].substr(4, token[1].length() - 4);
+			token.erase(token.begin());
+		}
+		else
+		{
+			token.erase(token.begin());
+			token.erase(token.begin());
+		}
 	}
 	else
 	{
@@ -1001,10 +1053,19 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 	{
 		throw invalid_argument("no semicollumn");
 	}
-	else if (!token.empty() && token[0].find(";") != token[0].npos)
-	{
-		throw invalid_argument("no semicollumn");
-		token.erase(token.begin());
+	else if (!token.empty() && token[0] == "such" && token[1].find("that") != token[1].npos) {
+		/*tokenQueue.push(make_pair(TokenType::Separator, ";"));*/
+		tokenQueue.push(make_pair(TokenType::Keyword, "such that"));
+		if (token[1].length() != 4)
+		{
+			token[1] = token[1].substr(4, token[1].length() - 4);
+			token.erase(token.begin());
+		}
+		else
+		{
+			token.erase(token.begin());
+			token.erase(token.begin());
+		}
 	}
 	else
 	{

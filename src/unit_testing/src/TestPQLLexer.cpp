@@ -240,7 +240,7 @@ TEST_CASE("Testing assign a")
 
 TEST_CASE("Testing Follows")
 {
-	const string input = "assign a; while w; Select a such that Follows (w, a)";
+	const string input = "assign a; while w; Select a such that Follows(w, a)";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
