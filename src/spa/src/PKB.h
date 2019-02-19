@@ -42,7 +42,9 @@ public:
   void setParent(int, int);
   void setParentT(int, int);
   void setUses(int, std::string);
+  void setUses(std::string, std::string);
   void setModifies(int, std::string);
+  void setModifies(std::string, std::string);
   const std::set<std::string> getVarTable() const;
   const std::set<std::string> getProcTable() const;
   const std::set<std::string> getConstTable() const;

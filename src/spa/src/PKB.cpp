@@ -33,8 +33,16 @@ void PKB::setUses(int s, std::string t) {
   this->usesTable.setRelation(std::to_string(s), t);
 }
 
+void PKB::setUses(std::string s, std::string t) {
+  this->usesTable.setRelation(s, t);
+}
+
 void PKB::setModifies(int s, std::string t) {
   this->modifiesTable.setRelation(std::to_string(s), t);
+}
+
+void PKB::setModifies(std::string s, std::string t) {
+  this->modifiesTable.setRelation(s, t);
 }
 
 const std::set<std::string> PKB::getVarTable() const {
