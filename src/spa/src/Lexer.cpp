@@ -45,7 +45,11 @@ vector<Token> Lexer::tokenize(string input) {
   } else if (find(tokens.begin(), tokens.end(), "read") != tokens.end()) {
     return tokenizeRead(tokens);
   } else if (find(tokens.begin(), tokens.end(), "print") != tokens.end()) {
-    return tokenizePrint(tokens);
+	  return tokenizePrint(tokens);
+  } else if (find(tokens.begin(), tokens.end(), "if") != tokens.end()) {
+	  return tokenizeIf(tokens);
+  } else if (find(tokens.begin(), tokens.end(), "while") != tokens.end()) {
+	  return tokenizeWhile(tokens);
   } else {
     throw "Invalid statement";
   }
@@ -156,6 +160,30 @@ vector<Token> Lexer::tokenizePrint(vector<string> tokens) {
   return toAST;
 }
 
+vector<Token> Lexer::tokenizeIf(vector<string> tokens) {
+	vector<Token> toAST;
+	toAST.push_back(Token(TokenType::If, "if"));
+	tokens.erase(tokens.begin());
+
+	for (auto i : tokens) {
+		toAST.push_back(getToken(i));
+	}
+
+	return toAST;
+}
+
+vector<Token> Lexer::tokenizeWhile(vector<string> tokens) {
+	vector<Token> toAST;
+	toAST.push_back(Token(TokenType::While, "while"));
+	tokens.erase(tokens.begin());
+
+	for (auto i : tokens) {
+		toAST.push_back(getToken(i));
+	}
+
+	return toAST;
+}
+
 Token Lexer::getToken(string s) {
   if (isConstant(s)) {
     return Token(TokenType::Constant, s);
@@ -214,6 +242,8 @@ Token Lexer::pushOperator(string s) {
 	  return Token(TokenType::GreaterThanOrEqual, s);
   } else if (s == "<=") {
 	  return Token(TokenType::LesserThanOrEqual, s);
+  } else if (s == "!=") {
+	  return Token(TokenType::NotEqual, s);
   }
 }
 
@@ -232,7 +262,7 @@ bool Lexer::isSeparator(string s) {
 
 bool Lexer::isOperator(string s) {
   return (s == "+" || s == "-" || s == "*" || s == "/" || s == "=" ||
-          s == "!" || s == ">" || s == "<" || s == "==" || s == ">=" || s == "<=");
+          s == "!" || s == ">" || s == "<" || s == "==" || s == ">=" || s == "<=" || s == "!=");
 }
 
 bool Lexer::isConstant(string s) {
