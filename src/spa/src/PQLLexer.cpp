@@ -38,7 +38,7 @@ void PQLLexer::Tokenize(string input) {
       tokenizeVariable(token);
       token.erase(token.begin());
       token.erase(token.begin());
-    } else if (token[0] == "statement") {
+    } else if (token[0] == "stmt") {
       tokenizeStmt(token);
       token.erase(token.begin());
       token.erase(token.begin());
@@ -342,7 +342,7 @@ vector<string> PQLLexer::tokenizeAssign(vector<string> token) {
 
 
 vector<string> PQLLexer::tokenizeStmt(vector<string> token) {
-  tokenQueue.push(make_pair(TokenType::Keyword, "statement"));
+  tokenQueue.push(make_pair(TokenType::Keyword, "stmt"));
   token.erase(token.begin());
   bool end = false;
   while (!end) {
@@ -416,7 +416,7 @@ void PQLLexer::expectionOfSelect(vector<string> token) {
 }
 
 void PQLLexer::expectionOfDeclaration(vector<string> token) {
-  if (token[0] == "Select" || token[0] == "statement" || token[0] == "read"
+  if (token[0] == "Select" || token[0] == "stmt" || token[0] == "read"
       || token[0] == "print" || token[0] == "while" || token[0] == "if"
       || token[0] == "assign" || token[0] == "variable" || token[0] ==
       "constant"

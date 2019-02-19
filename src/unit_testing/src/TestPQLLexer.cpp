@@ -298,7 +298,7 @@ TEST_CASE("Testing Follows")
 
 TEST_CASE("Testing Follows(1, s)")
 {
-	const string input = "assign a; statement s; variable v; Select s such that Follows (1, s)";
+	const string input = "assign a; stmt s; variable v; Select s such that Follows (1, s)";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -315,7 +315,7 @@ TEST_CASE("Testing Follows(1, s)")
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");
 		res.pop();
-		REQUIRE(res.front().second == "statement");
+		REQUIRE(res.front().second == "stmt");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -364,7 +364,7 @@ TEST_CASE("Testing Follows(1, s)")
 
 TEST_CASE("Testing Follows*(1, s)")
 {
-	const string input = "assign a; statement s; variable v; Select s such that Follows* (1, s)";
+	const string input = "assign a; stmt s; variable v; Select s such that Follows* (1, s)";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -381,7 +381,7 @@ TEST_CASE("Testing Follows*(1, s)")
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");
 		res.pop();
-		REQUIRE(res.front().second == "statement");
+		REQUIRE(res.front().second == "stmt");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -485,7 +485,7 @@ TEST_CASE("Testing + pattern")
 
 TEST_CASE("Testing Parents(3, s)")
 {
-	const string input = "assign a; statement s; variable v; Select s such that Parent (3, s)";
+	const string input = "assign a; stmt s; variable v; Select s such that Parent (3, s)";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -502,7 +502,7 @@ TEST_CASE("Testing Parents(3, s)")
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");
 		res.pop();
-		REQUIRE(res.front().second == "statement");
+		REQUIRE(res.front().second == "stmt");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -551,7 +551,7 @@ TEST_CASE("Testing Parents(3, s)")
 
 TEST_CASE("Testing Parent*(3, s)")
 {
-	const string input = "assign a; statement s; variable v; Select s such that Parent* (3, s)";
+	const string input = "assign a; stmt s; variable v; Select s such that Parent* (3, s)";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -568,7 +568,7 @@ TEST_CASE("Testing Parent*(3, s)")
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");
 		res.pop();
-		REQUIRE(res.front().second == "statement");
+		REQUIRE(res.front().second == "stmt");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -617,7 +617,7 @@ TEST_CASE("Testing Parent*(3, s)")
 
 TEST_CASE("Testing Modifies(3, s)")
 {
-	const string input = "assign a; statement s; variable v; Select s such that Modifies (3, s)";
+	const string input = "assign a; stmt s; variable v; Select s such that Modifies (3, s)";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -634,7 +634,7 @@ TEST_CASE("Testing Modifies(3, s)")
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");
 		res.pop();
-		REQUIRE(res.front().second == "statement");
+		REQUIRE(res.front().second == "stmt");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -683,7 +683,7 @@ TEST_CASE("Testing Modifies(3, s)")
 
 TEST_CASE("Testing Modifies(a, 'x')")
 {
-	const string input = "assign a; statement s; variable v; Select a such that Modifies (a, \"x\")";
+	const string input = "assign a; stmt s; variable v; Select a such that Modifies (a, \"x\")";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -700,7 +700,7 @@ TEST_CASE("Testing Modifies(a, 'x')")
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");
 		res.pop();
-		REQUIRE(res.front().second == "statement");
+		REQUIRE(res.front().second == "stmt");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
@@ -755,7 +755,7 @@ TEST_CASE("Testing Modifies(a, 'x')")
 
 TEST_CASE("Testing Uses(a, 'x')")
 {
-	const string input = "assign a; statement s; variable v; Select a such that Uses (a, \"x\")";
+	const string input = "assign a; stmt s; variable v; Select a such that Uses (a, \"x\")";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -772,7 +772,7 @@ TEST_CASE("Testing Uses(a, 'x')")
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");
 		res.pop();
-		REQUIRE(res.front().second == "statement");
+		REQUIRE(res.front().second == "stmt");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
