@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Query.h"
-#include "Token.h"
+#include "PQLLexer.h"
+#include "QueryToken.h"
 #include <map>
 #include <queue>
 #include <string>
@@ -35,8 +36,8 @@ enum class DeclarationType {
 class PQLParser {
 public:
   PQLParser();
-  std::queue<Token> parse(std::string);
-  Query buildQuery(std::queue<Token> &tokenQueue);
+  std::queue<QueryToken> parse(std::string);
+  Query buildQuery(std::queue<QueryToken> &tokenQueue);
   Query getQuery();
 
 private:
@@ -47,8 +48,8 @@ private:
   std::vector<string> expectedClauseTokens = {
       "Follows", "Follows*", "Parent", "Parent*", "Uses", "Modifies"};
   Query query;
-  std::queue<Token> tokenQueue;
-  Token token;
+  std::queue<QueryToken> tokenQueue;
+  QueryToken token;
   std::map<std::string, QueryEntityType> entityMaps;
   QueryEntity target;
   std::vector<QueryEntity> selectors;
@@ -72,15 +73,21 @@ private:
   void insertQueryEntityConstant();
   void insertQueryEntityProgline();
 
-  QueryEntity determineQueryEntity();
-  void insertClauseFollows();
-  void insertClauseFollowsT();
-  void insertClauseParent();
-  void insertClauseParentT();
-  void insertClauseModifiesS();
-  void insertClauseUseS();
+	QueryEntity determineQueryEntity();
+	void checkFPValidity(QueryEntity, QueryEntity);
+	void checkModifiesValidity(QueryEntity, QueryEntity);
+	void checkUsesValidity(QueryEntity, QueryEntity);
+	void insertClauseFollows();
+	void insertClauseFollowsT();
+	void insertClauseParent();
+	void insertClauseParentT();
+	void insertClauseModifiesS();
+	void insertClauseUseS();
 
-  Query constructQuery();
+	void insertClausePattern();
+	QueryEntity parseExpression();
+	Query constructQuery();
+	bool isInt(string s);
 
   /*void Tokenize(string input);
   void tokenizeVariable(vector<string>);

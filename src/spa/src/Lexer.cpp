@@ -15,19 +15,17 @@ Lexer::Lexer() { int statementLine = 0; }
 
 Lexer::~Lexer() {}
 
-vector<Token> Lexer::tokenizeFile(string filePath) {
+queue<Token> Lexer::tokenizeFile(string filePath) {
   ifstream inputFile;
   inputFile.open(filePath);
   if (!inputFile) {
     throw invalid_argument("FileNotFoundException: " + filePath);
   }
-  vector<Token> allTokens;
+  queue<Token> allTokens;
   string line;
   statementLine = 0;
   while (getline(inputFile, line)) {
-    statementLine++;
-    vector<Token> tokens = tokenize(line);
-    allTokens.insert(allTokens.end(), tokens.begin(), tokens.end());
+    // to be implemented
   }
   inputFile.close();
   return allTokens;

@@ -36,8 +36,16 @@ struct QueryEntity {
     this->type = QueryEntityType::Assign; // default
     this->name = "";
   };
+
   QueryEntity(QueryEntityType type, std::string name = "")
-      : type(type), name(name){};
+    : type(type),
+      name(name) {
+  };
+
+  bool operator==(QueryEntity other) {
+    return this->type == other.type && this->name == other.name;
+  }
+
   QueryEntityType type;
   std::string name;
 };
@@ -45,7 +53,9 @@ struct QueryEntity {
 class Clause {
 public:
   Clause(ClauseType clauseType, std::vector<QueryEntity> parameters)
-      : clauseType(clauseType), parameters(parameters){};
+    : clauseType(clauseType),
+      parameters(parameters) {
+  };
   ClauseType clauseType;
   std::vector<QueryEntity> parameters;
 
@@ -57,20 +67,9 @@ public:
   QueryEntity target;
   std::vector<QueryEntity> selectors;
   std::vector<Clause> clauses;
-
   void setQuery(QueryEntity t, std::vector<QueryEntity> s,
-                std::vector<Clause> c) {
+                std::vector<Clause> c);
 
-    this->target = t;
-    for (int i = 0; i < s.size(); i++) {
-      QueryEntity qe = QueryEntity(s[i].type, s[i].name);
-      this->selectors.push_back(qe);
-    }
-    for (int j = 0; j < c.size(); j++) {
-      Clause cl = Clause(c[j].clauseType, c[j].parameters);
-      this->clauses.push_back(cl);
-    }
-  }
   bool isValid();
   bool isEntity(QueryEntityType q);
 };

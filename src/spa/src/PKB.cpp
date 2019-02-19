@@ -4,10 +4,6 @@ void PKB::insertVar(const std::string &var) { this->varTable.insert(var); }
 
 void PKB::insertProc(const std::string &proc) { this->procTable.insert(proc); }
 
-void PKB::insertConstant(const int constant) {
-  this->constTable.insert(std::to_string(constant));
-}
-
 void PKB::insertStatement(const std::string &stmt, const StatementType type) {
   stmtCount++;
   this->stmtTable[type].insert(stmt);
@@ -37,20 +33,14 @@ void PKB::setModifies(int s, std::string t) {
   this->modifiesTable.setRelation(std::to_string(s), t);
 }
 
-const std::set<std::string> &PKB::getVarTable() const {
-  return this->varTable;
-}
+const std::set<std::string> PKB::getVarTable() const { return this->varTable; }
 
-const std::set<std::string> &PKB::getProcTable() const {
+const std::set<std::string> PKB::getProcTable() const {
   return this->procTable;
 }
 
-const std::set<std::string> &PKB::getConstTable() const {
-  return this->constTable;
-}
-
-const std::set<std::string> &
-PKB::getStatementsOfType(StatementType type) const {
+const std::set<std::string>
+PKB::getStatementsOfType(StatementType type) const{
   if (type == StatementType::Stmt) {
     std::set<std::string> allStmt;
     for (int i = 1; i <= stmtCount; i++) {

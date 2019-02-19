@@ -307,6 +307,10 @@ SCENARIO("Assignment statement: x = a + b + c") {
     REQUIRE(variableCTNode->type == TNodeType::Variable);
     REQUIRE(variableCTNode->name == "c");
   }
+
+  SECTION("Assign is assigned statement number 1") {
+    REQUIRE(assignTNode->statementNumber == 1);
+  }
 }
 
 SCENARIO("Assignment statement: x = a + b * c") {
@@ -364,6 +368,10 @@ SCENARIO("Assignment statement: x = a + b * c") {
   SECTION("Left subtree of Plus") {
     REQUIRE(variableATNode->type == TNodeType::Variable);
     REQUIRE(variableATNode->name == "a");
+  }
+
+  SECTION("Assign is assigned statement number 1") {
+    REQUIRE(assignTNode->statementNumber == 1);
   }
 }
 
@@ -425,6 +433,10 @@ SCENARIO("Assignment statement: x = (a + b) * c") {
     REQUIRE(variableCTNode->type == TNodeType::Variable);
     REQUIRE(variableCTNode->name == "c");
   }
+
+  SECTION("Assign is assigned statement number 1") {
+    REQUIRE(assignTNode->statementNumber == 1);
+  }
 }
 
 SCENARIO("Assignment statement: x = a * b + c") {
@@ -482,6 +494,10 @@ SCENARIO("Assignment statement: x = a * b + c") {
   SECTION("Right subtree of Plus") {
     REQUIRE(variableCTNode->type == TNodeType::Variable);
     REQUIRE(variableCTNode->name == "c");
+  }
+
+  SECTION("Assign is assigned statement number 1") {
+    REQUIRE(assignTNode->statementNumber == 1);
   }
 }
 
@@ -542,6 +558,10 @@ SCENARIO("Assignment statement: x = a * (b + c)") {
   SECTION("Left subtree of Plus") {
     REQUIRE(variableATNode->type == TNodeType::Variable);
     REQUIRE(variableATNode->name == "a");
+  }
+
+  SECTION("Assign is assigned statement number 1") {
+    REQUIRE(assignTNode->statementNumber == 1);
   }
 }
 
@@ -610,6 +630,10 @@ SCENARIO("Assignment statement: x = a * b + c + d") {
     REQUIRE(variableDTNode->type == TNodeType::Variable);
     REQUIRE(variableDTNode->name == "d");
   }
+
+  SECTION("Assign is assigned statement number 1") {
+    REQUIRE(assignTNode->statementNumber == 1);
+  }
 }
 
 SCENARIO("Assignment statement: x = a + b * c + d") {
@@ -677,6 +701,10 @@ SCENARIO("Assignment statement: x = a + b * c + d") {
     REQUIRE(variableDTNode->type == TNodeType::Variable);
     REQUIRE(variableDTNode->name == "d");
   }
+
+  SECTION("Assign is assigned statement number 1") {
+    REQUIRE(assignTNode->statementNumber == 1);
+  }
 }
 
 SCENARIO("Assignment statement: x = a + b + c * d") {
@@ -741,6 +769,10 @@ SCENARIO("Assignment statement: x = a + b + c * d") {
     REQUIRE(variableDTNode->type == TNodeType::Variable);
     REQUIRE(variableDTNode->name == "d");
   }
+
+  SECTION("Assign is assigned statement number 1") {
+    REQUIRE(assignTNode->statementNumber == 1);
+  }
 }
 
 SCENARIO("Condition Expressions: Not") {
@@ -799,13 +831,17 @@ SCENARIO("Condition Expressions: Not") {
     REQUIRE(constantTNode->name == "0");
   }
 
+  const std::unique_ptr<TNode> &readTNode = whileStmtLstTNode->children.front();
   SECTION("WhileStatementList has one Read child") {
-    const std::unique_ptr<TNode> &readTNode =
-        whileStmtLstTNode->children.front();
     const std::unique_ptr<TNode> &variableTNode = readTNode->children.front();
     REQUIRE(readTNode->type == TNodeType::Read);
     REQUIRE(variableTNode->type == TNodeType::Variable);
     REQUIRE(variableTNode->name == "x");
+  }
+
+  SECTION("Statement numbers are assigned accordingly") {
+    REQUIRE(whileTNode->statementNumber == 1);
+    REQUIRE(readTNode->statementNumber == 2);
   }
 }
 
@@ -881,13 +917,17 @@ SCENARIO("Condition Expressions: And") {
     REQUIRE(rightCondExprConstantTNode->name == "0");
   }
 
+  const std::unique_ptr<TNode> &readTNode = whileStmtLstTNode->children.front();
   SECTION("WhileStatementList has one Read child") {
-    const std::unique_ptr<TNode> &readTNode =
-        whileStmtLstTNode->children.front();
     const std::unique_ptr<TNode> &variableTNode = readTNode->children.front();
     REQUIRE(readTNode->type == TNodeType::Read);
     REQUIRE(variableTNode->type == TNodeType::Variable);
     REQUIRE(variableTNode->name == "x");
+  }
+
+  SECTION("Statement numbers are assigned accordingly") {
+    REQUIRE(whileTNode->statementNumber == 1);
+    REQUIRE(readTNode->statementNumber == 2);
   }
 }
 
@@ -989,13 +1029,17 @@ SCENARIO("Condition Expressions: And and Or") {
     REQUIRE(rightCondExprConstantTNode->name == "0");
   }
 
+  const std::unique_ptr<TNode> &readTNode = whileStmtLstTNode->children.front();
   SECTION("WhileStatementList has one Read child") {
-    const std::unique_ptr<TNode> &readTNode =
-        whileStmtLstTNode->children.front();
     const std::unique_ptr<TNode> &variableTNode = readTNode->children.front();
     REQUIRE(readTNode->type == TNodeType::Read);
     REQUIRE(variableTNode->type == TNodeType::Variable);
     REQUIRE(variableTNode->name == "x");
+  }
+
+  SECTION("Statement numbers are assigned accordingly") {
+    REQUIRE(whileTNode->statementNumber == 1);
+    REQUIRE(readTNode->statementNumber == 2);
   }
 }
 
@@ -1134,9 +1178,11 @@ SCENARIO("Procedure with multiple statements") {
     REQUIRE(rightCondExprConstantTNode->name == "0");
   }
 
+  const std::unique_ptr<TNode> &firstAssignTNode =
+      whileStmtLstTNode->children.front();
+  const std::unique_ptr<TNode> &secondAssignTNode =
+      whileStmtLstTNode->children.back();
   SECTION("WhileStatementList has two Assign children") {
-    const std::unique_ptr<TNode> &firstAssignTNode =
-        whileStmtLstTNode->children.front();
     const std::unique_ptr<TNode> &firstVariableTNode =
         firstAssignTNode->children.front();
     const std::unique_ptr<TNode> &divideTNode =
@@ -1145,8 +1191,6 @@ SCENARIO("Procedure with multiple statements") {
         divideTNode->children.front();
     const std::unique_ptr<TNode> &divideRightTNode =
         divideTNode->children.back();
-    const std::unique_ptr<TNode> &secondAssignTNode =
-        whileStmtLstTNode->children.back();
     const std::unique_ptr<TNode> &secondVariableTNode =
         secondAssignTNode->children.front();
     const std::unique_ptr<TNode> &variableTNode =
@@ -1164,5 +1208,14 @@ SCENARIO("Procedure with multiple statements") {
     REQUIRE(secondVariableTNode->name == "y");
     REQUIRE(variableTNode->type == TNodeType::Variable);
     REQUIRE(variableTNode->name == "x");
+  }
+
+  SECTION("Statement numbers are assigned accordingly") {
+    REQUIRE(readXTNode->statementNumber == 1);
+    REQUIRE(printTNode->statementNumber == 2);
+    REQUIRE(whileTNode->statementNumber == 3);
+    REQUIRE(firstAssignTNode->statementNumber == 4);
+    REQUIRE(secondAssignTNode->statementNumber == 5);
+    REQUIRE(readZTNode->statementNumber == 6);
   }
 }
