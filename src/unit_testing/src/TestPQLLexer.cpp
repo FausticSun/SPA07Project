@@ -827,7 +827,7 @@ TEST_CASE("Testing Uses(a, 'x')")
 
 TEST_CASE("Testing + pattern1")
 {
-	const string input = "assign a; Select a pattern a ( _ , \"v\")";
+	const string input = "variable a, b; Select a pattern a ( _ , \"v\")";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -836,10 +836,16 @@ TEST_CASE("Testing + pattern1")
 	SECTION("1") {
 
 		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "assign");
+		REQUIRE(res.front().second == "variable");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "a");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ",");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "b");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");

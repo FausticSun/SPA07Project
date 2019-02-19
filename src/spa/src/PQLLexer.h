@@ -68,13 +68,13 @@ private:
   queue<pair<TokenType, string>> tokenQueue;
   void Tokenize(string input);
   vector<string> vectorize(string);
-  string SplitSemi(string);
   string SplitCommas(string);
   bool selectEnd;
   void expectionOfSelect(vector<string>);
   void expectionOfDeclaration(vector<string>);
   bool tokenContainCommas(string);
   bool tokenContainSemi(string);
+  bool existSemi(string);
   vector<string> tokenizeVariable(vector<string>);
   vector<string> tokenizeAssign(vector<string>);
   vector<string> tokenizeConstant(vector<string>);
