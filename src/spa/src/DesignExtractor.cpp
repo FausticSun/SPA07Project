@@ -11,6 +11,7 @@ void DesignExtractor::traverseAST(std::unique_ptr<TNode> &AST) {
   switch (AST->type) {
   case TNodeType::Procedure:
     pkb->insertProc(AST->name);
+    this->procName = AST->name; // temp solution
     break;
   case TNodeType::Variable:
     pkb->insertVar(AST->name);
@@ -61,6 +62,7 @@ void DesignExtractor::traverseAST(std::unique_ptr<TNode> &AST) {
 void DesignExtractor::extractUses(std::unique_ptr<TNode> &AST, int parent) {
   if (AST->children.empty() && AST->type == TNodeType::Variable) {
     pkb->setUses(parent, AST->name);
+    pkb->setUses(procName, AST->name); // temp solution
     return;
   }
   for (auto &tNode : AST->children) {
@@ -70,6 +72,7 @@ void DesignExtractor::extractUses(std::unique_ptr<TNode> &AST, int parent) {
 
 void DesignExtractor::extractModifies(std::unique_ptr<TNode> &AST, int parent) {
   pkb->setModifies(parent, AST->name);
+  pkb->setModifies(procName, AST->name); // temp solution
 }
 
 void DesignExtractor::deriveUsesAndModifies() {
