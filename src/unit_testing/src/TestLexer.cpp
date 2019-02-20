@@ -90,7 +90,7 @@ SCENARIO("Testing123") {
       default:
         type = "fail";
       }
-	  cout << type << " " << i.name << endl;
+	  //cout << type << " " << i.name << endl;
     }
   }
   file.close();
