@@ -13,7 +13,10 @@ SPA::SPA() : pkb(new PKB()) {}
 void SPA::parseSIMPLEFile(std::string filename) {
   Parser parser;
   Lexer lexer;
-  auto tokens = lexer.tokenizeFile(filename);
+  std::ifstream file;
+  file.open(filename);
+  std::istream &fileStream = file;
+  auto tokens = lexer.tokenizeFile(fileStream);
   auto ast = parser.buildAst(tokens);
   DesignExtractor designExtractor(ast);
   std::unique_ptr<PKB> newPKB = designExtractor.getPKB();

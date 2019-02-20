@@ -1,36 +1,28 @@
 #pragma once
 
-#include <Token.h>
+#include "Token.h"
 #include <queue>
-#include <string>
-#include <utility>
-
-using namespace std;
+#include <vector>
 
 class Lexer {
-
 public:
   Lexer();
   ~Lexer();
-  queue<Token> tokenizeFile(string filePath);
-  vector<Token> tokenize(string);
+  std::queue<Token> tokenizeFile(std::istream &fileStream);
+  std::vector<Token> tokenize(std::string);
 
 private:
-  vector<string> vectorize(string);
-  string convertQueueToString(queue<string>);
-  vector<Token> tokenizeProcedure(vector<string>);
-  vector<Token> tokenizeAssignment(vector<string>);
-  vector<Token> tokenizeRead(vector<string>);
-  vector<Token> tokenizePrint(vector<string>);
-  vector<Token> tokenizeIf(vector<string>);
-  vector<Token> tokenizeWhile(vector<string>);
-  Token pushIdentifier(string);
-  Token pushSeparator(string);
-  Token pushOperator(string);
-  Token getToken(string);
-  bool isIdentifier(string);
-  bool isSeparator(string);
-  bool isOperator(string);
-  bool isConstant(string);
-  bool onlyContainDigits(string);
+  std::vector<std::string> vectorize(std::string);
+  std::string convertQueueToString(std::queue<std::string>);
+  Token pushKeyword(std::string);
+  Token pushConstant(std::string);
+  Token pushIdentifier(std::string);
+  Token pushSeparator(std::string);
+  Token pushOperator(std::string);
+  Token getToken(std::string);
+  bool isIdentifier(std::string);
+  bool isSeparator(std::string);
+  bool isOperator(std::string);
+  bool isKeyword(std::string);
+  bool isConstant(std::string);
 };

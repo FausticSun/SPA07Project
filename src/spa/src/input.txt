@@ -1,5 +1,14 @@
-procedure AssignmentTest {
-  x = 2; 
-  a = b+(c -d);
-  read wxy;
-  print sum;}
+procedure Example {
+  x = 2;
+  z = 3;
+  i = 5;
+  while (i!=0) {
+    x = x - 1;
+    if (x==1) then {
+      z = x + 1; }
+    else {
+      y = z + x; }
+    z = z + x + i;
+    call q;
+    i = i - 1; }
+ }
