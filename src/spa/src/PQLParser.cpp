@@ -536,6 +536,10 @@ string convertToPostfix(string expr)
 	{
 		if ((expr[i] >= 'a' && expr[i] <= 'z') || (expr[i] >= 'A' && expr[i] <= 'Z') || isdigit(expr[i])) {
 			res += expr[i];
+			if (i == expr.size() - 1 || (!(expr[i + 1] >= 'a' && expr[i + 1] <= 'z') && !(expr[i + 1] >= 'A' && expr[i + 1] <= 'Z') && !isdigit(expr[i + 1])))
+			{
+				res += ' ';
+			}
 		}
 		else if (expr[i] == '(') {
 			st.push('(');
@@ -547,6 +551,7 @@ string convertToPostfix(string expr)
 				char c = st.top();
 				st.pop();
 				res += c;
+				res += ' ';
 			}
 			if (st.top() == '(')
 			{
@@ -560,20 +565,23 @@ string convertToPostfix(string expr)
 				char c = st.top();
 				st.pop();
 				res += c;
+				res += ' ';
 			}
 			st.push(expr[i]);
 		}
+          
 	}
 	while (st.top() != 'N')
 	{
 		char c = st.top();
 		st.pop();
 		res += c;
+		res += ' ';
 	}
-	for (int i = 0; i < res.length(); i++)
+	/*for (int i = 0; i < res.length(); i++)
 	{
 		res.insert(++i, " ");
-	}
+	}*/
 	return res;
 }
 
