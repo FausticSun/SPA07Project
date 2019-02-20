@@ -18,12 +18,8 @@ public:
 private:
   vector<string> vectorize(string);
   string convertQueueToString(queue<string>);
-  vector<Token> tokenizeProcedure(vector<string>);
-  vector<Token> tokenizeAssignment(vector<string>);
-  vector<Token> tokenizeRead(vector<string>);
-  vector<Token> tokenizePrint(vector<string>);
-  vector<Token> tokenizeIf(vector<string>);
-  vector<Token> tokenizeWhile(vector<string>);
+  Token pushKeyword(string);
+  Token pushConstant(string);
   Token pushIdentifier(string);
   Token pushSeparator(string);
   Token pushOperator(string);
@@ -31,6 +27,6 @@ private:
   bool isIdentifier(string);
   bool isSeparator(string);
   bool isOperator(string);
+  bool isKeyword(string);
   bool isConstant(string);
-  bool onlyContainDigits(string);
 };

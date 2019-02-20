@@ -34,25 +34,25 @@ queue<Token> Lexer::tokenizeFile(string filePath) {
 }
 
 vector<Token> Lexer::tokenize(string input) {
-
+	vector<Token> toAST;
+	
   vector<string> tokens = vectorize(input);
 
-  // identifying different types of statement
-  if (find(tokens.begin(), tokens.end(), "procedure") != tokens.end()) {
-    return tokenizeProcedure(tokens);
-  } else if (find(tokens.begin(), tokens.end(), "=") != tokens.end()) {
-    return tokenizeAssignment(tokens);
-  } else if (find(tokens.begin(), tokens.end(), "read") != tokens.end()) {
-    return tokenizeRead(tokens);
-  } else if (find(tokens.begin(), tokens.end(), "print") != tokens.end()) {
-	  return tokenizePrint(tokens);
-  } else if (find(tokens.begin(), tokens.end(), "if") != tokens.end()) {
-	  return tokenizeIf(tokens);
-  } else if (find(tokens.begin(), tokens.end(), "while") != tokens.end()) {
-	  return tokenizeWhile(tokens);
-  } else {
-    throw "Invalid statement";
+  for (auto i : tokens) {
+	  if (isKeyword(i)) {
+		  toAST.push_back(pushKeyword(i));
+	  }	  else if (isSeparator(i)) {
+		  toAST.push_back(pushSeparator(i));
+	  }	  else if (isOperator(i)) {
+		  toAST.push_back(pushOperator(i));
+	  }	  else if (isConstant(i)) {
+		  toAST.push_back(pushConstant(i));
+	  }	  else {
+		  toAST.push_back(pushIdentifier(i));
+	  }
   }
+
+  return toAST;
 }
 vector<string> Lexer::vectorize(string input) {
 	vector<string> tokens;
@@ -99,9 +99,6 @@ vector<string> Lexer::vectorize(string input) {
 			current.push(temp);
 		}
 	}
-	for (auto i : tokens) {
-		cout << i << " " ;
-	}
 	return tokens;
 }
 
@@ -116,74 +113,6 @@ string Lexer::convertQueueToString(queue<string> q) {
 	return result;
 }
 
-vector<Token> Lexer::tokenizeProcedure(vector<string> tokens) {
-  vector<Token> toAST;
-  toAST.push_back(Token(TokenType::Procedure, "procedure"));
-  toAST.push_back(pushIdentifier(tokens[1]));
-  toAST.push_back(Token(TokenType::Separator, "{"));
-
-  return toAST;
-}
-
-vector<Token> Lexer::tokenizeAssignment(vector<string> tokens) {
-  vector<Token> toAST;
-  toAST.push_back(Token(TokenType::Assign, "assign"));
-
-  for (auto i : tokens) {
-    toAST.push_back(getToken(i));
-  }
-
-  return toAST;
-}
-
-vector<Token> Lexer::tokenizeRead(vector<string> tokens) {
-  vector<Token> toAST;
-  toAST.push_back(Token(TokenType::Read, "read"));
-  tokens.erase(tokens.begin());
-
-  for (auto i : tokens) {
-    toAST.push_back(getToken(i));
-  }
-
-  return toAST;
-}
-
-vector<Token> Lexer::tokenizePrint(vector<string> tokens) {
-  vector<Token> toAST;
-  toAST.push_back(Token(TokenType::Print, "print"));
-  tokens.erase(tokens.begin());
-
-  for (auto i : tokens) {
-    toAST.push_back(getToken(i));
-  }
-
-  return toAST;
-}
-
-vector<Token> Lexer::tokenizeIf(vector<string> tokens) {
-	vector<Token> toAST;
-	toAST.push_back(Token(TokenType::If, "if"));
-	tokens.erase(tokens.begin());
-
-	for (auto i : tokens) {
-		toAST.push_back(getToken(i));
-	}
-
-	return toAST;
-}
-
-vector<Token> Lexer::tokenizeWhile(vector<string> tokens) {
-	vector<Token> toAST;
-	toAST.push_back(Token(TokenType::While, "while"));
-	tokens.erase(tokens.begin());
-
-	for (auto i : tokens) {
-		toAST.push_back(getToken(i));
-	}
-
-	return toAST;
-}
-
 Token Lexer::getToken(string s) {
   if (isConstant(s)) {
     return Token(TokenType::Constant, s);
@@ -196,6 +125,31 @@ Token Lexer::getToken(string s) {
   } else {
     throw "Invalid Identifier";
   }
+}
+
+Token Lexer::pushKeyword(string s) {
+
+	if (s == "procedure") {
+		return Token(TokenType::Procedure, s);
+	} else if (s == "print") {
+		return Token(TokenType::Print, s);
+	} else if (s == "read") {
+		return Token(TokenType::Read, s);
+	} else if (s == "while") {
+		return Token(TokenType::While, s);
+	} else if (s == "if") {
+		return Token(TokenType::If, s);
+	} else if (s == "then") {
+		return Token(TokenType::Then, s);
+	} else if (s == "else") {
+		return Token(TokenType::Else, s);
+	} else {
+		throw ("Invalid Keyword");
+	}
+}
+
+Token Lexer::pushConstant(string s) {
+	return Token(TokenType::Constant, s);
 }
 
 Token Lexer::pushIdentifier(string s) {
@@ -247,11 +201,16 @@ Token Lexer::pushOperator(string s) {
   }
 }
 
+bool Lexer::isKeyword(string s) {
+	return (s == "procedure" || s == "print" || s == "read" || s == "while" ||
+		s == "if" || s == "then" || s == "else");
+}
+
 bool Lexer::isIdentifier(string s) {
   if (isConstant(s.substr(0))) {
     return false;
   } else {
-    return (!onlyContainDigits(s));
+    return (!isConstant(s));
   }
 }
 
@@ -266,16 +225,6 @@ bool Lexer::isOperator(string s) {
 }
 
 bool Lexer::isConstant(string s) {
-  if (s == "true" || s == "false") {
-    return true;
-  } else if (s[0] == '"') {
-    return true;
-  } else {
-    return onlyContainDigits(s);
-  }
-}
-
-bool Lexer::onlyContainDigits(string s) {
   if (s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) {
     return false;
   }
