@@ -565,7 +565,7 @@ SCENARIO("Test pattern clause underscore") {
 		REQUIRE(parameters[1].name == "v");
 		REQUIRE(parameters[1].type == QueryEntityType::Variable);
 		REQUIRE(parameters[2].name == "_");
-		REQUIRE(parameters[2].type == QueryEntityType::Expression);
+		REQUIRE(parameters[2].type == QueryEntityType::Underscore);
 	}
 }
 

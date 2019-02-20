@@ -180,6 +180,30 @@ TEST_CASE("Testing while a")
 	}
 }
 
+//TEST_CASE("Testing while a without selection")
+//{
+//	const string input = "while a;";
+//	queue<pair<TokenType, string>> res;
+//	PQLLexer p(input);
+//
+//	res = p.getTokenQueue();
+//
+//	SECTION("1") {
+//
+//		//REQUIRE(res.front().first == TokenType::Keyword);
+//		//REQUIRE(res.front().second == "while");
+//		//res.pop();
+//		//REQUIRE(res.front().first == TokenType::Identifier);
+//		//REQUIRE(res.front().second == "a");
+//		//res.pop();
+//		//REQUIRE(res.front().first == TokenType::Separator);
+//		//REQUIRE(res.front().second == ";");
+//		//res.pop();
+//
+//		REQUIRE_THROWS_WITH(res, "no selction after the declaration.");
+//	}
+//}
+
 TEST_CASE("Testing if a")
 {
 	const string input = "if a; Select a";
@@ -430,7 +454,7 @@ TEST_CASE("Testing Follows*(1, s)")
 
 TEST_CASE("Testing + pattern")
 {
-	const string input = "assign a; Select a pattern a ( _ , \"v + x * y + z * t\")";
+	const string input = "assign a; Select a pattern a ( \"v + x * y + z * t\" , \"v + x * y + z * t\")";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -462,8 +486,14 @@ TEST_CASE("Testing + pattern")
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == "(");
 		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == "\"");
+		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "_");
+		REQUIRE(res.front().second == "v+x*y+z*t");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == "\"");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ",");
@@ -827,7 +857,7 @@ TEST_CASE("Testing Uses(a, 'x')")
 
 TEST_CASE("Testing + pattern1")
 {
-	const string input = "variable a , b ;Select a pattern a ( _ , \"v\")";
+	const string input = "variable a , b , c , d ; Select a pattern a ( _ , \"v\")";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -846,6 +876,18 @@ TEST_CASE("Testing + pattern1")
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "b");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ",");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "c");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ",");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "d");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ";");

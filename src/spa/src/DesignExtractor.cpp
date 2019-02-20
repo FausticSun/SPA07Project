@@ -35,6 +35,7 @@ void DesignExtractor::traverseAST(std::unique_ptr<TNode> &AST) {
                          StatementType::Assign);
     extractUses(AST->children.back(), AST->statementNumber);
     extractModifies(AST->children.front(), AST->statementNumber);
+    extractAssign(AST);
     break;
   case TNodeType::Print:
     pkb->insertStatement(std::to_string(AST->statementNumber),
@@ -145,4 +146,19 @@ void DesignExtractor::extractParentT(std::unique_ptr<TNode> &AST, int parent) {
       }
     }
   }
+}
+
+void DesignExtractor::extractAssign(std::unique_ptr<TNode> &AST) {
+  auto var = AST->children.front()->name;
+  auto expr = extractPostfix(AST->children.back());
+  pkb->insertAssign(AST->statementNumber, var, expr);
+}
+
+std::string DesignExtractor::extractPostfix(std::unique_ptr<TNode> &AST) {
+  std::string expr;
+  for (auto it = AST->children.begin(); it != AST->children.end(); ++it) {
+    expr += extractPostfix(*it);
+  }
+  expr += AST->name;
+  return expr;
 }
