@@ -579,7 +579,7 @@ QueryEntity PQLParser::parseExpression()
 	if (token.name == "_" && tokenQueue.front().name == ")") //underscore
 	{
 		expectToken(")");
-		return QueryEntity(QueryEntityType::Expression, "_");
+		return QueryEntity(QueryEntityType::Underscore, "_");
 	}
 	else if (token.name == "_" && tokenQueue.front().name == "\"") //partial match
 	{
