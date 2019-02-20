@@ -29,7 +29,10 @@ enum class TokenType {
   NotEqual,
   ExclamationMark,
   And,
-  Or
+  Or,
+  Keyword,
+  Operator,
+  Literal,
 };
 
 struct Token {

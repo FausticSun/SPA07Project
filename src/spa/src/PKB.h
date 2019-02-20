@@ -19,7 +19,7 @@ enum class StatementType {
 
 class PKB {
 private:
-  int stmtCount=0;
+  int stmtCount = 0;
   std::set<std::string> varTable;
   std::set<std::string> procTable;
   std::set<std::string> constTable;
@@ -37,18 +37,21 @@ public:
   void insertProc(const std::string &);
   void insertStatement(const std::string &, StatementType);
   void insertConstant(int);
+  void insertAssign(int, std::string &, std::string &);
   void setFollows(int, int);
   void setFollowsT(int, int);
   void setParent(int, int);
   void setParentT(int, int);
   void setUses(int, std::string);
+  void setUses(std::string, std::string);
   void setModifies(int, std::string);
+  void setModifies(std::string, std::string);
   const std::set<std::string> getVarTable() const;
   const std::set<std::string> getProcTable() const;
   const std::set<std::string> getConstTable() const;
   bool isVar(std::string);
   bool isProc(std::string);
-  const std::set<std::string> getStatementsOfType(StatementType)const;
+  const std::set<std::string> getStatementsOfType(StatementType) const;
   StatementType getStatementType(std::string);
   bool follows(std::string, std::string);
   std::set<std::string> getFollows(std::string);

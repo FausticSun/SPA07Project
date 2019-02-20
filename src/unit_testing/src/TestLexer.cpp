@@ -6,7 +6,7 @@
 
 using namespace std;
 
-/**
+
 SCENARIO("Testing123") {
   ifstream file;
 
@@ -14,14 +14,12 @@ SCENARIO("Testing123") {
       "C:\\Users\\Flora Fong\\Documents\\SPAProject\\src\\spa\\src\\input.txt");
   string line;
   Lexer lexer;
-  vector<Token *> tokens;
+  vector<Token> tokens;
   while (getline(file, line)) {
-    tokens = lexer.tokenize(line);
-
-    vector<Token *>::iterator iter, end;
-    for (iter = tokens.begin(), end = tokens.end(); iter != end; ++iter) {
+	  tokens = lexer.tokenize(line);
+    for (auto i : tokens) {
       string type;
-      TokenType t = (*iter)->getType();
+	  TokenType t = i.type;
       switch (t) {
       case TokenType::Procedure:
         type = "procedure";
@@ -59,16 +57,46 @@ SCENARIO("Testing123") {
       case TokenType::CloseParenthesis:
         type = "close paranthesis";
         break;
+	  case TokenType::If:
+		  type = "if";
+		  break;
+	  case TokenType::While:
+		  type = "while";
+		  break;
+	  case TokenType::Greater:
+		  type = "greater";
+		  break;
+	  case TokenType::GreaterThanOrEqual:
+		  type = "greater or equal";
+		  break;
+	  case TokenType::Lesser:
+		  type = "lesser";
+		  break;
+	  case TokenType::LesserThanOrEqual:
+		  type = "lesser or equal";
+		  break;
+	  case TokenType::NotEqual:
+		  type = "not equal";
+		  break;
+	  case TokenType::ExclamationMark:
+		  type = "exclaimation";
+		  break;
+	  case TokenType::Then:
+		  type = "then";
+		  break;
+	  case TokenType::Else:
+		  type = "else";
+		  break;
       default:
-        cout << "fail";
+        type = "fail";
       }
-      cout << type << " " << (*iter)->getName() << (*iter)->getStatementNumber()
-           << endl;
+	  cout << type << " " << i.name << endl;
     }
   }
   file.close();
 }
 
+/**
 SCENARIO("Lexing prodedure command") {
   string input = "procedure AssignmentTest {";
   Lexer lexer{input};
