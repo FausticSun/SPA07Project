@@ -570,6 +570,10 @@ string convertToPostfix(string expr)
 		st.pop();
 		res += c;
 	}
+	for (int i = 0; i < res.length(); i++)
+	{
+		res.insert(++i, " ");
+	}
 	return res;
 }
 
