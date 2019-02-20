@@ -35,7 +35,7 @@ void DesignExtractor::traverseAST(std::unique_ptr<TNode> &AST) {
                          StatementType::Assign);
     extractUses(AST->children.back(), AST->statementNumber);
     extractModifies(AST->children.front(), AST->statementNumber);
-    extractAssign(AST->children.front());
+    extractAssign(AST);
     break;
   case TNodeType::Print:
     pkb->insertStatement(std::to_string(AST->statementNumber),
