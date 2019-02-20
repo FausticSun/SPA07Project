@@ -14,11 +14,12 @@ SCENARIO("Testing123") {
       "C:\\Users\\Flora Fong\\Documents\\SPAProject\\src\\spa\\src\\input.txt");
   string line;
   Lexer lexer;
-  vector<Token> tokens;
+  queue<Token> tokens;
   while (getline(file, line)) {
-	  tokens = lexer.tokenize(line);
-    for (auto i : tokens) {
+	  //tokens = lexer.tokenizeFile("C:\\Users\\Flora Fong\\Documents\\SPAProject\\src\\spa\\src\\input.txt");
+    while (!tokens.empty()) {
       string type;
+	  Token i = tokens.front();
 	  TokenType t = i.type;
       switch (t) {
       case TokenType::Procedure:
@@ -90,7 +91,8 @@ SCENARIO("Testing123") {
       default:
         type = "fail";
       }
-	  //cout << type << " " << i.name << endl;
+	  cout << type << " " << i.name << endl;
+	  tokens.pop();
     }
   }
   file.close();

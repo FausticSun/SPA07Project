@@ -16,11 +16,13 @@ Lexer::Lexer() {}
 Lexer::~Lexer() {}
 
 queue<Token> Lexer::tokenizeFile(string filePath) {
+
   ifstream inputFile;
   inputFile.open(filePath);
   if (!inputFile) {
     throw invalid_argument("FileNotFoundException: " + filePath);
   }
+
   queue<Token> allTokensInFile;
   string line;
   while (getline(inputFile, line)) {
