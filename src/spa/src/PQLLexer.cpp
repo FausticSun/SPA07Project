@@ -1010,7 +1010,10 @@ void PQLLexer::expectionOfSelect(vector<string> token) {
 }
 
 void PQLLexer::expectionOfDeclaration(vector<string> token) {
-  if (token[0] == "Select" || token[0] == "stmt" || token[0] == "read"
+  if (token.empty())
+  {
+	  throw invalid_argument("no selction after the declaration.");
+  } else if (token[0] == "Select" || token[0] == "stmt" || token[0] == "read"
       || token[0] == "print" || token[0] == "while" || token[0] == "if"
       || token[0] == "assign" || token[0] == "variable" || token[0] ==
       "constant"
@@ -1131,7 +1134,10 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
       }
     } else {
       if (first_s[0] == '\"' && first_s[first_s.length() - 1] == '\"') {
-        tokenQueue.push(make_pair(TokenType::Identifier, first_s));
+		  tokenQueue.push(make_pair(TokenType::Separator, "\""));
+		  tokenQueue.push(make_pair(TokenType::Identifier,
+			  first_s.substr(1, first_s.length() - 2)));
+		  tokenQueue.push(make_pair(TokenType::Separator, "\""));
       } else {
         throw invalid_argument("first parameter format error");
       }
@@ -1733,8 +1739,4 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
               }
 	}
 	return token;
-
-
-
-
 }

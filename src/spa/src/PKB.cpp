@@ -26,6 +26,12 @@ void PKB::insertConstant(const int constant) {
   this->constTable.insert(std::to_string(constant));
 }
 
+void PKB::insertAssign(int stmtNo, std::string &var, std::string &proc) {
+  auto fullExpr =
+      std::make_pair<std::string, std::string>(std::move(var), std::move(proc));
+  this->assignTable[std::to_string(stmtNo)] = fullExpr;
+}
+
 void PKB::insertStatement(const std::string &stmt, const StatementType type) {
   stmtCount++;
   this->stmtTable[type].insert(stmt);
@@ -71,6 +77,14 @@ const std::set<std::string> PKB::getProcTable() const {
 
 const std::set<std::string> PKB::getConstTable() const {
   return this->constTable;
+}
+
+bool PKB::isVar(std::string var) {
+  return varTable.find(var) != varTable.end();
+}
+
+bool PKB::isProc(std::string proc) {
+  return procTable.find(proc) != procTable.end();
 }
 
 const std::set<std::string> PKB::getStatementsOfType(StatementType type) const {
@@ -198,7 +212,7 @@ bool PKB::matchAssign(std::string stmtNo, std::string var, std::string expr,
   }
 }
 
-std::set<std::string> PKB::getAssignMatches(std::string expr, std::string var,
+std::set<std::string> PKB::getAssignMatches(std::string var, std::string expr,
                                             bool partial) {
   std::set<std::string> results;
   for (auto it = assignTable.begin(); it != assignTable.end(); ++it) {
