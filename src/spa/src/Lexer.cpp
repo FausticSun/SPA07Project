@@ -1,99 +1,76 @@
-#include <algorithm>
-#include <cctype>
-#include <fstream>
-#include <iostream>
-#include <iterator>
-#include <sstream>
-#include <vector>
-
-using namespace std;
-
 #include "Lexer.h"
-#include "PKB.h"
 
 Lexer::Lexer() {}
 
 Lexer::~Lexer() {}
 
-queue<Token> Lexer::tokenizeFile(string filePath) {
-  ifstream inputFile;
-  inputFile.open(filePath);
-  if (!inputFile) {
-    throw invalid_argument("FileNotFoundException: " + filePath);
-  }
-  queue<Token> allTokensInFile;
-  string line;
-  while (getline(inputFile, line)) {
-    vector<Token> allTokensInLine = tokenize(line);
+std::queue<Token> Lexer::tokenizeFile(std::istream &fileStream) {
+  std::queue<Token> allTokensInFile;
+  std::string line;
+  while (std::getline(fileStream, line)) {
+    std::vector<Token> allTokensInLine = tokenize(line);
     for (Token i : allTokensInLine) {
       allTokensInFile.push(i);
     }
   }
-  inputFile.close();
   return allTokensInFile;
 }
 
-vector<Token> Lexer::tokenize(string input) {
-
-  vector<Token> toAST;
-	
-  vector<string> tokens = vectorize(input);
-
+std::vector<Token> Lexer::tokenize(std::string input) {
+  std::vector<Token> toAST;
+  std::vector<std::string> tokens = vectorize(input);
   for (auto i : tokens) {
-	  if (isKeyword(i)) {
-		  toAST.push_back(pushKeyword(i));
-	  }	  else if (isSeparator(i)) {
-		  toAST.push_back(pushSeparator(i));
-	  }	  else if (isOperator(i)) {
-		  toAST.push_back(pushOperator(i));
-	  }	  else if (isConstant(i)) {
-		  toAST.push_back(pushConstant(i));
-	  }	  else {
-		  toAST.push_back(pushIdentifier(i));
-	  }
+    if (isKeyword(i)) {
+      toAST.push_back(pushKeyword(i));
+    } else if (isSeparator(i)) {
+      toAST.push_back(pushSeparator(i));
+    } else if (isOperator(i)) {
+      toAST.push_back(pushOperator(i));
+    } else if (isConstant(i)) {
+      toAST.push_back(pushConstant(i));
+    } else {
+      toAST.push_back(pushIdentifier(i));
+    }
   }
-
   return toAST;
 }
 
-vector<string> Lexer::vectorize(string input) {
-
-  vector<string> tokens;
-  queue<string> current;
-
+std::vector<std::string> Lexer::vectorize(std::string input) {
+  std::vector<std::string> tokens;
+  std::queue<std::string> current;
   for (char &c : input) {
-    string temp;
+    std::string temp;
     temp.push_back(c);
-
     if (isspace(c)) {
       if (!current.empty()) {
         tokens.push_back(convertQueueToString(current));
-        queue<string> empty;
+        std::queue<std::string> empty;
         swap(current, empty);
       }
     } else if (isSeparator(temp)) {
       if (!current.empty()) {
         tokens.push_back(convertQueueToString(current));
-        queue<string> empty;
+        std::queue<std::string> empty;
         swap(current, empty);
       }
-
       tokens.push_back(temp);
-    } else if (isOperator(temp)) { // current queue only contains Operator or
-                                   // Letter/Number
+    } else if (isOperator(temp)) { // current std::queue only contains Operator
+                                   // or Letter/Number
       if (!current.empty()) {
-        if (!isOperator(current.back())) { // queue currently stores variable
+        if (!isOperator(
+                current.back())) { // std::queue currently stores variable
           tokens.push_back(convertQueueToString(current));
-          queue<string> empty;
+          std::queue<std::string> empty;
           swap(current, empty);
         }
       }
       current.push(temp);
     } else { // is either letter or digit
       if (!current.empty()) {
-        if (isOperator(current.back())) { // queue currently stores operators
+        if (isOperator(
+                current.back())) { // std::queue currently stores operators
           tokens.push_back(convertQueueToString(current));
-          queue<string> empty;
+          std::queue<std::string> empty;
           swap(current, empty);
         }
       }
@@ -103,8 +80,8 @@ vector<string> Lexer::vectorize(string input) {
   return tokens;
 }
 
-string Lexer::convertQueueToString(queue<string> q) {
-  string result;
+std::string Lexer::convertQueueToString(std::queue<std::string> q) {
+  std::string result;
   while (!q.empty()) {
     result += q.front();
     q.pop();
@@ -113,7 +90,7 @@ string Lexer::convertQueueToString(queue<string> q) {
   return result;
 }
 
-Token Lexer::getToken(string s) {
+Token Lexer::getToken(std::string s) {
   if (isConstant(s)) {
     return Token(TokenType::Constant, s);
   } else if (isSeparator(s)) {
@@ -127,32 +104,32 @@ Token Lexer::getToken(string s) {
   }
 }
 
-Token Lexer::pushKeyword(string s) {
+Token Lexer::pushKeyword(std::string s) {
 
-	if (s == "procedure") {
-		return Token(TokenType::Procedure, s);
-	} else if (s == "print") {
-		return Token(TokenType::Print, s);
-	} else if (s == "read") {
-		return Token(TokenType::Read, s);
-	} else if (s == "while") {
-		return Token(TokenType::While, s);
-	} else if (s == "if") {
-		return Token(TokenType::If, s);
-	} else if (s == "then") {
-		return Token(TokenType::Then, s);
-	} else if (s == "else") {
-		return Token(TokenType::Else, s);
-	} else {
-		throw ("Invalid Keyword");
-	}
+  if (s == "procedure") {
+    return Token(TokenType::Procedure, s);
+  } else if (s == "print") {
+    return Token(TokenType::Print, s);
+  } else if (s == "read") {
+    return Token(TokenType::Read, s);
+  } else if (s == "while") {
+    return Token(TokenType::While, s);
+  } else if (s == "if") {
+    return Token(TokenType::If, s);
+  } else if (s == "then") {
+    return Token(TokenType::Then, s);
+  } else if (s == "else") {
+    return Token(TokenType::Else, s);
+  } else {
+    throw("Invalid Keyword");
+  }
 }
 
-Token Lexer::pushConstant(string s) {
-	return Token(TokenType::Constant, s);
+Token Lexer::pushConstant(std::string s) {
+  return Token(TokenType::Constant, s);
 }
 
-Token Lexer::pushIdentifier(string s) {
+Token Lexer::pushIdentifier(std::string s) {
 
   if (isIdentifier(s)) {
     return Token(TokenType::Identifier, s);
@@ -161,7 +138,7 @@ Token Lexer::pushIdentifier(string s) {
   }
 }
 
-Token Lexer::pushSeparator(string s) {
+Token Lexer::pushSeparator(std::string s) {
   if (s == "(") {
     return Token(TokenType::OpenParenthesis, s);
   } else if (s == ")") {
@@ -171,7 +148,7 @@ Token Lexer::pushSeparator(string s) {
   }
 }
 
-Token Lexer::pushOperator(string s) {
+Token Lexer::pushOperator(std::string s) {
   if (s == "+") {
     return Token(TokenType::Plus, s);
   } else if (s == "-") {
@@ -199,12 +176,12 @@ Token Lexer::pushOperator(string s) {
   }
 }
 
-bool Lexer::isKeyword(string s) {
-	return (s == "procedure" || s == "print" || s == "read" || s == "while" ||
-		s == "if" || s == "then" || s == "else");
+bool Lexer::isKeyword(std::string s) {
+  return (s == "procedure" || s == "print" || s == "read" || s == "while" ||
+          s == "if" || s == "then" || s == "else");
 }
 
-bool Lexer::isIdentifier(string s) {
+bool Lexer::isIdentifier(std::string s) {
   if (isConstant(s.substr(0))) {
     return false;
   } else {
@@ -212,17 +189,17 @@ bool Lexer::isIdentifier(string s) {
   }
 }
 
-bool Lexer::isSeparator(string s) {
+bool Lexer::isSeparator(std::string s) {
   return (s == ";" || s == "{" || s == "}" || s == "(" || s == ")");
 }
 
-bool Lexer::isOperator(string s) {
+bool Lexer::isOperator(std::string s) {
   return (s == "+" || s == "-" || s == "*" || s == "/" || s == "=" ||
           s == "!" || s == ">" || s == "<" || s == "==" || s == ">=" ||
           s == "<=" || s == "!=");
 }
 
-bool Lexer::isConstant(string s) {
+bool Lexer::isConstant(std::string s) {
   if (s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) {
     return false;
   }
