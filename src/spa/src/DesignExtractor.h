@@ -12,6 +12,9 @@ private:
   void extractFollows(std::unique_ptr<TNode> &AST);
   void extractParent(std::unique_ptr<TNode> &AST);
   void extractParentT(std::unique_ptr<TNode> &AST, int parent);
+  void extractAssign(std::unique_ptr<TNode> &AST);
+  std::string extractPostfix(std::unique_ptr<TNode> &AST);
+  std::string procName;
 
 public:
   DesignExtractor(std::unique_ptr<TNode> &AST);
