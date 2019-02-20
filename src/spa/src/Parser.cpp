@@ -290,12 +290,12 @@ std::unique_ptr<TNode> Parser::createTNodeExpression() {
         childNodes.push_back(std::move(leftTermTNode));
         childNodes.push_back(std::move(rightTermTNode));
         previousTNode = std::unique_ptr<TNode>(
-            new TNode(TNodeType::Plus, std::move(childNodes)));
+            new TNode(TNodeType::Plus, "+", std::move(childNodes)));
       } else {
         childNodes.push_back(std::move(previousTNode));
         childNodes.push_back(std::move(rightTermTNode));
         previousTNode = std::unique_ptr<TNode>(
-            new TNode(TNodeType::Plus, std::move(childNodes)));
+            new TNode(TNodeType::Plus, "+", std::move(childNodes)));
       }
       break;
     case TokenType::Minus:
@@ -305,12 +305,12 @@ std::unique_ptr<TNode> Parser::createTNodeExpression() {
         childNodes.push_back(std::move(leftTermTNode));
         childNodes.push_back(std::move(rightTermTNode));
         previousTNode = std::unique_ptr<TNode>(
-            new TNode(TNodeType::Minus, std::move(childNodes)));
+            new TNode(TNodeType::Minus, "-", std::move(childNodes)));
       } else {
         childNodes.push_back(std::move(previousTNode));
         childNodes.push_back(std::move(rightTermTNode));
         previousTNode = std::unique_ptr<TNode>(
-            new TNode(TNodeType::Minus, std::move(childNodes)));
+            new TNode(TNodeType::Minus, "-", std::move(childNodes)));
       }
       break;
     }
@@ -340,12 +340,12 @@ std::unique_ptr<TNode> Parser::createTNodeTerm() {
         childNodes.push_back(std::move(leftFactorTNode));
         childNodes.push_back(std::move(rightFactorTNode));
         previousTNode = std::unique_ptr<TNode>(
-            new TNode(TNodeType::Multiply, std::move(childNodes)));
+            new TNode(TNodeType::Multiply, "*", std::move(childNodes)));
       } else {
         childNodes.push_back(std::move(previousTNode));
         childNodes.push_back(std::move(rightFactorTNode));
         previousTNode = std::unique_ptr<TNode>(
-            new TNode(TNodeType::Multiply, std::move(childNodes)));
+            new TNode(TNodeType::Multiply, "*", std::move(childNodes)));
       }
       break;
     case TokenType::Divide:
@@ -355,12 +355,12 @@ std::unique_ptr<TNode> Parser::createTNodeTerm() {
         childNodes.push_back(std::move(leftFactorTNode));
         childNodes.push_back(std::move(rightFactorTNode));
         previousTNode = std::unique_ptr<TNode>(
-            new TNode(TNodeType::Divide, std::move(childNodes)));
+            new TNode(TNodeType::Divide, "/", std::move(childNodes)));
       } else {
         childNodes.push_back(std::move(previousTNode));
         childNodes.push_back(std::move(rightFactorTNode));
         previousTNode = std::unique_ptr<TNode>(
-            new TNode(TNodeType::Divide, std::move(childNodes)));
+            new TNode(TNodeType::Divide, "/", std::move(childNodes)));
       }
       break;
     case TokenType::Mod:
@@ -370,12 +370,12 @@ std::unique_ptr<TNode> Parser::createTNodeTerm() {
         childNodes.push_back(std::move(leftFactorTNode));
         childNodes.push_back(std::move(rightFactorTNode));
         previousTNode = std::unique_ptr<TNode>(
-            new TNode(TNodeType::Mod, std::move(childNodes)));
+            new TNode(TNodeType::Mod, "%", std::move(childNodes)));
       } else {
         childNodes.push_back(std::move(previousTNode));
         childNodes.push_back(std::move(rightFactorTNode));
         previousTNode = std::unique_ptr<TNode>(
-            new TNode(TNodeType::Mod, std::move(childNodes)));
+            new TNode(TNodeType::Mod, "%", std::move(childNodes)));
       }
       break;
     }
