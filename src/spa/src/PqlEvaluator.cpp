@@ -1058,7 +1058,7 @@ ClauseResult PqlEvaluator::getAssPatern(Clause c) {
     }
   }
   if (isUnderscore(qe2.type) && isUnderscore(qe3.type)) {
-    set<string> ass = mypkb.getAssignMatches("", "", false);
+    set<string> ass = mypkb.getAssignMatches("", "", true);
     set<string>::iterator iterr = ass.begin();
     while (iterr != ass.end()) {
       vector<string> tuple;
