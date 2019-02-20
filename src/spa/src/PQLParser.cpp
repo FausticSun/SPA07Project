@@ -501,7 +501,7 @@ void PQLParser::insertClausePattern()
 	        std::vector<QueryEntityType> validTypes{ QueryEntityType::Variable, QueryEntityType::Name, QueryEntityType::Underscore };
 		if (std::find(validTypes.begin(), validTypes.end(), qe.type) != validTypes.end())
 		{
-			QueryEntity secondPara = QueryEntity(qe.type, token.name);
+			QueryEntity secondPara = QueryEntity(qe.type, qe.name);
 			expectToken(",");
 			QueryEntity thirdPara = parseExpression();
 			Clause c = Clause(ClauseType::AssignPatt, vector<QueryEntity> {firstPara, secondPara, thirdPara});
