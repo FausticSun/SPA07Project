@@ -157,7 +157,7 @@ void DesignExtractor::extractAssign(std::unique_ptr<TNode> &AST) {
 std::string DesignExtractor::extractPostfix(std::unique_ptr<TNode> &AST) {
   std::string expr;
   for (auto it = AST->children.begin(); it != AST->children.end(); ++it) {
-    expr += extractPostfix(*it) + " ";
+    expr += extractPostfix(*it);
   }
   expr += AST->name + " ";
   return expr;
