@@ -47,19 +47,21 @@ std::vector<std::string> Lexer::vectorize(std::string input) {
         std::queue<std::string> empty;
         swap(current, empty);
       }
-    } else if (isSeparator(temp)) {
-      if (!current.empty()) {
-        tokens.push_back(convertQueueToString(current));
-        std::queue<std::string> empty;
-        swap(current, empty);
-      }
-      tokens.push_back(temp);
-
+	}
+	else if (isSeparator(temp)) {
+		if (!current.empty()) {
+			tokens.push_back(convertQueueToString(current));
+			std::queue<std::string> empty;
+			swap(current, empty);
+		}
+		tokens.push_back(temp);
+	} else if (temp == "\\") {
+		if (!current.empty()) {
+			tokens.push_back(convertQueueToString(current));
+		}
+		break;
     } else if (isOperator(temp)) { // current std::queue only contains Operator or Letter/Number
 		if (!current.empty()) {
-			if ((temp == "/") && (current.front() == "/")) { //checking for comments
-				break;
-			}
 			if (!isOperator(current.front())) { // std::queue currently stores variable
 				tokens.push_back(convertQueueToString(current));
 				std::queue<std::string> empty;
@@ -78,6 +80,9 @@ std::vector<std::string> Lexer::vectorize(std::string input) {
       }
       current.push(temp);
     }
+  }
+  if (!current.empty()) {
+	  tokens.push_back(convertQueueToString(current));
   }
   return tokens;
 }
@@ -103,7 +108,7 @@ Token Lexer::getToken(std::string s) {
   } else if (isIdentifier(s)) {
     return Token(TokenType::Identifier, s);
   } else {
-    throw "Invalid Identifier";
+    throw("Invalid Identifier: " + s);
   }
 }
 
@@ -124,7 +129,7 @@ Token Lexer::pushKeyword(std::string s) {
   } else if (s == "else") {
 	  return Token(TokenType::Else, s);
   } else {
-    throw("Invalid Keyword");
+    throw("Invalid Keyword: " + s);
   }
 }
 
@@ -137,7 +142,7 @@ Token Lexer::pushIdentifier(std::string s) {
   if (isIdentifier(s)) {
     return Token(TokenType::Identifier, s);
   } else {
-    throw "Invalid Identifier";
+    throw "Invalid Identifier: " + s;
   }
 }
 
@@ -189,7 +194,7 @@ bool Lexer::isKeyword(std::string s) {
 }
 
 bool Lexer::isIdentifier(std::string s) {
-  if (isConstant(s.substr(0))) {
+  if (isConstant(s.substr(0,1))) {
     return false;
   } else {
     return (!isConstant(s));
