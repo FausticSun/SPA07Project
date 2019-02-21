@@ -54,21 +54,23 @@ std::vector<std::string> Lexer::vectorize(std::string input) {
         swap(current, empty);
       }
       tokens.push_back(temp);
-    } else if (isOperator(temp)) { // current std::queue only contains Operator
-                                   // or Letter/Number
-      if (!current.empty()) {
-        if (!isOperator(
-                current.back())) { // std::queue currently stores variable
-          tokens.push_back(convertQueueToString(current));
-          std::queue<std::string> empty;
-          swap(current, empty);
-        }
-      }
+
+    } else if (isOperator(temp)) { // current std::queue only contains Operator or Letter/Number
+		if (!current.empty()) {
+			if ((temp == "/") && (current.front() == "/")) { //checking for comments
+				break;
+			}
+			if (!isOperator(current.front())) { // std::queue currently stores variable
+				tokens.push_back(convertQueueToString(current));
+				std::queue<std::string> empty;
+				swap(current, empty);
+			}
+		}
       current.push(temp);
+
     } else { // is either letter or digit
       if (!current.empty()) {
-        if (isOperator(
-                current.back())) { // std::queue currently stores operators
+        if (isOperator(current.front())) { // std::queue currently stores operators
           tokens.push_back(convertQueueToString(current));
           std::queue<std::string> empty;
           swap(current, empty);
@@ -79,6 +81,7 @@ std::vector<std::string> Lexer::vectorize(std::string input) {
   }
   return tokens;
 }
+
 
 std::string Lexer::convertQueueToString(std::queue<std::string> q) {
   std::string result;
