@@ -122,7 +122,7 @@ Token Lexer::pushKeyword(std::string s) {
   } else if (s == "then") {
     return Token(TokenType::Then, s);
   } else if (s == "else") {
-    return Token(TokenType::Else, s);
+	  return Token(TokenType::Else, s);
   } else {
     throw("Invalid Keyword");
   }
@@ -176,6 +176,10 @@ Token Lexer::pushOperator(std::string s) {
     return Token(TokenType::LesserThanOrEqual, s);
   } else if (s == "!=") {
     return Token(TokenType::NotEqual, s);
+  } else if (s == "&&") {
+	  return Token(TokenType::And, s);
+  } else if (s == "||") {
+	  return Token(TokenType::Or, s);
   }
 }
 
@@ -199,7 +203,7 @@ bool Lexer::isSeparator(std::string s) {
 bool Lexer::isOperator(std::string s) {
   return (s == "+" || s == "-" || s == "*" || s == "/" || s == "=" ||
           s == "!" || s == ">" || s == "<" || s == "==" || s == ">=" ||
-          s == "<=" || s == "!=");
+          s == "<=" || s == "!=" || s == "&" || s == "|" || s == "&&" || s == "||");
 }
 
 bool Lexer::isConstant(std::string s) {
