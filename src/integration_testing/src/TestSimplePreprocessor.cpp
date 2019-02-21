@@ -475,7 +475,7 @@ SCENARIO("Extracting Parent, Uses and Modifies relations from AST with one if "
     ss << "if(x==0)then{";
     ss << "if(y==0)then{";
     ss << "read z;";
-    ss << "else{";
+    ss << "}else{";
     ss << "print a;}";
     ss << "}else{";
     ss << "print b;}";
