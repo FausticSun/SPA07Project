@@ -1033,7 +1033,7 @@ ClauseResult PqlEvaluator::getAssPatern(Clause c) {
     set<string> var = getdataByTtype(qe2.type);
     set<string>::iterator iterr1 = var.begin();
     while (iterr1 != var.end()) {
-      set<string> ass = mypkb.getAssignMatches(*iterr1, "", false);
+      set<string> ass = mypkb.getAssignMatches(*iterr1, "", true);
       set<string>::iterator iterr2 = ass.begin();
 
       while (iterr2 != ass.end()) {
@@ -1048,7 +1048,7 @@ ClauseResult PqlEvaluator::getAssPatern(Clause c) {
     }
   }
   if (isConstant(qe2.type) && isUnderscore(qe3.type)) {
-    set<string> ass = mypkb.getAssignMatches(qe2.name, "", false);
+    set<string> ass = mypkb.getAssignMatches(qe2.name, "", true);
     set<string>::iterator iterr = ass.begin();
     while (iterr != ass.end()) {
       vector<string> tuple;
