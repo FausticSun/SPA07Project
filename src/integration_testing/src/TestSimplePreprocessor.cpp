@@ -1,24 +1,23 @@
 #include "DesignExtractor.h"
+#include "Lexer.h"
 #include "Parser.h"
 #include "catch.hpp"
+
+#include <queue>
+#include <sstream>
 
 SCENARIO("Extracting Follows relations from AST with no while/if statements") {
 
   GIVEN("AST with two assignment statements") {
+    std::stringstream ss;
+    ss << "procedure Example {";
+    ss << "x = 0;";
+    ss << "y = 0;";
+    ss << "}";
+    std::istream &fileStream = ss;
+    Lexer lexer;
     Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Separator, "="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Separator, "="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
+    std::queue<Token> tokenQueue = lexer.tokenizeFile(fileStream);
     auto programTNode = parser.buildAst(tokenQueue);
     DesignExtractor de(programTNode);
 
@@ -43,23 +42,17 @@ SCENARIO("Extracting Follows relations from AST with no while/if statements") {
 SCENARIO("Extracting Parent relations from AST with one while statement") {
 
   GIVEN("AST with one while statement") {
+    std::stringstream ss;
+    ss << "procedure Example {";
+    ss << "while (x == 0)";
+    ss << "{";
+    ss << "read x;";
+    ss << "}";
+    ss << "}";
+    std::istream &fileStream = ss;
+    Lexer lexer;
     Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::While, "while"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
+    std::queue<Token> tokenQueue = lexer.tokenizeFile(fileStream);
     auto programTNode = parser.buildAst(tokenQueue);
     DesignExtractor de(programTNode);
 
@@ -84,19 +77,15 @@ SCENARIO("Extracting Parent relations from AST with one while statement") {
 SCENARIO("Extracting Modifies relations from AST with no while/if statements") {
 
   GIVEN("AST with one assignment and one read statement") {
+    std::stringstream ss;
+    ss << "procedure Example {";
+    ss << "read x;";
+    ss << "y = 0;";
+    ss << "}";
+    std::istream &fileStream = ss;
+    Lexer lexer;
     Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Separator, "="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
+    std::queue<Token> tokenQueue = lexer.tokenizeFile(fileStream);
     auto programTNode = parser.buildAst(tokenQueue);
     DesignExtractor de(programTNode);
 
@@ -133,19 +122,15 @@ SCENARIO("Extracting Modifies relations from AST with no while/if statements") {
 SCENARIO("Extracting Uses relations from AST with no while/if statements") {
 
   GIVEN("AST with one print and one assignment statement") {
+    std::stringstream ss;
+    ss << "procedure Example {";
+    ss << "print x;";
+    ss << "x = y;";
+    ss << "}";
+    std::istream &fileStream = ss;
+    Lexer lexer;
     Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Separator, "="));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
+    std::queue<Token> tokenQueue = lexer.tokenizeFile(fileStream);
     auto programTNode = parser.buildAst(tokenQueue);
     DesignExtractor de(programTNode);
 
@@ -181,26 +166,15 @@ SCENARIO("Extracting Follows, Parent, Uses and Modifies relations from AST "
          "with one while statement") {
 
   GIVEN("AST with one while statement") {
+    std::stringstream ss;
+    ss << "procedure Example {";
+    ss << "while (x == 0) {";
+    ss << "read y;";
+    ss << "print z; }}";
+    std::istream &fileStream = ss;
+    Lexer lexer;
     Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::While, "while"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "z"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
+    std::queue<Token> tokenQueue = lexer.tokenizeFile(fileStream);
     auto programTNode = parser.buildAst(tokenQueue);
     DesignExtractor de(programTNode);
 
@@ -243,30 +217,19 @@ SCENARIO("Extracting Parent, Uses and Modifies relations from AST "
          "with one if statement") {
 
   GIVEN("AST with one if statement") {
+    std::stringstream ss;
+    ss << "procedure Example {";
+    ss << "if (x == 0)";
+    ss << "then {";
+    ss << "read y;";
+    ss << "} else {";
+    ss << "print z;";
+    ss << "}";
+    ss << "}";
+    std::istream &fileStream = ss;
+    Lexer lexer;
     Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::If, "if"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Then, "then"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Else, "else"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "z"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
+    std::queue<Token> tokenQueue = lexer.tokenizeFile(fileStream);
     auto programTNode = parser.buildAst(tokenQueue);
     DesignExtractor de(programTNode);
 
@@ -304,38 +267,20 @@ SCENARIO("Extracting Parent, Uses and Modifies relations from AST with one if "
          "statement nested in one while statement") {
 
   GIVEN("AST with one if statement nested in one while statement") {
+    std::stringstream ss;
+    ss << "procedure Example {";
+    ss << "while (x == 0) {";
+    ss << "if (y == 0) then {";
+    ss << "read z; }";
+    ss << "else {";
+    ss << "print a;";
+    ss << "}";
+    ss << "}";
+    ss << "}";
+    std::istream &fileStream = ss;
+    Lexer lexer;
     Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::While, "while"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::If, "if"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Then, "then"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "z"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Else, "else"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "a"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
+    std::queue<Token> tokenQueue = lexer.tokenizeFile(fileStream);
     auto programTNode = parser.buildAst(tokenQueue);
     DesignExtractor de(programTNode);
 
@@ -390,38 +335,19 @@ SCENARIO("Extracting Parent, Uses and Modifies relations from AST "
          "with one while statement nested in one if statement") {
 
   GIVEN("AST with one while statement nested in one if statement") {
+    std::stringstream ss;
+    ss << "procedure Example {";
+    ss << "if (x == 0) then {";
+    ss << "while (y == 0) {";
+    ss << "read z; }";
+    ss << "} else {";
+    ss << "print a;";
+    ss << "}";
+    ss << "}";
+    std::istream &fileStream = ss;
+    Lexer lexer;
     Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::If, "if"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Then, "then"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::While, "while"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "z"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Else, "else"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "a"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
+    std::queue<Token> tokenQueue = lexer.tokenizeFile(fileStream);
     auto programTNode = parser.buildAst(tokenQueue);
     DesignExtractor de(programTNode);
 
@@ -474,34 +400,17 @@ SCENARIO("Extracting Follows, Parent, Uses and Modifies relations from AST "
          "with one while statement nested in another while statement") {
 
   GIVEN("AST with one while statement nested in another while statement") {
+    std::stringstream ss;
+    ss << "procedure Example {";
+    ss << "while (x == 0) {";
+    ss << "while (y == 0) {";
+    ss << "read z; }";
+    ss << "print a; }";
+    ss << "}";
+    std::istream &fileStream = ss;
+    Lexer lexer;
     Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::While, "while"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::While, "while"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "z"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "a"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
+    std::queue<Token> tokenQueue = lexer.tokenizeFile(fileStream);
     auto programTNode = parser.buildAst(tokenQueue);
     DesignExtractor de(programTNode);
 
@@ -561,45 +470,20 @@ SCENARIO("Extracting Parent, Uses and Modifies relations from AST with one if "
          "statement nested in another if statement") {
 
   GIVEN("AST with one if statement nested in another if statement") {
+    std::stringstream ss;
+    ss << "procedure Example {";
+    ss << "if(x==0)then{";
+    ss << "if(y==0)then{";
+    ss << "read z;";
+    ss << "else{";
+    ss << "print a;}";
+    ss << "}else{";
+    ss << "print b;}";
+    ss << "}";
+    std::istream &fileStream = ss;
+    Lexer lexer;
     Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::If, "if"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Then, "then"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::If, "if"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Then, "then"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "z"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Else, "else"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "a"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Else, "else"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "b"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
+    std::queue<Token> tokenQueue = lexer.tokenizeFile(fileStream);
     auto programTNode = parser.buildAst(tokenQueue);
     DesignExtractor de(programTNode);
 
