@@ -490,7 +490,7 @@ SCENARIO("Test pattern clause exact match") {
 		REQUIRE(parameters[0].type == QueryEntityType::Assign);
 		REQUIRE(parameters[1].name == "_");
 		REQUIRE(parameters[1].type == QueryEntityType::Underscore);
-		REQUIRE(parameters[2].name == "vxy8yz+*t*+");
+		REQUIRE(parameters[2].name == "v x y8y z + * t * + ");
 		REQUIRE(parameters[2].type == QueryEntityType::Expression);
 	}
 }
@@ -512,7 +512,7 @@ SCENARIO("Test pattern clause partial match") {
 	tokens.push(QueryToken(TokenType::Identifier, ","));
 	tokens.push(QueryToken(TokenType::Identifier, "_"));
 	tokens.push(QueryToken(TokenType::Identifier, "\""));
-	tokens.push(QueryToken(TokenType::Identifier, "(y+z)*t"));
+	tokens.push(QueryToken(TokenType::Identifier, "cenX*ce3nX+cenY*cenY"));
 	tokens.push(QueryToken(TokenType::Identifier, "\""));
 	tokens.push(QueryToken(TokenType::Identifier, "_"));
 	tokens.push(QueryToken(TokenType::Identifier, ")"));
@@ -529,7 +529,7 @@ SCENARIO("Test pattern clause partial match") {
 		REQUIRE(parameters[0].type == QueryEntityType::Assign);
 		REQUIRE(parameters[1].name == "v");
 		REQUIRE(parameters[1].type == QueryEntityType::Variable);
-		REQUIRE(parameters[2].name == "_yz+t*_");
+		REQUIRE(parameters[2].name == "_cenX ce3nX * cenY cenY * + _");
 		REQUIRE(parameters[2].type == QueryEntityType::Expression);
 	}
 }
@@ -565,7 +565,7 @@ SCENARIO("Test pattern clause underscore") {
 		REQUIRE(parameters[1].name == "v");
 		REQUIRE(parameters[1].type == QueryEntityType::Variable);
 		REQUIRE(parameters[2].name == "_");
-		REQUIRE(parameters[2].type == QueryEntityType::Expression);
+		REQUIRE(parameters[2].type == QueryEntityType::Underscore);
 	}
 }
 

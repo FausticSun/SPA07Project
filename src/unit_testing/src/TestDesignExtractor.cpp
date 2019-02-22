@@ -1,5 +1,5 @@
 #include "DesignExtractor.h"
-#include "Parser.h"
+
 #include "catch.hpp"
 
 SCENARIO("Design Extractor extracts design abstractions from an AST into a PKB",
@@ -60,22 +60,36 @@ SCENARIO("Design Extractor extracts design abstractions from an AST into a PKB",
 SCENARIO("Extracting Follows relations from AST with no while/if statements") {
 
   GIVEN("AST with two assignment statements") {
-    Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Separator, "="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Separator, "="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    auto programTNode = parser.buildAst(tokenQueue);
-    DesignExtractor de(programTNode);
+    std::vector<std::unique_ptr<TNode>> childNodes;
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "x"));
+    childNodes.emplace_back(new TNode(TNodeType::Constant, "0"));
+    std::unique_ptr<TNode> assignOne = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Assign, "", std::move(childNodes), 1));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "y"));
+    childNodes.emplace_back(new TNode(TNodeType::Constant, "0"));
+    std::unique_ptr<TNode> assignTwo = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Assign, "", std::move(childNodes), 2));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(assignOne));
+    childNodes.push_back(std::move(assignTwo));
+    std::unique_ptr<TNode> stmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(stmts));
+    std::unique_ptr<TNode> proc = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Procedure, "Example", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(proc));
+    std::unique_ptr<TNode> AST = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Program, std::move(childNodes)));
+
+    DesignExtractor de(AST);
 
     WHEN("The PKB is retrieved") {
       std::unique_ptr<PKB> pkb = de.getPKB();
@@ -98,25 +112,45 @@ SCENARIO("Extracting Follows relations from AST with no while/if statements") {
 SCENARIO("Extracting Parent relations from AST with one while statement") {
 
   GIVEN("AST with one while statement") {
-    Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::While, "while"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    auto programTNode = parser.buildAst(tokenQueue);
-    DesignExtractor de(programTNode);
+    std::vector<std::unique_ptr<TNode>> childNodes;
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "x"));
+    std::unique_ptr<TNode> read = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Read, "", std::move(childNodes), 2));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(read));
+    std::unique_ptr<TNode> stmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "x"));
+    childNodes.emplace_back(new TNode(TNodeType::Constant, "0"));
+    std::unique_ptr<TNode> equal = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Equal, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(equal));
+    childNodes.push_back(std::move(stmts));
+    std::unique_ptr<TNode> whileTNode = std::unique_ptr<TNode>(
+        new TNode(TNodeType::While, "", std::move(childNodes), 1));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(whileTNode));
+    std::unique_ptr<TNode> procStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(procStmts));
+    std::unique_ptr<TNode> proc = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Procedure, "Example", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(proc));
+    std::unique_ptr<TNode> AST = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Program, std::move(childNodes)));
+
+    DesignExtractor de(AST);
 
     WHEN("The PKB is retrieved") {
       std::unique_ptr<PKB> pkb = de.getPKB();
@@ -139,21 +173,35 @@ SCENARIO("Extracting Parent relations from AST with one while statement") {
 SCENARIO("Extracting Modifies relations from AST with no while/if statements") {
 
   GIVEN("AST with one assignment and one read statement") {
-    Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Separator, "="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    auto programTNode = parser.buildAst(tokenQueue);
-    DesignExtractor de(programTNode);
+    std::vector<std::unique_ptr<TNode>> childNodes;
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "x"));
+    std::unique_ptr<TNode> read = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Read, "", std::move(childNodes), 1));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "y"));
+    childNodes.emplace_back(new TNode(TNodeType::Constant, "0"));
+    std::unique_ptr<TNode> assign = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Assign, "", std::move(childNodes), 2));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(read));
+    childNodes.push_back(std::move(assign));
+    std::unique_ptr<TNode> stmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(stmts));
+    std::unique_ptr<TNode> proc = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Procedure, "Example", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(proc));
+    std::unique_ptr<TNode> AST = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Program, std::move(childNodes)));
+
+    DesignExtractor de(AST);
 
     WHEN("The PKB is retrieved") {
       std::unique_ptr<PKB> pkb = de.getPKB();
@@ -188,21 +236,35 @@ SCENARIO("Extracting Modifies relations from AST with no while/if statements") {
 SCENARIO("Extracting Uses relations from AST with no while/if statements") {
 
   GIVEN("AST with one print and one assignment statement") {
-    Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Separator, "="));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    auto programTNode = parser.buildAst(tokenQueue);
-    DesignExtractor de(programTNode);
+    std::vector<std::unique_ptr<TNode>> childNodes;
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "x"));
+    std::unique_ptr<TNode> print = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Print, "", std::move(childNodes), 1));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "x"));
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "y"));
+    std::unique_ptr<TNode> assign = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Assign, "", std::move(childNodes), 2));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(print));
+    childNodes.push_back(std::move(assign));
+    std::unique_ptr<TNode> stmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(stmts));
+    std::unique_ptr<TNode> proc = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Procedure, "Example", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(proc));
+    std::unique_ptr<TNode> AST = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Program, std::move(childNodes)));
+
+    DesignExtractor de(AST);
 
     WHEN("The PKB is retrieved") {
       std::unique_ptr<PKB> pkb = de.getPKB();
@@ -236,28 +298,51 @@ SCENARIO("Extracting Follows, Parent, Uses and Modifies relations from AST "
          "with one while statement") {
 
   GIVEN("AST with one while statement") {
-    Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::While, "while"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "z"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    auto programTNode = parser.buildAst(tokenQueue);
-    DesignExtractor de(programTNode);
+    std::vector<std::unique_ptr<TNode>> childNodes;
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "y"));
+    std::unique_ptr<TNode> read = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Read, "", std::move(childNodes), 2));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "z"));
+    std::unique_ptr<TNode> print = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Print, "", std::move(childNodes), 3));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(read));
+    childNodes.push_back(std::move(print));
+    std::unique_ptr<TNode> stmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "x"));
+    childNodes.emplace_back(new TNode(TNodeType::Constant, "0"));
+    std::unique_ptr<TNode> equal = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Equal, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(equal));
+    childNodes.push_back(std::move(stmts));
+    std::unique_ptr<TNode> whileTNode = std::unique_ptr<TNode>(
+        new TNode(TNodeType::While, "", std::move(childNodes), 1));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(whileTNode));
+    std::unique_ptr<TNode> procStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(procStmts));
+    std::unique_ptr<TNode> proc = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Procedure, "Example", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(proc));
+    std::unique_ptr<TNode> AST = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Program, std::move(childNodes)));
+
+    DesignExtractor de(AST);
 
     WHEN("The PKB is retrieved") {
       std::unique_ptr<PKB> pkb = de.getPKB();
@@ -298,32 +383,56 @@ SCENARIO("Extracting Parent, Uses and Modifies relations from AST "
          "with one if statement") {
 
   GIVEN("AST with one if statement") {
-    Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::If, "if"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Then, "then"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Else, "else"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "z"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    auto programTNode = parser.buildAst(tokenQueue);
-    DesignExtractor de(programTNode);
+    std::vector<std::unique_ptr<TNode>> childNodes;
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "y"));
+    std::unique_ptr<TNode> read = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Read, "", std::move(childNodes), 2));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(read));
+    std::unique_ptr<TNode> thenStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "z"));
+    std::unique_ptr<TNode> print = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Print, "", std::move(childNodes), 3));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(print));
+    std::unique_ptr<TNode> elseStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "x"));
+    childNodes.emplace_back(new TNode(TNodeType::Constant, "0"));
+    std::unique_ptr<TNode> equal = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Equal, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(equal));
+    childNodes.push_back(std::move(thenStmts));
+    childNodes.push_back(std::move(elseStmts));
+    std::unique_ptr<TNode> ifTNode = std::unique_ptr<TNode>(
+        new TNode(TNodeType::If, "", std::move(childNodes), 1));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(ifTNode));
+    std::unique_ptr<TNode> procStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(procStmts));
+    std::unique_ptr<TNode> proc = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Procedure, "Example", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(proc));
+    std::unique_ptr<TNode> AST = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Program, std::move(childNodes)));
+
+    DesignExtractor de(AST);
 
     WHEN("The PKB is retrieved") {
       std::unique_ptr<PKB> pkb = de.getPKB();
@@ -359,40 +468,73 @@ SCENARIO("Extracting Parent, Uses and Modifies relations from AST with one if "
          "statement nested in one while statement") {
 
   GIVEN("AST with one if statement nested in one while statement") {
-    Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::While, "while"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::If, "if"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Then, "then"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "z"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Else, "else"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "a"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    auto programTNode = parser.buildAst(tokenQueue);
-    DesignExtractor de(programTNode);
+    std::vector<std::unique_ptr<TNode>> childNodes;
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "z"));
+    std::unique_ptr<TNode> read = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Read, "", std::move(childNodes), 3));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(read));
+    std::unique_ptr<TNode> thenStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "a"));
+    std::unique_ptr<TNode> print = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Print, "", std::move(childNodes), 4));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(print));
+    std::unique_ptr<TNode> elseStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "y"));
+    childNodes.emplace_back(new TNode(TNodeType::Constant, "0"));
+    std::unique_ptr<TNode> ifCond = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Equal, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(ifCond));
+    childNodes.push_back(std::move(thenStmts));
+    childNodes.push_back(std::move(elseStmts));
+    std::unique_ptr<TNode> ifTNode = std::unique_ptr<TNode>(
+        new TNode(TNodeType::If, "", std::move(childNodes), 2));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "x"));
+    childNodes.emplace_back(new TNode(TNodeType::Constant, "0"));
+    std::unique_ptr<TNode> whileCond = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Equal, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(ifTNode));
+    std::unique_ptr<TNode> whileStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(whileCond));
+    childNodes.push_back(std::move(whileStmts));
+    std::unique_ptr<TNode> whileTNode = std::unique_ptr<TNode>(
+        new TNode(TNodeType::While, "", std::move(childNodes), 1));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(whileTNode));
+    std::unique_ptr<TNode> procStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(procStmts));
+    std::unique_ptr<TNode> proc = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Procedure, "Example", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(proc));
+    std::unique_ptr<TNode> AST = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Program, std::move(childNodes)));
+
+    DesignExtractor de(AST);
 
     WHEN("The PKB is retrieved") {
       std::unique_ptr<PKB> pkb = de.getPKB();
@@ -445,40 +587,73 @@ SCENARIO("Extracting Parent, Uses and Modifies relations from AST "
          "with one while statement nested in one if statement") {
 
   GIVEN("AST with one while statement nested in one if statement") {
-    Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::If, "if"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Then, "then"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::While, "while"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "z"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Else, "else"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "a"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    auto programTNode = parser.buildAst(tokenQueue);
-    DesignExtractor de(programTNode);
+    std::vector<std::unique_ptr<TNode>> childNodes;
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "z"));
+    std::unique_ptr<TNode> read = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Read, "", std::move(childNodes), 3));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "y"));
+    childNodes.emplace_back(new TNode(TNodeType::Constant, "0"));
+    std::unique_ptr<TNode> whileCond = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Equal, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(read));
+    std::unique_ptr<TNode> whileStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(whileCond));
+    childNodes.push_back(std::move(whileStmts));
+    std::unique_ptr<TNode> whileTNode = std::unique_ptr<TNode>(
+        new TNode(TNodeType::While, "", std::move(childNodes), 2));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(whileTNode));
+    std::unique_ptr<TNode> thenStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "a"));
+    std::unique_ptr<TNode> print = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Print, "", std::move(childNodes), 4));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(print));
+    std::unique_ptr<TNode> elseStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "x"));
+    childNodes.emplace_back(new TNode(TNodeType::Constant, "0"));
+    std::unique_ptr<TNode> ifCond = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Equal, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(ifCond));
+    childNodes.push_back(std::move(thenStmts));
+    childNodes.push_back(std::move(elseStmts));
+    std::unique_ptr<TNode> ifTNode = std::unique_ptr<TNode>(
+        new TNode(TNodeType::If, "", std::move(childNodes), 1));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(ifTNode));
+    std::unique_ptr<TNode> procStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(procStmts));
+    std::unique_ptr<TNode> proc = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Procedure, "Example", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(proc));
+    std::unique_ptr<TNode> AST = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Program, std::move(childNodes)));
+
+    DesignExtractor de(AST);
 
     WHEN("The PKB is retrieved") {
       std::unique_ptr<PKB> pkb = de.getPKB();
@@ -529,36 +704,68 @@ SCENARIO("Extracting Follows, Parent, Uses and Modifies relations from AST "
          "with one while statement nested in another while statement") {
 
   GIVEN("AST with one while statement nested in another while statement") {
-    Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::While, "while"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::While, "while"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "z"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "a"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    auto programTNode = parser.buildAst(tokenQueue);
-    DesignExtractor de(programTNode);
+    std::vector<std::unique_ptr<TNode>> childNodes;
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "z"));
+    std::unique_ptr<TNode> read = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Read, "", std::move(childNodes), 3));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(read));
+    std::unique_ptr<TNode> innerWhileStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "y"));
+    childNodes.emplace_back(new TNode(TNodeType::Constant, "0"));
+    std::unique_ptr<TNode> innerWhileCond = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Equal, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(innerWhileCond));
+    childNodes.push_back(std::move(innerWhileStmts));
+    std::unique_ptr<TNode> innerWhileTNode = std::unique_ptr<TNode>(
+        new TNode(TNodeType::While, "", std::move(childNodes), 2));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "a"));
+    std::unique_ptr<TNode> print = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Print, "", std::move(childNodes), 4));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(innerWhileTNode));
+    childNodes.push_back(std::move(print));
+    std::unique_ptr<TNode> outerWhileStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "x"));
+    childNodes.emplace_back(new TNode(TNodeType::Constant, "0"));
+    std::unique_ptr<TNode> outerWhileCond = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Equal, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(outerWhileCond));
+    childNodes.push_back(std::move(outerWhileStmts));
+    std::unique_ptr<TNode> outerWhileTNode = std::unique_ptr<TNode>(
+        new TNode(TNodeType::While, "", std::move(childNodes), 1));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(outerWhileTNode));
+    std::unique_ptr<TNode> procStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(procStmts));
+    std::unique_ptr<TNode> proc = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Procedure, "Example", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(proc));
+    std::unique_ptr<TNode> AST = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Program, std::move(childNodes)));
+
+    DesignExtractor de(AST);
 
     WHEN("The PKB is retrieved") {
       std::unique_ptr<PKB> pkb = de.getPKB();
@@ -616,47 +823,84 @@ SCENARIO("Extracting Parent, Uses and Modifies relations from AST with one if "
          "statement nested in another if statement") {
 
   GIVEN("AST with one if statement nested in another if statement") {
-    Parser parser;
-    std::queue<Token> tokenQueue;
-    tokenQueue.push(Token(TokenType::Procedure, "procedure"));
-    tokenQueue.push(Token(TokenType::Identifier, "Example"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::If, "if"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "x"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Then, "then"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::If, "if"));
-    tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
-    tokenQueue.push(Token(TokenType::Identifier, "y"));
-    tokenQueue.push(Token(TokenType::Equal, "=="));
-    tokenQueue.push(Token(TokenType::Constant, "0"));
-    tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
-    tokenQueue.push(Token(TokenType::Then, "then"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Read, "read"));
-    tokenQueue.push(Token(TokenType::Identifier, "z"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Else, "else"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "a"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Else, "else"));
-    tokenQueue.push(Token(TokenType::Separator, "{"));
-    tokenQueue.push(Token(TokenType::Print, "print"));
-    tokenQueue.push(Token(TokenType::Identifier, "b"));
-    tokenQueue.push(Token(TokenType::Separator, ";"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    tokenQueue.push(Token(TokenType::Separator, "}"));
-    auto programTNode = parser.buildAst(tokenQueue);
-    DesignExtractor de(programTNode);
+    std::vector<std::unique_ptr<TNode>> childNodes;
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "z"));
+    std::unique_ptr<TNode> read = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Read, "", std::move(childNodes), 3));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "y"));
+    childNodes.emplace_back(new TNode(TNodeType::Constant, "0"));
+    std::unique_ptr<TNode> innerIfCond = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Equal, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(read));
+    std::unique_ptr<TNode> innerIfThenStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "a"));
+    std::unique_ptr<TNode> printA = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Print, "", std::move(childNodes), 4));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(printA));
+    std::unique_ptr<TNode> innerElseStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(innerIfCond));
+    childNodes.push_back(std::move(innerIfThenStmts));
+    childNodes.push_back(std::move(innerElseStmts));
+    std::unique_ptr<TNode> innerIfTNode = std::unique_ptr<TNode>(
+        new TNode(TNodeType::If, "", std::move(childNodes), 2));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(innerIfTNode));
+    std::unique_ptr<TNode> outerThenStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "b"));
+    std::unique_ptr<TNode> printB = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Print, "", std::move(childNodes), 5));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(printB));
+    std::unique_ptr<TNode> outerElseStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.emplace_back(new TNode(TNodeType::Variable, "x"));
+    childNodes.emplace_back(new TNode(TNodeType::Constant, "0"));
+    std::unique_ptr<TNode> outerIfCond = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Equal, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(outerIfCond));
+    childNodes.push_back(std::move(outerThenStmts));
+    childNodes.push_back(std::move(outerElseStmts));
+    std::unique_ptr<TNode> outerIfTNode = std::unique_ptr<TNode>(
+        new TNode(TNodeType::If, "", std::move(childNodes), 1));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(outerIfTNode));
+    std::unique_ptr<TNode> procStmts = std::unique_ptr<TNode>(
+        new TNode(TNodeType::StatementList, "", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(procStmts));
+    std::unique_ptr<TNode> proc = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Procedure, "Example", std::move(childNodes)));
+    childNodes.clear();
+
+    childNodes.push_back(std::move(proc));
+    std::unique_ptr<TNode> AST = std::unique_ptr<TNode>(
+        new TNode(TNodeType::Program, std::move(childNodes)));
+
+    DesignExtractor de(AST);
 
     WHEN("The PKB is retrieved") {
       std::unique_ptr<PKB> pkb = de.getPKB();

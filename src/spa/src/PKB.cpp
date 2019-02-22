@@ -212,7 +212,7 @@ bool PKB::matchAssign(std::string stmtNo, std::string var, std::string expr,
   }
 }
 
-std::set<std::string> PKB::getAssignMatches(std::string expr, std::string var,
+std::set<std::string> PKB::getAssignMatches(std::string var, std::string expr,
                                             bool partial) {
   std::set<std::string> results;
   for (auto it = assignTable.begin(); it != assignTable.end(); ++it) {
