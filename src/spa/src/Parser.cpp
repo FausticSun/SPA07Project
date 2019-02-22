@@ -143,8 +143,8 @@ std::unique_ptr<TNode> Parser::createTNodeStatement() {
     return createTNodeIf();
   default:
     throw std::invalid_argument(
-        "Expected TokenType to be 'IDENTIFIER', 'Read', "
-        "'Print', 'While' or 'If' but got '" +
+        "Expected 'Assign', 'Read', "
+        "'Print', 'While' or 'If' statements but got '" +
         token.name + "'");
   }
 }
