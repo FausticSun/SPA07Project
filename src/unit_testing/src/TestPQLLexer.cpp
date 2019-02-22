@@ -180,29 +180,29 @@ TEST_CASE("Testing while a")
 	}
 }
 
-//TEST_CASE("Testing while a without selection")
-//{
-//	const string input = "while a;";
-//	queue<pair<TokenType, string>> res;
-//	PQLLexer p(input);
-//
-//	res = p.getTokenQueue();
-//
-//	SECTION("1") {
-//
-//		//REQUIRE(res.front().first == TokenType::Keyword);
-//		//REQUIRE(res.front().second == "while");
-//		//res.pop();
-//		//REQUIRE(res.front().first == TokenType::Identifier);
-//		//REQUIRE(res.front().second == "a");
-//		//res.pop();
-//		//REQUIRE(res.front().first == TokenType::Separator);
-//		//REQUIRE(res.front().second == ";");
-//		//res.pop();
-//
-//		REQUIRE_THROWS_WITH(res, "no selction after the declaration.");
-//	}
-//}
+TEST_CASE("Testing while a without selection")
+{
+	const string input = "while a;";
+	queue<pair<TokenType, string>> res;
+	PQLLexer p(input);
+
+	//res = p.getTokenQueue();
+
+	SECTION("1") {
+
+		//REQUIRE(res.front().first == TokenType::Keyword);
+		//REQUIRE(res.front().second == "while");
+		//res.pop();
+		//REQUIRE(res.front().first == TokenType::Identifier);
+		//REQUIRE(res.front().second == "a");
+		//res.pop();
+		//REQUIRE(res.front().first == TokenType::Separator);
+		//REQUIRE(res.front().second == ";");
+		//res.pop();
+
+		//REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the declaration.");
+	}
+}
 
 TEST_CASE("Testing if a")
 {

@@ -226,7 +226,7 @@ vector<string> PQLLexer::tokenizeVariable(vector<string> token) {
     }
 
   }
-  if (!end) {
+  if (end) {
 	  expectionOfDeclaration(token);
   }
 
@@ -321,7 +321,7 @@ vector<string> PQLLexer::tokenizeProcedure(vector<string> token) {
 	  }
 
   }
-  if (!end) {
+  if (end) {
 	  expectionOfDeclaration(token);
   }
 
@@ -417,7 +417,7 @@ vector<string> PQLLexer::tokenizeRead(vector<string> token) {
 	  }
 
   }
-  if (!end) {
+  if (end) {
 	  expectionOfDeclaration(token);
   }
 
@@ -512,7 +512,7 @@ vector<string> PQLLexer::tokenizePrint(vector<string> token) {
 	  }
 
   }
-  if (!end) {
+  if (end) {
 	  expectionOfDeclaration(token);
   }
 
@@ -565,6 +565,7 @@ vector<string> PQLLexer::tokenizeWhile(vector<string> token) {
 				  {
 					  tokenQueue.push(make_pair(TokenType::Separator, ";"));
 					  token.erase(token.begin());
+					  break;
 				  }
 				  else if (i == token[0].length() - 1)
 				  {
@@ -572,6 +573,7 @@ vector<string> PQLLexer::tokenizeWhile(vector<string> token) {
 					  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
 					  tokenQueue.push(make_pair(TokenType::Separator, ";"));
 					  token.erase(token.begin());
+					  break;
 				  }
 				  else
 				  {
@@ -584,7 +586,7 @@ vector<string> PQLLexer::tokenizeWhile(vector<string> token) {
 					  }
 					  tokenQueue.push(make_pair(TokenType::Separator, ";"));
 					  token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
-
+					  break;
 				  }
 			  }
 		  }
@@ -607,7 +609,7 @@ vector<string> PQLLexer::tokenizeWhile(vector<string> token) {
 	  }
 
   }
-  if (!end) {
+  if (end) {
 	  expectionOfDeclaration(token);
   }
 
@@ -703,7 +705,7 @@ vector<string> PQLLexer::tokenizeIf(vector<string> token) {
 	  }
 
   }
-  if (!end) {
+  if (end) {
 	  expectionOfDeclaration(token);
   }
 
@@ -798,7 +800,7 @@ vector<string> PQLLexer::tokenizeAssign(vector<string> token) {
 	  }
 
   }
-  if (!end) {
+  if (end) {
 	  expectionOfDeclaration(token);
   }
 
@@ -893,7 +895,7 @@ vector<string> PQLLexer::tokenizeStmt(vector<string> token) {
 	  }
 
   }
-  if (!end) {
+  if (end) {
 	  expectionOfDeclaration(token);
   }
 
@@ -987,7 +989,7 @@ vector<string> PQLLexer::tokenizeConstant(vector<string> token) {
 	  }
 
   }
-  if (!end) {
+  if (end) {
 	  expectionOfDeclaration(token);
   }
 
@@ -1012,7 +1014,7 @@ void PQLLexer::expectionOfSelect(vector<string> token) {
 void PQLLexer::expectionOfDeclaration(vector<string> token) {
   if (token.empty())
   {
-	  throw invalid_argument("no selction after the declaration.");
+	  throw std::invalid_argument("no selction after the declaration.");
   } else if (token[0] == "Select" || token[0] == "stmt" || token[0] == "read"
       || token[0] == "print" || token[0] == "while" || token[0] == "if"
       || token[0] == "assign" || token[0] == "variable" || token[0] ==
