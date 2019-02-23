@@ -25,6 +25,7 @@ private:
   std::unique_ptr<TNode> createTNodeStatement();
   std::unique_ptr<TNode> createTNodeStatementList();
   std::unique_ptr<TNode> createTNodeConditionExpression();
+  std::unique_ptr<TNode> createTNodeMultipleConditionExpression();
   std::unique_ptr<TNode> createTNodeRelativeExpression();
   std::unique_ptr<TNode> createTNodeRelativeFactor();
   std::unique_ptr<TNode> createTNodeExpression();
