@@ -47,32 +47,34 @@ std::vector<std::string> Lexer::vectorize(std::string input) {
         std::queue<std::string> empty;
         swap(current, empty);
       }
-	}
-	else if (isSeparator(temp)) {
-		if (!current.empty()) {
-			tokens.push_back(convertQueueToString(current));
-			std::queue<std::string> empty;
-			swap(current, empty);
-		}
-		tokens.push_back(temp);
-	} else if (temp == "\\") {
-		if (!current.empty()) {
-			tokens.push_back(convertQueueToString(current));
-		}
-		break;
-    } else if (isOperator(temp)) { // current std::queue only contains Operator or Letter/Number
-		if (!current.empty()) {
-			if (!isOperator(current.front())) { // std::queue currently stores variable
-				tokens.push_back(convertQueueToString(current));
-				std::queue<std::string> empty;
-				swap(current, empty);
-			}
-		}
+    } else if (isSeparator(temp)) {
+      if (!current.empty()) {
+        tokens.push_back(convertQueueToString(current));
+        std::queue<std::string> empty;
+        swap(current, empty);
+      }
+      tokens.push_back(temp);
+    } else if (temp == "\\") {
+      if (!current.empty()) {
+        tokens.push_back(convertQueueToString(current));
+      }
+      break;
+    } else if (isOperator(temp)) { // current std::queue only contains Operator
+                                   // or Letter/Number
+      if (!current.empty()) {
+        if (!isOperator(
+                current.front())) { // std::queue currently stores variable
+          tokens.push_back(convertQueueToString(current));
+          std::queue<std::string> empty;
+          swap(current, empty);
+        }
+      }
       current.push(temp);
 
     } else { // is either letter or digit
       if (!current.empty()) {
-        if (isOperator(current.front())) { // std::queue currently stores operators
+        if (isOperator(
+                current.front())) { // std::queue currently stores operators
           tokens.push_back(convertQueueToString(current));
           std::queue<std::string> empty;
           swap(current, empty);
@@ -82,11 +84,10 @@ std::vector<std::string> Lexer::vectorize(std::string input) {
     }
   }
   if (!current.empty()) {
-	  tokens.push_back(convertQueueToString(current));
+    tokens.push_back(convertQueueToString(current));
   }
   return tokens;
 }
-
 
 std::string Lexer::convertQueueToString(std::queue<std::string> q) {
   std::string result;
@@ -127,7 +128,7 @@ Token Lexer::pushKeyword(std::string s) {
   } else if (s == "then") {
     return Token(TokenType::Then, s);
   } else if (s == "else") {
-	  return Token(TokenType::Else, s);
+    return Token(TokenType::Else, s);
   } else {
     throw("Invalid Keyword: " + s);
   }
@@ -165,6 +166,8 @@ Token Lexer::pushOperator(std::string s) {
     return Token(TokenType::Multiply, s);
   } else if (s == "/") {
     return Token(TokenType::Divide, s);
+  } else if (s == "%") {
+    return Token(TokenType::Mod, s);
   } else if (s == "=") {
     return Token(TokenType::Separator, s);
   } else if (s == "!") {
@@ -182,9 +185,9 @@ Token Lexer::pushOperator(std::string s) {
   } else if (s == "!=") {
     return Token(TokenType::NotEqual, s);
   } else if (s == "&&") {
-	  return Token(TokenType::And, s);
+    return Token(TokenType::And, s);
   } else if (s == "||") {
-	  return Token(TokenType::Or, s);
+    return Token(TokenType::Or, s);
   }
 }
 
@@ -194,7 +197,7 @@ bool Lexer::isKeyword(std::string s) {
 }
 
 bool Lexer::isIdentifier(std::string s) {
-  if (isConstant(s.substr(0,1))) {
+  if (isConstant(s.substr(0, 1))) {
     return false;
   } else {
     return (!isConstant(s));
@@ -206,9 +209,10 @@ bool Lexer::isSeparator(std::string s) {
 }
 
 bool Lexer::isOperator(std::string s) {
-  return (s == "+" || s == "-" || s == "*" || s == "/" || s == "=" ||
-          s == "!" || s == ">" || s == "<" || s == "==" || s == ">=" ||
-          s == "<=" || s == "!=" || s == "&" || s == "|" || s == "&&" || s == "||");
+  return (s == "+" || s == "-" || s == "*" || s == "/" || s == "%" ||
+          s == "=" || s == "!" || s == ">" || s == "<" || s == "==" ||
+          s == ">=" || s == "<=" || s == "!=" || s == "&" || s == "|" ||
+          s == "&&" || s == "||");
 }
 
 bool Lexer::isConstant(std::string s) {
