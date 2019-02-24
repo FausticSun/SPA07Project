@@ -515,7 +515,7 @@ TEST_CASE("Testing + pattern")
 
 TEST_CASE("Testing Parents(3, s)")
 {
-	const string input = "assign a; stmt s; variable v; Select s such that Parent (3, s)";
+	const string input = "assign a; stmt s; variable v; Select s such that Uses (3, s)";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
