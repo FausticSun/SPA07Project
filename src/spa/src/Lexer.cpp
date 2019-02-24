@@ -39,31 +39,33 @@ std::vector<std::string> Lexer::vectorize(std::string input) {
   std::vector<std::string> tokens;
   std::queue<std::string> current;
   for (char &c : input) {
-    std::string temp;
-    temp.push_back(c);
-    if (isspace(c)) {
-      if (!current.empty()) {
-        tokens.push_back(convertQueueToString(current));
-        std::queue<std::string> empty;
-        swap(current, empty);
-      }
-    } else if (isSeparator(temp)) {
-      if (!current.empty()) {
-        tokens.push_back(convertQueueToString(current));
-        std::queue<std::string> empty;
-        swap(current, empty);
-      }
-      tokens.push_back(temp);
-    } else if (temp == "\\") {
-      if (!current.empty()) {
-        tokens.push_back(convertQueueToString(current));
-      }
-      break;
-    } else if (isOperator(temp)) { // current std::queue only contains Operator
+	  std::string temp;
+	  temp.push_back(c);
+	  if (isspace(c)) {
+		  if (!current.empty()) {
+			  tokens.push_back(convertQueueToString(current));
+			  std::queue<std::string> empty;
+			  swap(current, empty);
+		  }
+	  }
+	  else if (isSeparator(temp)) {
+		  if (!current.empty()) {
+			  tokens.push_back(convertQueueToString(current));
+			  std::queue<std::string> empty;
+			  swap(current, empty);
+		  }
+		  tokens.push_back(temp);
+	  }
+	  else if (temp == "\\") {
+		  if (!current.empty()) {
+			  tokens.push_back(convertQueueToString(current));
+		  }
+		  break;
+	  }
+	else if (isOperator(temp)) { // current std::queue only contains Operator
                                    // or Letter/Number
       if (!current.empty()) {
-        if (!isOperator(
-                current.front())) { // std::queue currently stores variable
+        if (!isOperator(current.front())) { // std::queue currently stores variable
           tokens.push_back(convertQueueToString(current));
           std::queue<std::string> empty;
           swap(current, empty);
@@ -73,8 +75,7 @@ std::vector<std::string> Lexer::vectorize(std::string input) {
 
     } else { // is either letter or digit
       if (!current.empty()) {
-        if (isOperator(
-                current.front())) { // std::queue currently stores operators
+        if (isOperator(current.front())) { // std::queue currently stores operators
           tokens.push_back(convertQueueToString(current));
           std::queue<std::string> empty;
           swap(current, empty);
@@ -139,11 +140,10 @@ Token Lexer::pushConstant(std::string s) {
 }
 
 Token Lexer::pushIdentifier(std::string s) {
-
-  if (isIdentifier(s)) {
-    return Token(TokenType::Identifier, s);
+  if (!isIdentifier(s)) {
+	  throw "Invalid Identifier: " + s;
   } else {
-    throw "Invalid Identifier: " + s;
+	  return Token(TokenType::Identifier, s);
   }
 }
 
