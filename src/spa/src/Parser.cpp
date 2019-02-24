@@ -150,73 +150,73 @@ std::unique_ptr<TNode> Parser::createTNodeStatement() {
 }
 
 std::unique_ptr<TNode> Parser::createTNodeConditionExpression() {
-  std::vector<std::unique_ptr<TNode>> childNodes;
-  switch (tokenQueue.front().type) {
-  case TokenType::ExclamationMark:
-    expectToken("!");
-    childNodes.push_back(createTNodeMultipleConditionExpression());
-    return std::unique_ptr<TNode>(
-        new TNode(TNodeType::Not, std::move(childNodes)));
-  case TokenType::OpenParenthesis:
-    return createTNodeMultipleConditionExpression();
-  default:
-    return createTNodeRelativeExpression();
-  }
-}
-
-std::unique_ptr<TNode> Parser::createTNodeMultipleConditionExpression() {
+  std::unique_ptr<TNode> condExpressionTNode;
+  std::unique_ptr<TNode> leftCondExpressionTNode;
   std::unique_ptr<TNode> rightCondExpressionTNode;
   std::unique_ptr<TNode> previousTNode = NULL;
   TokenType nextTokenType;
   std::vector<std::unique_ptr<TNode>> childNodes;
-  expectToken("(");
-  std::unique_ptr<TNode> leftCondExpressionTNode =
-      createTNodeConditionExpression();
-  expectToken(")");
-  nextTokenType = tokenQueue.front().type;
-  while (nextTokenType == TokenType::And || nextTokenType == TokenType::Or) {
-    switch (nextTokenType) {
-    case TokenType::And:
-      expectToken("&&");
-      expectToken("(");
-      rightCondExpressionTNode = createTNodeConditionExpression();
-      expectToken(")");
-      if (previousTNode == NULL) {
-        childNodes.push_back(std::move(leftCondExpressionTNode));
-        childNodes.push_back(std::move(rightCondExpressionTNode));
-        previousTNode = std::unique_ptr<TNode>(
-            new TNode(TNodeType::And, std::move(childNodes)));
-      } else {
-        childNodes.push_back(std::move(previousTNode));
-        childNodes.push_back(std::move(rightCondExpressionTNode));
-        previousTNode = std::unique_ptr<TNode>(
-            new TNode(TNodeType::And, std::move(childNodes)));
-      }
-      break;
-    case TokenType::Or:
-      expectToken("||");
-      expectToken("(");
-      rightCondExpressionTNode = createTNodeConditionExpression();
-      expectToken(")");
-      if (previousTNode == NULL) {
-        childNodes.push_back(std::move(leftCondExpressionTNode));
-        childNodes.push_back(std::move(rightCondExpressionTNode));
-        previousTNode = std::unique_ptr<TNode>(
-            new TNode(TNodeType::Or, std::move(childNodes)));
-      } else {
-        childNodes.push_back(std::move(previousTNode));
-        childNodes.push_back(std::move(rightCondExpressionTNode));
-        previousTNode = std::unique_ptr<TNode>(
-            new TNode(TNodeType::Or, std::move(childNodes)));
-      }
-      break;
-    }
+  switch (tokenQueue.front().type) {
+  case TokenType::ExclamationMark:
+    expectToken("!");
+    expectToken("(");
+    condExpressionTNode = createTNodeConditionExpression();
+    expectToken(")");
+    childNodes.push_back(std::move(condExpressionTNode));
+    return std::unique_ptr<TNode>(
+        new TNode(TNodeType::Not, std::move(childNodes)));
+  case TokenType::OpenParenthesis:
+    expectToken("(");
+    leftCondExpressionTNode = createTNodeConditionExpression();
+    expectToken(")");
     nextTokenType = tokenQueue.front().type;
-  }
-  if (previousTNode == NULL) {
-    return leftCondExpressionTNode;
-  } else {
-    return previousTNode;
+    while (nextTokenType == TokenType::And || nextTokenType == TokenType::Or) {
+      switch (nextTokenType) {
+      case TokenType::And:
+        expectToken("&&");
+        expectToken("(");
+        rightCondExpressionTNode = createTNodeConditionExpression();
+        expectToken(")");
+        if (previousTNode == NULL) {
+          childNodes.push_back(std::move(leftCondExpressionTNode));
+          childNodes.push_back(std::move(rightCondExpressionTNode));
+          previousTNode = std::unique_ptr<TNode>(
+              new TNode(TNodeType::And, std::move(childNodes)));
+        } else {
+          childNodes.push_back(std::move(previousTNode));
+          childNodes.push_back(std::move(rightCondExpressionTNode));
+          previousTNode = std::unique_ptr<TNode>(
+              new TNode(TNodeType::And, std::move(childNodes)));
+        }
+        break;
+      case TokenType::Or:
+        expectToken("||");
+        expectToken("(");
+        rightCondExpressionTNode = createTNodeConditionExpression();
+        expectToken(")");
+        if (previousTNode == NULL) {
+          childNodes.push_back(std::move(leftCondExpressionTNode));
+          childNodes.push_back(std::move(rightCondExpressionTNode));
+          previousTNode = std::unique_ptr<TNode>(
+              new TNode(TNodeType::Or, std::move(childNodes)));
+        } else {
+          childNodes.push_back(std::move(previousTNode));
+          childNodes.push_back(std::move(rightCondExpressionTNode));
+          previousTNode = std::unique_ptr<TNode>(
+              new TNode(TNodeType::Or, std::move(childNodes)));
+        }
+        break;
+      }
+      nextTokenType = tokenQueue.front().type;
+    }
+    if (previousTNode == NULL) {
+      throw std::invalid_argument(
+          "Expected multiple conditions but got only 1");
+    } else {
+      return previousTNode;
+    }
+  default:
+    return createTNodeRelativeExpression();
   }
 }
 
