@@ -1117,16 +1117,19 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 		  }
 		  else
 		  {
+                    
 			  s = s + " " + token[i];
 		  }
 	  }
 	  else {
 		  s = s + token[i];
-	  }
-	  if (token[i].find("\"") != token[i].npos)
-	  {
-		  appearQuo = true;
 
+		  if (token[i].find("\"") != token[i].npos)
+		  {
+			  appearQuo = true;
+
+
+		  }
 	  }
   }
   for (int i = 0; i < iter + 1; i++) {
@@ -1641,6 +1644,7 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 	int check = 1;
 	int n0 = -1, n1 = -1, n2 = -1, n3, iter = 0;
 	string s;
+	string first_s;
 	string second_s;
 	// KEYWORD, "(" "," ")" ";"
 	bool appearQuo;
@@ -1666,17 +1670,20 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 			}
 			else
 			{
+
 				s = s + " " + token[i];
 			}
 		}
 		else {
 			s = s + token[i];
-		}
-                if (token[i].find("\"") != token[i].npos)
-                {
-					appearQuo = true;
 
-                }
+			if (token[i].find("\"") != token[i].npos)
+			{
+				appearQuo = true;
+
+
+			}
+		}
         
 	}
 	for (int i = 0; i < iter + 1; i++)
@@ -1702,7 +1709,23 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 	if (n0 != -1 && n1 != -1 && n2 != -1) {
 		tokenQueue.push(make_pair(TokenType::Keyword, "Uses"));
 		tokenQueue.push(make_pair(TokenType::Separator, "("));
-		tokenQueue.push(make_pair(TokenType::Identifier, s.substr(n0 + 1, n1 - 1 - n0)));
+		first_s = s.substr(n0 + 1, n1 - 1 - n0);
+		if (first_s.length() == 1)
+		{
+
+			tokenQueue.push(make_pair(TokenType::Identifier, first_s));
+
+
+		}
+		else
+		{
+			if (first_s[0] == '\"' && first_s[first_s.length() - 1] == '\"')
+			{
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+				tokenQueue.push(make_pair(TokenType::Identifier, first_s.substr(1, first_s.length() - 2)));
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+			}
+		}
 		tokenQueue.push(make_pair(TokenType::Separator, ","));
 		second_s = s.substr(n1 + 1, n2 - 1 - n1);
 		if (second_s.length() == 1)
@@ -1767,6 +1790,7 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 	int check = 1;
 	int n0 = -1, n1 = -1, n2 = -1, n3, iter = 0;
 	string s;
+	string first_s;
 	string second_s;
 	bool appearQuo;
 	appearQuo = false;
@@ -1794,16 +1818,19 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 			}
 			else
 			{
+
 				s = s + " " + token[i];
 			}
 		}
 		else {
 			s = s + token[i];
-		}
-		if (token[i].find("\"") != token[i].npos)
-		{
-			appearQuo = true;
 
+			if (token[i].find("\"") != token[i].npos)
+			{
+				appearQuo = true;
+
+
+			}
 		}
 	}
 	for (int i = 0; i < iter + 1; i++)
@@ -1829,15 +1856,29 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 	if (n0 != -1 && n1 != -1 && n2 != -1) {
 		tokenQueue.push(make_pair(TokenType::Keyword, "Modifies"));
 		tokenQueue.push(make_pair(TokenType::Separator, "("));
-		tokenQueue.push(make_pair(TokenType::Identifier, s.substr(n0 + 1, n1 - 1 - n0)));
+		first_s = s.substr(n0 + 1, n1 - 1 - n0);
+		if (first_s.length() == 1)
+		{
+
+			tokenQueue.push(make_pair(TokenType::Identifier, first_s));
+
+
+		}
+		else
+		{
+			if (first_s[0] == '\"' && first_s[first_s.length() - 1] == '\"')
+			{
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+				tokenQueue.push(make_pair(TokenType::Identifier, first_s.substr(1, first_s.length() - 2)));
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+			}
+		}
 		tokenQueue.push(make_pair(TokenType::Separator, ","));
 		second_s = s.substr(n1 + 1, n2 - 1 - n1);
 		if (second_s.length() == 1)
 		{
 
-
 			tokenQueue.push(make_pair(TokenType::Identifier, second_s));
-
 
 
 		}

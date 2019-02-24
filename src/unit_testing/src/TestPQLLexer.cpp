@@ -7,7 +7,7 @@ using namespace std;
 
 TEST_CASE("Testing basic declaration variable")
 {
-	const string input = "variable a; Select a";
+	const string input = "  variable a; Select a";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 	
@@ -490,7 +490,7 @@ TEST_CASE("Testing + pattern")
 		REQUIRE(res.front().second == "\"");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "v+x*y+z*t");
+		REQUIRE(res.front().second == "v + x * y + z * t");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == "\"");
@@ -502,7 +502,7 @@ TEST_CASE("Testing + pattern")
 		REQUIRE(res.front().second == "\"");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "v+x*y+z*t");
+		REQUIRE(res.front().second == "v + x * y + z * t");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == "\"");
@@ -515,7 +515,7 @@ TEST_CASE("Testing + pattern")
 
 TEST_CASE("Testing Parents(3, s)")
 {
-	const string input = "assign a; stmt s; variable v; Select s such that Uses (3, s)";
+	const string input = "assign a; stmt s; variable v; Select s such that Parent (3, s)";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -785,7 +785,7 @@ TEST_CASE("Testing Modifies(a, 'x')")
 
 TEST_CASE("Testing Uses(a, 'x')")
 {
-	const string input = "assign a; stmt s; variable v; Select a such that Uses (a, \"x\")";
+	const string input = "assign a; stmt s; variable v; Select a such that Uses (a, \"xa\")";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -844,7 +844,7 @@ TEST_CASE("Testing Uses(a, 'x')")
 		REQUIRE(res.front().second == "\"");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "x");
+		REQUIRE(res.front().second == "xa");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == "\"");
