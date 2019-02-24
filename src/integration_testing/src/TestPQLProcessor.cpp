@@ -59,6 +59,16 @@ PKB buildPKB() {
   pkb.setParentT(1, 4);
   pkb.setParentT(2, 3);
   pkb.setParentT(5, 6);
+  //set pattern
+  string rhs = "x y * z i * + ";
+  string lfs = "a";
+  pkb.insertAssign(1, lfs, rhs);
+  rhs = "x y * z * i * ";
+  lfs = "a";
+  pkb.insertAssign(8,lfs,rhs);
+  rhs = "a y z * i + * ";
+  lfs = "x";
+  pkb.insertAssign(9, lfs, rhs);
   return pkb;
 }
 
@@ -91,12 +101,7 @@ SCENARIO("test for simple queries") {
 SCENARIO("test for query with one clause") {
   PKB pkb =buildPKB();
   PqlEvaluator pe(pkb);
-  SECTION("Follows") {
-    string query = "stmt s; Select s such that Follows (s,2)";
-    list<string> result = pe.evaluateQuery(query);
-    REQUIRE(result.size() ==1);
-    REQUIRE(result.front() =="1");
-  }
+  
   SECTION("Uses") {
     string query = "stmt s; Select s such that Uses (s,\"a\")";
     list<string> result = pe.evaluateQuery(query);
@@ -108,5 +113,86 @@ SCENARIO("test for query with one clause") {
     list<string> result = pe.evaluateQuery(query);
     REQUIRE(result.size() ==1);
     REQUIRE(result.front() =="3");
+  }
+  SECTION("Follows") {
+    string query = "stmt s; Select s such that Follows (s,2)";
+    list<string> result = pe.evaluateQuery(query);
+    REQUIRE(result.size() ==1);
+    REQUIRE(result.front() =="1");
+  }
+  SECTION("FollowsT") {
+	  string query = "stmt s; Select s such that Follows* (s,6)";
+	  list<string> result = pe.evaluateQuery(query);
+	  REQUIRE(result.size() == 2);
+	  REQUIRE(result.front() == "1");
+	  result.pop_front();
+	  REQUIRE(result.front() == "4");
+  }
+  SECTION("Parent") {
+	  string query = "stmt s; Select s such that Parent (s,4)";
+	  list<string> result = pe.evaluateQuery(query);
+	  REQUIRE(result.size() == 1);
+	  REQUIRE(result.front() == "1");
+  }
+  SECTION("ParentT") {
+	  string query = "stmt s; Select s such that Parent* (s,3)";
+	  list<string> result = pe.evaluateQuery(query);
+	  REQUIRE(result.size() == 2);
+	  REQUIRE(result.front() == "1");
+	  result.pop_front();
+	  REQUIRE(result.front() == "2");
+  }
+  SECTION("Pattern") {
+	  string query = "assign s; Select s pattern s(\"a\",_\"x*y\"_)";
+	  list<string> result = pe.evaluateQuery(query);
+	  REQUIRE(result.size() == 2);
+	  REQUIRE(result.front() == "1");
+	  result.pop_front();
+	  REQUIRE(result.front() == "8");
+  }
+}
+SCENARIO("test for query with two caluses") {
+	PKB pkb = buildPKB();
+	PqlEvaluator pe(pkb);
+  SECTION("Uses and Pattern") {
+	  string query = "assign s; Select s such that Uses(s,\"x\") pattern s(\"a\",_\"x*y\"_)";
+	  list<string> result = pe.evaluateQuery(query);
+	  REQUIRE(result.size()==1);
+	  REQUIRE(result.front() == "1");
+
+  }
+  SECTION("Modifies and Pattern") {
+	  string query = "assign s; Select s such that Modifies(s,\"y\") pattern s(\"a\",_\"x*y\"_)";
+	  list<string> result = pe.evaluateQuery(query);
+	  REQUIRE(result.size() == 1);
+	  REQUIRE(result.front() == "1");
+  }
+  SECTION("Parent and Pattern") {
+	  string query = "assign s; Select s such that Parent(s,4) pattern s(\"a\",_\"x*y\"_)";
+	  list<string> result = pe.evaluateQuery(query);
+	  REQUIRE(result.size() == 1);
+	  REQUIRE(result.front() == "1");
+
+  }
+  SECTION("Parent* and Pattern") {
+	  string query = "assign s; Select s such that Parent*(s,3) pattern s(\"a\",_\"x*y\"_)";
+	  list<string> result = pe.evaluateQuery(query);
+	  REQUIRE(result.size() == 1);
+	  REQUIRE(result.front() == "1");
+
+  }
+  SECTION("Follows and Pattern") {
+	  string query = "assign s; Select s such that Follows(s,3) pattern s(\"a\",_\"x*y*z\"_)";
+	  list<string> result = pe.evaluateQuery(query);
+	  REQUIRE(result.size() == 1);
+	  REQUIRE(result.front() == "2");
+
+  }
+  SECTION("Follows* and Pattern") {
+	  string query = "assign s; Select s such that Follows*(s,6) pattern s(\"a\",\"x*y+z*i\")";
+	  list<string> result = pe.evaluateQuery(query);
+	  REQUIRE(result.size() == 1);
+	  REQUIRE(result.front() == "1");
+
   }
 }

@@ -1099,8 +1099,6 @@ set<string> PqlEvaluator::getdataByTtype(QueryEntityType q) {
 }
 
 bool PqlEvaluator::isSynonym(QueryEntityType q) {
-  //¡®stmt¡¯ | ¡®read¡¯ | ¡®print¡¯ | ¡®call¡¯ |
-  //¡®while¡¯ | ¡®if¡¯ | ¡®assign¡¯ | ¡®variable¡¯ | ¡®constant¡¯ |¡®procedure
   return q == QueryEntityType::Stmt || q == QueryEntityType::Read ||
          q == QueryEntityType::Print || q == QueryEntityType::Call ||
          q == QueryEntityType::While || q == QueryEntityType::If ||
@@ -1155,12 +1153,10 @@ bool PqlEvaluator::validateStmt(string result, QueryEntityType q) {
   else if (q == QueryEntityType::Print) return st == StatementType::Print;
 }
 
-bool PqlEvaluator::isCons(string result, QueryEntityType q) { return false; }
-
 bool PqlEvaluator::isVar(string result, QueryEntityType q) {
-  return /*mypkb.isVar(result) &&*/ q == QueryEntityType::Variable;
+  return mypkb.isVar(result) && q == QueryEntityType::Variable;
 }
 
 bool PqlEvaluator::isPro(string result, QueryEntityType q) {
-  return /*mypkb.isProc(result) &&*/ q == QueryEntityType::Procedure;
+  return mypkb.isProc(result) && q == QueryEntityType::Procedure;
 }
