@@ -490,7 +490,7 @@ TEST_CASE("Testing + pattern")
 		REQUIRE(res.front().second == "\"");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "v + x * y + z * t");
+		REQUIRE(res.front().second == "v+x*y+z*t");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == "\"");
@@ -502,7 +502,7 @@ TEST_CASE("Testing + pattern")
 		REQUIRE(res.front().second == "\"");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "v + x * y + z * t");
+		REQUIRE(res.front().second == "v+x*y+z*t");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == "\"");

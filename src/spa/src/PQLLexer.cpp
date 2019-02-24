@@ -130,12 +130,11 @@ void PQLLexer::Tokenize(string input) {
         // deal with "," and ";". If ";", go to the outer loop.
         //token.erase(token.begin());
         //token.erase(token.begin());
-        if (!token.empty()) {
+        while (!token.empty()) {
           if (token[0] == "such" && token[1] == "that") {
             tokenQueue.push(make_pair(TokenType::Keyword, "such that"));
             token.erase(token.begin());
             token.erase(token.begin());
-            while (!token.empty()) {
               if (token[0] == "Modifies" || (token[0].find("Modifies") != token[0].npos && token[0][8] == '(')) {
                 token = tokenizeModifies(token);
               } else if (token[0] == "Uses" || (token[0].find("Uses") != token[0].npos && token[0][4] == '(')) {
@@ -151,7 +150,7 @@ void PQLLexer::Tokenize(string input) {
               } else if (token[0] == "Follows" || (token[0].find("Follows") != token[0].npos && token[0][7] == '(')) {
                 token = tokenizeFollows(token);
               }
-            }
+            
           } else if (token[0] == "pattern" || (token[0].find("pattern") != token[0].npos && token[0][7] == '(')) {
             token = tokenizePattern(token);
           }
@@ -1173,8 +1172,10 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
   }
   iter = iter - 1;
   s = token[0];
+  
   for (int i = 1; i <= iter; i++)
   {
+    /*
 	  if (appearQuo)
 	  {
 		  if (token[i].find("\"") != token[i].npos)
@@ -1198,6 +1199,8 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 
 		  }
 	  }
+    */
+	  s = s + token[i];
   }
   for (int i = 0; i < iter + 1; i++) {
     token.erase(token.begin());
@@ -1728,30 +1731,32 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 	s = token[0];
 	for (int i = 1; i <= iter; i++)
 	{
-		if (appearQuo)
-		{
-			if (token[i].find("\"") != token[i].npos)
-			{
-				s = s + " " + token[i];
-				appearQuo = false;
-			}
-			else
-			{
+		/*
+		  if (appearQuo)
+		  {
+			  if (token[i].find("\"") != token[i].npos)
+			  {
+				  s = s + " " + token[i];
+				  appearQuo = false;
+			  }
+			  else
+			  {
 
-				s = s + " " + token[i];
-			}
-		}
-		else {
-			s = s + token[i];
+				  s = s + " " + token[i];
+			  }
+		  }
+		  else {
+			  s = s + token[i];
 
-			if (token[i].find("\"") != token[i].npos)
-			{
-				appearQuo = true;
+			  if (token[i].find("\"") != token[i].npos)
+			  {
+				  appearQuo = true;
 
 
-			}
-		}
-        
+			  }
+		  }
+		*/
+		s = s + token[i];
 	}
 	for (int i = 0; i < iter + 1; i++)
 	{
@@ -1876,29 +1881,32 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 	s = token[0];
 	for (int i = 1; i <= iter; i++)
 	{
-		if (appearQuo)
-		{
-			if (token[i].find("\"") != token[i].npos)
-			{
-				s = s + " " + token[i];
-				appearQuo = false;
-			}
-			else
-			{
+		/*
+		  if (appearQuo)
+		  {
+			  if (token[i].find("\"") != token[i].npos)
+			  {
+				  s = s + " " + token[i];
+				  appearQuo = false;
+			  }
+			  else
+			  {
 
-				s = s + " " + token[i];
-			}
-		}
-		else {
-			s = s + token[i];
+				  s = s + " " + token[i];
+			  }
+		  }
+		  else {
+			  s = s + token[i];
 
-			if (token[i].find("\"") != token[i].npos)
-			{
-				appearQuo = true;
+			  if (token[i].find("\"") != token[i].npos)
+			  {
+				  appearQuo = true;
 
 
-			}
-		}
+			  }
+		  }
+		*/
+		s = s + token[i];
 	}
 	for (int i = 0; i < iter + 1; i++)
 	{
