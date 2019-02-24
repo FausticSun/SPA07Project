@@ -13,6 +13,8 @@ string standerize(string str) {
 	string new_str;
 	std::string::iterator new_end = std::unique(str.begin(), str.end(), BothAreSpaces);
 	str.erase(new_end, str.end());
+	if (str.front() == ' ') str = str.substr(1, str.size());
+	if (str.back() == ' ') str = str.substr(0, str.size() - 1);
 	for (std::string::size_type i = 0; i < str.size(); ++i) {
 		if (str[i] == ',') {
 			if (new_str.back() != string::npos && new_str.back() == ' ') {
@@ -71,8 +73,6 @@ string standerize(string str) {
 			new_str = new_str + str[i];
 		}
 	}
-	if (new_str.front() == ' ') new_str = new_str.substr(1, new_str.size() - 1);
-	if (new_str.back() == ' ') new_str = new_str.substr(0, new_str.size() - 2);
 	return new_str;
 }
 PQLLexer::PQLLexer(string input) {
