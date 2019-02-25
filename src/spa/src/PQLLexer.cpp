@@ -1297,7 +1297,7 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 	  throw invalid_argument("no semicollumn");
   } else if (!token.empty() && token[0] == "such" && token[1].find("that") != token[1].npos) {
     /*tokenQueue.push(make_pair(TokenType::Separator, ";"));*/
-	  tokenQueue.push(make_pair(TokenType::Keyword, "such that"));
+	  /*tokenQueue.push(make_pair(TokenType::Keyword, "such that"));
           if (token[1].length() != 4)
           {
 	        token[1] = token[1].substr(4, token[1].length() - 4);
@@ -1306,7 +1306,7 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
           {
 			  token.erase(token.begin());
 			  token.erase(token.begin());
-          }
+          } */
   }
   else if (!token.empty() && token[0] == "pattern")
   {
