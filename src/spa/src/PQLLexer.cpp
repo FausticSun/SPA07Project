@@ -1320,26 +1320,32 @@ vector<string> PQLLexer::tokenizeFollows(vector<string> token) {
   s = token[0];
   for (int i = 1; i <= iter; i++)
   {
-	  if (appearQuo)
-	  {
-		  if (token[i].find("\"") != token[i].npos)
-		  {
-			  s = s + " " + token[i];
-			  appearQuo = false;
-		  }
-		  else
-		  {
-			  s = s + " " + token[i];
-		  }
-	  }
-	  else {
-		  s = s + token[i];
-	  }
-	  if (token[i].find("\"") != token[i].npos)
-	  {
-		  appearQuo = true;
+	  /*
+		if (appearQuo)
+		{
+			if (token[i].find("\"") != token[i].npos)
+			{
+				s = s + " " + token[i];
+				appearQuo = false;
+			}
+			else
+			{
 
-	  }
+				s = s + " " + token[i];
+			}
+		}
+		else {
+			s = s + token[i];
+
+			if (token[i].find("\"") != token[i].npos)
+			{
+				appearQuo = true;
+
+
+			}
+		}
+	  */
+	  s = s + token[i];
   }
   for (int i = 0; i < iter + 1; i++) {
     token.erase(token.begin());
@@ -1420,27 +1426,32 @@ vector<string> PQLLexer::tokenizeFollowsT(vector<string> token) {
 	s = token[0];
 	for (int i = 1; i <= iter; i++)
 	{
-		if (appearQuo)
-		{
-			if (token[i].find("\"") != token[i].npos)
-			{
-				s = s + " " + token[i];
-				appearQuo = false;
-			}
-			else
-			{
-				s = s + " " + token[i];
-			}
-		}
-		else {
-			s = s + token[i];
-		}
-		if (token[i].find("\"") != token[i].npos)
-		{
-			appearQuo = true;
+		/*
+		  if (appearQuo)
+		  {
+			  if (token[i].find("\"") != token[i].npos)
+			  {
+				  s = s + " " + token[i];
+				  appearQuo = false;
+			  }
+			  else
+			  {
 
-		}
+				  s = s + " " + token[i];
+			  }
+		  }
+		  else {
+			  s = s + token[i];
 
+			  if (token[i].find("\"") != token[i].npos)
+			  {
+				  appearQuo = true;
+
+
+			  }
+		  }
+		*/
+		s = s + token[i];
 	}
 	for (int i = 0; i < iter + 1; i++) {
 		token.erase(token.begin());
@@ -1523,26 +1534,32 @@ vector<string> PQLLexer::tokenizeParent(vector<string> token) {
 	s = token[0];
 	for (int i = 1; i <= iter; i++)
 	{
-		if (appearQuo)
-		{
-			if (token[i].find("\"") != token[i].npos)
-			{
-				s = s + " " + token[i];
-				appearQuo = false;
-			}
-			else
-			{
-				s = s + " " + token[i];
-			}
-		}
-		else {
-			s = s + token[i];
-		}
-		if (token[i].find("\"") != token[i].npos)
-		{
-			appearQuo = true;
+		/*
+		  if (appearQuo)
+		  {
+			  if (token[i].find("\"") != token[i].npos)
+			  {
+				  s = s + " " + token[i];
+				  appearQuo = false;
+			  }
+			  else
+			  {
 
-		}
+				  s = s + " " + token[i];
+			  }
+		  }
+		  else {
+			  s = s + token[i];
+
+			  if (token[i].find("\"") != token[i].npos)
+			  {
+				  appearQuo = true;
+
+
+			  }
+		  }
+		*/
+		s = s + token[i];
 	}
 	for (int i = 0; i < iter + 1; i++) {
 		token.erase(token.begin());
@@ -1627,26 +1644,32 @@ vector<string> PQLLexer::tokenizeParentT(vector<string> token) {
 	s = token[0];
 	for (int i = 1; i <= iter; i++)
 	{
-		if (appearQuo)
-		{
-			if (token[i].find("\"") != token[i].npos)
-			{
-				s = s + " " + token[i];
-				appearQuo = false;
-			}
-			else
-			{
-				s = s + " " + token[i];
-			}
-		}
-		else {
-			s = s + token[i];
-		}
-		if (token[i].find("\"") != token[i].npos)
-		{
-			appearQuo = true;
+		/*
+		  if (appearQuo)
+		  {
+			  if (token[i].find("\"") != token[i].npos)
+			  {
+				  s = s + " " + token[i];
+				  appearQuo = false;
+			  }
+			  else
+			  {
 
-		}
+				  s = s + " " + token[i];
+			  }
+		  }
+		  else {
+			  s = s + token[i];
+
+			  if (token[i].find("\"") != token[i].npos)
+			  {
+				  appearQuo = true;
+
+
+			  }
+		  }
+		*/
+		s = s + token[i];
 	}
 	for (int i = 0; i < iter + 1; i++) {
 		token.erase(token.begin());

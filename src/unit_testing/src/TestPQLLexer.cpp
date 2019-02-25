@@ -180,6 +180,7 @@ TEST_CASE("Testing while a")
 	}
 }
 
+/*
 TEST_CASE("Testing while a without selection")
 {
 	const string input = "while a;";
@@ -202,7 +203,7 @@ TEST_CASE("Testing while a without selection")
 
 		//REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the declaration.");
 	}
-}
+}*/
 
 TEST_CASE("Testing if a")
 {
