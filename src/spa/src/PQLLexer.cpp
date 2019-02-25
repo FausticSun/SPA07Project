@@ -40,6 +40,18 @@ string standerize(string str) {
 				new_str = new_str + ' ';
 			}
 		}
+		else if (str[i] == ')') {
+			if (new_str.back() != string::npos && new_str.back() == ' ') {
+				new_str = new_str.substr(0, new_str.size() - 1);
+				new_str = new_str + str[i];
+			}
+			else {
+				new_str = new_str + str[i];
+			}
+			if (str[i + 1] != string::npos && str[i + 1] != ' ') {
+				new_str = new_str + ' ';
+			}
+		}
 		else if (str[i] == '\"') {
 			if (new_str[new_str.size() - 1] != string::npos && new_str[new_str.size() - 2] != string::npos
 				&& new_str[new_str.size() - 1] == ' ' && new_str[new_str.size() - 2] != ',') {
@@ -70,7 +82,7 @@ string standerize(string str) {
 			}
 		}
 		else if (str[i] == ' ') {//remove space at back
-			if (new_str.back() != string::npos && (new_str.back() == '(' || new_str.back() == ')' || new_str.back() == '+'
+			if (new_str.back() != string::npos && (new_str.back() == '(' || new_str.back() == '+'
 				|| new_str.back() == '-' || new_str.back() == '*' || new_str.back() == '/' || new_str.back() == '%' || new_str.back() == '\"')) {
 
 			}
@@ -1899,7 +1911,6 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 	bool appearQuo;
 	appearQuo = false;
 	// KEYWORD, "(" "," ")" ";"
-
 
 	while (!token.empty() && check == 1)
 	{
