@@ -16,7 +16,7 @@ string standerize(string str) {
 	if (str.front() == ' ') str = str.substr(1, str.size());
 	if (str.back() == ' ') str = str.substr(0, str.size() - 1);
 	for (std::string::size_type i = 0; i < str.size(); ++i) {
-		if (str[i] == ',') {
+		if (str[i] == ',') {//remove space in front and add space at back
 			if (new_str.back() != string::npos && new_str.back() == ' ') {
 				new_str = new_str.substr(0, new_str.size() - 1);
 				new_str = new_str + str[i];
@@ -50,8 +50,17 @@ string standerize(string str) {
 				new_str = new_str + str[i];
 			}
 		}
-		else if (str[i] == '(' || str[i] == ')' || str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'
-			|| str[i] == '%') {
+		else if(str[i]=='(') {
+		  if(new_str.back() != string::npos && new_str.back() != ' ') {
+			  new_str = new_str + ' ';
+			  new_str = new_str + str[i];
+		  }
+		  else {
+			  new_str = new_str + str[i];
+		  }
+		}
+		else if (str[i] == ')' || str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'
+			|| str[i] == '%') {//remove space in front
 			if (new_str.back() != string::npos && new_str.back() == ' ') {
 				new_str = new_str.substr(0, new_str.size() - 1);
 				new_str = new_str + str[i];
@@ -60,7 +69,7 @@ string standerize(string str) {
 				new_str = new_str + str[i];
 			}
 		}
-		else if (str[i] == ' ') {
+		else if (str[i] == ' ') {//remove space at back
 			if (new_str.back() != string::npos && (new_str.back() == '(' || new_str.back() == ')' || new_str.back() == '+'
 				|| new_str.back() == '-' || new_str.back() == '*' || new_str.back() == '/' || new_str.back() == '%' || new_str.back() == '\"')) {
 
