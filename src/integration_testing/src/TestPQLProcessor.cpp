@@ -39,6 +39,7 @@ PKB buildPKB() {
   pkb.setModifies(4, "z");
   //set follows
   pkb.setFollows(1, 2);
+  pkb.setFollows(8, 3);
   pkb.setFollows(2, 3);
   pkb.setFollows(4, 5);
   pkb.setFollows(4, 6);
@@ -185,7 +186,7 @@ SCENARIO("test for query with two caluses") {
 	  string query = "assign s; Select s such that Follows(s,3) pattern s(\"a\",_\"x*y*z\"_)";
 	  list<string> result = pe.evaluateQuery(query);
 	  REQUIRE(result.size() == 1);
-	  REQUIRE(result.front() == "2");
+	  REQUIRE(result.front() == "8");
 
   }
   SECTION("Follows* and Pattern") {
