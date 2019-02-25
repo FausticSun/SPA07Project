@@ -16,7 +16,7 @@ string standerize(string str) {
 	if (str.front() == ' ') str = str.substr(1, str.size());
 	if (str.back() == ' ') str = str.substr(0, str.size() - 1);
 	for (std::string::size_type i = 0; i < str.size(); ++i) {
-		if (str[i] == ',') {
+		if (str[i] == ',') {//remove space in front and add space at back
 			if (new_str.back() != string::npos && new_str.back() == ' ') {
 				new_str = new_str.substr(0, new_str.size() - 1);
 				new_str = new_str + str[i];
@@ -40,6 +40,18 @@ string standerize(string str) {
 				new_str = new_str + ' ';
 			}
 		}
+		else if (str[i] == ')') {
+			if (new_str.back() != string::npos && new_str.back() == ' ') {
+				new_str = new_str.substr(0, new_str.size() - 1);
+				new_str = new_str + str[i];
+			}
+			else {
+				new_str = new_str + str[i];
+			}
+			if (str[i + 1] != string::npos && str[i + 1] != ' ') {
+				new_str = new_str + ' ';
+			}
+		}
 		else if (str[i] == '\"') {
 			if (new_str[new_str.size() - 1] != string::npos && new_str[new_str.size() - 2] != string::npos
 				&& new_str[new_str.size() - 1] == ' ' && new_str[new_str.size() - 2] != ',') {
@@ -50,8 +62,17 @@ string standerize(string str) {
 				new_str = new_str + str[i];
 			}
 		}
-		else if (str[i] == '(' || str[i] == ')' || str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'
-			|| str[i] == '%') {
+		else if(str[i]=='(') {
+		  if(new_str.back() != string::npos && new_str.back() != ' ') {
+			  new_str = new_str + ' ';
+			  new_str = new_str + str[i];
+		  }
+		  else {
+			  new_str = new_str + str[i];
+		  }
+		}
+		else if (str[i] == ')' || str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'
+			|| str[i] == '%') {//remove space in front
 			if (new_str.back() != string::npos && new_str.back() == ' ') {
 				new_str = new_str.substr(0, new_str.size() - 1);
 				new_str = new_str + str[i];
@@ -60,8 +81,8 @@ string standerize(string str) {
 				new_str = new_str + str[i];
 			}
 		}
-		else if (str[i] == ' ') {
-			if (new_str.back() != string::npos && (new_str.back() == '(' || new_str.back() == ')' || new_str.back() == '+'
+		else if (str[i] == ' ') {//remove space at back
+			if (new_str.back() != string::npos && (new_str.back() == '(' || new_str.back() == '+'
 				|| new_str.back() == '-' || new_str.back() == '*' || new_str.back() == '/' || new_str.back() == '%' || new_str.back() == '\"')) {
 
 			}
@@ -1276,7 +1297,7 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 	  throw invalid_argument("no semicollumn");
   } else if (!token.empty() && token[0] == "such" && token[1].find("that") != token[1].npos) {
     /*tokenQueue.push(make_pair(TokenType::Separator, ";"));*/
-	  tokenQueue.push(make_pair(TokenType::Keyword, "such that"));
+	  /*tokenQueue.push(make_pair(TokenType::Keyword, "such that"));
           if (token[1].length() != 4)
           {
 	        token[1] = token[1].substr(4, token[1].length() - 4);
@@ -1285,7 +1306,7 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
           {
 			  token.erase(token.begin());
 			  token.erase(token.begin());
-          }
+          } */
   }
   else if (!token.empty() && token[0] == "pattern")
   {
@@ -1890,7 +1911,6 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 	bool appearQuo;
 	appearQuo = false;
 	// KEYWORD, "(" "," ")" ";"
-
 
 	while (!token.empty() && check == 1)
 	{
