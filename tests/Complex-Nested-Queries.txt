@@ -1,0 +1,90 @@
+1-comment
+stmt s;
+Select s such that Follows(s, 3)
+2
+5000
+2-comment
+read r; while w;
+Select r such that Follows(w, r)
+32
+5000
+3-comment
+assign a; while w;
+Select a such that Follows(w, a)
+none
+5000
+4-comment
+stmt s;
+Select s such that Follows*(1, s)
+2, 3, 4, 32, 33, 34
+5000
+5-comment
+stmt s; assign a;
+Select s such that Follows*(a, s)
+2, 3, 4, 32, 33, 34, 9, 15, 21, 25, 28
+5000
+6-comment
+while w; print p;
+Select p such that Follows*(w, p)
+33
+5000
+7-comment
+while w; print p;
+Select p such that Parent(w, p)
+none
+5000
+8-comment
+while w; if ifs;
+Select ifs such that Parent(w, ifs)
+5, 7, 11, 13, 17, 19, 23
+5000
+9-comment
+while w1, w2;
+Select w2 such that Parent(w1, w2)
+none
+5000
+10-comment
+if ifs;
+Select ifs such that Parent*(1, ifs)
+none
+5000
+11-comment
+while w1, w2;
+Select w1 such that Parent*(w1, w2)
+4, 6, 10, 12, 16, 18, 22
+5000
+12-comment
+if ifs; assign a;
+Select ifs such that Parent*(ifs, a)
+5, 7, 11, 13, 17, 19, 23
+5000
+13-comment
+while w;
+Select w such that Uses(w, "y")
+22, 18, 16, 12, 10, 6, 4
+5000
+14-comment
+variable v;
+Select v such that Uses(25, v)
+something, some19412
+5000
+15-comment
+variable v;
+Select v such that Uses(19, v)
+something, some19412, z, a, b, c, d, j, n, k, f, x, y, complex, test, case
+5000
+16-comment
+variable v; read p;
+Select p such that Modifies(p, v)
+32
+5000
+17-comment
+variable v; while w;
+Select v such that Modifies(w, v)
+a, x, y, p, z, m, k, this
+5000
+18-comment
+assign a;
+Select a such that Modifies(w, v)
+a, x, y, p, z, m, k, this
+5000

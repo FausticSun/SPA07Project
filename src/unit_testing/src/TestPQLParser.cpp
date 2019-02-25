@@ -512,7 +512,7 @@ SCENARIO("Test pattern clause partial match") {
 	tokens.push(QueryToken(TokenType::Identifier, ","));
 	tokens.push(QueryToken(TokenType::Identifier, "_"));
 	tokens.push(QueryToken(TokenType::Identifier, "\""));
-	tokens.push(QueryToken(TokenType::Identifier, "cenX*ce3nX+cenY*cenY"));
+	tokens.push(QueryToken(TokenType::Identifier, "cenX*ce3nX+ce nY*cenY"));
 	tokens.push(QueryToken(TokenType::Identifier, "\""));
 	tokens.push(QueryToken(TokenType::Identifier, "_"));
 	tokens.push(QueryToken(TokenType::Identifier, ")"));
@@ -529,7 +529,7 @@ SCENARIO("Test pattern clause partial match") {
 		REQUIRE(parameters[0].type == QueryEntityType::Assign);
 		REQUIRE(parameters[1].name == "v");
 		REQUIRE(parameters[1].type == QueryEntityType::Variable);
-		REQUIRE(parameters[2].name == "_cenX ce3nX * cenY cenY * + _");
+		REQUIRE(parameters[2].name == "_cenX ce3nX * ce nY cenY * + _");
 		REQUIRE(parameters[2].type == QueryEntityType::Expression);
 	}
 }

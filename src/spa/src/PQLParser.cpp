@@ -508,7 +508,7 @@ void PQLParser::insertClausePattern()
 			this->clauses.push_back(c);
 		} else
 		{
-			throw std::invalid_argument("Invalid query entity type for fisrt parameter of pattern.");
+			throw std::invalid_argument("Invalid query entity type for first parameter of pattern.");
 		}
 	} else
 	{
@@ -525,18 +525,56 @@ int precedence(char c)
 	else return -1;
 }
 
-string convertToPostfix(string expr)
+bool isOp(char s) {
+	return (s == '+' || s == '-' || s == '*' || s == '?' || s == '%' );
+}
+
+string convertToPostfix(string expr0)
 {
-	std::string::iterator end_pos = std::remove(expr.begin(), expr.end(), ' ');
-	expr.erase(end_pos, expr.end());
+	/*std::string::iterator end_pos = std::remove(expr.begin(), expr.end(), ' ');
+	expr.erase(end_pos, expr.end());*/
+        //combine multiple spaces into one
+	std::string::iterator new_end =
+		std::unique(expr0.begin(), expr0.end(),
+			[=](char lhs, char rhs) { return (lhs == rhs) && (lhs == ' '); }
+	);
+	expr0.erase(new_end, expr0.end());
+        //remove unnecessary spaces
+	string expr;
+	for (int i = 0; i < expr0.size(); i++)
+	{
+		char c = expr0[i];
+          if (c == ' ' && i != 0 && i != expr0.size()-1 && 
+			  ((expr0[i-1] >= 'a' && expr0[i-1] <= 'z') || (expr0[i-1] >= 'A' && expr0[i-1] <= 'Z') || isdigit(expr0[i-1])) &&
+			  ((expr0[i+1] >= 'a' && expr0[i+1] <= 'z') || (expr0[i+1] >= 'A' && expr0[i+1] <= 'Z') || isdigit(expr0[i+1])))
+          {
+			  expr += ' ';
+          }
+          if (c != ' ')
+          {
+			  expr += c;
+          }
+	}
+        //check validation
+        if (isOp(expr[0]) || isOp(expr[expr.size()-1]))
+        {
+          throw std::invalid_argument("Invalid expression");
+        }
+        for (int j = 0; j < expr.size(); j++)
+        {
+          if (isOp(expr[j]) && isOp(expr[j+1]))
+          {
+            throw std::invalid_argument("Invalid expression");
+          }
+        }
 	std::stack<char> st;
 	st.push('N');
 	string res;
 	for (int i = 0; i < expr.size(); i++)
 	{
-		if ((expr[i] >= 'a' && expr[i] <= 'z') || (expr[i] >= 'A' && expr[i] <= 'Z') || isdigit(expr[i])) {
+		if ((expr[i] >= 'a' && expr[i] <= 'z') || (expr[i] >= 'A' && expr[i] <= 'Z') || isdigit(expr[i]) || expr[i] == ' ') {
 			res += expr[i];
-			if (i == expr.size() - 1 || (!(expr[i + 1] >= 'a' && expr[i + 1] <= 'z') && !(expr[i + 1] >= 'A' && expr[i + 1] <= 'Z') && !isdigit(expr[i + 1])))
+			if (i == expr.size()-1 || (!(expr[i+1] >= 'a' && expr[i+1] <= 'z') && !(expr[i+1] >= 'A' && expr[i+1] <= 'Z') && !isdigit(expr[i+1]) && expr[i+1] != ' '))
 			{
 				res += ' ';
 			}
