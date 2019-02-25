@@ -52,6 +52,7 @@ public:
   const std::set<std::string> getConstTable() const;
   bool isVar(std::string);
   bool isProc(std::string);
+  int getStatementCount();
   const std::set<std::string> getStatementsOfType(StatementType) const;
   StatementType getStatementType(std::string);
   bool follows(std::string, std::string);

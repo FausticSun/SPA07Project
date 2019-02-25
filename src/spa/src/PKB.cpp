@@ -87,6 +87,8 @@ bool PKB::isProc(std::string proc) {
   return procTable.find(proc) != procTable.end();
 }
 
+int PKB::getStatementCount() { return this->stmtCount; }
+
 const std::set<std::string> PKB::getStatementsOfType(StatementType type) const {
   if (type == StatementType::Stmt) {
     std::set<std::string> allStmt;

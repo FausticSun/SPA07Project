@@ -2,6 +2,7 @@
 
 DesignExtractor::DesignExtractor(std::unique_ptr<TNode> &AST) : pkb(new PKB()) {
   traverseAST(AST);
+  derivesFollowsParentTransitiveClosure();
   deriveUsesAndModifies();
 }
 
@@ -95,6 +96,35 @@ void DesignExtractor::deriveUsesAndModifies() {
     }
   }
 }
+
+void DesignExtractor::derivesFollowsParentTransitiveClosure() {
+  int size = pkb->getStatementCount();
+  auto followsTable = pkb->getFollowsTable();
+  auto followsTMat = floydWarshall(followsTable, size);
+  for (int i = 0; i < size; ++i) {
+    for (int j = 0; j < size; ++j) {
+      if (i == j) {
+        continue;
+      }
+      if (followsTMat[i][j]) {
+        pkb->setFollowsT(i, j);
+      }
+    }
+  }
+  auto parentTable = pkb->getParentTable();
+  auto parentTMat = floydWarshall(parentTable, size);
+  for (int i = 0; i < size; ++i) {
+    for (int j = 0; j < size; ++j) {
+      if (i == j) {
+        continue;
+      }
+      if (parentTMat[i][j]) {
+        pkb->setParentT(i, j);
+      }
+    }
+  }
+}
+
 void DesignExtractor::extractFollows(std::unique_ptr<TNode> &AST) {
   if (AST->children.size() < 2) {
     return;
@@ -121,6 +151,30 @@ void DesignExtractor::extractAssign(std::unique_ptr<TNode> &AST) {
   auto var = AST->children.front()->name;
   auto expr = extractPostfix(AST->children.back());
   pkb->insertAssign(AST->statementNumber, var, expr);
+}
+
+std::vector<std::vector<bool>>
+DesignExtractor::floydWarshall(std::vector<std::vector<std::string>> &table,
+                               int size) {
+  std::vector<std::vector<bool>> matrix(size, std::vector<bool>(size, false));
+  for (auto it = table.begin(); it != table.end(); ++it) {
+    int i = std::stoi(it->at(0));
+    int j = std::stoi(it->at(1));
+    matrix[i][j] = true;
+  }
+  for (int i = 0; i < size; ++i) {
+    matrix[i][i] = true;
+  }
+  for (int k = 0; k < size; ++k) {
+    for (int i = 0; k < size; ++k) {
+      for (int j = 0; k < size; ++k) {
+        if (matrix[i][k] && matrix[k][j]) {
+          matrix[i][j] = true;
+        }
+      }
+    }
+  }
+  return matrix;
 }
 
 std::string DesignExtractor::extractPostfix(std::unique_ptr<TNode> &AST) {
