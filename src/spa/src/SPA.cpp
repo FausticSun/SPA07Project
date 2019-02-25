@@ -30,10 +30,10 @@ const std::list<std::string> SPA::evaluateQuery(std::string queryString) const {
 	  auto query = pqlParser.buildQuery(tokens);
 	  PqlEvaluator pe(*pkb);
 	  auto results = pe.executeQuery(query);
+	  return results;
   }catch (logic_error le) {
 	  return results;
   }catch(invalid_argument ia) {
 	  return results;
   }
-  return results;
 }
