@@ -107,7 +107,7 @@ void DesignExtractor::derivesFollowsParentTransitiveClosure() {
         continue;
       }
       if (followsTMat[i][j]) {
-        pkb->setFollowsT(i, j);
+        pkb->setFollowsT(i + 1, j + 1);
       }
     }
   }
@@ -119,7 +119,7 @@ void DesignExtractor::derivesFollowsParentTransitiveClosure() {
         continue;
       }
       if (parentTMat[i][j]) {
-        pkb->setParentT(i, j);
+        pkb->setParentT(i + 1, j + 1);
       }
     }
   }
@@ -158,16 +158,16 @@ DesignExtractor::floydWarshall(std::vector<std::vector<std::string>> &table,
                                int size) {
   std::vector<std::vector<bool>> matrix(size, std::vector<bool>(size, false));
   for (auto it = table.begin(); it != table.end(); ++it) {
-    int i = std::stoi(it->at(0));
-    int j = std::stoi(it->at(1));
+    int i = std::stoi(it->at(0)) - 1;
+    int j = std::stoi(it->at(1)) - 1;
     matrix[i][j] = true;
   }
   for (int i = 0; i < size; ++i) {
     matrix[i][i] = true;
   }
   for (int k = 0; k < size; ++k) {
-    for (int i = 0; k < size; ++k) {
-      for (int j = 0; k < size; ++k) {
+    for (int i = 0; i < size; ++i) {
+      for (int j = 0; j < size; ++j) {
         if (matrix[i][k] && matrix[k][j]) {
           matrix[i][j] = true;
         }
