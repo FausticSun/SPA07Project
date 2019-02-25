@@ -1840,7 +1840,11 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 				tokenQueue.push(make_pair(TokenType::Separator, "\""));
 				tokenQueue.push(make_pair(TokenType::Identifier, first_s.substr(1, first_s.length() - 2)));
 				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+			} else
+			{
+				tokenQueue.push(make_pair(TokenType::Identifier, first_s));
 			}
+                        
 		}
 		tokenQueue.push(make_pair(TokenType::Separator, ","));
 		second_s = s.substr(n1 + 1, n2 - 1 - n1);
@@ -1989,6 +1993,10 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 				tokenQueue.push(make_pair(TokenType::Separator, "\""));
 				tokenQueue.push(make_pair(TokenType::Identifier, first_s.substr(1, first_s.length() - 2)));
 				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+			}
+			else
+			{
+				tokenQueue.push(make_pair(TokenType::Identifier, first_s));
 			}
 		}
 		tokenQueue.push(make_pair(TokenType::Separator, ","));
