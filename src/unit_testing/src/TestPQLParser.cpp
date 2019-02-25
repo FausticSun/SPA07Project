@@ -512,7 +512,7 @@ SCENARIO("Test pattern clause partial match") {
 	tokens.push(QueryToken(TokenType::Identifier, ","));
 	tokens.push(QueryToken(TokenType::Identifier, "_"));
 	tokens.push(QueryToken(TokenType::Identifier, "\""));
-	tokens.push(QueryToken(TokenType::Identifier, "cenX*ce3nX+ce nY*cenY"));
+	tokens.push(QueryToken(TokenType::Identifier, "cenX *  ce3nX +ce nY*cenY"));
 	tokens.push(QueryToken(TokenType::Identifier, "\""));
 	tokens.push(QueryToken(TokenType::Identifier, "_"));
 	tokens.push(QueryToken(TokenType::Identifier, ")"));
@@ -792,5 +792,26 @@ SCENARIO("wrong query entity type for the fisrt parameter of pattern")
 	tokens.push(QueryToken(TokenType::Identifier, "\""));
 	tokens.push(QueryToken(TokenType::Identifier, ")"));
 	PQLParser p = PQLParser();
-	REQUIRE_THROWS_WITH(p.buildQuery(tokens), "Invalid query entity type for fisrt parameter of pattern.");
+	REQUIRE_THROWS_WITH(p.buildQuery(tokens), "Invalid query entity type for first parameter of pattern.");
+}
+
+SCENARIO("Invalid pattern expresion")
+{
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "assign"));
+	tokens.push(QueryToken(TokenType::Identifier, "a1"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
+	tokens.push(QueryToken(TokenType::Identifier, "a1"));
+	tokens.push(QueryToken(TokenType::Identifier, "pattern"));
+	tokens.push(QueryToken(TokenType::Identifier, "a1"));
+	tokens.push(QueryToken(TokenType::Identifier, "("));
+	tokens.push(QueryToken(TokenType::Identifier, "_"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, "a+bs--sss"));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, ")"));
+	PQLParser p = PQLParser();
+	REQUIRE_THROWS_WITH(p.buildQuery(tokens), "Invalid expression");
 }

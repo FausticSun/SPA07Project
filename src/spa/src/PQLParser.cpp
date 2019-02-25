@@ -560,13 +560,14 @@ string convertToPostfix(string expr0)
         {
           throw std::invalid_argument("Invalid expression");
         }
-        for (int j = 0; j < expr.size(); j++)
+        for (int j = 0; j < expr.size()-1; j++)
         {
           if (isOp(expr[j]) && isOp(expr[j+1]))
           {
             throw std::invalid_argument("Invalid expression");
           }
         }
+        
 	std::stack<char> st;
 	st.push('N');
 	string res;
