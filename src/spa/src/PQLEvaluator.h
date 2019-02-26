@@ -2,8 +2,6 @@
 
 #include "Query.h"
 #include <PKB.h>
-#include <Query.h>
-#include <iostream>
 #include <list>
 #include <string>
 #include <vector>
@@ -14,11 +12,8 @@ class ClauseResult {
 public:
   ClauseResult(bool isbool, bool bvalue, vector<QueryEntity> titles = {},
                vector<vector<string>> resultTable = {})
-    : isBool(isbool),
-      bValue(bvalue),
-      titles(titles),
-      resultTable(resultTable) {
-  };
+      : isBool(isbool), bValue(bvalue), titles(titles),
+        resultTable(resultTable){};
   bool isBool;
   bool bValue;
   vector<QueryEntity> titles;

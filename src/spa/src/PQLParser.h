@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Query.h"
 #include "PQLLexer.h"
+#include "Query.h"
 #include "QueryToken.h"
 #include <map>
 #include <queue>
@@ -73,21 +73,22 @@ private:
   void insertQueryEntityConstant();
   void insertQueryEntityProgline();
 
-	QueryEntity determineQueryEntity();
-	void checkFPValidity(QueryEntity, QueryEntity);
-	void checkModifiesValidity(QueryEntity, QueryEntity);
-	void checkUsesValidity(QueryEntity, QueryEntity);
-	void insertClauseFollows();
-	void insertClauseFollowsT();
-	void insertClauseParent();
-	void insertClauseParentT();
-	void insertClauseModifiesS();
-	void insertClauseUseS();
+  QueryEntity determineQueryEntity();
+  void checkFPValidity(QueryEntity, QueryEntity);
+  void checkModifiesValidity(QueryEntity, QueryEntity);
+  void checkUsesValidity(QueryEntity, QueryEntity);
+  void insertClauseFollows();
+  void insertClauseFollowsT();
+  void insertClauseParent();
+  void insertClauseParentT();
+  void insertClauseModifiesS();
+  void insertClauseUseS();
 
-	void insertClausePattern();
-	QueryEntity parseExpression();
-	Query constructQuery();
-	bool isInt(string s);
+  void insertClausePattern();
+  QueryEntity parseExpression();
+  Query constructQuery();
+  bool isInt(string s);
+  string checkNameValidity(string s);
 
   /*void Tokenize(string input);
   void tokenizeVariable(vector<string>);

@@ -5,124 +5,117 @@
 
 using namespace std;
 
-TEST_CASE("Testing basic declaration variable")
-{
-	const string input = "  variable a; Select a";
-	queue<pair<TokenType, string>> res;
-	PQLLexer p(input);
-	
-	res = p.getTokenQueue();
+TEST_CASE("Testing basic declaration variable") {
+  const string input = "  variable a; Select a";
+  queue<pair<TokenType, string>> res;
+  PQLLexer p(input);
 
-	SECTION("Selectqueue's first pair is KEYWORD: variable") {
-        
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "variable");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ";");
-		res.pop();
+  res = p.getTokenQueue();
 
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "Select");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
+  SECTION("Selectqueue's first pair is KEYWORD: variable") {
 
-	}
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "variable");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ";");
+    res.pop();
+
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "Select");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+  }
 }
 
-TEST_CASE("Testing constant a")
-{
-	const string input = "constant a; Select a";
-	queue<pair<TokenType, string>> res;
-	PQLLexer p(input);
+TEST_CASE("Testing constant a") {
+  const string input = "constant a; Select a";
+  queue<pair<TokenType, string>> res;
+  PQLLexer p(input);
 
-	res = p.getTokenQueue();
+  res = p.getTokenQueue();
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "constant");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ";");
-		res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "constant");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ";");
+    res.pop();
 
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "Select");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-	}
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "Select");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+  }
 }
 
-TEST_CASE("Testing procedure a")
-{
-	const string input = "procedure a; Select a";
-	queue<pair<TokenType, string>> res;
-	PQLLexer p(input);
+TEST_CASE("Testing procedure a") {
+  const string input = "procedure a; Select a";
+  queue<pair<TokenType, string>> res;
+  PQLLexer p(input);
 
-	res = p.getTokenQueue();
+  res = p.getTokenQueue();
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "procedure");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ";");
-		res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "procedure");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ";");
+    res.pop();
 
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "Select");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-	}
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "Select");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+  }
 }
 
-TEST_CASE("Testing read a")
-{
-	const string input = "read a; Select a";
-	queue<pair<TokenType, string>> res;
-	PQLLexer p(input);
+TEST_CASE("Testing read a") {
+  const string input = "read a; Select a";
+  queue<pair<TokenType, string>> res;
+  PQLLexer p(input);
 
-	res = p.getTokenQueue();
+  res = p.getTokenQueue();
 
-	SECTION("Selectqueue's first pair is KEYWORD: variable") {
+  SECTION("Selectqueue's first pair is KEYWORD: variable") {
 
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "read");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ";");
-		res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "read");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ";");
+    res.pop();
 
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "Select");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-	}
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "Select");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+  }
 }
-
-
 
 TEST_CASE("Testing while a")
 {
@@ -2293,6 +2286,7 @@ TEST_CASE("Test wrong format Uses with (a,)")
 		res.pop();
 	}
 }
+
 /*
 SCENARIO("Only declare one variable a") {
   queue<Token> tokens;
@@ -2326,40 +2320,40 @@ SCENARIO("Declare 2 variables a and b") {
 <<<<<<< HEAD:src/unit_testing/src/TestPQLLexer.cpp
 TEST_CASE("Testing basic Select")
 {
-	const string input = "Select a";
-	//queue<tuple<RelationType, string, string>> res;
-	string t;
-	PQLLexer p(input);
-	//res = p.getSelectQueue();
-	t = p.getTarget();
-	SECTION("discover the targer is a") {
+        const string input = "Select a";
+        //queue<tuple<RelationType, string, string>> res;
+        string t;
+        PQLLexer p(input);
+        //res = p.getSelectQueue();
+        t = p.getTarget();
+        SECTION("discover the targer is a") {
 
-		REQUIRE(t == "a");
-	}
+                REQUIRE(t == "a");
+        }
 
 }
 
 TEST_CASE("Testing basic declaration variable and Select this variable")
 {
-	const string input = "variable a; Select a";
-	queue<pair<DeclarationType, string>> resd;
-	queue<tuple<RelationType, string, string>> ress;
-	string t;
+        const string input = "variable a; Select a";
+        queue<pair<DeclarationType, string>> resd;
+        queue<tuple<RelationType, string, string>> ress;
+        string t;
 
-	PQLLexer p(input);
-	resd = p.getDeclarationQueue();
-	ress = p.getSelectQueue();
-	t = p.getTarget();
-		SECTION("Selectqueue's first pair is KEYWORD: variable") {
+        PQLLexer p(input);
+        resd = p.getDeclarationQueue();
+        ress = p.getSelectQueue();
+        t = p.getTarget();
+                SECTION("Selectqueue's first pair is KEYWORD: variable") {
 
-		REQUIRE(resd.front().first == DeclarationType::Variable);
-		REQUIRE(resd.front().second == "a");
-	}
+                REQUIRE(resd.front().first == DeclarationType::Variable);
+                REQUIRE(resd.front().second == "a");
+        }
 
-	SECTION("Target is a") {
+        SECTION("Target is a") {
 
-		REQUIRE(t == "a");
-	}
+                REQUIRE(t == "a");
+        }
 =======
   WHEN("Parsed") {
     REQUIRE(Selectors.size() == 2);
@@ -2405,21 +2399,21 @@ SCENARIO("Declare several different type of query entities, one for each") {
 <<<<<<< HEAD:src/unit_testing/src/TestPQLLexer.cpp
 TEST_CASE("Testing basic declaration procedure")
 {
-	const string input = "procedure a;";
-	const string input1 = "Select a";
-	queue<pair<DeclarationType, string>> res;
-	queue<tuple<RelationType, string, string>> res1;
-	string t;
-	PQLLexer p(input);
+        const string input = "procedure a;";
+        const string input1 = "Select a";
+        queue<pair<DeclarationType, string>> res;
+        queue<tuple<RelationType, string, string>> res1;
+        string t;
+        PQLLexer p(input);
 
-	res = p.getDeclarationQueue();
-	res1 = p.getSelectQueue();
-	t = p.getTarget();
-	SECTION("Selectqueue's first pair is Procedure: a") {
+        res = p.getDeclarationQueue();
+        res1 = p.getSelectQueue();
+        t = p.getTarget();
+        SECTION("Selectqueue's first pair is Procedure: a") {
 
-		REQUIRE(res.front().first == DeclarationType::Procedure);
-		REQUIRE(res.front().second == "a");
-	}
+                REQUIRE(res.front().first == DeclarationType::Procedure);
+                REQUIRE(res.front().second == "a");
+        }
 =======
 SCENARIO("Declare several different type of query entities, several for each") {
   queue<Token> tokens;
@@ -2481,25 +2475,25 @@ SCENARIO("Select all variables") {
 <<<<<<< HEAD:src/unit_testing/src/TestPQLLexer.cpp
 TEST_CASE("Testing basic declaration procedure and Select this procedure")
 {
-	const string input = "procedure a; Select a";
-	queue<pair<DeclarationType, string>> resd;
-	queue<tuple<RelationType, string, string>> ress;
-	string t;
-	PQLLexer p(input);
-	resd = p.getDeclarationQueue();
-	ress = p.getSelectQueue();
-	t = p.getTarget();
-	SECTION("Selectqueue's first pair is KEYWORD: procedure") {
+        const string input = "procedure a; Select a";
+        queue<pair<DeclarationType, string>> resd;
+        queue<tuple<RelationType, string, string>> ress;
+        string t;
+        PQLLexer p(input);
+        resd = p.getDeclarationQueue();
+        ress = p.getSelectQueue();
+        t = p.getTarget();
+        SECTION("Selectqueue's first pair is KEYWORD: procedure") {
 
-		REQUIRE(resd.front().first == DeclarationType::Procedure);
-		REQUIRE(resd.front().second == "a");
-	}
+                REQUIRE(resd.front().first == DeclarationType::Procedure);
+                REQUIRE(resd.front().second == "a");
+        }
 
 
-	SECTION("Target is a") {
+        SECTION("Target is a") {
 
-		REQUIRE(t == "a");
-	}
+                REQUIRE(t == "a");
+        }
 
 }
 

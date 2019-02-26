@@ -1,7 +1,7 @@
 #include "PQLParser.h"
 
-#include <PqlEvaluator.h>
-#include<MergeTables.h>
+#include <MergeTables.h>
+#include <PQLEvaluator.h>
 
 bool checkForFalse(vector<ClauseResult> clauseResults) {
   vector<ClauseResult>::iterator iter = clauseResults.begin();
@@ -43,9 +43,7 @@ bool isPartial(string s) {
   return false;
 }
 
-string removeUnderscore(string s) {
-  return s.substr(1, s.size() - 2);
-}
+string removeUnderscore(string s) { return s.substr(1, s.size() - 2); }
 
 bool ClauseResult::contains(QueryEntity &q) {
   for (int i = 0; i < titles.size(); i++) {
@@ -67,8 +65,7 @@ list<string> PqlEvaluator::evaluateQuery(string query) {
     results = executeQuery(q);
   } catch (invalid_argument ia) {
     return results;
-  }
-  catch (logic_error le) {
+  } catch (logic_error le) {
     return results;
   }
 
@@ -103,12 +100,11 @@ list<string> PqlEvaluator::executeQuery(Query &q) {
     } else if (iter->clauseType == ClauseType::AssignPatt) {
       clauseResults.push_back(getAssPatern(*iter));
     }
-
   }
   if (checkForFalse(clauseResults)) {
     return results;
   } else if (isAllTrue(clauseResults)) {
-    //return simple query
+    // return simple query
     results = executeSimpleQuery(q.target.type);
     results.sort();
     results.unique();
@@ -120,8 +116,8 @@ list<string> PqlEvaluator::executeQuery(Query &q) {
     if (finalTable.contains(q.target)) {
       int index;
       for (int i = 0; i < finalTable.titles.size(); i++) {
-        if (finalTable.titles[i].type == q.target.type && finalTable.titles[i].
-            name == q.target.name) {
+        if (finalTable.titles[i].type == q.target.type &&
+            finalTable.titles[i].name == q.target.name) {
           index = i;
           break;
         }
@@ -166,11 +162,10 @@ list<string> PqlEvaluator::executeSimpleQuery(QueryEntityType q) {
     return results;
   }
   return results;
-
 }
 
-//booleans: cons cons,cons _,_ cons, _ _
-//data: s cons, cons s, s s, s _, _ s
+// booleans: cons cons,cons _,_ cons, _ _
+// data: s cons, cons s, s s, s _, _ s
 ClauseResult PqlEvaluator::getUses(Clause c) {
 
   vector<QueryEntity>::iterator iter1 = c.parameters.begin();
@@ -179,8 +174,8 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
   QueryEntity qe1 = *iter1;
   QueryEntity qe2 = *iter2;
   vector<QueryEntity> titles;
-  //titles.push_back(qe1);
-  //titles.push_back(qe2);
+  // titles.push_back(qe1);
+  // titles.push_back(qe2);
   vector<vector<string>> result;
 
   if (isConstant(qe1.type) && isConstant(qe2.type)) {
@@ -235,7 +230,6 @@ ClauseResult PqlEvaluator::getUses(Clause c) {
           tuple.push_back(*iterr1);
           tuple.push_back(*iterr2);
           result.push_back(tuple);
-
         }
         iterr2++;
       }
@@ -287,8 +281,8 @@ ClauseResult PqlEvaluator::getModifies(Clause c) {
   QueryEntity qe1 = *iter1;
   QueryEntity qe2 = *iter2;
   vector<QueryEntity> titles;
-  //titles.push_back(qe1);
-  //titles.push_back(qe2);
+  // titles.push_back(qe1);
+  // titles.push_back(qe2);
   vector<vector<string>> result;
   if (isConstant(qe1.type) && isConstant(qe2.type)) {
     // both are constants
@@ -389,8 +383,8 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
   QueryEntity qe1 = *iter1;
   QueryEntity qe2 = *iter2;
   vector<QueryEntity> titles;
-  //titles.push_back(qe1);
-  //titles.push_back(qe2);
+  // titles.push_back(qe1);
+  // titles.push_back(qe2);
   vector<vector<string>> result;
   if (isConstant(qe1.type) && isConstant(qe2.type)) {
     // both are constants
@@ -533,8 +527,8 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
   QueryEntity qe1 = *iter1;
   QueryEntity qe2 = *iter2;
   vector<QueryEntity> titles;
-  //titles.push_back(qe1);
-  //titles.push_back(qe2);
+  // titles.push_back(qe1);
+  // titles.push_back(qe2);
   vector<vector<string>> result;
   if (isConstant(qe1.type) && isConstant(qe2.type)) {
     // both are constants
@@ -679,8 +673,8 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
   QueryEntity qe1 = *iter1;
   QueryEntity qe2 = *iter2;
   vector<QueryEntity> titles;
-  //titles.push_back(qe1);
-  //titles.push_back(qe2);
+  // titles.push_back(qe1);
+  // titles.push_back(qe2);
   vector<vector<string>> result;
   if (isConstant(qe1.type) && isConstant(qe2.type)) {
     // both are constants
@@ -826,8 +820,8 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
   QueryEntity qe1 = *iter1;
   QueryEntity qe2 = *iter2;
   vector<QueryEntity> titles;
-  //titles.push_back(qe1);
-  //titles.push_back(qe2);
+  // titles.push_back(qe1);
+  // titles.push_back(qe2);
   vector<vector<string>> result;
   if (isConstant(qe1.type) && isConstant(qe2.type)) {
     // both are constants
@@ -970,8 +964,8 @@ ClauseResult PqlEvaluator::getAssPatern(Clause c) {
   QueryEntity qe3 = c.parameters[2];
   vector<QueryEntity> titles;
   titles.push_back(qe1);
-  //titles.push_back(qe2);
-  //titles.push_back(qe3);
+  // titles.push_back(qe2);
+  // titles.push_back(qe3);
   vector<vector<string>> result;
 
   if (isConstant(qe2.type) && isConstant(qe3.type)) {
@@ -1025,7 +1019,6 @@ ClauseResult PqlEvaluator::getAssPatern(Clause c) {
         iterr1++;
       }
     }
-
   }
 
   if (isSynonym(qe2.type) && isUnderscore(qe3.type)) {
@@ -1044,7 +1037,6 @@ ClauseResult PqlEvaluator::getAssPatern(Clause c) {
         iterr2++;
       }
       iterr1++;
-
     }
   }
   if (isConstant(qe2.type) && isUnderscore(qe3.type)) {
@@ -1084,7 +1076,6 @@ ClauseResult PqlEvaluator::getAssPatern(Clause c) {
   }
   ClauseResult clauseResult(false, false, titles, result);
   return clauseResult;
-
 }
 
 set<string> PqlEvaluator::getdataByTtype(QueryEntityType q) {
@@ -1113,7 +1104,6 @@ bool PqlEvaluator::isUnderscore(QueryEntityType q) {
 bool PqlEvaluator::isConstant(QueryEntityType q) {
   return q == QueryEntityType::Expression || q == QueryEntityType::Boolean ||
          q == QueryEntityType::Line || q == QueryEntityType::Name;
-
 }
 
 StatementType PqlEvaluator::convertQType(QueryEntityType q) {
@@ -1145,12 +1135,18 @@ bool PqlEvaluator::validateStmt(string result, QueryEntityType q) {
            st == StatementType::Read || st == StatementType::Print ||
            st == StatementType::Call || st == StatementType::Assign ||
            st == StatementType::Stmt;
-  } else if (q == QueryEntityType::Assign) return st == StatementType::Assign;
-  else if (q == QueryEntityType::If) return st == StatementType::If;
-  else if (q == QueryEntityType::While) return st == StatementType::While;
-  else if (q == QueryEntityType::Read) return st == StatementType::Read;
-  else if (q == QueryEntityType::Call) return st == StatementType::Call;
-  else if (q == QueryEntityType::Print) return st == StatementType::Print;
+  } else if (q == QueryEntityType::Assign)
+    return st == StatementType::Assign;
+  else if (q == QueryEntityType::If)
+    return st == StatementType::If;
+  else if (q == QueryEntityType::While)
+    return st == StatementType::While;
+  else if (q == QueryEntityType::Read)
+    return st == StatementType::Read;
+  else if (q == QueryEntityType::Call)
+    return st == StatementType::Call;
+  else if (q == QueryEntityType::Print)
+    return st == StatementType::Print;
 }
 
 bool PqlEvaluator::isVar(string result, QueryEntityType q) {

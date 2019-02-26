@@ -4,18 +4,17 @@
 #include <sstream>
 
 SCENARIO("Lexing an invalid identifier") {
-	std::stringstream ss;
-	ss << "1number = 1";
+  std::stringstream ss;
+  ss << "1number = 1";
 
-	std::istream &filestream = ss;
+  std::istream &filestream = ss;
 
-	Lexer lexer;
-	REQUIRE_THROWS_WITH(lexer.tokenizeFile(filestream), "Invalid Identifier: 1number");
+  Lexer lexer;
+  REQUIRE_THROWS_WITH(lexer.tokenizeFile(filestream),
+                      "Invalid Identifier: 1number");
 }
 
-SCENARIO("Lexing an invalid comment") {
-	std::stringstream ss;
-}
+SCENARIO("Lexing an invalid comment") { std::stringstream ss; }
 
 SCENARIO("Lexing line with comments give same result as the same line without "
          "comments") {

@@ -28,8 +28,8 @@ ClauseResult MergeTables::MergeTwoTables(ClauseResult &cR1, ClauseResult &cR2) {
   vector<QueryEntity> titles(cR1.titles.begin(), cR1.titles.end());
   for (int i = 0; i < cR1.titles.size(); i++) {
     for (int j = 0; j < cR2.titles.size(); j++) {
-      if (cR1.titles[i].type == cR2.titles[j].type && cR1.titles[i].name == cR2.
-          titles[j].name) {
+      if (cR1.titles[i].type == cR2.titles[j].type &&
+          cR1.titles[i].name == cR2.titles[j].name) {
         commonCols[i] = j;
         Cols.push_back(i);
       }
@@ -38,7 +38,7 @@ ClauseResult MergeTables::MergeTwoTables(ClauseResult &cR1, ClauseResult &cR2) {
   for (int i = 0; i < cR2.titles.size(); i++) {
     bool flag = true;
     for (int j = 0; j < Cols.size(); j++) {
-      if (i == commonCols[j]) {
+      if (i == commonCols[Cols[j]]) {
         flag = false;
         break;
       }
@@ -49,13 +49,12 @@ ClauseResult MergeTables::MergeTwoTables(ClauseResult &cR1, ClauseResult &cR2) {
     }
   }
   if (Cols.empty()) {
-    //no common columns
+    // no common columns
     for (int i = 0; i < cR1.resultTable.size(); i++) {
       for (int j = 0; j < cR2.resultTable.size(); j++) {
         vector<string> temp;
         for (int m = 0; m < cR1.resultTable[i].size(); m++) {
           temp.push_back(cR1.resultTable[i][m]);
-
         }
         for (int n = 0; n < cR2.resultTable[j].size(); n++) {
           temp.push_back(cR2.resultTable[j][n]);
@@ -67,7 +66,7 @@ ClauseResult MergeTables::MergeTwoTables(ClauseResult &cR1, ClauseResult &cR2) {
     return clauseResult;
 
   } else {
-    //have common columns
+    // have common columns
     bool flag;
     for (int i = 0; i < cR1.resultTable.size(); i++) {
       for (int j = 0; j < cR2.resultTable.size(); j++) {
@@ -76,12 +75,10 @@ ClauseResult MergeTables::MergeTwoTables(ClauseResult &cR1, ClauseResult &cR2) {
         flag = true;
 
         for (int m = 0; m < Cols.size(); m++) {
-          if (cR1.resultTable[i][Cols[m]] != cR2.resultTable[j][commonCols[Cols[
-                m]]]
-          ) {
+          if (cR1.resultTable[i][Cols[m]] !=
+              cR2.resultTable[j][commonCols[Cols[m]]]) {
             flag = false;
           }
-
         }
         if (flag) {
           for (int n = 0; n < diffCols.size(); n++) {
@@ -89,11 +86,9 @@ ClauseResult MergeTables::MergeTwoTables(ClauseResult &cR1, ClauseResult &cR2) {
           }
           results.push_back(temp);
         }
-
       }
     }
     ClauseResult clauseResult(false, false, titles, results);
     return clauseResult;
   }
-
 }
