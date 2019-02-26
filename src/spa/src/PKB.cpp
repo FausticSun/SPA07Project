@@ -1,24 +1,15 @@
 #include "PKB.h"
 
-void PKB::insertVar(const std::string &var) {
-  if (this->procTable.find(var) == this->procTable.end()) {
-    this->varTable.insert(var);
-  } else {
-    throw std::invalid_argument(
-        var + " is already used for a Procedure. "
-              "Cannot have two procedures or variables having the same name.");
-  }
-}
+void PKB::insertVar(const std::string &var) { this->varTable.insert(var); }
 
 void PKB::insertProc(const std::string &proc) {
-  if (this->varTable.find(proc) == this->varTable.end() &&
-      this->procTable.find(proc) == this->procTable.end()) {
+  if (this->procTable.find(proc) == this->procTable.end()) {
     this->procTable.insert(proc);
   } else {
-    throw std::invalid_argument(proc +
-                                " is already used for a Procedure or Variable. "
-                                "Cannot have two procedures or "
-                                "variables having the same name.");
+    throw std::invalid_argument(
+        "'" + proc +
+        "' is already used. "
+        "Cannot have two procedures with the same name.");
   }
 }
 
