@@ -1,5 +1,5 @@
+#include "MergeTables.h"
 #include "PqlEvaluator.h"
-#include  "MergeTables.h"
 #include "catch.hpp"
 #include <algorithm>
 using namespace std;
@@ -14,13 +14,9 @@ bool contains(list<string> &s, string q) {
   return false;
 }
 
-bool equals(vector<string> &a, vector<string> &b) {
-  return a == b;
-}
+bool equals(vector<string> &a, vector<string> &b) { return a == b; }
 
-bool equals(QueryEntity a, QueryEntity b) {
-  return a == b;
-}
+bool equals(QueryEntity a, QueryEntity b) { return a == b; }
 
 bool contains(vector<vector<string>> &s, vector<string> &q) {
   for (int i = 0; i < s.size(); i++) {
@@ -47,7 +43,7 @@ bool equalsTable(vector<vector<string>> &s, vector<vector<string>> &q) {
 PKB buildPKB() {
   PKB pkb;
   /*pkb.insertConstant();*/
-  //stmt 1-9
+  // stmt 1-9
   pkb.insertStatement("1", StatementType::Assign);
   pkb.insertStatement("2", StatementType::If);
   pkb.insertStatement("3", StatementType::While);
@@ -57,45 +53,45 @@ PKB buildPKB() {
   pkb.insertStatement("7", StatementType::Read);
   pkb.insertStatement("8", StatementType::Assign);
   pkb.insertStatement("9", StatementType::Assign);
-  //procedure: mian one two three four
+  // procedure: mian one two three four
   pkb.insertProc("main");
   pkb.insertProc("one");
   pkb.insertProc("two");
   pkb.insertProc("three");
   pkb.insertProc("four");
-  //var a,x,y,z,i
+  // var a,x,y,z,i
   pkb.insertVar("a");
   pkb.insertVar("x");
   pkb.insertVar("y");
   pkb.insertVar("z");
   pkb.insertVar("i");
-  //set uses
+  // set uses
   pkb.setUses(1, "x");
   pkb.setUses(2, "a");
   pkb.setUses(4, "z");
   pkb.setUses(5, "i");
-  //set modifies
+  // set modifies
   pkb.setModifies(1, "y");
   pkb.setModifies(2, "x");
   pkb.setModifies(3, "a");
   pkb.setModifies(4, "z");
-  //set follows
+  // set follows
   pkb.setFollows(1, 2);
   pkb.setFollows(2, 3);
   pkb.setFollows(4, 5);
   pkb.setFollows(4, 6);
-  //set follow*
+  // set follow*
   pkb.setFollowsT(1, 2);
   pkb.setFollowsT(1, 3);
   pkb.setFollowsT(4, 5);
   pkb.setFollowsT(4, 6);
   pkb.setFollowsT(1, 6);
-  //set parent
+  // set parent
   pkb.setParent(1, 2);
   pkb.setParent(2, 3);
   pkb.setParent(1, 4);
   pkb.setParent(5, 6);
-  //set parent*
+  // set parent*
   pkb.setParentT(1, 2);
   pkb.setParentT(1, 3);
   pkb.setParentT(1, 4);
@@ -116,7 +112,7 @@ SCENARIO("Simple Query No Clause") {
     q.setQuery(stmt, sele, clause);
     list<string> result = pe.executeQuery(q);
     REQUIRE(result.size() == 9);
-    REQUIRE(contains(result,"1"));
+    REQUIRE(contains(result, "1"));
     REQUIRE(contains(result, "2"));
     REQUIRE(contains(result, "3"));
     REQUIRE(contains(result, "4"));
@@ -243,7 +239,6 @@ SCENARIO("target not in clauses") {
     q.setQuery(stm, sele, clause);
     list<string> result = pe.executeQuery(q);
     REQUIRE(result.empty());
-
   }
   SECTION("all are true caluse") {
     Query q;
@@ -258,8 +253,8 @@ SCENARIO("target not in clauses") {
     clause.push_back(c);
     q.setQuery(stm, sele, clause);
     list<string> result = pe.executeQuery(q);
-    REQUIRE(result.size()==9);
-    REQUIRE(contains(result,"1"));
+    REQUIRE(result.size() == 9);
+    REQUIRE(contains(result, "1"));
     REQUIRE(contains(result, "2"));
     REQUIRE(contains(result, "3"));
     REQUIRE(contains(result, "4"));
@@ -268,7 +263,6 @@ SCENARIO("target not in clauses") {
     REQUIRE(contains(result, "7"));
     REQUIRE(contains(result, "8"));
     REQUIRE(contains(result, "9"));
-
   }
   SECTION("table is empty") {
     Query q;
@@ -324,7 +318,7 @@ SCENARIO("target in clause,one clause") {
       clause.push_back(c);
       q.setQuery(stm, sele, clause);
       list<string> result = pe.executeQuery(q);
-      REQUIRE(result.size()==1);
+      REQUIRE(result.size() == 1);
       REQUIRE(contains(result, "x"));
     }
     SECTION("s,c") {
@@ -451,7 +445,6 @@ SCENARIO("target in clause,one clause") {
       list<string> result = pe.executeQuery(q);
       REQUIRE(result.size() == 1);
       REQUIRE(contains(result, "3"));
-
     }
     SECTION("s,s") {
       Query q;
@@ -507,7 +500,6 @@ SCENARIO("target in clause,one clause") {
       REQUIRE(contains(result, "z"));
       REQUIRE(contains(result, "i"));
     }
-
   }
   WHEN("parent") {
     SECTION("c,c") {
@@ -1141,7 +1133,6 @@ SCENARIO("target in clause,one clause") {
       REQUIRE(contains(result, "9"));
     }
   }
-
 }
 
 SCENARIO("Merge Tables") {
@@ -1151,9 +1142,8 @@ SCENARIO("Merge Tables") {
     QueryEntity c{QueryEntityType::Assign, "a1"};
     vector<QueryEntity> title1{a, b};
     vector<QueryEntity> title2{a, c};
-    vector<vector<string>> table1{
-      {"1", "2"}, {"1", "3"}, {"1", "4"}, {"2", "3"}, {"2", "5"}, {"7", "8"}
-    };
+    vector<vector<string>> table1{{"1", "2"}, {"1", "3"}, {"1", "4"},
+                                  {"2", "3"}, {"2", "5"}, {"7", "8"}};
     vector<vector<string>> table2;
     ClauseResult c1(false, false, title1, table1);
     ClauseResult c2(false, false, title2, table2);
@@ -1166,9 +1156,7 @@ SCENARIO("Merge Tables") {
       REQUIRE(equals(finalTable.titles[1], b));
       REQUIRE(equals(finalTable.titles[2], c));
     }
-    SECTION("check content") {
-      REQUIRE(finalTable.resultTable.size() == 0);
-    }
+    SECTION("check content") { REQUIRE(finalTable.resultTable.size() == 0); }
   }
   WHEN("no colum join") {
     QueryEntity a{QueryEntityType::Stmt, "s"};
@@ -1193,11 +1181,9 @@ SCENARIO("Merge Tables") {
     }
     SECTION("check content") {
       vector<vector<string>> expected{
-        {"1", "2", "1", "2"}, {"1", "2", "1", "3"}, {"1", "2", "1", "4"},
-        {"1", "3", "1", "2"}, {"1", "3", "1", "3"}, {"1", "3", "1", "4"},
-        {"1", "4", "1", "2"},
-        {"1", "4", "1", "3"}, {"1", "4", "1", "4"}
-      };
+          {"1", "2", "1", "2"}, {"1", "2", "1", "3"}, {"1", "2", "1", "4"},
+          {"1", "3", "1", "2"}, {"1", "3", "1", "3"}, {"1", "3", "1", "4"},
+          {"1", "4", "1", "2"}, {"1", "4", "1", "3"}, {"1", "4", "1", "4"}};
       REQUIRE(finalTable.resultTable.size() == 9);
       REQUIRE(equalsTable(finalTable.resultTable, expected));
     }
@@ -1208,12 +1194,10 @@ SCENARIO("Merge Tables") {
     QueryEntity c{QueryEntityType::Assign, "a1"};
     vector<QueryEntity> title1{a, b};
     vector<QueryEntity> title2{a, c};
-    vector<vector<string>> table1{
-      {"1", "2"}, {"1", "3"}, {"1", "4"}, {"2", "3"}, {"2", "5"}, {"7", "8"}
-    };
-    vector<vector<string>> table2{
-      {"1", "8"}, {"1", "9"}, {"1", "11"}, {"2", "4"}, {"4", "5"}, {"4", "8"}
-    };
+    vector<vector<string>> table1{{"1", "2"}, {"1", "3"}, {"1", "4"},
+                                  {"2", "3"}, {"2", "5"}, {"7", "8"}};
+    vector<vector<string>> table2{{"1", "8"}, {"1", "9"}, {"1", "11"},
+                                  {"2", "4"}, {"4", "5"}, {"4", "8"}};
     ClauseResult c1(false, false, title1, table1);
     ClauseResult c2(false, false, title2, table2);
     vector<ClauseResult> clauseResutls{c1, c2};
@@ -1224,17 +1208,13 @@ SCENARIO("Merge Tables") {
       REQUIRE(equals(finalTable.titles[0], a));
       REQUIRE(equals(finalTable.titles[1], b));
       REQUIRE(equals(finalTable.titles[2], c));
-
     }
     SECTION("check content") {
       vector<vector<string>> expected{
-        {"1", "2", "8"}, {"1", "3", "8"}, {"1", "4", "8"}, {"1", "2", "9"},
-        {"1", "3", "9"}, {"1", "4", "9"},
-        {"1", "2", "11"}, {"1", "3", "11"}, {"1", "4", "11"}, {"2", "3", "4"},
-        {"2", "5", "4"}
-      };
+          {"1", "2", "8"},  {"1", "3", "8"}, {"1", "4", "8"},  {"1", "2", "9"},
+          {"1", "3", "9"},  {"1", "4", "9"}, {"1", "2", "11"}, {"1", "3", "11"},
+          {"1", "4", "11"}, {"2", "3", "4"}, {"2", "5", "4"}};
       REQUIRE(equalsTable(finalTable.resultTable, expected));
     }
   }
-
 }

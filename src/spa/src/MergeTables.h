@@ -8,6 +8,7 @@ public:
     this->tables = clauseResults;
   };
   ClauseResult getResultTables();
+
 private:
   ClauseResult MergeTwoTables(ClauseResult &cR1, ClauseResult &cR2);
   vector<ClauseResult> tables;

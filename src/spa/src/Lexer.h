@@ -11,9 +11,8 @@ public:
   std::queue<Token> tokenizeFile(std::istream &fileStream);
 
 private:
-	
-	std::vector<Token> tokenize(std::string);
-	std::vector<std::string> vectorize(std::string);
+  std::vector<Token> tokenize(std::string);
+  std::vector<std::string> vectorize(std::string);
   std::string convertQueueToString(std::queue<std::string>);
   Token pushKeyword(std::string);
   Token pushConstant(std::string);
