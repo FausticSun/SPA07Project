@@ -14,8 +14,9 @@ string standerize(string str) {
 	string new_str;
 	std::string::iterator new_end = std::unique(str.begin(), str.end(), BothAreSpaces);
 	str.erase(new_end, str.end());
-	if (str.front() == ' ') str = str.substr(1, str.size());
-	if (str.back() == ' ') str = str.substr(0, str.size() - 1);
+	if (str.size() == 0) { return ""; }
+	if (str.front()!= string::npos && str.front() == ' ') str = str.substr(1, str.size());
+	if (str.back() != string::npos &&str.back() == ' ') str = str.substr(0, str.size() - 1);
 	for (std::string::size_type i = 0; i < str.size(); ++i) {
 		if (str[i] == ',') {//remove space in front and add space at back
 			if (new_str.back() != string::npos && new_str.back() == ' ') {
