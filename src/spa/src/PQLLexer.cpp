@@ -246,8 +246,8 @@ vector<string> PQLLexer::tokenizeVariable(vector<string> token) {
 				  if (token[0][i] == ',') {
                                     if (token[0].length() == 1)
                                     {
-					  tokenQueue.push(make_pair(TokenType::Separator, ","));
-					  token.erase(token.begin());
+					  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+					  //token.erase(token.begin());
                                     } else if (i == token[0].length() - 1) {
 
 						  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, token[0].length() - 1)));
@@ -256,10 +256,10 @@ vector<string> PQLLexer::tokenizeVariable(vector<string> token) {
 						  break;
 					  }
 					  else {
-						  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
-						  break;
+						  //tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
+						  //break;
 					  }
 				  }
 
@@ -327,8 +327,8 @@ vector<string> PQLLexer::tokenizeProcedure(vector<string> token) {
 				  if (token[0][i] == ',') {
 					  if (token[0].length() == 1)
 					  {
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token.erase(token.begin());
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token.erase(token.begin());
 					  }
 					  else if (i == token[0].length() - 1) {
 
@@ -338,10 +338,10 @@ vector<string> PQLLexer::tokenizeProcedure(vector<string> token) {
 						  break;
 					  }
 					  else {
-						  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
-						  break;
+						  //tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
+						  //break;
 					  }
 				  }
 
@@ -413,8 +413,8 @@ vector<string> PQLLexer::tokenizeRead(vector<string> token) {
 				  if (token[0][i] == ',') {
 					  if (token[0].length() == 1)
 					  {
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token.erase(token.begin());
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token.erase(token.begin());
 					  }
 					  else if (i == token[0].length() - 1) {
 
@@ -424,10 +424,10 @@ vector<string> PQLLexer::tokenizeRead(vector<string> token) {
 						  break;
 					  }
 					  else {
-						  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
-						  break;
+						  //tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
+						  //break;
 					  }
 				  }
 
@@ -498,8 +498,8 @@ vector<string> PQLLexer::tokenizePrint(vector<string> token) {
 				  if (token[0][i] == ',') {
 					  if (token[0].length() == 1)
 					  {
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token.erase(token.begin());
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token.erase(token.begin());
 					  }
 					  else if (i == token[0].length() - 1) {
 
@@ -509,10 +509,10 @@ vector<string> PQLLexer::tokenizePrint(vector<string> token) {
 						  break;
 					  }
 					  else {
-						  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
-						  break;
+						  //tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
+						  //break;
 					  }
 				  }
 
@@ -583,8 +583,8 @@ vector<string> PQLLexer::tokenizeWhile(vector<string> token) {
 				  if (token[0][i] == ',') {
 					  if (token[0].length() == 1)
 					  {
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token.erase(token.begin());
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token.erase(token.begin());
 					  }
 					  else if (i == token[0].length() - 1) {
 
@@ -594,10 +594,10 @@ vector<string> PQLLexer::tokenizeWhile(vector<string> token) {
 						  break;
 					  }
 					  else {
-						  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
-						  break;
+						  //tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
+						  //break;
 					  }
 				  }
 
@@ -671,8 +671,8 @@ vector<string> PQLLexer::tokenizeIf(vector<string> token) {
 				  if (token[0][i] == ',') {
 					  if (token[0].length() == 1)
 					  {
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token.erase(token.begin());
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token.erase(token.begin());
 					  }
 					  else if (i == token[0].length() - 1) {
 
@@ -682,10 +682,10 @@ vector<string> PQLLexer::tokenizeIf(vector<string> token) {
 						  break;
 					  }
 					  else {
-						  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
-						  break;
+						  //tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
+						  //break;
 					  }
 				  }
 
@@ -756,8 +756,8 @@ vector<string> PQLLexer::tokenizeAssign(vector<string> token) {
 				  if (token[0][i] == ',') {
 					  if (token[0].length() == 1)
 					  {
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token.erase(token.begin());
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token.erase(token.begin());
 					  }
 					  else if (i == token[0].length() - 1) {
 
@@ -767,10 +767,10 @@ vector<string> PQLLexer::tokenizeAssign(vector<string> token) {
 						  break;
 					  }
 					  else {
-						  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
-						  break;
+						  //tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
+						  //break;
 					  }
 				  }
 
@@ -841,8 +841,8 @@ vector<string> PQLLexer::tokenizeStmt(vector<string> token) {
 				  if (token[0][i] == ',') {
 					  if (token[0].length() == 1)
 					  {
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token.erase(token.begin());
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token.erase(token.begin());
 					  }
 					  else if (i == token[0].length() - 1) {
 
@@ -852,10 +852,10 @@ vector<string> PQLLexer::tokenizeStmt(vector<string> token) {
 						  break;
 					  }
 					  else {
-						  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
-						  break;
+						  //tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
+						  //break;
 					  }
 				  }
 
@@ -925,8 +925,8 @@ vector<string> PQLLexer::tokenizeConstant(vector<string> token) {
 				  if (token[0][i] == ',') {
 					  if (token[0].length() == 1)
 					  {
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token.erase(token.begin());
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token.erase(token.begin());
 					  }
 					  else if (i == token[0].length() - 1) {
 
@@ -936,10 +936,10 @@ vector<string> PQLLexer::tokenizeConstant(vector<string> token) {
 						  break;
 					  }
 					  else {
-						  tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
-						  tokenQueue.push(make_pair(TokenType::Separator, ","));
-						  token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
-						  break;
+						  //tokenQueue.push(make_pair(TokenType::Identifier, token[0].substr(0, i)));
+						  //tokenQueue.push(make_pair(TokenType::Separator, ","));
+						  //token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
+						  //break;
 					  }
 				  }
 

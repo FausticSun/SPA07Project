@@ -503,6 +503,175 @@ TEST_CASE("Testing print with 2 parameters version 2")
 	}
 }
 
+TEST_CASE("Testing print with 2 parameters version 3")
+{
+	const string input = "print p,p2; Select p";
+	queue<pair<TokenType, string>> res;
+	PQLLexer p(input);
+
+	res = p.getTokenQueue();
+
+	SECTION("1") {
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "print");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "p");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ",");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "p2");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ";");
+		res.pop();
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "Select");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "p");
+		res.pop();
+	}
+}
+
+TEST_CASE("Testing variable a")
+{
+	const string input = "variable a; Select a";
+	queue<pair<TokenType, string>> res;
+	PQLLexer p(input);
+
+	res = p.getTokenQueue();
+
+	SECTION("1") {
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "variable");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ";");
+		res.pop();
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "Select");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a");
+		res.pop();
+	}
+}
+
+TEST_CASE("Testing variable with 2 parameters version 1")
+{
+	const string input = "variable a, a2; Select a";
+	queue<pair<TokenType, string>> res;
+	PQLLexer p(input);
+
+	res = p.getTokenQueue();
+
+	SECTION("1") {
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "variable");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ",");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a2");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ";");
+		res.pop();
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "Select");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a");
+		res.pop();
+	}
+}
+
+TEST_CASE("Testing variable with 2 parameters version 2")
+{
+	const string input = "variable a , a2; Select a";
+	queue<pair<TokenType, string>> res;
+	PQLLexer p(input);
+
+	res = p.getTokenQueue();
+
+	SECTION("1") {
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "variable");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ",");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a2");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ";");
+		res.pop();
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "Select");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a");
+		res.pop();
+	}
+}
+
+TEST_CASE("Testing variable with 2 parameters version 3")
+{
+	const string input = "variable a,a2; Select a";
+	queue<pair<TokenType, string>> res;
+	PQLLexer p(input);
+
+	res = p.getTokenQueue();
+
+	SECTION("1") {
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "variable");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ",");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a2");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ";");
+		res.pop();
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "Select");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a");
+		res.pop();
+	}
+}
+
 TEST_CASE("Testing while with 2 parameters version 1")
 {
 	const string input = "while p, p2; Select p";
