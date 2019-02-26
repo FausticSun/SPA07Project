@@ -4,6 +4,20 @@
 
 using namespace std;
 
+SCENARIO("parse an empty query token") {
+	queue<QueryToken> tokens;
+	PQLParser p = PQLParser();
+	const Query q = p.buildQuery(tokens);
+	const std::vector<QueryEntity> selectors = q.selectors;
+
+	WHEN("Successfully parsed:")
+	{
+		SECTION("selectors: none") {
+			REQUIRE(selectors.size() == 0);
+		}
+	}
+}
+
 SCENARIO("Only declare one variable a") {
   queue<QueryToken> tokens;
   tokens.push(QueryToken(TokenType::Identifier, "variable"));
