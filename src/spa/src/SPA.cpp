@@ -5,7 +5,6 @@
 #include "PQLLexer.h"
 #include "PQLParser.h"
 #include "Parser.h"
-#include "PqlEvaluator.h"
 #include <fstream>
 
 SPA::SPA() : pkb(new PKB()) {}
