@@ -1,4 +1,5 @@
 cmake_minimum_required (VERSION 2.6)
+cmake_policy(SET CMP0054 OLD)
 project (autotester)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/cmake)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
