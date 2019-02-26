@@ -1473,7 +1473,7 @@ SCENARIO("Assignment statement: x = (a + b * c d * (e + f)) * g") {
   }
 }
 
-SCENARIO("Condition Expressions: Not") {
+SCENARIO("Condition Expressions: (!(x == 0))") {
   Parser parser;
   std::queue<Token> tokenQueue;
   tokenQueue.push(Token(TokenType::Procedure, "procedure"));
@@ -1543,7 +1543,7 @@ SCENARIO("Condition Expressions: Not") {
   }
 }
 
-SCENARIO("Condition Expressions: And") {
+SCENARIO("Condition Expressions: ((x == 0) && (y == 0))") {
   Parser parser;
   std::queue<Token> tokenQueue;
   tokenQueue.push(Token(TokenType::Procedure, "procedure"));
@@ -1629,7 +1629,7 @@ SCENARIO("Condition Expressions: And") {
   }
 }
 
-SCENARIO("Condition Expressions: And and Or") {
+SCENARIO("Condition Expressions: ((x == 0) && (y == 0) || (z == 0))") {
   Parser parser;
   std::queue<Token> tokenQueue;
   tokenQueue.push(Token(TokenType::Procedure, "procedure"));
@@ -1725,6 +1725,573 @@ SCENARIO("Condition Expressions: And and Or") {
     REQUIRE(rightCondExprVariableTNode->name == "y");
     REQUIRE(rightCondExprConstantTNode->type == TNodeType::Constant);
     REQUIRE(rightCondExprConstantTNode->name == "0");
+  }
+
+  const std::unique_ptr<TNode> &readTNode = whileStmtLstTNode->children.front();
+  SECTION("WhileStatementList has one Read child") {
+    const std::unique_ptr<TNode> &variableTNode = readTNode->children.front();
+    REQUIRE(readTNode->type == TNodeType::Read);
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "x");
+  }
+
+  SECTION("Statement numbers are assigned accordingly") {
+    REQUIRE(whileTNode->statementNumber == 1);
+    REQUIRE(readTNode->statementNumber == 2);
+  }
+}
+
+SCENARIO("Condition Expressions: ((!(x == 0)) && (!(y == 0)))") {
+  Parser parser;
+  std::queue<Token> tokenQueue;
+  tokenQueue.push(Token(TokenType::Procedure, "procedure"));
+  tokenQueue.push(Token(TokenType::Identifier, "Example"));
+  tokenQueue.push(Token(TokenType::Separator, "{"));
+  tokenQueue.push(Token(TokenType::While, "while"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::ExclamationMark, "!"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::Identifier, "x"));
+  tokenQueue.push(Token(TokenType::Equal, "=="));
+  tokenQueue.push(Token(TokenType::Constant, "0"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::And, "&&"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::ExclamationMark, "!"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::Identifier, "y"));
+  tokenQueue.push(Token(TokenType::Equal, "=="));
+  tokenQueue.push(Token(TokenType::Constant, "0"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::Separator, "{"));
+  tokenQueue.push(Token(TokenType::Read, "read"));
+  tokenQueue.push(Token(TokenType::Identifier, "x"));
+  tokenQueue.push(Token(TokenType::Separator, ";"));
+  tokenQueue.push(Token(TokenType::Separator, "}"));
+  tokenQueue.push(Token(TokenType::Separator, "}"));
+  const std::unique_ptr<TNode> &programTNode = parser.buildAst(tokenQueue);
+  const std::unique_ptr<TNode> &procedureTNode = programTNode->children.front();
+  const std::unique_ptr<TNode> &stmtLstTNode = procedureTNode->children.front();
+
+  SECTION("procedureTNode of AST has one StatementList child") {
+    REQUIRE(stmtLstTNode->type == TNodeType::StatementList);
+  }
+
+  const std::unique_ptr<TNode> &whileTNode = stmtLstTNode->children.front();
+  SECTION("StatementList has one While child") {
+    REQUIRE(whileTNode->type == TNodeType::While);
+  }
+
+  const std::unique_ptr<TNode> &whileCondExprAndTNode =
+      whileTNode->children.front();
+  const std::unique_ptr<TNode> &whileStmtLstTNode = whileTNode->children.back();
+  SECTION("While has ConditionExpression and StatementList children") {
+    REQUIRE(whileCondExprAndTNode->type == TNodeType::And);
+    REQUIRE(whileStmtLstTNode->type == TNodeType::StatementList);
+  }
+
+  const std::unique_ptr<TNode> &whileCondExprLeftNotTNode =
+      whileCondExprAndTNode->children.front();
+  const std::unique_ptr<TNode> &whileCondExprRightNotTNode =
+      whileCondExprAndTNode->children.back();
+  SECTION("ConditionExpression has 2 Not children") {
+    REQUIRE(whileCondExprLeftNotTNode->type == TNodeType::Not);
+    REQUIRE(whileCondExprRightNotTNode->type == TNodeType::Not);
+  }
+
+  SECTION("ConditionExpressionLeftNot has Variable and Constant children") {
+    const std::unique_ptr<TNode> &whileCondExprEqualTNode =
+        whileCondExprLeftNotTNode->children.front();
+    const std::unique_ptr<TNode> &variableTNode =
+        whileCondExprEqualTNode->children.front();
+    const std::unique_ptr<TNode> &constantTNode =
+        whileCondExprEqualTNode->children.back();
+    REQUIRE(whileCondExprEqualTNode->type == TNodeType::Equal);
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "x");
+    REQUIRE(constantTNode->type == TNodeType::Constant);
+    REQUIRE(constantTNode->name == "0");
+  }
+
+  SECTION("ConditionExpressionRightNot has Variable and Constant children") {
+    const std::unique_ptr<TNode> &whileCondExprEqualTNode =
+        whileCondExprRightNotTNode->children.front();
+    const std::unique_ptr<TNode> &variableTNode =
+        whileCondExprEqualTNode->children.front();
+    const std::unique_ptr<TNode> &constantTNode =
+        whileCondExprEqualTNode->children.back();
+    REQUIRE(whileCondExprEqualTNode->type == TNodeType::Equal);
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "y");
+    REQUIRE(constantTNode->type == TNodeType::Constant);
+    REQUIRE(constantTNode->name == "0");
+  }
+
+  const std::unique_ptr<TNode> &readTNode = whileStmtLstTNode->children.front();
+  SECTION("WhileStatementList has one Read child") {
+    const std::unique_ptr<TNode> &variableTNode = readTNode->children.front();
+    REQUIRE(readTNode->type == TNodeType::Read);
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "x");
+  }
+
+  SECTION("Statement numbers are assigned accordingly") {
+    REQUIRE(whileTNode->statementNumber == 1);
+    REQUIRE(readTNode->statementNumber == 2);
+  }
+}
+
+SCENARIO("Condition Expressions: (x + 1 > (y - 2))") {
+  Parser parser;
+  std::queue<Token> tokenQueue;
+  tokenQueue.push(Token(TokenType::Procedure, "procedure"));
+  tokenQueue.push(Token(TokenType::Identifier, "Example"));
+  tokenQueue.push(Token(TokenType::Separator, "{"));
+  tokenQueue.push(Token(TokenType::While, "while"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::Identifier, "x"));
+  tokenQueue.push(Token(TokenType::Plus, "+"));
+  tokenQueue.push(Token(TokenType::Constant, "1"));
+  tokenQueue.push(Token(TokenType::Greater, ">"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::Identifier, "y"));
+  tokenQueue.push(Token(TokenType::Minus, "-"));
+  tokenQueue.push(Token(TokenType::Constant, "2"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::Separator, "{"));
+  tokenQueue.push(Token(TokenType::Read, "read"));
+  tokenQueue.push(Token(TokenType::Identifier, "x"));
+  tokenQueue.push(Token(TokenType::Separator, ";"));
+  tokenQueue.push(Token(TokenType::Separator, "}"));
+  tokenQueue.push(Token(TokenType::Separator, "}"));
+  const std::unique_ptr<TNode> &programTNode = parser.buildAst(tokenQueue);
+  const std::unique_ptr<TNode> &procedureTNode = programTNode->children.front();
+  const std::unique_ptr<TNode> &stmtLstTNode = procedureTNode->children.front();
+
+  SECTION("procedureTNode of AST has one StatementList child") {
+    REQUIRE(stmtLstTNode->type == TNodeType::StatementList);
+  }
+
+  const std::unique_ptr<TNode> &whileTNode = stmtLstTNode->children.front();
+  SECTION("StatementList has one While child") {
+    REQUIRE(whileTNode->type == TNodeType::While);
+  }
+
+  const std::unique_ptr<TNode> &whileCondExprGreaterTNode =
+      whileTNode->children.front();
+  const std::unique_ptr<TNode> &whileStmtLstTNode = whileTNode->children.back();
+  SECTION("While has ConditionExpression and StatementList children") {
+    REQUIRE(whileCondExprGreaterTNode->type == TNodeType::Greater);
+    REQUIRE(whileStmtLstTNode->type == TNodeType::StatementList);
+  }
+
+  const std::unique_ptr<TNode> &plusTNode =
+      whileCondExprGreaterTNode->children.front();
+  const std::unique_ptr<TNode> &minusTNode =
+      whileCondExprGreaterTNode->children.back();
+  SECTION("ConditionExpression has Plus and Minus children") {
+    REQUIRE(whileCondExprGreaterTNode->type == TNodeType::Greater);
+    REQUIRE(plusTNode->type == TNodeType::Plus);
+    REQUIRE(plusTNode->name == "+");
+    REQUIRE(minusTNode->type == TNodeType::Minus);
+    REQUIRE(minusTNode->name == "-");
+  }
+
+  SECTION("Plus has Variable and Constant children") {
+    const std::unique_ptr<TNode> &variableTNode = plusTNode->children.front();
+    const std::unique_ptr<TNode> &constantTNode = plusTNode->children.back();
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "x");
+    REQUIRE(constantTNode->type == TNodeType::Constant);
+    REQUIRE(constantTNode->name == "1");
+  }
+
+  SECTION("Minus has Variable and Constant children") {
+    const std::unique_ptr<TNode> &variableTNode = minusTNode->children.front();
+    const std::unique_ptr<TNode> &constantTNode = minusTNode->children.back();
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "y");
+    REQUIRE(constantTNode->type == TNodeType::Constant);
+    REQUIRE(constantTNode->name == "2");
+  }
+
+  const std::unique_ptr<TNode> &readTNode = whileStmtLstTNode->children.front();
+  SECTION("WhileStatementList has one Read child") {
+    const std::unique_ptr<TNode> &variableTNode = readTNode->children.front();
+    REQUIRE(readTNode->type == TNodeType::Read);
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "x");
+  }
+
+  SECTION("Statement numbers are assigned accordingly") {
+    REQUIRE(whileTNode->statementNumber == 1);
+    REQUIRE(readTNode->statementNumber == 2);
+  }
+}
+
+SCENARIO("Condition Expressions: ((x + 1) > (y - 2))") {
+  Parser parser;
+  std::queue<Token> tokenQueue;
+  tokenQueue.push(Token(TokenType::Procedure, "procedure"));
+  tokenQueue.push(Token(TokenType::Identifier, "Example"));
+  tokenQueue.push(Token(TokenType::Separator, "{"));
+  tokenQueue.push(Token(TokenType::While, "while"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::Identifier, "x"));
+  tokenQueue.push(Token(TokenType::Plus, "+"));
+  tokenQueue.push(Token(TokenType::Constant, "1"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::Greater, ">"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::Identifier, "y"));
+  tokenQueue.push(Token(TokenType::Minus, "-"));
+  tokenQueue.push(Token(TokenType::Constant, "2"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::Separator, "{"));
+  tokenQueue.push(Token(TokenType::Read, "read"));
+  tokenQueue.push(Token(TokenType::Identifier, "x"));
+  tokenQueue.push(Token(TokenType::Separator, ";"));
+  tokenQueue.push(Token(TokenType::Separator, "}"));
+  tokenQueue.push(Token(TokenType::Separator, "}"));
+  const std::unique_ptr<TNode> &programTNode = parser.buildAst(tokenQueue);
+  const std::unique_ptr<TNode> &procedureTNode = programTNode->children.front();
+  const std::unique_ptr<TNode> &stmtLstTNode = procedureTNode->children.front();
+
+  SECTION("procedureTNode of AST has one StatementList child") {
+    REQUIRE(stmtLstTNode->type == TNodeType::StatementList);
+  }
+
+  const std::unique_ptr<TNode> &whileTNode = stmtLstTNode->children.front();
+  SECTION("StatementList has one While child") {
+    REQUIRE(whileTNode->type == TNodeType::While);
+  }
+
+  const std::unique_ptr<TNode> &whileCondExprGreaterTNode =
+      whileTNode->children.front();
+  const std::unique_ptr<TNode> &whileStmtLstTNode = whileTNode->children.back();
+  SECTION("While has ConditionExpression and StatementList children") {
+    REQUIRE(whileCondExprGreaterTNode->type == TNodeType::Greater);
+    REQUIRE(whileStmtLstTNode->type == TNodeType::StatementList);
+  }
+
+  const std::unique_ptr<TNode> &plusTNode =
+      whileCondExprGreaterTNode->children.front();
+  const std::unique_ptr<TNode> &minusTNode =
+      whileCondExprGreaterTNode->children.back();
+  SECTION("ConditionExpression has Plus and Minus children") {
+    REQUIRE(whileCondExprGreaterTNode->type == TNodeType::Greater);
+    REQUIRE(plusTNode->type == TNodeType::Plus);
+    REQUIRE(plusTNode->name == "+");
+    REQUIRE(minusTNode->type == TNodeType::Minus);
+    REQUIRE(minusTNode->name == "-");
+  }
+
+  SECTION("Plus has Variable and Constant children") {
+    const std::unique_ptr<TNode> &variableTNode = plusTNode->children.front();
+    const std::unique_ptr<TNode> &constantTNode = plusTNode->children.back();
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "x");
+    REQUIRE(constantTNode->type == TNodeType::Constant);
+    REQUIRE(constantTNode->name == "1");
+  }
+
+  SECTION("Minus has Variable and Constant children") {
+    const std::unique_ptr<TNode> &variableTNode = minusTNode->children.front();
+    const std::unique_ptr<TNode> &constantTNode = minusTNode->children.back();
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "y");
+    REQUIRE(constantTNode->type == TNodeType::Constant);
+    REQUIRE(constantTNode->name == "2");
+  }
+
+  const std::unique_ptr<TNode> &readTNode = whileStmtLstTNode->children.front();
+  SECTION("WhileStatementList has one Read child") {
+    const std::unique_ptr<TNode> &variableTNode = readTNode->children.front();
+    REQUIRE(readTNode->type == TNodeType::Read);
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "x");
+  }
+
+  SECTION("Statement numbers are assigned accordingly") {
+    REQUIRE(whileTNode->statementNumber == 1);
+    REQUIRE(readTNode->statementNumber == 2);
+  }
+}
+
+SCENARIO("Condition Expressions: (((x == 0) && (y == 0)) || (z == 0))") {
+  Parser parser;
+  std::queue<Token> tokenQueue;
+  tokenQueue.push(Token(TokenType::Procedure, "procedure"));
+  tokenQueue.push(Token(TokenType::Identifier, "Example"));
+  tokenQueue.push(Token(TokenType::Separator, "{"));
+  tokenQueue.push(Token(TokenType::While, "while"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::Identifier, "x"));
+  tokenQueue.push(Token(TokenType::Equal, "=="));
+  tokenQueue.push(Token(TokenType::Constant, "0"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::And, "&&"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::Identifier, "y"));
+  tokenQueue.push(Token(TokenType::Equal, "=="));
+  tokenQueue.push(Token(TokenType::Constant, "0"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::Or, "||"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::Identifier, "z"));
+  tokenQueue.push(Token(TokenType::Equal, "=="));
+  tokenQueue.push(Token(TokenType::Constant, "0"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::Separator, "{"));
+  tokenQueue.push(Token(TokenType::Read, "read"));
+  tokenQueue.push(Token(TokenType::Identifier, "x"));
+  tokenQueue.push(Token(TokenType::Separator, ";"));
+  tokenQueue.push(Token(TokenType::Separator, "}"));
+  tokenQueue.push(Token(TokenType::Separator, "}"));
+  const std::unique_ptr<TNode> &programTNode = parser.buildAst(tokenQueue);
+  const std::unique_ptr<TNode> &procedureTNode = programTNode->children.front();
+  const std::unique_ptr<TNode> &stmtLstTNode = procedureTNode->children.front();
+
+  SECTION("procedureTNode of AST has one StatementList child") {
+    REQUIRE(stmtLstTNode->type == TNodeType::StatementList);
+  }
+
+  const std::unique_ptr<TNode> &whileTNode = stmtLstTNode->children.front();
+  SECTION("StatementList has one While child") {
+    REQUIRE(whileTNode->type == TNodeType::While);
+  }
+
+  const std::unique_ptr<TNode> &whileCondExprOrTNode =
+      whileTNode->children.front();
+  const std::unique_ptr<TNode> &whileStmtLstTNode = whileTNode->children.back();
+  SECTION("While has ConditionExpression and StatementList children") {
+    REQUIRE(whileCondExprOrTNode->type == TNodeType::Or);
+    REQUIRE(whileStmtLstTNode->type == TNodeType::StatementList);
+  }
+
+  const std::unique_ptr<TNode> &andTNode =
+      whileCondExprOrTNode->children.front();
+  const std::unique_ptr<TNode> &equalTNode =
+      whileCondExprOrTNode->children.back();
+  SECTION("ConditionExpression has And and Equal children") {
+    REQUIRE(andTNode->type == TNodeType::And);
+    REQUIRE(equalTNode->type == TNodeType::Equal);
+  }
+
+  const std::unique_ptr<TNode> &equalTNode1 = andTNode->children.front();
+  const std::unique_ptr<TNode> &equalTNode2 = andTNode->children.back();
+  SECTION("And has 2 Equal children") {
+    REQUIRE(equalTNode1->type == TNodeType::Equal);
+    REQUIRE(equalTNode2->type == TNodeType::Equal);
+  }
+
+  SECTION("Equal1 has Variable and Constant children") {
+    const std::unique_ptr<TNode> &variableTNode = equalTNode1->children.front();
+    const std::unique_ptr<TNode> &constantTNode = equalTNode1->children.back();
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "x");
+    REQUIRE(constantTNode->type == TNodeType::Constant);
+    REQUIRE(constantTNode->name == "0");
+  }
+
+  SECTION("Equal2 has Variable and Constant children") {
+    const std::unique_ptr<TNode> &variableTNode = equalTNode2->children.front();
+    const std::unique_ptr<TNode> &constantTNode = equalTNode2->children.back();
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "y");
+    REQUIRE(constantTNode->type == TNodeType::Constant);
+    REQUIRE(constantTNode->name == "0");
+  }
+
+  SECTION("Equal has Variable and Constant children") {
+    const std::unique_ptr<TNode> &variableTNode = equalTNode->children.front();
+    const std::unique_ptr<TNode> &constantTNode = equalTNode->children.back();
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "z");
+    REQUIRE(constantTNode->type == TNodeType::Constant);
+    REQUIRE(constantTNode->name == "0");
+  }
+
+  const std::unique_ptr<TNode> &readTNode = whileStmtLstTNode->children.front();
+  SECTION("WhileStatementList has one Read child") {
+    const std::unique_ptr<TNode> &variableTNode = readTNode->children.front();
+    REQUIRE(readTNode->type == TNodeType::Read);
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "x");
+  }
+
+  SECTION("Statement numbers are assigned accordingly") {
+    REQUIRE(whileTNode->statementNumber == 1);
+    REQUIRE(readTNode->statementNumber == 2);
+  }
+}
+
+SCENARIO("Condition Expressions: (!((x == 0) && (y == 0)))") {
+  Parser parser;
+  std::queue<Token> tokenQueue;
+  tokenQueue.push(Token(TokenType::Procedure, "procedure"));
+  tokenQueue.push(Token(TokenType::Identifier, "Example"));
+  tokenQueue.push(Token(TokenType::Separator, "{"));
+  tokenQueue.push(Token(TokenType::While, "while"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::ExclamationMark, "!"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::Identifier, "x"));
+  tokenQueue.push(Token(TokenType::Equal, "=="));
+  tokenQueue.push(Token(TokenType::Constant, "0"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::And, "&&"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::Identifier, "y"));
+  tokenQueue.push(Token(TokenType::Equal, "=="));
+  tokenQueue.push(Token(TokenType::Constant, "0"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::Separator, "{"));
+  tokenQueue.push(Token(TokenType::Read, "read"));
+  tokenQueue.push(Token(TokenType::Identifier, "x"));
+  tokenQueue.push(Token(TokenType::Separator, ";"));
+  tokenQueue.push(Token(TokenType::Separator, "}"));
+  tokenQueue.push(Token(TokenType::Separator, "}"));
+  const std::unique_ptr<TNode> &programTNode = parser.buildAst(tokenQueue);
+  const std::unique_ptr<TNode> &procedureTNode = programTNode->children.front();
+  const std::unique_ptr<TNode> &stmtLstTNode = procedureTNode->children.front();
+
+  SECTION("procedureTNode of AST has one StatementList child") {
+    REQUIRE(stmtLstTNode->type == TNodeType::StatementList);
+  }
+
+  const std::unique_ptr<TNode> &whileTNode = stmtLstTNode->children.front();
+  SECTION("StatementList has one While child") {
+    REQUIRE(whileTNode->type == TNodeType::While);
+  }
+
+  const std::unique_ptr<TNode> &whileCondExprNotTNode =
+      whileTNode->children.front();
+  const std::unique_ptr<TNode> &whileStmtLstTNode = whileTNode->children.back();
+  SECTION("While has ConditionExpression and StatementList children") {
+    REQUIRE(whileCondExprNotTNode->type == TNodeType::Not);
+    REQUIRE(whileStmtLstTNode->type == TNodeType::StatementList);
+  }
+
+  const std::unique_ptr<TNode> &andTNode =
+      whileCondExprNotTNode->children.front();
+  const std::unique_ptr<TNode> &equalTNode1 = andTNode->children.front();
+  const std::unique_ptr<TNode> &equalTNode2 = andTNode->children.back();
+  SECTION("And has 2 Equal children") {
+    REQUIRE(andTNode->type == TNodeType::And);
+    REQUIRE(equalTNode1->type == TNodeType::Equal);
+    REQUIRE(equalTNode2->type == TNodeType::Equal);
+  }
+
+  SECTION("Equal1 has Variable and Constant children") {
+    const std::unique_ptr<TNode> &variableTNode = equalTNode1->children.front();
+    const std::unique_ptr<TNode> &constantTNode = equalTNode1->children.back();
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "x");
+    REQUIRE(constantTNode->type == TNodeType::Constant);
+    REQUIRE(constantTNode->name == "0");
+  }
+
+  SECTION("Equal2 has Variable and Constant children") {
+    const std::unique_ptr<TNode> &variableTNode = equalTNode2->children.front();
+    const std::unique_ptr<TNode> &constantTNode = equalTNode2->children.back();
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "y");
+    REQUIRE(constantTNode->type == TNodeType::Constant);
+    REQUIRE(constantTNode->name == "0");
+  }
+
+  const std::unique_ptr<TNode> &readTNode = whileStmtLstTNode->children.front();
+  SECTION("WhileStatementList has one Read child") {
+    const std::unique_ptr<TNode> &variableTNode = readTNode->children.front();
+    REQUIRE(readTNode->type == TNodeType::Read);
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "x");
+  }
+
+  SECTION("Statement numbers are assigned accordingly") {
+    REQUIRE(whileTNode->statementNumber == 1);
+    REQUIRE(readTNode->statementNumber == 2);
+  }
+}
+
+SCENARIO("Condition Expressions: (!(!(x == 0)))") {
+  Parser parser;
+  std::queue<Token> tokenQueue;
+  tokenQueue.push(Token(TokenType::Procedure, "procedure"));
+  tokenQueue.push(Token(TokenType::Identifier, "Example"));
+  tokenQueue.push(Token(TokenType::Separator, "{"));
+  tokenQueue.push(Token(TokenType::While, "while"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::ExclamationMark, "!"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::ExclamationMark, "!"));
+  tokenQueue.push(Token(TokenType::OpenParenthesis, "("));
+  tokenQueue.push(Token(TokenType::Identifier, "x"));
+  tokenQueue.push(Token(TokenType::Equal, "=="));
+  tokenQueue.push(Token(TokenType::Constant, "0"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::CloseParenthesis, ")"));
+  tokenQueue.push(Token(TokenType::Separator, "{"));
+  tokenQueue.push(Token(TokenType::Read, "read"));
+  tokenQueue.push(Token(TokenType::Identifier, "x"));
+  tokenQueue.push(Token(TokenType::Separator, ";"));
+  tokenQueue.push(Token(TokenType::Separator, "}"));
+  tokenQueue.push(Token(TokenType::Separator, "}"));
+  const std::unique_ptr<TNode> &programTNode = parser.buildAst(tokenQueue);
+  const std::unique_ptr<TNode> &procedureTNode = programTNode->children.front();
+  const std::unique_ptr<TNode> &stmtLstTNode = procedureTNode->children.front();
+
+  SECTION("procedureTNode of AST has one StatementList child") {
+    REQUIRE(stmtLstTNode->type == TNodeType::StatementList);
+  }
+
+  const std::unique_ptr<TNode> &whileTNode = stmtLstTNode->children.front();
+  SECTION("StatementList has one While child") {
+    REQUIRE(whileTNode->type == TNodeType::While);
+  }
+
+  const std::unique_ptr<TNode> &whileCondExprNotTNode =
+      whileTNode->children.front();
+  const std::unique_ptr<TNode> &whileStmtLstTNode = whileTNode->children.back();
+  SECTION("While has ConditionExpression and StatementList children") {
+    REQUIRE(whileCondExprNotTNode->type == TNodeType::Not);
+    REQUIRE(whileStmtLstTNode->type == TNodeType::StatementList);
+  }
+
+  const std::unique_ptr<TNode> &notTNode =
+      whileCondExprNotTNode->children.front();
+  SECTION("ConditionExpression has Not child") {
+    REQUIRE(notTNode->type == TNodeType::Not);
+  }
+
+  const std::unique_ptr<TNode> &equalTNode = notTNode->children.front();
+  SECTION("Not has Equal child") {
+    REQUIRE(equalTNode->type == TNodeType::Equal);
+  }
+
+  SECTION("Equal has Variable and Constant children") {
+    const std::unique_ptr<TNode> &variableTNode = equalTNode->children.front();
+    const std::unique_ptr<TNode> &constantTNode = equalTNode->children.back();
+    REQUIRE(variableTNode->type == TNodeType::Variable);
+    REQUIRE(variableTNode->name == "x");
+    REQUIRE(constantTNode->type == TNodeType::Constant);
+    REQUIRE(constantTNode->name == "0");
   }
 
   const std::unique_ptr<TNode> &readTNode = whileStmtLstTNode->children.front();

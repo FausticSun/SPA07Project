@@ -11,7 +11,7 @@ procedure ComplexNestingTest {
 				} else {
 					while (y != 0) {
 						if ((z != 0) || (a != 0)) then {
-							while ((!(x != 0)) && (b <= 0) || (d > (a + b + c))) {
+							while ((!(x != 0)) && ((b <= 0) || (d > (a + b + c)))) {
 								if (y != 0) then {
 									y = 10;
 									p = q % 6 * (2 + f) - 12490810;

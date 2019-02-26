@@ -14,6 +14,7 @@ private:
   int statementNumber;
   std::queue<Token> tokenQueue;
   Token token;
+  bool isExprRelFactor = false;
   void getNextToken();
   void expectToken(std::string);
   std::unique_ptr<TNode> createTNodeProcedure();
@@ -26,6 +27,7 @@ private:
   std::unique_ptr<TNode> createTNodeStatementList();
   std::unique_ptr<TNode> createTNodeConditionExpression();
   std::unique_ptr<TNode> createTNodeRelativeExpression();
+  std::unique_ptr<TNode> createTNodeRelativeExpression(std::unique_ptr<TNode>);
   std::unique_ptr<TNode> createTNodeRelativeFactor();
   std::unique_ptr<TNode> createTNodeExpression();
   std::unique_ptr<TNode> createTNodeTerm();
