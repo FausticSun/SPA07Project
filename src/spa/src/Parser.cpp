@@ -20,6 +20,10 @@ void Parser::getNextToken() {
 }
 
 void Parser::expectToken(std::string expectedToken) {
+  if (isExprRelFactor) {
+    isExprRelFactor = false;
+    return;
+  }
   getNextToken();
   if (token.name != expectedToken) {
     throw std::logic_error("Expected '" + expectedToken + "' but got '" +
@@ -153,10 +157,15 @@ std::unique_ptr<TNode> Parser::createTNodeConditionExpression() {
   std::unique_ptr<TNode> condExpressionTNode;
   std::unique_ptr<TNode> leftCondExpressionTNode;
   std::unique_ptr<TNode> rightCondExpressionTNode;
+  std::unique_ptr<TNode> tempTNode;
   std::unique_ptr<TNode> previousTNode = NULL;
   TokenType nextTokenType;
   std::vector<std::unique_ptr<TNode>> childNodes;
   switch (tokenQueue.front().type) {
+  case TokenType::Identifier:
+    return createTNodeRelativeExpression();
+  case TokenType::Constant:
+    return createTNodeRelativeExpression();
   case TokenType::ExclamationMark:
     expectToken("!");
     expectToken("(");
@@ -210,55 +219,126 @@ std::unique_ptr<TNode> Parser::createTNodeConditionExpression() {
       nextTokenType = tokenQueue.front().type;
     }
     if (previousTNode == NULL) {
-      throw std::invalid_argument(
-          "Expected multiple conditions but got only 1");
+      // throw std::invalid_argument(
+      //     "Expected multiple conditions but got only 1");
+      return leftCondExpressionTNode;
     } else {
       return previousTNode;
     }
   default:
-    return createTNodeRelativeExpression();
+    throw std::invalid_argument("Expected 'Identifier', 'Constant', "
+                                "'!' or '(' but got '" +
+                                token.name + "'");
   }
 }
 
 std::unique_ptr<TNode> Parser::createTNodeRelativeExpression() {
   std::unique_ptr<TNode> leftRelFactor = createTNodeRelativeFactor();
   std::unique_ptr<TNode> rightRelFactor;
+  std::unique_ptr<TNode> tempTNode;
   std::vector<std::unique_ptr<TNode>> childNodes;
   switch (tokenQueue.front().type) {
   case TokenType::Greater:
+    expectToken(">");
     rightRelFactor = createTNodeRelativeFactor();
     childNodes.push_back(std::move(leftRelFactor));
     childNodes.push_back(std::move(rightRelFactor));
     return std::unique_ptr<TNode>(
         new TNode(TNodeType::Greater, std::move(childNodes)));
   case TokenType::GreaterThanOrEqual:
+    expectToken(">=");
     rightRelFactor = createTNodeRelativeFactor();
     childNodes.push_back(std::move(leftRelFactor));
     childNodes.push_back(std::move(rightRelFactor));
     return std::unique_ptr<TNode>(
         new TNode(TNodeType::GreaterThanOrEqual, std::move(childNodes)));
   case TokenType::Lesser:
+    expectToken("<");
     rightRelFactor = createTNodeRelativeFactor();
     childNodes.push_back(std::move(leftRelFactor));
     childNodes.push_back(std::move(rightRelFactor));
     return std::unique_ptr<TNode>(
         new TNode(TNodeType::Lesser, std::move(childNodes)));
   case TokenType::LesserThanOrEqual:
+    expectToken("<=");
     rightRelFactor = createTNodeRelativeFactor();
     childNodes.push_back(std::move(leftRelFactor));
     childNodes.push_back(std::move(rightRelFactor));
     return std::unique_ptr<TNode>(
         new TNode(TNodeType::LesserThanOrEqual, std::move(childNodes)));
   case TokenType::Equal:
+    expectToken("==");
     rightRelFactor = createTNodeRelativeFactor();
     childNodes.push_back(std::move(leftRelFactor));
     childNodes.push_back(std::move(rightRelFactor));
     return std::unique_ptr<TNode>(
         new TNode(TNodeType::Equal, std::move(childNodes)));
   case TokenType::NotEqual:
+    expectToken("!=");
     rightRelFactor = createTNodeRelativeFactor();
     childNodes.push_back(std::move(leftRelFactor));
     childNodes.push_back(std::move(rightRelFactor));
+    return std::unique_ptr<TNode>(
+        new TNode(TNodeType::NotEqual, std::move(childNodes)));
+  case TokenType::CloseParenthesis:
+    expectToken(")"); // needed when left_rel_factor = ( expr )
+    return createTNodeRelativeExpression(std::move(leftRelFactor));
+  default:
+    expectToken(">, >=, <, <=, ==, !=");
+  }
+}
+
+std::unique_ptr<TNode>
+Parser::createTNodeRelativeExpression(std::unique_ptr<TNode> leftRelFactor) {
+  std::unique_ptr<TNode> rightRelFactor;
+  std::vector<std::unique_ptr<TNode>> childNodes;
+  switch (tokenQueue.front().type) {
+  case TokenType::Greater:
+    expectToken(">");
+    rightRelFactor = createTNodeRelativeFactor();
+    childNodes.push_back(std::move(leftRelFactor));
+    childNodes.push_back(std::move(rightRelFactor));
+    isExprRelFactor = true;
+    return std::unique_ptr<TNode>(
+        new TNode(TNodeType::Greater, std::move(childNodes)));
+  case TokenType::GreaterThanOrEqual:
+    expectToken(">=");
+    rightRelFactor = createTNodeRelativeFactor();
+    childNodes.push_back(std::move(leftRelFactor));
+    childNodes.push_back(std::move(rightRelFactor));
+    isExprRelFactor = true;
+    return std::unique_ptr<TNode>(
+        new TNode(TNodeType::GreaterThanOrEqual, std::move(childNodes)));
+  case TokenType::Lesser:
+    expectToken("<");
+    rightRelFactor = createTNodeRelativeFactor();
+    childNodes.push_back(std::move(leftRelFactor));
+    childNodes.push_back(std::move(rightRelFactor));
+    isExprRelFactor = true;
+    return std::unique_ptr<TNode>(
+        new TNode(TNodeType::Lesser, std::move(childNodes)));
+  case TokenType::LesserThanOrEqual:
+    expectToken("<=");
+    rightRelFactor = createTNodeRelativeFactor();
+    childNodes.push_back(std::move(leftRelFactor));
+    childNodes.push_back(std::move(rightRelFactor));
+    isExprRelFactor = true;
+    return std::unique_ptr<TNode>(
+        new TNode(TNodeType::LesserThanOrEqual, std::move(childNodes)));
+  case TokenType::Equal:
+    expectToken("==");
+    rightRelFactor = createTNodeRelativeFactor();
+    childNodes.push_back(std::move(leftRelFactor));
+    childNodes.push_back(std::move(rightRelFactor));
+    isExprRelFactor = true;
+    return std::unique_ptr<TNode>(
+        new TNode(TNodeType::Equal, std::move(childNodes)));
+  case TokenType::NotEqual:
+    expectToken("!=");
+    rightRelFactor = createTNodeRelativeFactor();
+    childNodes.push_back(std::move(leftRelFactor));
+    childNodes.push_back(std::move(rightRelFactor));
+    isExprRelFactor = true;
     return std::unique_ptr<TNode>(
         new TNode(TNodeType::NotEqual, std::move(childNodes)));
   default:
@@ -267,15 +347,7 @@ std::unique_ptr<TNode> Parser::createTNodeRelativeExpression() {
 }
 
 std::unique_ptr<TNode> Parser::createTNodeRelativeFactor() {
-  getNextToken();
-  switch (token.type) {
-  case TokenType::Identifier:
-    return std::unique_ptr<TNode>(new TNode(TNodeType::Variable, token.name));
-  case TokenType::Constant:
-    return std::unique_ptr<TNode>(new TNode(TNodeType::Constant, token.name));
-  default:
-    return createTNodeExpression();
-  }
+  return createTNodeExpression();
 }
 
 std::unique_ptr<TNode> Parser::createTNodeExpression() {
