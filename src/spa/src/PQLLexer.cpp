@@ -1,4 +1,5 @@
 #include "PQLLexer.h"
+#include "PQLLexer.h"
 #include <algorithm>
 #include <queue>
 #include <string.h>
@@ -1182,7 +1183,9 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
   string s;
   string first_s, second_s;
   bool appearQuo;
+  bool findFirstBra;
   appearQuo = false;
+  findFirstBra = false;
   // KEYWORD,"a" "(" (3 situations: v, "v", _) "," "_" or _" adfsf"_ ")" ";"
 
   while (!token.empty() && check == 1) {
@@ -1228,8 +1231,9 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
   }
   for (int i = 0; i < s.length(); i++) {
     // no space
-    if (s[i] == '(') {
+    if (s[i] == '(' && findFirstBra == false) {
       n0 = i;
+	  findFirstBra = true;
     }
     if (s[i] == ',') {
       n1 = i;
@@ -1760,9 +1764,11 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 	string s;
 	string first_s;
 	string second_s;
+	bool findFirstBra;
 	// KEYWORD, "(" "," ")" ";"
 	bool appearQuo;
 	appearQuo = false;
+	findFirstBra = false;
 	while (!token.empty() && check == 1)
 	{
 		if (token[iter].find(")") != token[iter].npos)
@@ -1809,9 +1815,10 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 	for (int i = 0; i < s.length(); i++)
 	{
 		// no space
-		if (s[i] == '(')
+		if (s[i] == '(' && findFirstBra == false)
 		{
 			n0 = i;
+			findFirstBra = true;
 		}
 		if (s[i] == ',')
 		{
@@ -1913,7 +1920,9 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 	string first_s;
 	string second_s;
 	bool appearQuo;
+	bool findFirstBra;
 	appearQuo = false;
+	findFirstBra = false;
 	// KEYWORD, "(" "," ")" ";"
 
 	while (!token.empty() && check == 1)
@@ -1962,9 +1971,10 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 	for (int i = 0; i < s.length(); i++)
 	{
 		// no space
-		if (s[i] == '(')
+		if (s[i] == '(' && findFirstBra == false)
 		{
 			n0 = i;
+			findFirstBra = true;
 		}
 		if (s[i] == ',')
 		{

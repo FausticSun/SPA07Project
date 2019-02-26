@@ -153,7 +153,7 @@ TEST_CASE("Testing print a")
 
 TEST_CASE("Testing while a")
 {
-	const string input = "while a; Select a";
+	const string input = "while a; Select a";//const string input = "while a; Select a";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
