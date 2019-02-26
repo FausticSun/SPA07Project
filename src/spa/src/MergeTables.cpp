@@ -38,7 +38,7 @@ ClauseResult MergeTables::MergeTwoTables(ClauseResult &cR1, ClauseResult &cR2) {
   for (int i = 0; i < cR2.titles.size(); i++) {
     bool flag = true;
     for (int j = 0; j < Cols.size(); j++) {
-      if (i == commonCols[j]) {
+      if (i == commonCols[Cols[j]]) {
         flag = false;
         break;
       }
