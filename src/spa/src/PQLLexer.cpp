@@ -105,8 +105,8 @@ PQLLexer::PQLLexer(string input) {
 
 vector<string> PQLLexer::vectorize(string input) {
   vector<string> tokens;
-
-  char *p;
+       
+  char *p  ;
   char *temp = (char*)input.c_str();
   p = strtok(temp, " ");
   while (p) {
@@ -1066,40 +1066,64 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
   string s;
   string first_s, second_s;
   bool appearQuo;
+  bool appearCom;
   bool findFirstBra;
+  int endQuo;
+  endQuo = 0;
   appearQuo = false;
+  appearCom = false;
   findFirstBra = false;
   // KEYWORD,"a" "(" (3 situations: v, "v", _) "," "_" or _" adfsf"_ ")" ";"
 
-  while (!token.empty() && check == 1) {
-    if (token[iter].find(")") != token[iter].npos) {
-      check = 0;
-    }
-    iter++;
+  while (iter!=token.size() && check == 1)
+  {
+
+	  if ((endQuo == 2 || endQuo == 0) && token[iter].find(")") != token[iter].npos)
+	  {
+		  check = 0;
+		  break;
+	  }
+	  if (token[iter].find("\"") != token[iter].npos && appearCom) {
+		  endQuo++;
+	  }
+	  if (token[iter].find(",") != token[iter].npos) {
+		  appearCom = true;
+	  }
+	  iter++;
   }
-  iter = iter - 1;
+  appearCom = false;
+  endQuo = 0;
+  if (iter == token.size()) { iter = iter - 1; }
   s = token[0];
-  
   for (int i = 1; i <= iter; i++)
   {
 
 	  s = s + token[i];
   }
-  for (int i = 0; i < iter + 1; i++) {
-    token.erase(token.begin());
+  for (int i = 0; i < iter + 1; i++)
+  {
+	  token.erase(token.begin());
   }
-  for (int i = 0; i < s.length(); i++) {
-    // no space
-    if (s[i] == '(' && findFirstBra == false) {
-      n0 = i;
-	  findFirstBra = true;
-    }
-    if (s[i] == ',') {
-      n1 = i;
-    }
-    if (s[i] == ')') {
-      n2 = i;
-    }
+  for (int i = 0; i < s.length(); i++)
+  {
+	  // no space
+	  if (s[i] == '(' && findFirstBra == false)
+	  {
+		  n0 = i;
+		  findFirstBra = true;
+	  }
+	  if (s[i] == ')' && appearCom && (endQuo == 2 || endQuo == 0))
+	  {
+		  n2 = i;
+	  }
+	  if (s[i] == '\"' && appearCom) {
+		  endQuo++;
+	  }
+	  if (s[i] == ',')
+	  {
+		  n1 = i;
+		  appearCom = true;
+	  }
   }
   if (n0 != -1 && n1 != -1 && n2 != -1) {
     tokenQueue.push(make_pair(TokenType::Keyword, "pattern"));
@@ -1517,19 +1541,33 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 	string first_s;
 	string second_s;
 	bool findFirstBra;
+	int endQuo;
 	// KEYWORD, "(" "," ")" ";"
 	bool appearQuo;
+	bool appearCom;
 	appearQuo = false;
+	endQuo = 0;
+	appearCom = false;
 	findFirstBra = false;
-	while (!token.empty() && check == 1)
+	while (iter != token.size() && check == 1)
 	{
-		if (token[iter].find(")") != token[iter].npos)
+
+		if ((endQuo == 2 || endQuo == 0) && token[iter].find(")") != token[iter].npos && appearCom)
 		{
 			check = 0;
+			break;
+		}
+		if (token[iter].find("\"") != token[iter].npos && appearCom) {
+			endQuo++;
+		}
+		if (token[iter].find(",") != token[iter].npos) {
+			appearCom = true;
 		}
 		iter++;
 	}
-	iter = iter - 1;
+	appearCom = false;
+	endQuo = 0;
+	if (iter == token.size()) { iter = iter - 1; }
 	s = token[0];
 	for (int i = 1; i <= iter; i++)
 	{
@@ -1548,13 +1586,17 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 			n0 = i;
 			findFirstBra = true;
 		}
+		if (s[i] == ')' && appearCom && (endQuo == 2 || endQuo == 0))
+		{
+			n2 = i;
+		}
+		if (s[i] == '\"' && appearCom) {
+			endQuo++;
+		}
 		if (s[i] == ',')
 		{
 			n1 = i;
-		}
-		if (s[i] == ')')
-		{
-			n2 = i;
+			appearCom = true;
 		}
 	}
 	if (n0 != -1 && n1 != -1 && n2 != -1) {
@@ -1636,19 +1678,33 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 	string second_s;
 	bool appearQuo;
 	bool findFirstBra;
+	bool appearCom;
+	int endQuo;
+	endQuo = 0;
 	appearQuo = false;
+	appearCom = false;
 	findFirstBra = false;
 	// KEYWORD, "(" "," ")" ";"
 
-	while (!token.empty() && check == 1)
+	while (iter!=token.size() && check == 1)
 	{
-		if (token[iter].find(")") != token[iter].npos)
+
+		if ((endQuo == 2 || endQuo == 0) && token[iter].find(")") != token[iter].npos)
 		{
 			check = 0;
+			break;
+		}
+		if (token[iter].find("\"") != token[iter].npos && appearCom) {
+			endQuo++;
+		}
+		if (token[iter].find(",") != token[iter].npos) {
+			appearCom = true;
 		}
 		iter++;
 	}
-	iter = iter - 1;
+	appearCom = false;
+	endQuo = 0;
+	if (iter == token.size()) { iter = iter - 1; }
 	s = token[0];
 	for (int i = 1; i <= iter; i++)
 	{
@@ -1667,13 +1723,17 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 			n0 = i;
 			findFirstBra = true;
 		}
+		if (s[i] == ')' && appearCom && (endQuo == 2 || endQuo == 0))
+		{
+			n2 = i;
+		}
+		if (s[i] == '\"' && appearCom) {
+			endQuo++;
+		}
 		if (s[i] == ',')
 		{
 			n1 = i;
-		}
-		if (s[i] == ')')
-		{
-			n2 = i;
+			appearCom = true;
 		}
 	}
 	if (n0 != -1 && n1 != -1 && n2 != -1) {

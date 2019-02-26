@@ -1479,7 +1479,8 @@ TEST_CASE("Testing Follows version 1")
 TEST_CASE("Testing Follows(1, s)")
 {
 	const string input = "assign a; stmt s; variable v; Select s such that Follows (1, s)";
-	queue<pair<TokenType, string>> res;
+
+    queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
 	res = p.getTokenQueue();
@@ -1535,6 +1536,86 @@ TEST_CASE("Testing Follows(1, s)")
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "s");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ")");
+		res.pop();
+	}
+}
+
+TEST_CASE("Testing Uses with (\"(xxx)\", \"(xxx)\")")
+{
+	const string input = "assign a; stmt s; variable v; Select s such that Uses (\"(a + b)\", \"(a + b)\")";
+	//const string input = "assign a; stmt s; variable v; Select s such that Uses (\"(a + b) + (c + d)\", \"(a + b)\")";
+
+	queue<pair<TokenType, string>> res;
+	PQLLexer p(input);
+
+	res = p.getTokenQueue();
+
+	SECTION("1") {
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "assign");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ";");
+		res.pop();
+		REQUIRE(res.front().second == "stmt");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "s");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ";");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "variable");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "v");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ";");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "Select");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "s");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "such that");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "Uses");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == "(");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == "\"");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "(a+b)");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == "\"");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ",");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == "\"");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "(a+b)");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == "\"");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == ")");
