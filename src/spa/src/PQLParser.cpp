@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <stack>
+#include <regex>
 
 using namespace std;
 
@@ -162,7 +163,7 @@ void PQLParser::tokenizeSelect()
 
 void PQLParser::insertQueryEntityVariable() {
   getNextToken();
-  QueryEntity qe = QueryEntity(QueryEntityType::Variable, token.name);
+  QueryEntity qe = QueryEntity(QueryEntityType::Variable, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Variable));
   this->selectors.push_back(qe);
   getNextToken();
@@ -177,7 +178,7 @@ void PQLParser::insertQueryEntityVariable() {
 
 void PQLParser::insertQueryEntityProcedure() {
   getNextToken();
-  QueryEntity qe = QueryEntity(QueryEntityType::Procedure, token.name);
+  QueryEntity qe = QueryEntity(QueryEntityType::Procedure, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Procedure));
   this->selectors.push_back(qe);
   getNextToken();
@@ -192,7 +193,7 @@ void PQLParser::insertQueryEntityProcedure() {
 
 void PQLParser::insertQueryEntityRead() {
   getNextToken();
-  QueryEntity qe = QueryEntity(QueryEntityType::Read, token.name);
+  QueryEntity qe = QueryEntity(QueryEntityType::Read, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Read));
   this->selectors.push_back(qe);
   getNextToken();
@@ -207,7 +208,7 @@ void PQLParser::insertQueryEntityRead() {
 
 void PQLParser::insertQueryEntityPrint() {
   getNextToken();
-  QueryEntity qe = QueryEntity(QueryEntityType::Print, token.name);
+  QueryEntity qe = QueryEntity(QueryEntityType::Print, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Print));
   this->selectors.push_back(qe);
   getNextToken();
@@ -222,7 +223,7 @@ void PQLParser::insertQueryEntityPrint() {
 
 void PQLParser::insertQueryEntityIf() {
   getNextToken();
-  QueryEntity qe = QueryEntity(QueryEntityType::If, token.name);
+  QueryEntity qe = QueryEntity(QueryEntityType::If, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::If));
   this->selectors.push_back(qe);
   getNextToken();
@@ -237,7 +238,7 @@ void PQLParser::insertQueryEntityIf() {
 
 void PQLParser::insertQueryEntityWhile() {
   getNextToken();
-  QueryEntity qe = QueryEntity(QueryEntityType::While, token.name);
+  QueryEntity qe = QueryEntity(QueryEntityType::While, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::While));
   this->selectors.push_back(qe);
   getNextToken();
@@ -252,7 +253,7 @@ void PQLParser::insertQueryEntityWhile() {
 
 void PQLParser::insertQueryEntityAssign() {
   getNextToken();
-  QueryEntity qe = QueryEntity(QueryEntityType::Assign, token.name);
+  QueryEntity qe = QueryEntity(QueryEntityType::Assign, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Assign));
   this->selectors.push_back(qe);
   getNextToken();
@@ -267,7 +268,7 @@ void PQLParser::insertQueryEntityAssign() {
 
 void PQLParser::insertQueryEntityCall() {
   getNextToken();
-  QueryEntity qe = QueryEntity(QueryEntityType::Call, token.name);
+  QueryEntity qe = QueryEntity(QueryEntityType::Call, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Call));
   this->selectors.push_back(qe);
   getNextToken();
@@ -282,7 +283,7 @@ void PQLParser::insertQueryEntityCall() {
 
 void PQLParser::insertQueryEntityStmt() {
   getNextToken();
-  QueryEntity qe = QueryEntity(QueryEntityType::Stmt, token.name);
+  QueryEntity qe = QueryEntity(QueryEntityType::Stmt, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Stmt));
   this->selectors.push_back(qe);
   getNextToken();
@@ -297,7 +298,7 @@ void PQLParser::insertQueryEntityStmt() {
 
 void PQLParser::insertQueryEntityConstant() {
   getNextToken();
-  QueryEntity qe = QueryEntity(QueryEntityType::Constant, token.name);
+  QueryEntity qe = QueryEntity(QueryEntityType::Constant, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Constant));
   this->selectors.push_back(qe);
   getNextToken();
@@ -312,7 +313,7 @@ void PQLParser::insertQueryEntityConstant() {
 
 void PQLParser::insertQueryEntityProgline() {
   getNextToken();
-  QueryEntity qe = QueryEntity(QueryEntityType::Stmt, token.name);
+  QueryEntity qe = QueryEntity(QueryEntityType::Stmt, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Stmt));
   this->selectors.push_back(qe);
   getNextToken();
@@ -334,6 +335,17 @@ bool PQLParser::isInt(string s) {
 
   return (*p == 0);
 }
+
+string PQLParser::checkNameValidity(string s) {
+  if (regex_match(s, regex("[a-zA-Z][a-zA-Z0-9]*")))
+  {
+	  return s;
+  } else
+  {
+	  throw std::invalid_argument("Invalid naming style for names");
+  }
+}
+
 
 QueryEntity PQLParser::determineQueryEntity()
 {
@@ -520,7 +532,7 @@ void PQLParser::insertClausePattern()
 int precedence(char c)
 {
 	if (c == '^') return 3;
-	else if (c == '*' || c == '/') return 2;
+	else if (c == '*' || c == '/' || c == '%') return 2;
 	else if (c == '+' || c == '-') return 1;
 	else return -1;
 }

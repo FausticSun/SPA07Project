@@ -88,6 +88,7 @@ private:
 	QueryEntity parseExpression();
 	Query constructQuery();
 	bool isInt(string s);
+	string checkNameValidity(string s);
 
   /*void Tokenize(string input);
   void tokenizeVariable(vector<string>);
