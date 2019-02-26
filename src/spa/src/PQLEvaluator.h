@@ -2,8 +2,6 @@
 
 #include "Query.h"
 #include <PKB.h>
-#include <Query.h>
-#include <iostream>
 #include <list>
 #include <string>
 #include <vector>

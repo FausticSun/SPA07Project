@@ -1,7 +1,7 @@
 #include "PQLParser.h"
 
 #include <MergeTables.h>
-#include <PqlEvaluator.h>
+#include <PQLEvaluator.h>
 
 bool checkForFalse(vector<ClauseResult> clauseResults) {
   vector<ClauseResult>::iterator iter = clauseResults.begin();

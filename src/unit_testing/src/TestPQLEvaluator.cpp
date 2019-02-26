@@ -1,5 +1,5 @@
 #include "MergeTables.h"
-#include "PqlEvaluator.h"
+#include "PQLEvaluator.h"
 #include "catch.hpp"
 #include <algorithm>
 using namespace std;
