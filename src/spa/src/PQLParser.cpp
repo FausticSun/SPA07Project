@@ -14,6 +14,10 @@ PQLParser::PQLParser() {}
 std::queue<QueryToken> PQLParser::parse(std::string query) {
 	PQLLexer pqlLexer = PQLLexer(query);
 	queue<pair<TokenType, string>> allTokens = pqlLexer.getTokenQueue();
+        if (allTokens.size() == 0)
+        {
+	        throw std::logic_error("Invalid query!");
+        }
 	std::queue<QueryToken> tokens;
 	while (!allTokens.empty())
 	{
