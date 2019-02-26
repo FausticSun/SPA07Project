@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include <PqlEvaluator.h>
+#include <PQLEvaluator.h>
 using namespace std;
 
 PKB buildPKB() {
