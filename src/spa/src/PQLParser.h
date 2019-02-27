@@ -84,10 +84,12 @@ private:
   void insertClauseModifiesS();
   void insertClauseUseS();
 
+  string convertToPostfix(string s);
   void insertClausePattern();
   QueryEntity parseExpression();
   Query constructQuery();
   bool isInt(string s);
+  bool isDefined(string s);
   string checkNameValidity(string s);
 
   /*void Tokenize(string input);
