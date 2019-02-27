@@ -81,28 +81,29 @@ std::list<Token> GeneralLexer::tokenize(std::istream &stream) {
   std::list<Token> tokens;
   while (stream.peek() != EOF) {
     // Check for and consume comments
-    if (stream.get() == '/' && stream.peek() == '/') {
+    if (stream.get() == '\' && stream.peek() == '\') {
       stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       if (!stream.eof()) {
-        stream.unget();
-      }
-    } else {
       stream.unget();
-    }
-    // Lex everything else
-    if (std::isalpha(stream.peek())) {
-      tokens.push_back(recognizeIdentifier(stream));
-    } else if (std::isdigit(stream.peek())) {
-      tokens.push_back(recognizeNumber(stream));
-    } else if (std::ispunct(stream.peek())) {
-      tokens.push_back(recognizePunctuation(stream));
-    } else if (std::isspace(stream.peek())) {
-      tokens.push_back(recognizeSpace(stream));
-    } else if (stream.peek() == EOF) {
-      break;
-    } else {
-      throw std::logic_error("Unknown character encountered: " + stream.peek());
-    }
+      }
   }
-  return tokens;
+  else {
+    stream.unget();
+  }
+  // Lex everything else
+  if (std::isalpha(stream.peek())) {
+    tokens.push_back(recognizeIdentifier(stream));
+  } else if (std::isdigit(stream.peek())) {
+    tokens.push_back(recognizeNumber(stream));
+  } else if (std::ispunct(stream.peek())) {
+    tokens.push_back(recognizePunctuation(stream));
+  } else if (std::isspace(stream.peek())) {
+    tokens.push_back(recognizeSpace(stream));
+  } else if (stream.peek() == EOF) {
+    break;
+  } else {
+    throw std::logic_error("Unknown character encountered: " + stream.peek());
+  }
+}
+return tokens;
 }
