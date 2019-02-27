@@ -1,0 +1,20 @@
+1-comment
+print s;
+Select s such that Uses(s, "order")
+27
+5000
+2-comment
+print s;
+Select s such that Uses(s, "other")
+20
+5000
+3-comment
+print s;
+Select s such that Uses(s, "              s0mething")
+19
+5000
+4-comment
+while w; stmt s;
+Select s such that Parent* (s, w) 
+4,6,7,8,10,12,13,21,22,24,25,33
+5000
