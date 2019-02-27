@@ -549,38 +549,38 @@ SCENARIO("Test pattern clause underscore") {
 }
 
 SCENARIO("Test pattern clause strange case") {
-  queue<QueryToken> tokens;
-  tokens.push(QueryToken(TokenType::Identifier, "assign"));
-  tokens.push(QueryToken(TokenType::Identifier, "a"));
-  tokens.push(QueryToken(TokenType::Identifier, ";"));
-  tokens.push(QueryToken(TokenType::Identifier, "Select"));
-  tokens.push(QueryToken(TokenType::Identifier, "a"));
-  tokens.push(QueryToken(TokenType::Identifier, "pattern"));
-  tokens.push(QueryToken(TokenType::Identifier, "a"));
-  tokens.push(QueryToken(TokenType::Identifier, "("));
-  tokens.push(QueryToken(TokenType::Identifier, "_"));
-  tokens.push(QueryToken(TokenType::Identifier, ","));
-  tokens.push(QueryToken(TokenType::Identifier, "_"));
-  tokens.push(QueryToken(TokenType::Identifier, "\""));
-  tokens.push(QueryToken(TokenType::Identifier, "0098 - sd *(tr - 0006)"));
-  tokens.push(QueryToken(TokenType::Identifier, "\""));
-  tokens.push(QueryToken(TokenType::Identifier, "_"));
-  tokens.push(QueryToken(TokenType::Identifier, ")"));
-  PQLParser p = PQLParser();
-  Query q = p.buildQuery(tokens);
-  std::vector<Clause> clauses = q.clauses;
-  SECTION("clauses: one AssignPatt clause is inside") {
-    REQUIRE(clauses.size() == 1);
-    Clause c = clauses.front();
-    std::vector<QueryEntity> parameters = c.parameters;
-    REQUIRE(c.clauseType == ClauseType::AssignPatt);
-    REQUIRE(parameters[0].name == "a");
-    REQUIRE(parameters[0].type == QueryEntityType::Assign);
-    REQUIRE(parameters[1].name == "_");
-    REQUIRE(parameters[1].type == QueryEntityType::Underscore);
-    REQUIRE(parameters[2].name == "_ 98 sd tr 6 - * - _");
-    REQUIRE(parameters[2].type == QueryEntityType::Expression);
-  }
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "assign"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, "pattern"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, "("));
+	tokens.push(QueryToken(TokenType::Identifier, "_"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "_"));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, "0098 - sd *(tr - 0006)"));
+	tokens.push(QueryToken(TokenType::Identifier, "\""));
+	tokens.push(QueryToken(TokenType::Identifier, "_"));
+	tokens.push(QueryToken(TokenType::Identifier, ")"));
+	PQLParser p = PQLParser();
+	Query q = p.buildQuery(tokens);
+	std::vector<Clause> clauses = q.clauses;
+	SECTION("clauses: one AssignPatt clause is inside") {
+		REQUIRE(clauses.size() == 1);
+		Clause c = clauses.front();
+		std::vector<QueryEntity> parameters = c.parameters;
+		REQUIRE(c.clauseType == ClauseType::AssignPatt);
+		REQUIRE(parameters[0].name == "a");
+		REQUIRE(parameters[0].type == QueryEntityType::Assign);
+		REQUIRE(parameters[1].name == "_");
+		REQUIRE(parameters[1].type == QueryEntityType::Underscore);
+		REQUIRE(parameters[2].name == "_ 98 sd tr 6 - * - _");
+		REQUIRE(parameters[2].type == QueryEntityType::Expression);
+	}
 }
 
 // Scenarios that will throw exceptions
@@ -835,15 +835,15 @@ SCENARIO("Invalid pattern expresion") {
 }
 
 SCENARIO("Delcare duplicated synonyms") {
-  queue<QueryToken> tokens;
-  tokens.push(QueryToken(TokenType::Identifier, "assign"));
-  tokens.push(QueryToken(TokenType::Identifier, "a"));
-  tokens.push(QueryToken(TokenType::Identifier, ";"));
-  tokens.push(QueryToken(TokenType::Identifier, "assign"));
-  tokens.push(QueryToken(TokenType::Identifier, "a"));
-  tokens.push(QueryToken(TokenType::Identifier, ";"));
-  tokens.push(QueryToken(TokenType::Identifier, "Select"));
-  tokens.push(QueryToken(TokenType::Identifier, "a"));
-  PQLParser p = PQLParser();
-  REQUIRE_THROWS_WITH(p.buildQuery(tokens), "'a' has been declared.");
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "assign"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "assign"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	PQLParser p = PQLParser();
+	REQUIRE_THROWS_WITH(p.buildQuery(tokens), "'a' has been declared.");
 }

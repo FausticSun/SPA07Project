@@ -154,7 +154,7 @@ void PQLParser::tokenizeSelect() {
 void PQLParser::insertQueryEntityVariable() {
   getNextToken();
   if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
   }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Variable, checkNameValidity(token.name));
@@ -173,7 +173,7 @@ void PQLParser::insertQueryEntityVariable() {
 void PQLParser::insertQueryEntityProcedure() {
   getNextToken();
   if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
   }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Procedure, checkNameValidity(token.name));
@@ -192,7 +192,7 @@ void PQLParser::insertQueryEntityProcedure() {
 void PQLParser::insertQueryEntityRead() {
   getNextToken();
   if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
   }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Read, checkNameValidity(token.name));
@@ -211,7 +211,7 @@ void PQLParser::insertQueryEntityRead() {
 void PQLParser::insertQueryEntityPrint() {
   getNextToken();
   if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
   }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Print, checkNameValidity(token.name));
@@ -230,7 +230,7 @@ void PQLParser::insertQueryEntityPrint() {
 void PQLParser::insertQueryEntityIf() {
   getNextToken();
   if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
   }
   QueryEntity qe =
       QueryEntity(QueryEntityType::If, checkNameValidity(token.name));
@@ -249,7 +249,7 @@ void PQLParser::insertQueryEntityIf() {
 void PQLParser::insertQueryEntityWhile() {
   getNextToken();
   if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
   }
   QueryEntity qe =
       QueryEntity(QueryEntityType::While, checkNameValidity(token.name));
@@ -268,7 +268,7 @@ void PQLParser::insertQueryEntityWhile() {
 void PQLParser::insertQueryEntityAssign() {
   getNextToken();
   if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
   }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Assign, checkNameValidity(token.name));
@@ -287,7 +287,7 @@ void PQLParser::insertQueryEntityAssign() {
 void PQLParser::insertQueryEntityCall() {
   getNextToken();
   if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
   }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Call, checkNameValidity(token.name));
@@ -306,7 +306,7 @@ void PQLParser::insertQueryEntityCall() {
 void PQLParser::insertQueryEntityStmt() {
   getNextToken();
   if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
   }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Stmt, checkNameValidity(token.name));
@@ -325,7 +325,7 @@ void PQLParser::insertQueryEntityStmt() {
 void PQLParser::insertQueryEntityConstant() {
   getNextToken();
   if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
   }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Constant, checkNameValidity(token.name));
@@ -344,7 +344,7 @@ void PQLParser::insertQueryEntityConstant() {
 void PQLParser::insertQueryEntityProgline() {
   getNextToken();
   if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
   }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Stmt, checkNameValidity(token.name));
@@ -361,11 +361,12 @@ void PQLParser::insertQueryEntityProgline() {
 }
 
 bool PQLParser::isDefined(string name) {
-  std::map<std::string, QueryEntityType>::iterator it = entityMaps.find(name);
-  if (it != entityMaps.end()) {
-    return true;
-  }
-  return false;
+	std::map<std::string, QueryEntityType>::iterator it =
+		entityMaps.find(name);
+	if (it != entityMaps.end()) {
+		return true;
+	}
+	return false;
 }
 
 bool PQLParser::isInt(string s) {
@@ -604,7 +605,7 @@ string PQLParser::convertToPostfix(string expr0) {
   expr.erase(end_pos, expr.end());*/
   // combine multiple spaces into one a(_,"")
   if (expr0.empty()) {
-    throw std::invalid_argument("Invalid expression");
+	  throw std::invalid_argument("Invalid expression");
   }
   std::string::iterator new_end =
       std::unique(expr0.begin(), expr0.end(), [=](char lhs, char rhs) {
@@ -685,18 +686,18 @@ string PQLParser::convertToPostfix(string expr0) {
   {
           res.insert(++i, " ");
   }*/
-
+  
   std::regex ws_re("\\s+");
   std::vector<std::string> result{
-      std::sregex_token_iterator(res.begin(), res.end(), ws_re, -1), {}};
+	  std::sregex_token_iterator(res.begin(), res.end(), ws_re, -1), {}
+  };
   string out = " ";
-  for (vector<string>::const_iterator i = result.begin(); i != result.end();
-       ++i) {
-    string s = *i;
-    if (isInt(s)) {
-      s = std::to_string(stoi(s));
-    }
-    out += s + ' ';
+  for (vector<string>::const_iterator i = result.begin(); i != result.end(); ++i) {
+	  string s = *i;
+	  if (isInt(s)) {
+		  s = std::to_string(stoi(s));
+	  }
+	  out += s + ' ';
   }
   return out;
 }
