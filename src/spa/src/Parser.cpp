@@ -470,7 +470,8 @@ std::unique_ptr<TNode> Parser::createTNodeFactor() {
   case TokenType::Identifier:
     return std::unique_ptr<TNode>(new TNode(TNodeType::Variable, token.name));
   case TokenType::Constant:
-    return std::unique_ptr<TNode>(new TNode(TNodeType::Constant, token.name));
+    return std::unique_ptr<TNode>(
+        new TNode(TNodeType::Constant, std::to_string(std::stoi(token.name))));
   case TokenType::OpenParenthesis:
     std::unique_ptr<TNode> expressionTNode = createTNodeExpression();
     expectToken(")");
