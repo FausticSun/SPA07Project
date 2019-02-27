@@ -300,6 +300,7 @@ vector<string> PQLLexer::tokenizeCall(vector<string> token) {
 			end = true;
 		}
 		else {
+			throw ("missing semicollumn in declaration!");
 		}
 	}
 	if (end) {
@@ -368,6 +369,7 @@ vector<string> PQLLexer::tokenizeVariable(vector<string> token) {
 
       end = true;
     } else {
+		throw ("missing semicollumn in declaration!");
     }
   }
   if (end) {
@@ -436,6 +438,7 @@ vector<string> PQLLexer::tokenizeProcedure(vector<string> token) {
 
       end = true;
     } else {
+		throw ("missing semicollumn in declaration!");
     }
   }
   if (end) {
@@ -511,6 +514,7 @@ vector<string> PQLLexer::tokenizeProgLine(vector<string> token) {
 			end = true;
 		}
 		else {
+			throw ("missing semicollumn in declaration!");
 		}
 	}
 	if (end) {
@@ -579,6 +583,7 @@ vector<string> PQLLexer::tokenizeRead(vector<string> token) {
 
       end = true;
     } else {
+		throw ("missing semicollumn in declaration!");
     }
   }
   if (end) {
@@ -647,6 +652,7 @@ vector<string> PQLLexer::tokenizePrint(vector<string> token) {
 
       end = true;
     } else {
+		throw ("missing semicollumn in declaration!");
     }
   }
   if (end) {
@@ -718,6 +724,7 @@ vector<string> PQLLexer::tokenizeWhile(vector<string> token) {
 
       end = true;
     } else {
+		throw ("missing semicollumn in declaration!");
     }
   }
   if (end) {
@@ -786,6 +793,7 @@ vector<string> PQLLexer::tokenizeIf(vector<string> token) {
 
       end = true;
     } else {
+		throw ("missing semicollumn in declaration!");
     }
   }
   if (end) {
@@ -854,6 +862,7 @@ vector<string> PQLLexer::tokenizeAssign(vector<string> token) {
 
       end = true;
     } else {
+		throw ("missing semicollumn in declaration!");
     }
   }
   if (end) {
@@ -921,8 +930,11 @@ vector<string> PQLLexer::tokenizeStmt(vector<string> token) {
       }
 
       end = true;
-    } else {
-    }
+
+	}
+	else {
+		throw ("missing semicollumn in declaration!");
+	}
   }
   if (end) {
     expectionOfDeclaration(token);
@@ -990,6 +1002,7 @@ vector<string> PQLLexer::tokenizeConstant(vector<string> token) {
 
       end = true;
     } else {
+		throw ("missing semicollumn in declaration!");
     }
   }
   if (end) {
@@ -1019,8 +1032,7 @@ void PQLLexer::expectionOfDeclaration(vector<string> token) {
   } else if (token[0] == "Select" || token[0] == "stmt" || token[0] == "read" ||
              token[0] == "print" || token[0] == "while" || token[0] == "if" ||
              token[0] == "assign" || token[0] == "variable" ||
-             token[0] == "constant" || token[0] == "procedure" || token[0] == "call" || token[0] == "prog_line" ||
-             token[0].find(";") != token[0].npos) {
+             token[0] == "constant" || token[0] == "procedure" || token[0] == "call" || token[0] == "prog_line") {
 
   } else {
     throw invalid_argument("should follows a new declaration or selection");

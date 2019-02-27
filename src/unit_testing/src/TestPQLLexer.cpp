@@ -120,7 +120,7 @@ TEST_CASE("Testing read a") {
 
 TEST_CASE("Testing prog_line a") {
 	const string input = "prog_line a; Select a";
-	//const string input = "procedure p;variable v; stmt s; if ifs;while w; print pr; read r; constant cons; assign a;call c;Select v such that Modifies(\"SpecificationTest\", \"x\")";
+	//const string input = "assign a, a1 Select v such that Modifies(\"SpecificationTest\", \"x\")";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
@@ -186,6 +186,114 @@ TEST_CASE("Testing while a without selection") {
     // REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
     // declaration.");
   }
+}
+
+TEST_CASE("Testing while a, b without semicollumn") {
+	const string input = "while a, b Selct a;";
+	queue<pair<TokenType, string>> res;
+
+	SECTION("1") {
+
+		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+		// declaration.");
+	}
+}
+
+TEST_CASE("Testing assign a, b without semicollumn") {
+	const string input = "assign a, b Selct a;";
+	queue<pair<TokenType, string>> res;
+
+	SECTION("1") {
+
+		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+		// declaration.");
+	}
+}
+
+TEST_CASE("Testing read a, b without semicollumn") {
+	const string input = "read a, b Selct a;";
+	queue<pair<TokenType, string>> res;
+
+	SECTION("1") {
+
+		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+		// declaration.");
+	}
+}
+
+TEST_CASE("Testing print a, b without semicollumn") {
+	const string input = "print a, b Selct a;";
+	queue<pair<TokenType, string>> res;
+
+	SECTION("1") {
+
+		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+		// declaration.");
+	}
+}
+
+TEST_CASE("Testing constant a, b without semicollumn") {
+	const string input = "constant a, b Selct a;";
+	queue<pair<TokenType, string>> res;
+
+	SECTION("1") {
+
+		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+		// declaration.");
+	}
+}
+
+TEST_CASE("Testing prog_line a, b without semicollumn") {
+	const string input = "prog_line a, b Selct a;";
+	queue<pair<TokenType, string>> res;
+
+	SECTION("1") {
+
+		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+		// declaration.");
+	}
+}
+
+TEST_CASE("Testing call a, b without semicollumn") {
+	const string input = "call a, b Selct a;";
+	queue<pair<TokenType, string>> res;
+
+	SECTION("1") {
+
+		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+		// declaration.");
+	}
+}
+
+TEST_CASE("Testing variable a, b without semicollumn") {
+	const string input = "variable a, b Selct a;";
+	queue<pair<TokenType, string>> res;
+
+	SECTION("1") {
+
+		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+		// declaration.");
+	}
+}
+
+TEST_CASE("Testing procedure a, b without semicollumn") {
+	const string input = "procedure a, b Selct a;";
+	queue<pair<TokenType, string>> res;
+
+	SECTION("1") {
+
+		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+		// declaration.");
+	}
 }
 
 TEST_CASE("Testing while a, follows a unexpected keyword") {
