@@ -18,93 +18,6 @@ while w; stmt s;
 Select s such that Parent* (s, w) 
 4,6,7,8,10,12,13,21,22,24,25,33
 5000
-
-1-comment
-assign a;
-Select a such that Uses(a, "input2837189")
-17
-5000
-1-comment
-assign a;
-Select a such that Uses(a, "	input2837189")
-17
-5000
-2-comment
-procedure p;
-Select p such that Uses  (p, "alphA")
-ComplexSourceTest
-5000
-3-comment
-print p;
-Select p such that Uses  ("ComplexSourceTest", _)
-11, 19, 20, 27, 29
-5000
-4-comment
-read r;
-Select r such that Modifies  ("ComplexSourceTest", _)
-9, 16, 31, 32
-5000
-5-comment
-procedure p;
-Select p such that Modifies(p, "output	 	")
-ComplexSourceTest
-5000
-6-comment
-assign a;
-Select a such that Modifies(a, "x")
-14
-5000
-7-comment
-variable v;
-Select v such that Modifies(35, v)
-out
-5000
-8-comment
-assign a;
-Select a pattern a(_, _"  (3 /(     alphA	+ 2))"_)
-2
-5000
-9-comment
-assign a;
-Select a pattern a(_, _"(3/(al  phA+2))"_)
-none
-5000
-10-comment
-assign a;
-Select a pattern a("key123 	", _)
-5
-5000
-11-comment
-assign a;
-Select a pattern a(_, _"testing * 2"_)
-5
-5000
-12-comment
-assign a;
-Select a pattern a(_, _"key123 + (bEta/6)"_)
-5
-5000
-13-comment
-assign a;
-Select a pattern a(_, _"(testing * 2 % alphA)*(key123 + (bEta/6))"_)
-5
-5000
-14-comment
-assign a;
-Select a pattern a(_, _"21 - ch4Rlie"_)
-5
-5000
-15-comment
-assign a;
-Select a pattern a(_, _"((testing * 2 % alphA)*(key123 + (bEta/6)) + (21 - ch4Rlie))"_)
-5
-5000
-16-comment
-assign a;
-Select a pattern a(_, "alphA / ((testing * 2 % alphA)*(key123 + (bEta/6)) + (21 - ch4Rlie))")
-5
-5000
-
 21-comment
 procedure	 p;variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; constant	 cons; assign a;   call c;
 Select p 	such that    Follows	(s,s1) pattern 	a(v,_)
@@ -142,18 +55,20 @@ ComplexSourceTest
 5000
 28-comment
 procedure	    p;		variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; 	constant		 cons; assign a;   call c;
-Select p such that Parent*(w,s) pattern a(v,_)
-ComplexSourceTest
+Select a such that Parent*(w,s) pattern a(v,_)
+1,14,17,2,23,28,3,35,5
 5000
 29-comment
 procedure	    p;		variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; 	constant		 cons; assign a;   call c;
-Select p such that Parent*(w,s) pattern a(v,_"x"_)
-ComplexSourceTest
+Select a such that Parent*(w,s) pattern a(v,_"(testing * 2 % alphA)*(key123 + (bEta/6)) + (21 - ch4Rlie)"_)
+5
 5000
 30-comment
 procedure	    p;		variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; 	constant		 cons; assign a;   call c;
-Select p such that Parent*(w,ifs) pattern a(v,_"x"_)
-ComplexSourceTest
+Select a such that Parent*(w,ifs) pattern a(v,_"x"_)
+14
 5000
+
+
 
 
