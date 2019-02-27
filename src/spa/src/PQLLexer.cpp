@@ -102,10 +102,10 @@ vector<string> PQLLexer::vectorize(string input) {
   vector<string> tokens;
   char *p;
   char *temp = (char *)input.c_str();
-  p = strtok(temp, " ");
+  p = strtok(temp, " \t");
   while (p) {
     tokens.push_back(p);
-    p = strtok(NULL, " ");
+    p = strtok(NULL, " \t");
   }
   return tokens;
 }
