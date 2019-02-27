@@ -18,7 +18,6 @@ while w; stmt s;
 Select s such that Parent* (s, w) 
 4,6,7,8,10,12,13,21,22,24,25,33
 5000
-
 1-comment
 assign a;
 Select a such that Uses(a, "input2837189")
@@ -66,7 +65,7 @@ Select a pattern a(_, _"  (3 /(     alphA	+ 2))"_)
 5000
 9-comment
 assign a;
-Select a pattern a(_, _"(3/(al  phA+2))"_)
+Select a pattern a(_, _" (3/(al  phA+2))"_)
 none
 5000
 10-comment
@@ -104,7 +103,6 @@ assign a;
 Select a pattern a(_, "alphA / ((testing * 2 % alphA)*(key123 + (bEta/6)) + (21 - ch4Rlie))")
 5
 5000
-
 21-comment
 procedure	 p;variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; constant	 cons; assign a;   call c;
 Select p 	such that    Follows	(s,s1) pattern 	a(v,_)
