@@ -14,6 +14,8 @@ procedure main {
                                 v = a % b * (c + d) + e * f / (g - h);
                                 \\ Complex ambiguous expression tree
                                 w = 1 + 1 * 1 + 1 * 1 + 1 * 1 + 1;
+		\\ Nested brackets
+                                x = (a * ( b / (c + d)) + e) * f;
                             } else {
                                 \\ 4 nested layers of conditionals
                                 while ((((aa == bb) && (cc == dd)) || (!(ee == ff))) && (hh == ii)) {

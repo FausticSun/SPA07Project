@@ -1,0 +1,290 @@
+1-comment
+stmt s;
+Select s such that Follows(3, s)
+none
+5000
+2-comment
+assign a;
+Select a such that Follows(a, _)
+9, 8, 10
+5000
+3-comment
+print p;
+Select p such that Follows(_, 9)
+13, 14
+5000
+4-comment
+stmt s;
+Select s such that Follows*(11, 12)
+none
+5000
+5-comment
+stmt s1, s2;
+Select s2 such that Follows*(s1, s2)
+9, 10, 11
+5000
+6-comment
+while w;
+Select w such that Follows*(w, _)
+none
+5000
+7-comment
+while w;
+Select w such that Parent(_, w)
+2, 3, 4, 5, 12
+5000
+8-comment
+while w; if ifs;
+Select ifs such that Parent(w, ifs)
+6
+5000
+9-comment
+if ifs;
+Select ifs such that Parent(ifs, 13)
+none
+5000
+10-comment
+if ifs;
+Select ifs such that Parent*(ifs, 13)
+6, 7
+5000
+11-comment
+assign a;
+Select a such that Parent*(1, a)
+8, 9, 10, 11
+5000
+12-comment
+while w;
+Select w such that Parent*(_, w)
+2, 3, 4, 5, 12
+5000
+13-comment
+if ifs;
+Select ifs such that Parent*(_, _)
+6, 7
+5000
+14-comment
+procedure p;
+Select p such that Uses(p, "a")
+main
+5000
+15-comment
+assign a;
+Select a such that Uses("main", "b")
+8, 9, 10, 11
+5000
+16-comment
+if ifs;
+Select ifs such that Uses(6, "m")
+6, 7
+5000
+17-comment
+variable v;
+Select v such that Uses(12, v)
+aa, bb, cc, dd, ee, ff, hh, ii, b
+5000
+18-comment
+variable v; while w;
+Select v such that Uses(w, v)
+a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, u, aa, bb, cc, dd, ee, ff, hh, ii
+5000
+19-comment
+variable v;
+Select v such that Uses(_, v)
+none
+5000
+20-comment
+procedure p;
+Select p such that Modifies("main", "w")
+main
+5000
+21-comment
+stmt s;
+Select s such that Modifies(s, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+5000
+22-comment
+stmt s;
+Select s such that Modifies(12, _)
+none
+5000
+23-comment
+while w; variable v;
+Select v such that Modifies(w, v)
+t, v, w, x
+5000
+24-comment
+assign a; variable v;
+Select v such that Modifies(a, v)
+t, v, w, x
+5000
+25-comment
+stmt s;
+Select s pattern s(_, _)
+none
+5000
+26-comment
+assign a;
+Select a pattern a(_, _"12321+00100"_)
+8
+5000
+27-comment
+assign a;
+Select a pattern a(_, _"12321+100"_)
+8
+5000
+28-comment
+assign a;
+Select a pattern a(_, _"12321+10"_)
+none
+5000
+29-comment
+assign a;
+Select a pattern a(_, _"00100 + u"_)
+none
+5000
+30-comment
+assign a;
+Select a pattern a("v", "a % b * (c + d) + e * f / (g - h)")
+9
+5000
+31-comment
+assign a; variable v;
+Select v pattern a(v, _"e * f / (g - h)"_)
+v
+5000
+32-comment
+assign a;
+Select a pattern a(_, _"1+1"_)
+none
+5000
+33-comment
+assign a;
+Select a pattern a(_, _"c+d"_)
+11, 9
+5000
+34-comment
+assign a;
+Select a pattern a(_, _"(c+d)"_)
+11, 9
+5000
+35-comment
+assign a;
+Select a pattern a(_, _"b/(c+d)"_)
+11
+5000
+36-comment
+assign a;
+Select a pattern a(_, _"(b/(c+d))"_)
+11
+5000
+37-comment
+assign a;
+Select a pattern a(_, _"a*(b/(c+d))"_)
+11
+5000
+38-comment
+assign a;
+Select a pattern a(_, _"(a*(b/(c+d)))"_)
+11
+5000
+39-comment
+assign a;
+Select a pattern a(_, _"(a*(b/(c+d))) + e"_)
+11
+5000
+40-comment
+assign a;
+Select a pattern a(_, _"((a*(b/(c+d)))+e)"_)
+11
+5000
+41-comment
+assign a;
+Select a pattern a(_, _)
+8, 9, 10, 11
+5000
+42-comment
+assign a, a1;
+Select a pattern a(_, _) such that Follows(a1, a) 
+9, 10, 11
+5000
+43-comment
+assign a, a1;
+Select a such that Follows(a1, a) pattern a(_, _)
+9, 10, 11
+5000
+44-comment
+assign a, a1; variable v;
+Select a1 such that Follows(a1, a) pattern a(v, _"a% b"_)
+8
+5000
+45-comment
+assign a, a1; variable v;
+Select a1 pattern a(v, _"a% b"_) such that Follows(a1, a) 
+8
+5000
+46-comment
+assign a, a1; variable v;
+Select a1 such that Follows*(a1, a) pattern a(v, _"1"_)
+8, 9
+5000
+47-comment
+assign a, a1; variable v;
+Select v such that Follows*(a1, a) pattern a(v, _)
+v, w, x
+5000
+48-comment
+assign a, a1; variable v;
+Select v pattern a(v, _) such that Follows*(a1, a)
+v, w, x
+5000
+49-comment
+assign a; variable v; if ifs;
+Select v such that Parent(ifs, a) pattern a(v, _"1*1+1*1"_)
+none
+5000
+50-comment
+assign a; variable v;
+Select a pattern a("w", _"1+1*1"_) such that Parent(7, a)
+10
+5000
+51-comment
+assign a; variable v;
+Select v pattern a(v, _) such that Parent*(v, a)
+none
+5000
+52-comment
+assign a; variable v;
+Select a such that Parent*(1, a) pattern a(v, _)
+8, 9, 10, 11
+5000
+53-comment
+assign a; variable v;
+Select a pattern a(v, "1 + 1 * 1 + 1 * 1 + 1 * 1 + 1") such that Uses(1, v)
+none
+5000
+54-comment
+assign a; while w;
+Select a such that Uses(w, "ff") pattern a(_, _"(b/(c+d))"_)
+11
+5000
+55-comment
+assign a; if ifs; variable v;
+Select v such that Uses(ifs, v) pattern a(v, _"(a * ( b / (c + d)) + e)"_)
+none
+5000
+56-comment
+assign a; if ifs; variable v;
+Select v such that Modifies(ifs, v) pattern a(v, "(a * ( b / (c + d)) + e) * f")
+x
+5000
+57-comment
+assign a; while w; variable v;
+Select w such that Modifies(w, v) pattern a(v, _"f"_)
+1, 2, 3, 4, 5
+5000
+58-comment
+assign a; while w; variable v;
+Select w pattern a(_, _"e"_) such that Modifies(w, "b")
+none
+5000
