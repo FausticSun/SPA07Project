@@ -102,10 +102,10 @@ vector<string> PQLLexer::vectorize(string input) {
   vector<string> tokens;
   char *p;
   char *temp = (char *)input.c_str();
-  p = strtok(temp, " ");
+  p = strtok(temp, " \t");
   while (p) {
     tokens.push_back(p);
-    p = strtok(NULL, " ");
+    p = strtok(NULL, " \t");
   }
   return tokens;
 }
@@ -1095,6 +1095,7 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 	  }
 	  if (token[iter].find("\"") != token[iter].npos && appearCom) {
 		  endQuo++;
+		  if (endQuo == 2) break;
 	  }
 	  if (token[iter].find(",") != token[iter].npos) {
 		  appearCom = true;
