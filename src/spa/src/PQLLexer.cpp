@@ -143,6 +143,9 @@ void PQLLexer::Tokenize(string input) {
 	else if (token[0] == "prog_line") {
 	  token = tokenizeProgLine(token);
 	}
+	else if (token[0] == "call") {
+		token = tokenizeCall(token);
+	}
 	else
         // if (find(token.begin(), token.end(), "select") != token.end()) {
         if (!token.empty() && token[0] == "Select") {
@@ -229,6 +232,81 @@ bool PQLLexer::existSemi(string s) {
   } else {
     return true;
   }
+}
+
+vector<string> PQLLexer::tokenizeCall(vector<string> token) {
+	tokenQueue.push(make_pair(TokenType::Keyword, "call"));
+	token.erase(token.begin());
+	bool end = false;
+	while (!end) {
+		if (token[0].find(",") != token[0].npos) // first situation
+		{
+			while (!token.empty() && token[0].find(',') != token[0].npos) {
+				for (int i = 0; i < token[0].length(); i++) {
+					if (token[0][i] == ',') {
+						if (token[0].length() == 1) {
+							// tokenQueue.push(make_pair(TokenType::Separator, ","));
+							// token.erase(token.begin());
+						}
+						else if (i == token[0].length() - 1) {
+
+							tokenQueue.push(
+								make_pair(TokenType::Identifier,
+									token[0].substr(0, token[0].length() - 1)));
+							tokenQueue.push(make_pair(TokenType::Separator, ","));
+							token.erase(token.begin());
+							break;
+						}
+						else {
+							// tokenQueue.push(make_pair(TokenType::Identifier,
+							// token[0].substr(0, i)));
+							// tokenQueue.push(make_pair(TokenType::Separator, ","));
+							// token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
+							// break;
+						}
+					}
+				}
+			}
+		}
+		else if (existSemi(token[0])) // second situation
+		{
+			for (int i = 0; i < token[0].length(); i++) {
+				if (token[0][i] == ';') {
+					if (token[0].length() == 1) {
+						tokenQueue.push(make_pair(TokenType::Separator, ";"));
+						token.erase(token.begin());
+					}
+					else if (i == token[0].length() - 1) {
+
+						tokenQueue.push(
+							make_pair(TokenType::Identifier, token[0].substr(0, i)));
+						tokenQueue.push(make_pair(TokenType::Separator, ";"));
+						token.erase(token.begin());
+					}
+					else {
+						if (i == 0) {
+
+						}
+						else {
+							tokenQueue.push(
+								make_pair(TokenType::Identifier, token[0].substr(0, i)));
+						}
+						tokenQueue.push(make_pair(TokenType::Separator, ";"));
+						token[0] = token[0].substr(i + 1, token[0].length() - i - 1);
+					}
+				}
+			}
+
+			end = true;
+		}
+		else {
+		}
+	}
+	if (end) {
+		expectionOfDeclaration(token);
+	}
+
+	return token;
 }
 
 vector<string> PQLLexer::tokenizeVariable(vector<string> token) {
@@ -941,7 +1019,7 @@ void PQLLexer::expectionOfDeclaration(vector<string> token) {
   } else if (token[0] == "Select" || token[0] == "stmt" || token[0] == "read" ||
              token[0] == "print" || token[0] == "while" || token[0] == "if" ||
              token[0] == "assign" || token[0] == "variable" ||
-             token[0] == "constant" || token[0] == "procedure" ||
+             token[0] == "constant" || token[0] == "procedure" || token[0] == "call" || token[0] == "prog_line" ||
              token[0].find(";") != token[0].npos) {
 
   } else {

@@ -120,6 +120,7 @@ TEST_CASE("Testing read a") {
 
 TEST_CASE("Testing prog_line a") {
 	const string input = "prog_line a; Select a";
+	//const string input = "procedure p;variable v; stmt s; if ifs;while w; print pr; read r; constant cons; assign a;call c;Select v such that Modifies(\"SpecificationTest\", \"x\")";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
