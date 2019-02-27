@@ -591,7 +591,22 @@ SCENARIO("target in clause,one clause") {
       REQUIRE(result.size() == 1);
       REQUIRE(contains(result, "3"));
     }
-    SECTION("s,_") {
+	SECTION("s,s(repeated)") {
+		Query q;
+		QueryEntity stm(QueryEntityType::Stmt, "s");
+		QueryEntity s1(QueryEntityType::Stmt, "s");
+		QueryEntity s2(QueryEntityType::Stmt, "s");
+		vector<QueryEntity> qes{ s1, s2 };
+		Clause c(ClauseType::Parent, qes);
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		sele.push_back(stm);
+		clause.push_back(c);
+		q.setQuery(stm, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 0);
+	}
+	SECTION("s,_") {
       Query q;
       QueryEntity stm(QueryEntityType::Call, "c");
       QueryEntity s1(QueryEntityType::Call, "c");
@@ -759,6 +774,21 @@ SCENARIO("target in clause,one clause") {
       REQUIRE(result.size() == 1);
       REQUIRE(contains(result, "3"));
     }
+	SECTION("s,s(repeated)") {
+		Query q;
+		QueryEntity stm(QueryEntityType::Stmt, "s");
+		QueryEntity s1(QueryEntityType::Stmt, "s");
+		QueryEntity s2(QueryEntityType::Stmt, "s");
+		vector<QueryEntity> qes{ s1, s2 };
+		Clause c(ClauseType::ParentT, qes);
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		sele.push_back(stm);
+		clause.push_back(c);
+		q.setQuery(stm, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 0);
+	}
     SECTION("s,_") {
       Query q;
       QueryEntity stm(QueryEntityType::If, "c");
@@ -906,6 +936,22 @@ SCENARIO("target in clause,one clause") {
       REQUIRE(result.size() == 1);
       REQUIRE(contains(result, "4"));
     }
+	SECTION("s,s") {
+		Query q;
+		QueryEntity stm(QueryEntityType::Stmt, "s");
+		QueryEntity s1(QueryEntityType::Stmt, "s");
+		QueryEntity s2(QueryEntityType::Stmt, "s");
+		vector<QueryEntity> qes{ s1, s2 };
+		Clause c(ClauseType::Follows, qes);
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		sele.push_back(stm);
+		clause.push_back(c);
+		q.setQuery(stm, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 0);
+	}
+	
     SECTION("s,_") {
       Query q;
       QueryEntity stm(QueryEntityType::Stmt, "c");
@@ -1062,6 +1108,22 @@ SCENARIO("target in clause,one clause") {
       REQUIRE(result.size() == 1);
       REQUIRE(contains(result, "6"));
     }
+
+	SECTION("s,s") {
+		Query q;
+		QueryEntity stm(QueryEntityType::Stmt, "s");
+		QueryEntity s1(QueryEntityType::Stmt, "s");
+		QueryEntity s2(QueryEntityType::Stmt, "s");
+		vector<QueryEntity> qes{ s1, s2 };
+		Clause c(ClauseType::FollowsT, qes);
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		sele.push_back(stm);
+		clause.push_back(c);
+		q.setQuery(stm, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 0);
+	}
     SECTION("s,_") {
       Query q;
       QueryEntity stm(QueryEntityType::Stmt, "c");
