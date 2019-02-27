@@ -154,136 +154,151 @@ Select v pattern a(v, _"e * f / (g - h)"_)
 v
 5000
 32-comment
+assign a; variable v;
+Select v pattern a(v, _"a % b * (c + d)"_)
+v
+5000
+34-comment
+assign a; variable v;
+Select v pattern a(v, _"c + d"_)
+v, x
+5000
+35-comment
+assign a; variable v;
+Select v pattern a(v, _"b * (c + d)"_)
+none
+5000
+36-comment
 assign a;
 Select a pattern a(_, _"1+1"_)
 none
 5000
-33-comment
+37-comment
 assign a;
 Select a pattern a(_, _"c+d"_)
 11, 9
 5000
-34-comment
+38-comment
 assign a;
 Select a pattern a(_, _"(c+d)"_)
 11, 9
 5000
-35-comment
+39-comment
 assign a;
 Select a pattern a(_, _"b/(c+d)"_)
 11
 5000
-36-comment
+40-comment
 assign a;
 Select a pattern a(_, _"(b/(c+d))"_)
 11
 5000
-37-comment
+41-comment
 assign a;
 Select a pattern a(_, _"a*(b/(c+d))"_)
 11
 5000
-38-comment
+42-comment
 assign a;
 Select a pattern a(_, _"(a*(b/(c+d)))"_)
 11
 5000
-39-comment
+43-comment
 assign a;
 Select a pattern a(_, _"(a*(b/(c+d))) + e"_)
 11
 5000
-40-comment
+44-comment
 assign a;
 Select a pattern a(_, _"((a*(b/(c+d)))+e)"_)
 11
 5000
-41-comment
+45-comment
 assign a;
 Select a pattern a(_, _)
 8, 9, 10, 11
 5000
-42-comment
+46-comment
 assign a, a1;
 Select a pattern a(_, _) such that Follows(a1, a) 
 9, 10, 11
 5000
-43-comment
+47-comment
 assign a, a1;
 Select a such that Follows(a1, a) pattern a(_, _)
 9, 10, 11
 5000
-44-comment
+48-comment
 assign a, a1; variable v;
 Select a1 such that Follows(a1, a) pattern a(v, _"a% b"_)
 8
 5000
-45-comment
+49-comment
 assign a, a1; variable v;
 Select a1 pattern a(v, _"a% b"_) such that Follows(a1, a) 
 8
 5000
-46-comment
+50-comment
 assign a, a1; variable v;
 Select a1 such that Follows*(a1, a) pattern a(v, _"1"_)
 8, 9
 5000
-47-comment
+51-comment
 assign a, a1; variable v;
 Select v such that Follows*(a1, a) pattern a(v, _)
 v, w, x
 5000
-48-comment
+52-comment
 assign a, a1; variable v;
 Select v pattern a(v, _) such that Follows*(a1, a)
 v, w, x
 5000
-49-comment
+53-comment
 assign a; variable v; if ifs;
 Select v such that Parent(ifs, a) pattern a(v, _"1*1+1*1"_)
 none
 5000
-50-comment
+54-comment
 assign a; variable v;
 Select a pattern a("w", _"1+1*1"_) such that Parent(7, a)
 10
 5000
-51-comment
+55-comment
 assign a; variable v;
 Select v pattern a(v, _) such that Parent*(v, a)
 none
 5000
-52-comment
+56-comment
 assign a; variable v;
 Select a such that Parent*(1, a) pattern a(v, _)
 8, 9, 10, 11
 5000
-53-comment
+57-comment
 assign a; variable v;
 Select a pattern a(v, "1 + 1 * 1 + 1 * 1 + 1 * 1 + 1") such that Uses(1, v)
 none
 5000
-54-comment
+58-comment
 assign a; while w;
 Select a such that Uses(w, "ff") pattern a(_, _"(b/(c+d))"_)
 11
 5000
-55-comment
+59-comment
 assign a; if ifs; variable v;
 Select v such that Uses(ifs, v) pattern a(v, _"(a * ( b / (c + d)) + e)"_)
 none
 5000
-56-comment
+60-comment
 assign a; if ifs; variable v;
 Select v such that Modifies(ifs, v) pattern a(v, "(a * ( b / (c + d)) + e) * f")
 x
 5000
-57-comment
+61-comment
 assign a; while w; variable v;
 Select w such that Modifies(w, v) pattern a(v, _"f"_)
 1, 2, 3, 4, 5
 5000
-58-comment
+62-comment
 assign a; while w; variable v;
 Select w pattern a(_, _"e"_) such that Modifies(w, "b")
 none
