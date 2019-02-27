@@ -71,6 +71,7 @@ private:
   vector<string> tokenizeWhile(vector<string>);
   vector<string> tokenizePrint(vector<string>);
   vector<string> tokenizeRead(vector<string>);
+  vector<string> tokenizeProgLine(vector<string>);
   vector<string> tokenizeStmt(vector<string>);
   vector<string> tokenizeIf(vector<string>);
   vector<string> tokenizeProcedure(vector<string>);
