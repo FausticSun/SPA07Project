@@ -30,43 +30,43 @@ ComplexSourceTest
 5000
 23-comment
 procedure	    p;variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; constant	 cons; assign a;   call c;
-Select v such 	that 	Follows*(s,s1)  	pattern a(v,_)
-ch4Rlie,d0,key123,out,output,p,x,alphA,bEta
+Select p such 	that 	Follows*(s,s1)  	pattern a(v,_)
+ComplexSourceTest
 5000
 24-comment
 procedure	    p;variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; constant	 cons; assign a;   call c;
-Select s such 	that 	Parent*	(s,s1) 	pattern a(v,_)
-10,12,13,15,18,21,22,24,25,26,30,33,34,4,6,7,8
+Select p such 	that 	Parent*	(s,s1) 	pattern a(v,_)
+ComplexSourceTest
 5000
 25-comment
 procedure	    p;variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; constant	 cons; assign a;   call c;
-Select s 	pattern a(v,_) such 	that 	Parent*	(s,s1)
-10,12,13,15,18,21,22,24,25,26,30,33,34,4,6,7,8
+Select p 	pattern a(v,_) such 	that 	Parent*	(s,s1)
+ComplexSourceTest
 5000
 26-comment
 procedure	    p;variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; constant	 cons; assign a;   call c;
-Select s 	pattern a(v,_) such 	that 	Modifies	(s,_) 
-1,10,12,13,14,15,16,17,2,21,22,23,24,25,28,3,30,31,32,33,34,35,4,5,6,7,8,9
+Select p 	pattern a(v,_) such 	that 	Modifies	(s,_) 
+ComplexSourceTest
 5000
 27-comment
 procedure	    p;		variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; 	constant		 cons; assign a;   call c;
-Select v 	pattern 		a(v,_) such 		that 		Modifies	(s,v) 
-alphA,bEta,ch4Rlie,d0,key123,out,output,p,x
+Select p 	pattern 		a(v,_) such 		that 		Modifies	(s,v) 
+ComplexSourceTest
 5000
 28-comment
 procedure	    p;		variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; 	constant		 cons; assign a;   call c;
-Select w such that Parent*(w,s) pattern a(v,_)
-10,12,15,21,22,24,26,33,34,4,8
+Select p such that Parent*(w,s) pattern a(v,_)
+ComplexSourceTest
 5000
 29-comment
 procedure	    p;		variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; 	constant		 cons; assign a;   call c;
-Select w such that Parent*(w,s) pattern a(v,_"x"_)
-10,12,15,21,22,24,26,33,34,4,8
+Select p such that Parent*(w,s) pattern a(v,_"x"_)
+ComplexSourceTest
 5000
 30-comment
 procedure	    p;		variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; 	constant		 cons; assign a;   call c;
-Select ifs such that Parent*(w,ifs) pattern a(v,_"x"_)
-13,18,25,30,6,7
+Select p such that Parent*(w,ifs) pattern a(v,_"x"_)
+ComplexSourceTest
 5000
 
 
