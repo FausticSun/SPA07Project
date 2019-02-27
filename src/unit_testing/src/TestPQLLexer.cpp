@@ -117,6 +117,35 @@ TEST_CASE("Testing read a") {
   }
 }
 
+
+TEST_CASE("Testing prog_line a") {
+	const string input = "prog_line a; Select a";
+	queue<pair<TokenType, string>> res;
+	PQLLexer p(input);
+
+	res = p.getTokenQueue();
+
+	SECTION("Selectqueue's first pair is KEYWORD: prog_line") {
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "prog_line");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Separator);
+		REQUIRE(res.front().second == ";");
+		res.pop();
+
+		REQUIRE(res.front().first == TokenType::Keyword);
+		REQUIRE(res.front().second == "Select");
+		res.pop();
+		REQUIRE(res.front().first == TokenType::Identifier);
+		REQUIRE(res.front().second == "a");
+		res.pop();
+	}
+}
+
 TEST_CASE("Testing while a") {
   const string input =
       "while a; Select a"; // const string input = "while a; Select a";
@@ -195,6 +224,19 @@ TEST_CASE("Testing read a, follows a unexpected keyword") {
     // REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
     // declaration.");
   }
+}
+
+TEST_CASE("Testing prog_line a, follows a unexpected keyword") {
+	const string input = "prog_line a; hedsasdllo a";
+	queue<pair<TokenType, string>> res;
+
+	SECTION("1") {
+
+		REQUIRE_THROWS_WITH(PQLLexer(input),
+			"should follows a new declaration or selection");
+		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+		// declaration.");
+	}
 }
 
 TEST_CASE("Testing print a, follows a unexpected keyword") {
