@@ -12,6 +12,11 @@ using namespace std;
 bool BothAreSpaces(char lhs, char rhs) { return (lhs == rhs) && (lhs == ' '); }
 string standerize(string str) {
   string new_str;
+  for (int i = 0; i < str.length(); i++) {
+	  if (str[i] == '\t' || str[i] == '\n') {
+		  str[i] = ' ';
+	  }
+  }
   std::string::iterator new_end =
       std::unique(str.begin(), str.end(), BothAreSpaces);
   str.erase(new_end, str.end());
@@ -102,10 +107,10 @@ vector<string> PQLLexer::vectorize(string input) {
   vector<string> tokens;
   char *p;
   char *temp = (char *)input.c_str();
-  p = strtok(temp, " \t");
+  p = strtok(temp, " ");
   while (p) {
     tokens.push_back(p);
-    p = strtok(NULL, " \t");
+    p = strtok(NULL, " ");
   }
   return tokens;
 }
@@ -1078,8 +1083,10 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
   bool appearQuo;
   bool appearCom;
   bool findFirstBra;
+  int count;
   int endQuo;
   endQuo = 0;
+  count = 0;
   appearQuo = false;
   appearCom = false;
   findFirstBra = false;
@@ -1107,8 +1114,37 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
   if (iter == token.size()) { iter = iter - 1; }
   s = token[0];
   for (int i = 1; i <= iter; i++) {
-
-    s = s + token[i];
+	  
+	  if (count == 0) {
+		  s = s + token[i];
+		  if (token[i].find("\"") != token[i].npos) {
+			  for (int j = 0; j < token[i].length(); j++) {
+				  if (token[i] == "\"") {
+					  if (count == 0) {
+						  count = 1;
+					  }
+					  else {
+						  count = 0;
+					  }
+				  }
+			  }
+		  }
+	  }
+	  else {
+		  s = s + " " + token[i];
+		  if (token[i].find("\"") != token[i].npos) {
+			  for (int j = 0; j < token[i].length(); j++) {
+				  if (token[i] == "\"") {
+					  if (count == 0) {
+						  count = 1;
+					  }
+					  else {
+						  count = 0;
+					  }
+				  }
+			  }
+		  }
+	  }
   }
   for (int i = 0; i < iter + 1; i++)
   {
@@ -1508,8 +1544,10 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 	// KEYWORD, "(" "," ")" ";"
 	bool appearQuo;
 	bool appearCom;
+	int count;
 	appearQuo = false;
 	endQuo = 0;
+	count = 0;
 	appearCom = false;
 	findFirstBra = false;
 	while (iter != token.size() && check == 1)
@@ -1535,7 +1573,37 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
 	for (int i = 1; i <= iter; i++)
 	{
 
-		s = s + token[i];
+
+		if (count == 0) {
+			s = s + token[i];
+			if (token[i].find("\"") != token[i].npos) {
+				for (int j = 0; j < token[i].length(); j++) {
+					if (token[i] == "\"") {
+						if (count == 0) {
+							count = 1;
+						}
+						else {
+							count = 0;
+						}
+					}
+				}
+			}
+		}
+		else {
+			s = s + " " + token[i];
+			if (token[i].find("\"") != token[i].npos) {
+				for (int j = 0; j < token[i].length(); j++) {
+					if (token[i] == "\"") {
+						if (count == 0) {
+							count = 1;
+						}
+						else {
+							count = 0;
+						}
+					}
+				}
+			}
+		}
 	}
 	for (int i = 0; i < iter + 1; i++)
 	{
@@ -1641,7 +1709,9 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 	bool findFirstBra;
 	bool appearCom;
 	int endQuo;
+	int count;
 	endQuo = 0;
+	count = 0;
 	appearQuo = false;
 	appearCom = false;
 	findFirstBra = false;
@@ -1670,7 +1740,36 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 	for (int i = 1; i <= iter; i++)
 	{
 
-		s = s + token[i];
+		if (count == 0) {
+			s = s + token[i];
+			if (token[i].find("\"") != token[i].npos) {
+				for (int j = 0; j < token[i].length(); j++) {
+					if (token[i] == "\"") {
+						if (count == 0) {
+							count = 1;
+						}
+						else {
+							count = 0;
+						}
+					}
+				}
+			}
+		}
+		else {
+			s = s + " " + token[i];
+			if (token[i].find("\"") != token[i].npos) {
+				for (int j = 0; j < token[i].length(); j++) {
+					if (token[i] == "\"") {
+						if (count == 0) {
+							count = 1;
+						}
+						else {
+							count = 0;
+						}
+					}
+				}
+			}
+		}
 	}
 	for (int i = 0; i < iter + 1; i++)
 	{
