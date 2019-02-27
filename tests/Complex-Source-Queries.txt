@@ -65,7 +65,7 @@ Select a pattern a(_, _"  (3 /(     alphA	+ 2))"_)
 5000
 9-comment
 assign a;
-Select a pattern a(_, _" (3/(al  phA+2))"_)
+Select a pattern a(_, _" (3/(alphA+2))"_)
 none
 5000
 10-comment
