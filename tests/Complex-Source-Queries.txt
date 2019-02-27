@@ -140,18 +140,20 @@ ComplexSourceTest
 5000
 28-comment
 procedure	    p;		variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; 	constant		 cons; assign a;   call c;
-Select p such that Parent*(w,s) pattern a(v,_)
-ComplexSourceTest
+Select a such that Parent*(w,s) pattern a(v,_)
+1,14,17,2,23,28,3,35,5
 5000
 29-comment
 procedure	    p;		variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; 	constant		 cons; assign a;   call c;
-Select p such that Parent*(w,s) pattern a(v,_"x"_)
-ComplexSourceTest
+Select a such that Parent*(w,s) pattern a(v,_"(testing * 2 % alphA)*(key123 + (bEta/6)) + (21 - ch4Rlie)"_)
+5
 5000
 30-comment
 procedure	    p;		variable	 v; stmt  	s,s1;	 if ifs   ;while w; print pr; read r; 	constant		 cons; assign a;   call c;
-Select p such that Parent*(w,ifs) pattern a(v,_"x"_)
-ComplexSourceTest
+Select a such that Parent*(w,ifs) pattern a(v,_"x"_)
+14
 5000
+
+
 
 

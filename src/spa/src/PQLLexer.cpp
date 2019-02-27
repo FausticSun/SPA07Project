@@ -12,6 +12,11 @@ using namespace std;
 bool BothAreSpaces(char lhs, char rhs) { return (lhs == rhs) && (lhs == ' '); }
 string standerize(string str) {
   string new_str;
+  for (int i = 0; i < str.length(); i++) {
+	  if (str[i] == '\t' || str[i] == '\n') {
+		  str[i] = ' ';
+	  }
+  }
   std::string::iterator new_end =
       std::unique(str.begin(), str.end(), BothAreSpaces);
   str.erase(new_end, str.end());
@@ -102,10 +107,10 @@ vector<string> PQLLexer::vectorize(string input) {
   vector<string> tokens;
   char *p;
   char *temp = (char *)input.c_str();
-  p = strtok(temp, " \t\n");
+  p = strtok(temp, " ");
   while (p) {
     tokens.push_back(p);
-    p = strtok(NULL, " \t\n");
+    p = strtok(NULL, " ");
   }
   return tokens;
 }

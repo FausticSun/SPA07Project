@@ -660,6 +660,7 @@ TEST_CASE("Testing print with 2 parameters version 3") {
 TEST_CASE("Testing Follows")
 {
 	const string input = "assign a; while w; Select a such that Follows(w, a)";
+	//const string input = "stmt	  s       ,      s1			;Select 	s	 such 	that Follows(s1, s)";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
 
