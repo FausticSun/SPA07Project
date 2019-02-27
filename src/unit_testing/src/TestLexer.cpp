@@ -3,24 +3,82 @@
 #include "catch.hpp"
 #include <sstream>
 
-SCENARIO("Lexing an invalid identifier") {
-  std::stringstream ss;
-  ss << "1number = 1";
 
-  std::istream &filestream = ss;
+SCENARIO("Lexing invalid tokens") {
 
-  Lexer lexer;
-  REQUIRE_THROWS_WITH(lexer.tokenizeFile(filestream),
-                      "Invalid Identifier: 1number");
+	SECTION("Identifier begins with digit") {
+		std::stringstream ss;
+		ss << "1number = 1;";
+
+		std::istream &filestream = ss;
+
+		Lexer lexer;
+		REQUIRE_THROWS_WITH(lexer.tokenizeFile(filestream),
+			"Invalid token: 1number");
+	}
+
+	SECTION("Invalid operator") {
+		std::stringstream ss;
+		ss << "x += 2;";
+
+		std::istream &filestream = ss;
+
+		Lexer lexer;
+		REQUIRE_THROWS_WITH(lexer.tokenizeFile(filestream),
+			"Invalid token: +=");
+	}
+
+	SECTION("Invalid bracket") {
+		std::stringstream ss;
+		ss << "x = 2 + [ x - 1 ];";
+
+		std::istream &filestream = ss;
+
+		Lexer lexer;
+		REQUIRE_THROWS_WITH(lexer.tokenizeFile(filestream),
+			"Invalid token: [");
+	}
+
+	SECTION("Invalid decimals") {
+		std::stringstream ss;
+		ss << "x = 1.5;";
+
+		std::istream &filestream = ss;
+
+		Lexer lexer;
+		REQUIRE_THROWS_WITH(lexer.tokenizeFile(filestream),
+			"Invalid token: 1.5");
+	}
+
+	SECTION("Invalid operator") {
+		std::stringstream ss;
+		ss << "x += 2;";
+
+		std::istream &filestream = ss;
+
+		Lexer lexer;
+		REQUIRE_THROWS_WITH(lexer.tokenizeFile(filestream),
+			"Invalid token: +=");
+	}
+
+	SECTION("Invalid comment with only one backslash") {
+		std::stringstream ss;
+		ss << std::string{ R"(x = 3; \ line with comment)" };
+
+		std::istream &filestream = ss;
+
+		Lexer lexer;
+		REQUIRE_THROWS_WITH(lexer.tokenizeFile(filestream),
+			"Invalid token: \\");
+	}
+
 }
 
-SCENARIO("Lexing an invalid comment") { std::stringstream ss; }
-
-SCENARIO("Lexing line with comments give same result as the same line without "
-         "comments") {
+SCENARIO("Lexing line with comments give same result as the same line without comments") {
   std::stringstream ss1, ss2;
-  ss1 << "x = 2; \\line with comment";
+  ss1 << std::string{R"(x = 2; \\ line with comment)"};
   ss2 << "x = 2; ";
+ 
 
   std::istream &fileStreamWithComment = ss1;
   std::istream &filestreamWithoutComment = ss2;
@@ -362,28 +420,28 @@ SCENARIO(
   std::stringstream ss;
   ss << "procedure ABC" << std::endl;
   ss << "{" << std::endl;
-  ss << " i=1; \\1" << std::endl;
-  ss << "read b ;	\\2" << std::endl;
-  ss << "c= a   ;\\3" << std::endl;
-  ss << "if (a < beta) then{ \\4" << std::endl;
-  ss << "while beta {	\\5" << std::endl;
-  ss << "oSCar  = 1 * beta + tmp;	\\6" << std::endl;
-  ss << "while tmp {	\\7" << std::endl;
-  ss << "oSCar = I - (k + j1k * chArlie); }}	\\8" << std::endl;
-  ss << "while (x!=1) {	\\9" << std::endl;
-  ss << "x = x + 1;	\\10" << std::endl;
-  ss << "if (left==0) then {	\\11" << std::endl;
-  ss << "while (right== 5){	\\12" << std::endl;
-  ss << "print Romeo;	\\13" << std::endl;
-  ss << "b = 0;	\\14" << std::endl;
-  ss << "c = delta    + l  * width + Romeo; }}	\\15" << std::endl;
-  ss << "else {	" << std::endl;
-  ss << "while (c>1) {	\\16" << std::endl;
-  ss << "c = c -1;} 	\\17" << std::endl;
-  ss << "x = x+ 1; }}}	\\18" << std::endl;
-  ss << "else{" << std::endl;
-  ss << "a= 2;}	\\19" << std::endl;
-  ss << "}" << std::endl;
+  ss << std::string{ R"( i=1; \\1)"} << std::endl;
+  ss << std::string{ R"( read b ;	\\2)" } << std::endl;
+  ss << std::string{ R"( c= a   ;\\3)" } << std::endl;
+  ss << std::string{ R"( if (a < beta) then{ \\4)" } << std::endl;
+  ss << std::string{ R"( while beta {	\\5)" } << std::endl;
+  ss << std::string{ R"( oSCar  = 1 * beta + tmp;	\\6)" } << std::endl;
+  ss << std::string{ R"( while tmp {	\\7)" } << std::endl;
+  ss << std::string{ R"( oSCar = I - (k + j1k * chArlie); }}	\\8)" } << std::endl;
+  ss << std::string{ R"( while (x!=1) {	\\9)" } << std::endl;
+  ss << std::string{ R"( x = x + 1;	\\10)" } << std::endl;
+  ss << std::string{ R"( if (left==0) then {	\\11)" } << std::endl;
+  ss << std::string{ R"( while (right== 5){	\\12)" } << std::endl;
+  ss << std::string{ R"( print Romeo;	\\13)" } << std::endl;
+  ss << std::string{ R"( b = 0;	\\14)" } << std::endl;
+  ss << std::string{ R"( c = delta    + l  * width + Romeo; }}	\\15)" } << std::endl;
+  ss << std::string{ R"( else {	)" } << std::endl;
+  ss << std::string{ R"( while (c>1) {	\\16)" } << std::endl;
+  ss << std::string{ R"( c = c -1;} 	\\17)" } << std::endl;
+  ss << std::string{ R"( x = x+ 1; }}}	\\18)" } << std::endl;
+  ss << std::string{ R"( else{)" } << std::endl;
+  ss << std::string{ R"( a= 2;}	\\19)" } << std::endl;
+  ss << std::string{ R"( })" } << std::endl;
 
   std::istream &filestream = ss;
   Lexer lexer;
