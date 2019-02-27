@@ -603,7 +603,10 @@ bool isOp(char s) {
 string PQLParser::convertToPostfix(string expr0) {
   /*std::string::iterator end_pos = std::remove(expr.begin(), expr.end(), ' ');
   expr.erase(end_pos, expr.end());*/
-  // combine multiple spaces into one
+  // combine multiple spaces into one a(_,"")
+  if (expr0.empty()) {
+	  throw std::invalid_argument("Invalid expression");
+  }
   std::string::iterator new_end =
       std::unique(expr0.begin(), expr0.end(), [=](char lhs, char rhs) {
         return (lhs == rhs) && (lhs == ' ');
