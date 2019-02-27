@@ -120,7 +120,8 @@ TEST_CASE("Testing read a") {
 
 TEST_CASE("Testing prog_line a") {
 	const string input = "prog_line a; Select a";
-	//const string input = "prog_line a; Select a pattern a(a, _\"(a + b)\"_) such that Uses(w, \"ff\")";
+	//const string input = "stmt	  s       ,      s1			; Select 	s	 such 	that Follows(s1, s)";
+	//const string input = "prog_line a; Select a pattern a(a, _\"(a b)\"_) such that Uses(w, \"ff\")";
 	//const string input = "assign a, a1 Select v such that Modifies(\"SpecificationTest\", \"x\")";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
@@ -908,7 +909,7 @@ TEST_CASE("Testing Uses with (\"(xxx)\", \"(xxx)\")")
 		REQUIRE(res.front().second == "\"");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "(a+b)");
+		REQUIRE(res.front().second == " (a+b)");
 		res.pop();
 		REQUIRE(res.front().first == TokenType::Separator);
 		REQUIRE(res.front().second == "\"");
@@ -924,8 +925,8 @@ TEST_CASE("Testing Follows(1, s) with semicollumn")
 	const string input = "assign a; stmt s; variable v; Select s such that Follows (1, s) ;";
 }
 
-TEST_CASE("Test wrong format pattern with variable on the right part.") {
-  const string input = "assign a; variable v; Select a pattern a(\"x\", v);";
+TEST_CASE("Test wrong format pattern with variable on the right") {
+  const string input = "assign a; variable v; Select a pattern a(\"x\", v)";
 
   SECTION("1") {
     REQUIRE_THROWS_WITH(PQLLexer(input), "cannot have a variable on the right");
