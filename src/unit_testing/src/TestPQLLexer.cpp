@@ -120,6 +120,7 @@ TEST_CASE("Testing read a") {
 
 TEST_CASE("Testing prog_line a") {
 	const string input = "prog_line a; Select a";
+	//const string input = "prog_line a; Select a pattern a(a, _\"(a + b)\"_) such that Uses(w, \"ff\")";
 	//const string input = "assign a, a1 Select v such that Modifies(\"SpecificationTest\", \"x\")";
 	queue<pair<TokenType, string>> res;
 	PQLLexer p(input);
@@ -144,6 +145,7 @@ TEST_CASE("Testing prog_line a") {
 		REQUIRE(res.front().first == TokenType::Identifier);
 		REQUIRE(res.front().second == "a");
 		res.pop();
+
 	}
 }
 

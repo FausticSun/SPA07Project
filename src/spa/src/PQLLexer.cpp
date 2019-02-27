@@ -1095,6 +1095,7 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 	  }
 	  if (token[iter].find("\"") != token[iter].npos && appearCom) {
 		  endQuo++;
+		  if (endQuo == 2) break;
 	  }
 	  if (token[iter].find(",") != token[iter].npos) {
 		  appearCom = true;
