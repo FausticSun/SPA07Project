@@ -149,7 +149,7 @@ void DesignExtractor::extractParent(std::unique_ptr<TNode> &AST) {
 
 void DesignExtractor::extractAssign(std::unique_ptr<TNode> &AST) {
   auto var = AST->children.front()->name;
-  auto expr = extractPostfix(AST->children.back());
+  auto expr = " " + extractPostfix(AST->children.back());
   pkb->insertAssign(AST->statementNumber, var, expr);
 }
 

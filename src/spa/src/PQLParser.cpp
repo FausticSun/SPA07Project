@@ -153,6 +153,9 @@ void PQLParser::tokenizeSelect() {
 
 void PQLParser::insertQueryEntityVariable() {
   getNextToken();
+  if (isDefined(token.name)) {
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
+  }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Variable, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Variable));
@@ -169,6 +172,9 @@ void PQLParser::insertQueryEntityVariable() {
 
 void PQLParser::insertQueryEntityProcedure() {
   getNextToken();
+  if (isDefined(token.name)) {
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
+  }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Procedure, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Procedure));
@@ -185,6 +191,9 @@ void PQLParser::insertQueryEntityProcedure() {
 
 void PQLParser::insertQueryEntityRead() {
   getNextToken();
+  if (isDefined(token.name)) {
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
+  }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Read, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Read));
@@ -201,6 +210,9 @@ void PQLParser::insertQueryEntityRead() {
 
 void PQLParser::insertQueryEntityPrint() {
   getNextToken();
+  if (isDefined(token.name)) {
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
+  }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Print, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Print));
@@ -217,6 +229,9 @@ void PQLParser::insertQueryEntityPrint() {
 
 void PQLParser::insertQueryEntityIf() {
   getNextToken();
+  if (isDefined(token.name)) {
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
+  }
   QueryEntity qe =
       QueryEntity(QueryEntityType::If, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::If));
@@ -233,6 +248,9 @@ void PQLParser::insertQueryEntityIf() {
 
 void PQLParser::insertQueryEntityWhile() {
   getNextToken();
+  if (isDefined(token.name)) {
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
+  }
   QueryEntity qe =
       QueryEntity(QueryEntityType::While, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::While));
@@ -249,6 +267,9 @@ void PQLParser::insertQueryEntityWhile() {
 
 void PQLParser::insertQueryEntityAssign() {
   getNextToken();
+  if (isDefined(token.name)) {
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
+  }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Assign, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Assign));
@@ -265,6 +286,9 @@ void PQLParser::insertQueryEntityAssign() {
 
 void PQLParser::insertQueryEntityCall() {
   getNextToken();
+  if (isDefined(token.name)) {
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
+  }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Call, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Call));
@@ -281,6 +305,9 @@ void PQLParser::insertQueryEntityCall() {
 
 void PQLParser::insertQueryEntityStmt() {
   getNextToken();
+  if (isDefined(token.name)) {
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
+  }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Stmt, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Stmt));
@@ -297,6 +324,9 @@ void PQLParser::insertQueryEntityStmt() {
 
 void PQLParser::insertQueryEntityConstant() {
   getNextToken();
+  if (isDefined(token.name)) {
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
+  }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Constant, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Constant));
@@ -313,6 +343,9 @@ void PQLParser::insertQueryEntityConstant() {
 
 void PQLParser::insertQueryEntityProgline() {
   getNextToken();
+  if (isDefined(token.name)) {
+	  throw std::logic_error("'" + token.name + "'" + " has been declared.");
+  }
   QueryEntity qe =
       QueryEntity(QueryEntityType::Stmt, checkNameValidity(token.name));
   this->entityMaps.insert(make_pair(token.name, QueryEntityType::Stmt));
@@ -325,6 +358,15 @@ void PQLParser::insertQueryEntityProgline() {
       throw std::logic_error("Expected ';' but got '" + token.name + "'");
     }
   }
+}
+
+bool PQLParser::isDefined(string name) {
+	std::map<std::string, QueryEntityType>::iterator it =
+		entityMaps.find(name);
+	if (it != entityMaps.end()) {
+		return true;
+	}
+	return false;
 }
 
 bool PQLParser::isInt(string s) {
@@ -558,10 +600,13 @@ bool isOp(char s) {
   return (s == '+' || s == '-' || s == '*' || s == '?' || s == '%');
 }
 
-string convertToPostfix(string expr0) {
+string PQLParser::convertToPostfix(string expr0) {
   /*std::string::iterator end_pos = std::remove(expr.begin(), expr.end(), ' ');
   expr.erase(end_pos, expr.end());*/
-  // combine multiple spaces into one
+  // combine multiple spaces into one a(_,"")
+  if (expr0.empty()) {
+	  throw std::invalid_argument("Invalid expression");
+  }
   std::string::iterator new_end =
       std::unique(expr0.begin(), expr0.end(), [=](char lhs, char rhs) {
         return (lhs == rhs) && (lhs == ' ');
@@ -641,7 +686,20 @@ string convertToPostfix(string expr0) {
   {
           res.insert(++i, " ");
   }*/
-  return res;
+  
+  std::regex ws_re("\\s+");
+  std::vector<std::string> result{
+	  std::sregex_token_iterator(res.begin(), res.end(), ws_re, -1), {}
+  };
+  string out = " ";
+  for (vector<string>::const_iterator i = result.begin(); i != result.end(); ++i) {
+	  string s = *i;
+	  if (isInt(s)) {
+		  s = std::to_string(stoi(s));
+	  }
+	  out += s + ' ';
+  }
+  return out;
 }
 
 QueryEntity PQLParser::parseExpression() {

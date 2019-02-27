@@ -150,11 +150,11 @@ list<string> PqlEvaluator::executeSimpleQuery(QueryEntityType q) {
   } else if (q == QueryEntityType::Procedure) {
     set<string> vars = mypkb.getProcTable();
     list<string> temp(vars.begin(), vars.end());
-    results = temp;
+	results = temp;
   } else if (q == QueryEntityType::Constant) {
-    /*set<string> cons = mypkb.getConstTable();
-    list<string> temp(cons.begin(), cons.end());*/
-    return results;
+    set<string> cons = mypkb.getConstTable();
+    list<string> temp(cons.begin(), cons.end());
+	results = temp;
   } else {
     set<string> vars = mypkb.getStatementsOfType(convertQType(q));
     list<string> temp(vars.begin(), vars.end());
@@ -425,6 +425,10 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
     //(synonym,synonym)
     titles.push_back(qe1);
     titles.push_back(qe2);
+	if (qe1.name == qe2.name) {
+		ClauseResult clauseResult(false, false);
+		return clauseResult;
+	}
     set<string> parents = getdataByTtype(qe1.type);
     set<string>::iterator iterr1 = parents.begin();
     while (iterr1 != parents.end()) {
@@ -569,6 +573,10 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
     //(synonym,synonym)
     titles.push_back(qe1);
     titles.push_back(qe2);
+	if (qe1.name == qe2.name) {
+		ClauseResult clauseResult(false, false);
+		return clauseResult;
+	}
     set<string> parents = getdataByTtype(qe1.type);
     set<string>::iterator iterr1 = parents.begin();
     while (iterr1 != parents.end()) {
@@ -715,6 +723,10 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
     //(synonym,synonym)
     titles.push_back(qe1);
     titles.push_back(qe2);
+	if (qe1.name == qe2.name) {
+		ClauseResult clauseResult(false, false);
+		return clauseResult;
+	}
     set<string> s1 = getdataByTtype(qe1.type);
     set<string>::iterator iterr1 = s1.begin();
     while (iterr1 != s1.end()) {
@@ -862,6 +874,10 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
     //(synonym,synonym)
     titles.push_back(qe1);
     titles.push_back(qe2);
+	if (qe1.name == qe2.name) {
+		ClauseResult clauseResult(false, false);
+		return clauseResult;
+	}
     set<string> s1 = getdataByTtype(qe1.type);
     set<string>::iterator iterr1 = s1.begin();
     while (iterr1 != s1.end()) {
@@ -1147,6 +1163,7 @@ bool PqlEvaluator::validateStmt(string result, QueryEntityType q) {
     return st == StatementType::Call;
   else if (q == QueryEntityType::Print)
     return st == StatementType::Print;
+  else return false;
 }
 
 bool PqlEvaluator::isVar(string result, QueryEntityType q) {

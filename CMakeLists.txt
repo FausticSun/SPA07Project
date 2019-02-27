@@ -83,6 +83,6 @@ include_directories("${CMAKE_CURRENT_LIST_DIR}/lib")#include catch.hpp
 
 add_subdirectory(src/spa)
 add_subdirectory(src/autotester)
-#add_subdirectory(src/autotester_gui)
+add_subdirectory(src/autotester_gui)
 add_subdirectory(src/unit_testing)
 add_subdirectory(src/integration_testing)
