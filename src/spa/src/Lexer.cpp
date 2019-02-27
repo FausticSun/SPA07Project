@@ -29,9 +29,11 @@ std::vector<Token> Lexer::tokenize(std::string input) {
       toAST.push_back(pushOperator(i));
     } else if (isConstant(i)) {
       toAST.push_back(pushConstant(i));
-    } else {
+    } else if(isIdentifier(i)){
       toAST.push_back(pushIdentifier(i));
-    }
+	} else {
+		throw("Invalid token: " + i);
+	}
   }
   return toAST;
 }
@@ -39,10 +41,11 @@ std::vector<Token> Lexer::tokenize(std::string input) {
 std::vector<std::string> Lexer::vectorize(std::string input) {
   std::vector<std::string> tokens;
   std::queue<std::string> current;
-  for (char &c : input) {
+
+  for (std::string::iterator it = input.begin(); it != input.end(); ++it) {
     std::string temp;
-    temp.push_back(c);
-    if (isspace(c)) {
+    temp.push_back(*it);
+    if (isspace(*it)) {
       if (!current.empty()) {
         tokens.push_back(convertQueueToString(current));
         std::queue<std::string> empty;
@@ -56,15 +59,21 @@ std::vector<std::string> Lexer::vectorize(std::string input) {
       }
       tokens.push_back(temp);
     } else if (temp == "\\") {
-      if (!current.empty()) {
-        tokens.push_back(convertQueueToString(current));
-      }
-      break;
-    } else if (isOperator(temp)) { // current std::queue only contains Operator
+		std::string nextTemp;
+		nextTemp.push_back(*std::next(it,1)); 
+		if(nextTemp == "\\") { //next char is backslash -> clear current queue and stop reading line
+			if (!current.empty()) {
+				tokens.push_back(convertQueueToString(current));
+			}
+			break;
+		} else {
+			throw("Invalid token: \\");
+		}
+    } else if (isOperator(temp)) { // current queue only contains Operator
                                    // or Letter/Number
       if (!current.empty()) {
         if (!isOperator(
-                current.front())) { // std::queue currently stores variable
+                current.front())) { // queue currently stores variable
           tokens.push_back(convertQueueToString(current));
           std::queue<std::string> empty;
           swap(current, empty);
@@ -75,7 +84,7 @@ std::vector<std::string> Lexer::vectorize(std::string input) {
     } else { // is either letter or digit
       if (!current.empty()) {
         if (isOperator(
-                current.front())) { // std::queue currently stores operators
+                current.front())) { // queue currently stores operators
           tokens.push_back(convertQueueToString(current));
           std::queue<std::string> empty;
           swap(current, empty);
@@ -140,11 +149,8 @@ Token Lexer::pushConstant(std::string s) {
 }
 
 Token Lexer::pushIdentifier(std::string s) {
-  if (!isIdentifier(s)) {
-    throw "Invalid Identifier: " + s;
-  } else {
     return Token(TokenType::Identifier, s);
-  }
+ 
 }
 
 Token Lexer::pushSeparator(std::string s) {
@@ -197,10 +203,15 @@ bool Lexer::isKeyword(std::string s) {
 }
 
 bool Lexer::isIdentifier(std::string s) {
-  if (isConstant(s.substr(0, 1))) {
+  if (isdigit(s.at(0))) {
     return false;
   } else {
-    return (!isConstant(s));
+	  for (char &c : s) {
+		  if (!(isalnum(c))) {
+			  return false;
+		  }
+	}
+	  return true;
   }
 }
 
@@ -216,12 +227,10 @@ bool Lexer::isOperator(std::string s) {
 }
 
 bool Lexer::isConstant(std::string s) {
-  if (s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) {
-    return false;
-  }
-
-  char *p;
-  strtol(s.c_str(), &p, 10);
-
-  return (*p == 0);
+	for (char &c : s) {
+		if (!(isdigit(c))) {
+			return false;
+		}
+	}
+	return true;
 }
