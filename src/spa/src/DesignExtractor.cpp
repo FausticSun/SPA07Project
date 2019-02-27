@@ -183,5 +183,6 @@ std::string DesignExtractor::extractPostfix(std::unique_ptr<TNode> &AST) {
     expr += extractPostfix(*it);
   }
   expr += AST->name + " ";
+  expr.insert(0, " ");
   return expr;
 }

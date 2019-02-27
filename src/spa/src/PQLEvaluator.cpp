@@ -425,6 +425,10 @@ ClauseResult PqlEvaluator::getParent(Clause c) {
     //(synonym,synonym)
     titles.push_back(qe1);
     titles.push_back(qe2);
+	if (qe1.name == qe2.name) {
+		ClauseResult clauseResult(false, false);
+		return clauseResult;
+	}
     set<string> parents = getdataByTtype(qe1.type);
     set<string>::iterator iterr1 = parents.begin();
     while (iterr1 != parents.end()) {
@@ -569,6 +573,10 @@ ClauseResult PqlEvaluator::getParentS(Clause c) {
     //(synonym,synonym)
     titles.push_back(qe1);
     titles.push_back(qe2);
+	if (qe1.name == qe2.name) {
+		ClauseResult clauseResult(false, false);
+		return clauseResult;
+	}
     set<string> parents = getdataByTtype(qe1.type);
     set<string>::iterator iterr1 = parents.begin();
     while (iterr1 != parents.end()) {
@@ -715,6 +723,10 @@ ClauseResult PqlEvaluator::getFollows(Clause c) {
     //(synonym,synonym)
     titles.push_back(qe1);
     titles.push_back(qe2);
+	if (qe1.name == qe2.name) {
+		ClauseResult clauseResult(false, false);
+		return clauseResult;
+	}
     set<string> s1 = getdataByTtype(qe1.type);
     set<string>::iterator iterr1 = s1.begin();
     while (iterr1 != s1.end()) {
@@ -862,6 +874,10 @@ ClauseResult PqlEvaluator::getFollowsS(Clause c) {
     //(synonym,synonym)
     titles.push_back(qe1);
     titles.push_back(qe2);
+	if (qe1.name == qe2.name) {
+		ClauseResult clauseResult(false, false);
+		return clauseResult;
+	}
     set<string> s1 = getdataByTtype(qe1.type);
     set<string>::iterator iterr1 = s1.begin();
     while (iterr1 != s1.end()) {
