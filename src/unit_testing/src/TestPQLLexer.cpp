@@ -117,36 +117,35 @@ TEST_CASE("Testing read a") {
   }
 }
 
-
 TEST_CASE("Testing prog_line a") {
-	const string input = "prog_line a; Select a";
-	//const string input = "prog_line a; Select a pattern a(a, _\"(a + b)\"_) such that Uses(w, \"ff\")";
-	//const string input = "assign a, a1 Select v such that Modifies(\"SpecificationTest\", \"x\")";
-	queue<pair<TokenType, string>> res;
-	PQLLexer p(input);
+  const string input = "prog_line a; Select a";
+  // const string input = "prog_line a; Select a pattern a(a, _\"(a + b)\"_)
+  // such that Uses(w, \"ff\")"; const string input = "assign a, a1 Select v such
+  // that Modifies(\"SpecificationTest\", \"x\")";
+  queue<pair<TokenType, string>> res;
+  PQLLexer p(input);
 
-	res = p.getTokenQueue();
+  res = p.getTokenQueue();
 
-	SECTION("Selectqueue's first pair is KEYWORD: prog_line") {
+  SECTION("Selectqueue's first pair is KEYWORD: prog_line") {
 
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "prog_line");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ";");
-		res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "prog_line");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ";");
+    res.pop();
 
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "Select");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-
-	}
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "Select");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+  }
 }
 
 TEST_CASE("Testing while a") {
@@ -191,111 +190,111 @@ TEST_CASE("Testing while a without selection") {
 }
 
 TEST_CASE("Testing while a, b without semicollumn") {
-	const string input = "while a, b Selct a;";
-	queue<pair<TokenType, string>> res;
+  const string input = "while a, b Selct a;";
+  queue<pair<TokenType, string>> res;
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
-		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
-		// declaration.");
-	}
+    REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+    // REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+    // declaration.");
+  }
 }
 
 TEST_CASE("Testing assign a, b without semicollumn") {
-	const string input = "assign a, b Selct a;";
-	queue<pair<TokenType, string>> res;
+  const string input = "assign a, b Selct a;";
+  queue<pair<TokenType, string>> res;
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
-		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
-		// declaration.");
-	}
+    REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+    // REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+    // declaration.");
+  }
 }
 
 TEST_CASE("Testing read a, b without semicollumn") {
-	const string input = "read a, b Selct a;";
-	queue<pair<TokenType, string>> res;
+  const string input = "read a, b Selct a;";
+  queue<pair<TokenType, string>> res;
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
-		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
-		// declaration.");
-	}
+    REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+    // REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+    // declaration.");
+  }
 }
 
 TEST_CASE("Testing print a, b without semicollumn") {
-	const string input = "print a, b Selct a;";
-	queue<pair<TokenType, string>> res;
+  const string input = "print a, b Selct a;";
+  queue<pair<TokenType, string>> res;
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
-		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
-		// declaration.");
-	}
+    REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+    // REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+    // declaration.");
+  }
 }
 
 TEST_CASE("Testing constant a, b without semicollumn") {
-	const string input = "constant a, b Selct a;";
-	queue<pair<TokenType, string>> res;
+  const string input = "constant a, b Selct a;";
+  queue<pair<TokenType, string>> res;
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
-		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
-		// declaration.");
-	}
+    REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+    // REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+    // declaration.");
+  }
 }
 
 TEST_CASE("Testing prog_line a, b without semicollumn") {
-	const string input = "prog_line a, b Selct a;";
-	queue<pair<TokenType, string>> res;
+  const string input = "prog_line a, b Selct a;";
+  queue<pair<TokenType, string>> res;
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
-		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
-		// declaration.");
-	}
+    REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+    // REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+    // declaration.");
+  }
 }
 
 TEST_CASE("Testing call a, b without semicollumn") {
-	const string input = "call a, b Selct a;";
-	queue<pair<TokenType, string>> res;
+  const string input = "call a, b Selct a;";
+  queue<pair<TokenType, string>> res;
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
-		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
-		// declaration.");
-	}
+    REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+    // REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+    // declaration.");
+  }
 }
 
 TEST_CASE("Testing variable a, b without semicollumn") {
-	const string input = "variable a, b Selct a;";
-	queue<pair<TokenType, string>> res;
+  const string input = "variable a, b Selct a;";
+  queue<pair<TokenType, string>> res;
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
-		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
-		// declaration.");
-	}
+    REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+    // REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+    // declaration.");
+  }
 }
 
 TEST_CASE("Testing procedure a, b without semicollumn") {
-	const string input = "procedure a, b Selct a;";
-	queue<pair<TokenType, string>> res;
+  const string input = "procedure a, b Selct a;";
+  queue<pair<TokenType, string>> res;
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
-		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
-		// declaration.");
-	}
+    REQUIRE_THROWS_WITH(PQLLexer(input), "missing semicollumn in declaration!");
+    // REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+    // declaration.");
+  }
 }
 
 TEST_CASE("Testing while a, follows a unexpected keyword") {
@@ -338,16 +337,16 @@ TEST_CASE("Testing read a, follows a unexpected keyword") {
 }
 
 TEST_CASE("Testing prog_line a, follows a unexpected keyword") {
-	const string input = "prog_line a; hedsasdllo a";
-	queue<pair<TokenType, string>> res;
+  const string input = "prog_line a; hedsasdllo a";
+  queue<pair<TokenType, string>> res;
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE_THROWS_WITH(PQLLexer(input),
-			"should follows a new declaration or selection");
-		// REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
-		// declaration.");
-	}
+    REQUIRE_THROWS_WITH(PQLLexer(input),
+                        "should follows a new declaration or selection");
+    // REQUIRE_THROWS_WITH(p.getTokenQueue(), "no selction after the
+    // declaration.");
+  }
 }
 
 TEST_CASE("Testing print a, follows a unexpected keyword") {
@@ -656,272 +655,271 @@ TEST_CASE("Testing print with 2 parameters version 3") {
   }
 }
 
-TEST_CASE("Testing Follows")
-{
-	const string input = "assign a; while w; Select a such that Follows(w, a)";
-	queue<pair<TokenType, string>> res;
-	PQLLexer p(input);
+TEST_CASE("Testing Follows") {
+  const string input = "assign a; while w; Select a such that Follows(w, a)";
+  queue<pair<TokenType, string>> res;
+  PQLLexer p(input);
 
-	res = p.getTokenQueue();
+  res = p.getTokenQueue();
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "assign");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ";");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "while");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "w");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ";");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "Select");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "such that");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "Follows");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == "(");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "w");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ",");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ")");
-		res.pop();
-	}
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "assign");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ";");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "while");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "w");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ";");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "Select");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "such that");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "Follows");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == "(");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "w");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ",");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ")");
+    res.pop();
+  }
 }
 
-TEST_CASE("Testing Follows version 1")
-{
-	const string input = "assign a; while w; Select a such that Follows(w, a )";
-	queue<pair<TokenType, string>> res;
-	PQLLexer p(input);
+TEST_CASE("Testing Follows version 1") {
+  const string input = "assign a; while w; Select a such that Follows(w, a )";
+  queue<pair<TokenType, string>> res;
+  PQLLexer p(input);
 
-	res = p.getTokenQueue();
+  res = p.getTokenQueue();
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "assign");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ";");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "while");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "w");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ";");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "Select");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "such that");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "Follows");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == "(");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "w");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ",");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ")");
-		res.pop();
-	}
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "assign");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ";");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "while");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "w");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ";");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "Select");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "such that");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "Follows");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == "(");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "w");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ",");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ")");
+    res.pop();
+  }
 }
 
-TEST_CASE("Testing Follows(1, s)")
-{
-	const string input = "assign a; stmt s; variable v; Select s such that Follows (1, s)";
+TEST_CASE("Testing Follows(1, s)") {
+  const string input =
+      "assign a; stmt s; variable v; Select s such that Follows (1, s)";
 
-    queue<pair<TokenType, string>> res;
-	PQLLexer p(input);
+  queue<pair<TokenType, string>> res;
+  PQLLexer p(input);
 
-	res = p.getTokenQueue();
+  res = p.getTokenQueue();
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "assign");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ";");
-		res.pop();
-		REQUIRE(res.front().second == "stmt");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "s");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ";");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "variable");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "v");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ";");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "Select");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "s");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "such that");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "Follows");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == "(");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "1");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ",");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "s");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ")");
-		res.pop();
-	}
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "assign");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ";");
+    res.pop();
+    REQUIRE(res.front().second == "stmt");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "s");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ";");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "variable");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "v");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ";");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "Select");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "s");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "such that");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "Follows");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == "(");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "1");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ",");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "s");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ")");
+    res.pop();
+  }
 }
 
-TEST_CASE("Testing Uses with (\"(xxx)\", \"(xxx)\")")
-{
-	const string input = "assign a; stmt s; variable v; Select s such that Uses (\"(a + b)\", \"(a + b)\")";
-	//const string input = "assign a; stmt s; variable v; Select s such that Uses (\"(a + b) + (c + d)\", \"(a + b)\")";
+TEST_CASE("Testing Uses with (\"(xxx)\", \"(xxx)\")") {
+  const string input = "assign a; stmt s; variable v; Select s such that Uses "
+                       "(\"(a + b)\", \"(a + b)\")";
+  // const string input = "assign a; stmt s; variable v; Select s such that Uses
+  // (\"(a + b) + (c + d)\", \"(a + b)\")";
 
-	queue<pair<TokenType, string>> res;
-	PQLLexer p(input);
+  queue<pair<TokenType, string>> res;
+  PQLLexer p(input);
 
-	res = p.getTokenQueue();
+  res = p.getTokenQueue();
 
-	SECTION("1") {
+  SECTION("1") {
 
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "assign");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "a");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ";");
-		res.pop();
-		REQUIRE(res.front().second == "stmt");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "s");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ";");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "variable");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "v");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ";");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "Select");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "s");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "such that");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Keyword);
-		REQUIRE(res.front().second == "Uses");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == "(");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == "\"");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "(a+b)");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == "\"");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ",");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == "\"");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Identifier);
-		REQUIRE(res.front().second == "(a+b)");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == "\"");
-		res.pop();
-		REQUIRE(res.front().first == TokenType::Separator);
-		REQUIRE(res.front().second == ")");
-		res.pop();
-	}
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "assign");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "a");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ";");
+    res.pop();
+    REQUIRE(res.front().second == "stmt");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "s");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ";");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "variable");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "v");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ";");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "Select");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "s");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "such that");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Keyword);
+    REQUIRE(res.front().second == "Uses");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == "(");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == "\"");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "(a+b)");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == "\"");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ",");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == "\"");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Identifier);
+    REQUIRE(res.front().second == "(a+b)");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == "\"");
+    res.pop();
+    REQUIRE(res.front().first == TokenType::Separator);
+    REQUIRE(res.front().second == ")");
+    res.pop();
+  }
 }
 
-TEST_CASE("Testing Follows(1, s) with semicollumn")
-{
-	const string input = "assign a; stmt s; variable v; Select s such that Follows (1, s) ;";
+TEST_CASE("Testing Follows(1, s) with semicollumn") {
+  const string input =
+      "assign a; stmt s; variable v; Select s such that Follows (1, s) ;";
 }
 
 TEST_CASE("Test wrong format pattern with variable on the right part.") {
