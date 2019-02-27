@@ -94,7 +94,7 @@ procedure SpecificationTest {
 	while (a / b <= a % b) {						\\ expr <= expr
 		read y;
 	}
-	while ((a / b) <= (a % b) {						\\ (expr) <= (expr)
+	while ((a / b) <= (a % b)) {						\\ (expr) <= (expr)
 		read y;
 	}
 
