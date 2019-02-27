@@ -72,6 +72,17 @@ SCENARIO("Lexing invalid tokens") {
 			"Invalid token: \\");
 	}
 
+	SECTION("Invalid condition expression") {
+		std::stringstream ss;
+		ss << "while((x==0)|(y==0)) {" ;
+
+		std::istream &filestream = ss;
+
+		Lexer lexer;
+		REQUIRE_THROWS_WITH(lexer.tokenizeFile(filestream),
+			"Invalid token: |");
+	}
+
 }
 
 SCENARIO("Lexing line with comments give same result as the same line without comments") {

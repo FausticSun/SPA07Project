@@ -72,8 +72,7 @@ std::vector<std::string> Lexer::vectorize(std::string input) {
     } else if (isOperator(temp)) { // current queue only contains Operator
                                    // or Letter/Number
       if (!current.empty()) {
-        if (!isOperator(
-                current.front())) { // queue currently stores variable
+        if (!isOperator(current.front())) { // queue currently stores variable
           tokens.push_back(convertQueueToString(current));
           std::queue<std::string> empty;
           swap(current, empty);
@@ -83,8 +82,7 @@ std::vector<std::string> Lexer::vectorize(std::string input) {
 
     } else { // is either letter or digit
       if (!current.empty()) {
-        if (isOperator(
-                current.front())) { // queue currently stores operators
+        if (isOperator(current.front())) { // queue currently stores operators
           tokens.push_back(convertQueueToString(current));
           std::queue<std::string> empty;
           swap(current, empty);
@@ -140,7 +138,7 @@ Token Lexer::pushKeyword(std::string s) {
   } else if (s == "else") {
     return Token(TokenType::Else, s);
   } else {
-    throw("Invalid Keyword: " + s);
+    throw("Invalid token: " + s);
   }
 }
 
@@ -194,6 +192,8 @@ Token Lexer::pushOperator(std::string s) {
     return Token(TokenType::And, s);
   } else if (s == "||") {
     return Token(TokenType::Or, s);
+  } else {
+	  throw("Invalid token: " + s);
   }
 }
 
