@@ -1163,6 +1163,7 @@ bool PqlEvaluator::validateStmt(string result, QueryEntityType q) {
     return st == StatementType::Call;
   else if (q == QueryEntityType::Print)
     return st == StatementType::Print;
+  else return false;
 }
 
 bool PqlEvaluator::isVar(string result, QueryEntityType q) {
