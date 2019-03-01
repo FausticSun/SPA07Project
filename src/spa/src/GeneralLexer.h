@@ -5,11 +5,10 @@
 enum class TokenType { Identifier, Number, Operator, Delimiter, Whitespace };
 
 struct Token {
-  TokenType type;
-  std::string value;
+  const TokenType type;
+  const std::string value;
 };
 
-class GeneralLexer {
-public:
-  static std::list<Token> tokenize(std::istream &stream);
+namespace Lexer {
+std::list<Token> tokenize(std::istream &stream);
 };
