@@ -101,7 +101,7 @@ std::list<Token> Lexer::tokenize(std::istream &stream) {
     } else if (std::ispunct(stream.peek())) {
       tokens.push_back(recognizePunctuation(stream));
     } else if (std::isspace(stream.peek())) {
-      tokens.push_back(recognizeSpace(stream));
+      recognizeSpace(stream);
     } else if (stream.peek() == EOF) {
       break;
     } else {
