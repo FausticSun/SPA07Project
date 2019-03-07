@@ -2,10 +2,11 @@
 #include <cctype>
 #include <limits>
 
+namespace {
 Token recognizeIdentifier(std::istream &stream) {
   std::string value;
   while (std::isalnum(stream.peek())) {
-    value += stream.get();
+    value += char(stream.get());
   }
   return {TokenType::Identifier, value};
 }
@@ -13,7 +14,7 @@ Token recognizeIdentifier(std::istream &stream) {
 Token recognizeNumber(std::istream &stream) {
   std::string value;
   while (std::isdigit(stream.peek())) {
-    value += stream.get();
+    value += char(stream.get());
   }
   if (std::isalpha(stream.peek())) {
     throw std::logic_error("Unexpected letter while parsing number");
@@ -35,7 +36,7 @@ Token recognizePunctuation(std::istream &stream) {
   case '.':
   case '#':
     type = TokenType::Delimiter;
-    value += stream.get();
+    value += char(stream.get());
     break;
   case '+':
   case '-':
@@ -44,31 +45,33 @@ Token recognizePunctuation(std::istream &stream) {
   case '%':
   case '_':
     type = TokenType::Operator;
-    value += stream.get();
+    value += char(stream.get());
     break;
   case '>':
   case '<':
   case '=':
   case '!':
     type = TokenType::Operator;
-    value += stream.get();
+    value += char(stream.get());
     if (stream.peek() == '=') {
-      value += stream.get();
+      value += char(stream.get());
     }
     break;
   case '&':
   case '|':
     type = TokenType::Operator;
-    value += stream.get();
+    value += char(stream.get());
     if (stream.peek() == value[0]) {
-      value += stream.get();
+      value += char(stream.get());
     } else {
-      std::logic_error("Error parsing relational operators, encountered: " +
-                       stream.peek());
+      throw std::logic_error(
+          "Error parsing relational operators, encountered: " +
+          char(stream.peek()));
     }
     break;
   default:
-    throw std::logic_error("Unknown symbol encountered: " + stream.peek());
+    throw std::logic_error("Unknown symbol encountered: " +
+                           char(stream.peek()));
   }
   return {type, value};
 }
@@ -76,16 +79,18 @@ Token recognizePunctuation(std::istream &stream) {
 Token recognizeSpace(std::istream &stream) {
   Token t = {TokenType::Whitespace, " "};
   while (std::isspace(stream.peek())) {
-    stream.get();
+    char(stream.get());
   }
   return t;
 }
+} // namespace
 
-std::list<Token> Lexer::tokenize(std::istream &stream) {
+namespace Lexer {
+std::list<Token> tokenize(std::istream &stream) {
   std::list<Token> tokens;
   while (stream.peek() != EOF) {
     // Check for and consume comments
-    if (stream.get() == '\\') {
+    if (char(stream.get()) == '\\') {
       if (stream.peek() == '\\') {
         stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         if (!stream.eof()) {
@@ -93,7 +98,7 @@ std::list<Token> Lexer::tokenize(std::istream &stream) {
         }
       } else {
         throw std::logic_error("Expected \\ after \\, encountered: " +
-                               stream.peek());
+                               char(stream.peek()));
       }
     } else {
       stream.unget();
@@ -110,8 +115,10 @@ std::list<Token> Lexer::tokenize(std::istream &stream) {
     } else if (stream.peek() == EOF) {
       break;
     } else {
-      throw std::logic_error("Unknown character encountered: " + stream.peek());
+      throw std::logic_error("Unknown character encountered: " +
+                             char(stream.peek()));
     }
   }
   return tokens;
 }
+} // namespace Lexer
