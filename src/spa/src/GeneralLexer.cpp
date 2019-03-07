@@ -85,10 +85,15 @@ std::list<Token> Lexer::tokenize(std::istream &stream) {
   std::list<Token> tokens;
   while (stream.peek() != EOF) {
     // Check for and consume comments
-    if (stream.get() == '\\' && stream.peek() == '\\') {
-      stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      if (!stream.eof()) {
-        stream.unget();
+    if (stream.get() == '\\') {
+      if (stream.peek() == '\\') {
+        stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        if (!stream.eof()) {
+          stream.unget();
+        }
+      } else {
+        throw std::logic_error("Expected \\ after \\, encountered: " +
+                               stream.peek());
       }
     } else {
       stream.unget();

@@ -34,16 +34,22 @@ SCENARIO("Invalid identifier") {
 
 SCENARIO("Consume comment with newline") {
   std::stringstream ss;
-  ss << "// This is a comment" << '\n';
+  ss << "\\\\ This is a comment" << '\n';
   auto tokens = Lexer::tokenize(ss);
-  REQUIRE(tokens.begin()->type == TokenType::Whitespace);
+  REQUIRE(tokens.empty());
 }
 
 SCENARIO("Consume comment without newline") {
   std::stringstream ss;
-  ss << "// This is a comment";
+  ss << "\\\\ This is a comment";
   auto tokens = Lexer::tokenize(ss);
   REQUIRE(tokens.empty());
+}
+
+SCENARIO("Invalid comment with only a single backslash") {
+  std::stringstream ss;
+  ss << "\\ This is not a comment";
+  REQUIRE_THROWS(Lexer::tokenize(ss));
 }
 
 SCENARIO("Many spaces") {
@@ -51,8 +57,7 @@ SCENARIO("Many spaces") {
   ss << "              "
      << "\n";
   auto tokens = Lexer::tokenize(ss);
-  REQUIRE(tokens.size() == 1);
-  REQUIRE(tokens.begin()->type == TokenType::Whitespace);
+  REQUIRE(tokens.empty());
 }
 
 SCENARIO("Operators") {
