@@ -29,5 +29,33 @@ const static Token Semicolon{TokenType::Delimiter, ";"};
 const static Token Identifier{TokenType::Identifier, ""};
 }; // namespace SIMPLETokens
 
+class SIMPLEParser {
+private:
+  std::list<Token> tokens;
+  std::unique_ptr<PKB> pkb;
+  std::list<std::string> parentStack;
+  std::list<std::string> followStack;
+  std::list<std::string> nextStack;
+  std::string currentProc;
+  int stmtNo;
+
+  Token expect(Token token);
+  std::string getStmtNo();
+  void parseProgram();
+  void parseProcedure();
+  void parseStmtLst();
+  void parseStmt();
+  void parseRead();
+  void parsePrint();
+  void parseCall();
+  void parseWhile();
+  void parseIf();
+  void parseAssign();
+
+public:
+  SIMPLEParser(std::list<Token>);
+  std::unique_ptr<PKB> getPKB();
+};
+
 std::unique_ptr<PKB> parseSIMPLE(std::list<Token>);
 } // namespace Parser
