@@ -15,7 +15,7 @@ Token SIMPLEParser::expect(Token token) {
   return token;
 }
 
-std::string SIMPLEParser::getStmtNo() { return std::to_string(++stmtNo); }
+int SIMPLEParser::getStmtNo() { return ++stmtCounter; }
 
 void SIMPLEParser::parseProgram() {
   do {
@@ -27,88 +27,204 @@ void SIMPLEParser::parseProgram() {
 }
 
 void SIMPLEParser::parseProcedure() {
+  int firstStmtNo = stmtCounter + 1;
   currentProc = expect(SIMPLETokens::Procedure).value;
   expect(SIMPLETokens::Identifier);
   expect(SIMPLETokens::LeftBrace);
   parseStmtLst();
   expect(SIMPLETokens::RightBrace);
+  int lastStmtNo = stmtCounter;
+  pkb->setProc(currentProc, firstStmtNo, lastStmtNo);
 }
 
-void SIMPLEParser::parseStmtLst() {
+std::vector<int> SIMPLEParser::parseStmtLst() {
+  std::vector<int> stmtNoLst;
   do {
-    parseStmt();
+    int stmtNo = parseStmt();
+    stmtNoLst.push_back(stmtNo);
   } while (tokens.front() != SIMPLETokens::RightBrace);
+
+  if (stmtNoLst.size() > 1) {
+    for (auto it = stmtNoLst.begin(); it != std::prev(stmtNoLst.end()); ++it) {
+      pkb->setFollows(*it, *(std::next(it)));
+    }
+  }
 }
 
-void SIMPLEParser::parseStmt() {
+int SIMPLEParser::parseStmt() {
   if (tokens.front() == SIMPLETokens::Read) {
-    parseRead();
+    return parseRead();
   } else if (tokens.front() == SIMPLETokens::Print) {
-    parsePrint();
+    return parsePrint();
   } else if (tokens.front() == SIMPLETokens::Call) {
-    parseCall();
+    return parseCall();
   } else if (tokens.front() == SIMPLETokens::While) {
-    parseWhile();
+    return parseWhile();
   } else if (tokens.front() == SIMPLETokens::If) {
-    parseIf();
+    return parseIf();
   } else if (tokens.front() == SIMPLETokens::Identifier) {
-    parseAssign();
+    return parseAssign();
   } else {
     throw std::logic_error("Error parsing statement");
   }
 }
 
-void SIMPLEParser::parseRead() {
+int SIMPLEParser::parseRead() {
   expect(SIMPLETokens::Read);
-  expect(SIMPLETokens::Identifier);
+  auto var = expect(SIMPLETokens::Identifier).value;
   expect(SIMPLETokens::Semicolon);
+
+  int stmtNo = getStmtNo();
+  pkb->setStmtType(stmtNo, StatementType::Read);
+  pkb->setModifies(stmtNo, var);
+  return stmtNo;
 }
 
-void SIMPLEParser::parsePrint() {
+int SIMPLEParser::parsePrint() {
   expect(SIMPLETokens::Print);
-  expect(SIMPLETokens::Identifier);
+  auto var = expect(SIMPLETokens::Identifier).value;
   expect(SIMPLETokens::Semicolon);
+
+  int stmtNo = getStmtNo();
+  pkb->setStmtType(stmtNo, StatementType::Print);
+  pkb->setUses(stmtNo, var);
+  return stmtNo;
 }
 
-void SIMPLEParser::parseCall() {
+int SIMPLEParser::parseCall() {
   expect(SIMPLETokens::Call);
-  expect(SIMPLETokens::Identifier);
+  auto proc = expect(SIMPLETokens::Identifier).value;
   expect(SIMPLETokens::Semicolon);
+
+  int stmtNo = getStmtNo();
+  pkb->setStmtType(stmtNo, StatementType::Call);
+  pkb->setCalls(currentProc, proc);
+  return stmtNo;
 }
 
-void SIMPLEParser::parseWhile() {
+int SIMPLEParser::parseWhile() {
   expect(SIMPLETokens::While);
   expect(SIMPLETokens::LeftBrace);
-  parseExpr(tokens);
+  auto postfix = parseWhileCondExpr();
   expect(SIMPLETokens::RightBrace);
   expect(SIMPLETokens::LeftParentheses);
-  parseStmtLst();
+  auto stmtNoLst = parseStmtLst();
   expect(SIMPLETokens::RightParentheses);
+
+  auto stmtNo = getStmtNo();
+  pkb->setStmtType(stmtNo, StatementType::While);
+  for (int i : stmtNoLst) {
+    pkb->setParent(stmtNo, i);
+  }
+  pkb->setNext(stmtNo, stmtNoLst.front());
+  return stmtNo;
 }
 
-void SIMPLEParser::parseIf() {
+int SIMPLEParser::parseIf() {
   expect(SIMPLETokens::If);
   expect(SIMPLETokens::LeftBrace);
-  parseExpr(tokens);
+  auto postfix = parseIfCondExpr();
   expect(SIMPLETokens::RightBrace);
   expect(SIMPLETokens::Then);
   expect(SIMPLETokens::LeftParentheses);
-  parseStmtLst();
+  auto thenStmtNoLst = parseStmtLst();
   expect(SIMPLETokens::RightParentheses);
   expect(SIMPLETokens::Else);
   expect(SIMPLETokens::LeftParentheses);
-  parseStmtLst();
+  auto elseStmtNoLst = parseStmtLst();
   expect(SIMPLETokens::RightParentheses);
+
+  auto stmtNo = getStmtNo();
+  pkb->setStmtType(stmtNo, StatementType::While);
+  for (int i : thenStmtNoLst) {
+    pkb->setParent(stmtNo, i);
+  }
+  for (int i : elseStmtNoLst) {
+    pkb->setParent(stmtNo, i);
+  }
+  pkb->setNext(stmtNo, thenStmtNoLst.front());
+  pkb->setNext(stmtNo, elseStmtNoLst.front());
+  return stmtNo;
 }
 
-void SIMPLEParser::parseAssign() {
-  expect(SIMPLETokens::Identifier);
+int SIMPLEParser::parseAssign() {
+  auto var = expect(SIMPLETokens::Identifier).value;
   expect(SIMPLETokens::Assign);
-  parseExpr(tokens);
+  auto postfix = parseAssignExpr();
   expect(SIMPLETokens::Semicolon);
+
+  int stmtNo = getStmtNo();
+  pkb->setStmtType(stmtNo, StatementType::Assign);
+  pkb->setModifies(stmtNo, var);
+  setUsesExpr(stmtNo, postfix);
+  pkb->setAssigns(stmtNo, var, Parser::tokensToString(postfix));
+  return stmtNo;
 }
 
-SIMPLEParser::SIMPLEParser(std::list<Token>) {}
+std::list<Token> SIMPLEParser::parseWhileCondExpr() {
+  std::list<Token> exprTokens;
+  while (*(tokens.begin()) != SIMPLETokens::RightParentheses &&
+         *(std::next(tokens.begin())) != SIMPLETokens::LeftBrace) {
+    exprTokens.push_back(tokens.front());
+    tokens.pop_front();
+  }
+  if (tokens.empty()) {
+    throw std::logic_error("Condition expression cannot be empty");
+  }
+  return parseExpr(tokens);
+}
+
+std::list<Token> SIMPLEParser::parseIfCondExpr() {
+  std::list<Token> exprTokens;
+  while (*(tokens.begin()) != SIMPLETokens::RightParentheses &&
+         *(std::next(tokens.begin())) != SIMPLETokens::Then) {
+    exprTokens.push_back(tokens.front());
+    tokens.pop_front();
+  }
+  if (tokens.empty()) {
+    throw std::logic_error("Condition expression cannot be empty");
+  }
+  return parseExpr(tokens);
+}
+
+std::list<Token> SIMPLEParser::parseAssignExpr() {
+  std::list<Token> exprTokens;
+  while (*(tokens.begin()) != SIMPLETokens::Semicolon) {
+    exprTokens.push_back(tokens.front());
+    tokens.pop_front();
+  }
+  if (tokens.empty()) {
+    throw std::logic_error("Expression cannot be empty");
+  }
+  auto postfix = parseExpr(tokens);
+  for (auto token : postfix) {
+    if (token.type == TokenType::Operator && !(isArithmeticOperator(token))) {
+      throw std::logic_error(
+          "Non-arithmetic operators found in assignment expression")
+    }
+  }
+  return postfix;
+}
+
+void SIMPLEParser::setUsesExpr(int stmtNo, std::list<Token> postfix) {
+  for (auto token : postfix) {
+    switch (token.type) {
+    case TokenType::Number:
+      pkb->setConst(token.value);
+      break;
+    case TokenType::Identifier:
+      pkb->setUses(stmtNo, token.value);
+      break;
+    default:
+      break;
+    }
+  }
+}
+
+SIMPLEParser::SIMPLEParser(std::list<Token> tkn)
+    : pkb(new PKB()), tokens(tkn), stmtCounter(0) {
+  parseProgram();
+}
 
 std::unique_ptr<PKB> SIMPLEParser::getPKB() { return std::move(pkb); }
 

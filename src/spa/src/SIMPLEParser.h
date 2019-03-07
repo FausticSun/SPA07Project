@@ -33,24 +33,29 @@ class SIMPLEParser {
 private:
   std::list<Token> tokens;
   std::unique_ptr<PKB> pkb;
-  std::list<std::string> parentStack;
-  std::list<std::string> followStack;
   std::list<std::string> nextStack;
   std::string currentProc;
-  int stmtNo;
+  int stmtCounter;
 
+  // Parsing
   Token expect(Token token);
-  std::string getStmtNo();
   void parseProgram();
   void parseProcedure();
-  void parseStmtLst();
-  void parseStmt();
-  void parseRead();
-  void parsePrint();
-  void parseCall();
-  void parseWhile();
-  void parseIf();
-  void parseAssign();
+  std::vector<int> parseStmtLst();
+  int parseStmt();
+  int parseRead();
+  int parsePrint();
+  int parseCall();
+  int parseWhile();
+  int parseIf();
+  int parseAssign();
+  std::list<Token> parseWhileCondExpr();
+  std::list<Token> parseIfCondExpr();
+  std::list<Token> parseAssignExpr();
+
+  // Utility
+  int getStmtNo();
+  void setUsesExpr(int, std::list<Token>);
 
 public:
   SIMPLEParser(std::list<Token>);
