@@ -36,7 +36,7 @@ void SIMPLEParser::parseProcedure() {
   expect(SIMPLETokens::LeftBrace);
   parseStmtLst(PROCEDURE);
   expect(SIMPLETokens::RightBrace);
-  int lastStmtNo = stmtCounter;
+  int lastStmtNo = stmtCounter + 1;
   pkb->setProc(currentProc, firstStmtNo, lastStmtNo);
 }
 
@@ -170,7 +170,8 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseAssign(int stmtNo) {
   pkb->setStmtType(stmtNo, StatementType::Assign);
   pkb->setModifies(stmtNo, var);
   setUsesExpr(stmtNo, postfix);
-  pkb->setAssigns(stmtNo, var, Parser::tokensToString(postfix));
+  auto postfixString = tokensToString(postfix);
+  pkb->setAssign(stmtNo, var, postfixString);
   return {stmtNo};
 }
 
@@ -211,9 +212,9 @@ std::list<Token> SIMPLEParser::parseAssignExpr() {
   }
   auto postfix = parseExpr(tokens);
   for (auto token : postfix) {
-    if (token.type == TokenType::Operator && !(isArithmeticOperator(token))) {
+    if (isRelationalOp(token)) {
       throw std::logic_error(
-          "Non-arithmetic operators found in assignment expression")
+          "Non-arithmetic operators found in assignment expression");
     }
   }
   return postfix;
@@ -223,7 +224,7 @@ void SIMPLEParser::setUsesExpr(int stmtNo, std::list<Token> postfix) {
   for (auto token : postfix) {
     switch (token.type) {
     case TokenType::Number:
-      pkb->setConst(token.value);
+      pkb->setConst(std::stoi(token.value));
       break;
     case TokenType::Identifier:
       pkb->setUses(stmtNo, token.value);

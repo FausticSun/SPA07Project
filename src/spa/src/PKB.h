@@ -20,25 +20,33 @@ enum class StatementType {
 
 class PKB {
 private:
+  // Range of statements from first (inclusive) and last (exclusive)
+  typedef std::pair<int, int> StmtRange;
+
   int stmtCount = 0;
   std::set<std::string> varTable;
-  std::set<std::string> procTable;
-  std::set<std::string> constTable;
-  std::map<StatementType, std::set<std::string>> stmtTable;
+  std::map<std::string, StmtRange> procTable;
+  std::set<int> constTable;
+  std::map<StatementType, std::set<int>> stmtTable;
   RelationTable followsTable;
   RelationTable followsTTable;
   RelationTable parentTable;
   RelationTable parentTTable;
   RelationTable usesTable;
   RelationTable modifiesTable;
+  RelationTable callsTable;
+  RelationTable callsTTable;
+  RelationTable nextTable;
   std::map<std::string, std::pair<std::string, std::string>> assignTable;
 
 public:
-  void insertVar(const std::string &);
-  void insertProc(const std::string &);
-  void insertStatement(const std::string &, StatementType);
-  void insertConstant(int);
-  void insertAssign(int, std::string &, std::string &);
+  // Setters
+  // Entity setters
+  void setVar(const std::string &);
+  void setProc(const std::string &, int, int);
+  void setStmtType(int, StatementType);
+  void setConst(int);
+  // Relation setters
   void setFollows(int, int);
   void setFollowsT(int, int);
   void setParent(int, int);
@@ -47,6 +55,14 @@ public:
   void setUses(std::string, std::string);
   void setModifies(int, std::string);
   void setModifies(std::string, std::string);
+  void setCalls(std::string, std::string);
+  void setCallsT(std::string, std::string);
+  void setNext(int, int);
+  // Pattern setters
+  void setAssign(int, std::string &, std::string &);
+  void setIf(int, std::string &);
+  void setWhile(int, std::string &);
+
   const std::set<std::string> getVarTable() const;
   const std::set<std::string> getProcTable() const;
   const std::set<std::string> getConstTable() const;
