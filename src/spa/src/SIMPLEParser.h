@@ -31,24 +31,30 @@ const static Token Identifier{TokenType::Identifier, ""};
 
 class SIMPLEParser {
 private:
+  // StmtInfo consists the stmtNo and "exit" stmts
+  typedef std::vector<int> ExitStmtLst;
+  typedef std::pair<int, ExitStmtLst> StmtInfo;
+  static const int PROCEDURE = -1;
+
   std::list<Token> tokens;
   std::unique_ptr<PKB> pkb;
   std::list<std::string> nextStack;
   std::string currentProc;
+  int prevTraversedStmt;
   int stmtCounter;
 
   // Parsing
   Token expect(Token token);
   void parseProgram();
   void parseProcedure();
-  std::vector<int> parseStmtLst();
-  int parseStmt();
-  int parseRead();
-  int parsePrint();
-  int parseCall();
-  int parseWhile();
-  int parseIf();
-  int parseAssign();
+  ExitStmtLst parseStmtLst(int parent);
+  StmtInfo parseStmt();
+  ExitStmtLst parseRead(int stmtNo);
+  ExitStmtLst parsePrint(int stmtNo);
+  ExitStmtLst parseCall(int stmtNo);
+  ExitStmtLst parseWhile(int stmtNo);
+  ExitStmtLst parseIf(int stmtNo);
+  ExitStmtLst parseAssign(int stmtNo);
   std::list<Token> parseWhileCondExpr();
   std::list<Token> parseIfCondExpr();
   std::list<Token> parseAssignExpr();
