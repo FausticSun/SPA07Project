@@ -1,8 +1,45 @@
 #include "Table.h"
+#include <algorithm>
 
-Table::Table(HeaderRow headers) : headerRow(headers) {}
+Table::Table(HeaderRow headers) : headerRow(headers) {
+  auto headersCopy = headers;
+  std::sort(headersCopy.begin(), headersCopy.end());
+  if (std::adjacent_find(headersCopy.begin(), headersCopy.end()) !=
+      headersCopy.end()) {
+    throw std::logic_error("Headers contain duplicate names");
+  }
+}
 
-void Table::insertRow(DataRow row) { data.insert(row); }
+Table::Table(int noOfCols) {
+  if (noOfCols < 0) {
+    throw std::logic_error("No of columns is less that 0");
+  }
+  for (int i = 0; i < noOfCols; ++i) {
+    headerRow.push_back(std::to_string(i));
+  }
+}
+
+void Table::setHeader(HeaderRow headers) {
+  if (headers.size() != headerRow.size()) {
+    throw std::logic_error("Headers size mismatch");
+  }
+
+  auto headersCopy = headers;
+  std::sort(headersCopy.begin(), headersCopy.end());
+  if (std::adjacent_find(headersCopy.begin(), headersCopy.end()) !=
+      headersCopy.end()) {
+    throw std::logic_error("Headers contain duplicate names");
+  }
+
+  headerRow = headers;
+}
+
+void Table::insertRow(DataRow row) {
+  if (row.size() != headerRow.size()) {
+    throw std::logic_error("Data row size and header row size mismatch");
+  }
+  data.insert(row);
+}
 
 std::set<Table::DataRow> Table::getCols(HeaderRow cols) const {
   std::vector<int> indices;

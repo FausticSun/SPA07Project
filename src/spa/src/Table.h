@@ -1,5 +1,6 @@
 #pragma once
 #include <set>
+#include <string>
 #include <vector>
 
 class Table {
@@ -11,7 +12,9 @@ private:
   std::set<DataRow> data;
 
 public:
-  Table(HeaderRow headers);
+  explicit Table(HeaderRow headers);
+  explicit Table(int noOfCols);
+  void setHeader(HeaderRow headers);
   void insertRow(DataRow row);
   std::set<DataRow> getCols(HeaderRow cols) const;
   bool empty() const;
