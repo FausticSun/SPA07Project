@@ -99,7 +99,6 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseRead(int stmtNo) {
   auto var = expect(SIMPLETokens::Identifier).value;
   expect(SIMPLETokens::Semicolon);
 
-  int stmtNo = getStmtNo();
   pkb->setStmtType(stmtNo, StatementType::Read);
   pkb->setModifies(stmtNo, var);
   return {stmtNo};
@@ -212,7 +211,7 @@ std::list<Token> SIMPLEParser::parseAssignExpr() {
   }
   auto postfix = parseExpr(tokens);
   for (auto token : postfix) {
-    if (isRelationalOp(token)) {
+    if (ExprTokens::isRelationalOp(token)) {
       throw std::logic_error(
           "Non-arithmetic operators found in assignment expression");
     }
