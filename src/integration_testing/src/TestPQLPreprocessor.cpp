@@ -25,7 +25,7 @@ SCENARIO("only declare one synonym") {
 // SCENARIO("declare sevaral synonyms, sevaral for each type") {
 //	PQLParser parser = PQLParser();
 //	queue<QueryToken> qq = parser.parse("while w1, w2; procedure p1, p2,
-//p3;"); 	parser.buildQuery(qq); 	Query q = parser.getQuery();
+// p3;"); 	parser.buildQuery(qq); 	Query q = parser.getQuery();
 //	REQUIRE(q.selectors.front().name == "w1");
 //	REQUIRE(q.selectors.front().type == QueryEntityType::While);
 //	REQUIRE(q.selectors[1].name == "w2");
