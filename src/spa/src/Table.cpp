@@ -50,7 +50,7 @@ void Table::insertRow(DataRow row) {
   data.insert(row);
 }
 
-std::set<Table::DataRow> Table::getData(HeaderRow cols) const { return data; }
+std::set<Table::DataRow> Table::getData() const { return data; }
 
 std::set<Table::DataRow> Table::getData(HeaderRow cols) const {
   std::vector<int> indices;
