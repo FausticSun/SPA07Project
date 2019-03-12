@@ -14,14 +14,15 @@ private:
 public:
   explicit Table(HeaderRow headers);
   explicit Table(int noOfCols);
+  HeaderRow getHeader() const;
   void setHeader(HeaderRow headers);
   void modifyHeader(std::string oldHeader, std::string newHeader);
   void insertRow(DataRow row);
   std::set<DataRow> getData(HeaderRow cols) const;
   std::set<DataRow> getData() const;
   bool empty() const;
-  void mergeWith(Table other);
-  void concatenate(Table other);
-  void setDifference(Table other);
+  void mergeWith(const Table &other);
+  void concatenate(const Table &other);
+  void setDifference(const Table &other);
   void transitiveClosure();
 };

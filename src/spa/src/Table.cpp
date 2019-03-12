@@ -19,6 +19,8 @@ Table::Table(int noOfCols) {
   }
 }
 
+Table::HeaderRow Table::getHeader() const { return headerRow; }
+
 void Table::setHeader(HeaderRow headers) {
   if (headers.size() != headerRow.size()) {
     throw std::logic_error("Headers size mismatch");
@@ -79,26 +81,20 @@ std::set<Table::DataRow> Table::getData(HeaderRow cols) const {
 
 bool Table::empty() const { return data.empty(); }
 
-void Table::mergeWith(Table other) {
-  // Other table is empty
-  if (other.empty()) {
-    return;
-  }
-  // This table is empty
-  if (empty()) {
-    data.insert(other.data.begin(), other.data.end());
-    return;
-  }
-  // Get indices of common columns
+void Table::mergeWith(const Table &other) {
+  // Get indices of common columns and disjoint columns of other table
   std::vector<std::pair<int, int>> commonIndices;
-  std::vector<int> otherDiffIndices;
+  std::set<int> otherDiffIndices;
+  for (int j = 0; j < other.headerRow.size(); ++j) {
+    otherDiffIndices.insert(j);
+  }
   for (int i = 0; i < headerRow.size(); ++i) {
     for (int j = 0; j < other.headerRow.size(); ++j) {
       if (headerRow[i] == other.headerRow[j]) {
         commonIndices.emplace_back(i, j);
+        otherDiffIndices.erase(j);
         break;
       }
-      otherDiffIndices.push_back(j);
     }
   }
   // Natural Join if there are common indices
@@ -108,53 +104,57 @@ void Table::mergeWith(Table other) {
       headerRow.push_back(other.headerRow[i]);
     }
     // Iterate through DataRow in this table
-    for (auto thisIt = data.begin(); thisIt != data.end(); ++thisIt) {
-      // Find rows in other table that has the same data in common cols
-      bool foundCommon = false;
+    auto thisIt = data.begin();
+    while (thisIt != data.end()) {
+      // Remove the row from the table
+      auto thisData = (*thisIt);
+      thisIt = data.erase(thisIt);
+      // Check the row against every row in the other table
       for (auto otherIt = other.data.begin(); otherIt != other.data.end();
            ++otherIt) {
+        // Determine if data in common columns are the same
         bool isCommon = true;
         for (auto indices : commonIndices) {
-          if (thisIt->at(indices.first) != otherIt->at(indices.second)) {
+          if (thisData.at(indices.first) != otherIt->at(indices.second)) {
             isCommon = false;
             break;
           }
         }
-        // Row with common cols found, join
+        // If they are the same
         if (isCommon) {
-          auto dataRow = (*thisIt);
+          // Join and insert back into this table
+          auto newData = thisData;
           for (auto i : otherDiffIndices) {
-            dataRow.push_back(otherIt->at(i));
+            newData.push_back(otherIt->at(i));
           }
-          thisIt = data.erase(thisIt);
-          thisIt = data.insert(thisIt, dataRow);
-          otherIt = data.erase(otherIt);
-          foundCommon = true;
+          data.insert(thisIt, newData);
         }
-      }
-      // No common cols, delete the row
-      if (!foundCommon) {
-        thisIt = data.erase(thisIt);
       }
     }
   }
   // Cartesian Product otherwise
   else {
     // Merge headers
-    headerRow.assign(other.headerRow.begin(), other.headerRow.end());
+    headerRow.insert(headerRow.end(), other.headerRow.begin(),
+                     other.headerRow.end());
     // Perform cartesian product
-    std::set<DataRow> newData;
-    for (auto thisRow : data) {
+    // Iterate through DataRow in this table
+    auto thisIt = data.begin();
+    while (thisIt != data.end()) {
+      // Remove the row from the table
+      auto thisData = (*thisIt);
+      thisIt = data.erase(thisIt);
+      // Merge and insert back with every row in the other table
       for (auto otherRow : other.data) {
-        DataRow newRow(thisRow.begin(), thisRow.end());
-        newRow.assign(otherRow.begin(), otherRow.end());
-        newData.insert(newRow);
+        auto newData = thisData;
+        newData.insert(newData.end(), otherRow.begin(), otherRow.end());
+        data.insert(thisIt, newData);
       }
     }
   }
 }
 
-void Table::concatenate(Table other) {
+void Table::concatenate(const Table &other) {
   if (headerRow != other.headerRow) {
     throw std::logic_error("Headers are not equal");
   }
@@ -163,7 +163,7 @@ void Table::concatenate(Table other) {
   }
 }
 
-void Table::setDifference(Table other) {
+void Table::setDifference(const Table &other) {
   if (headerRow != other.headerRow) {
     throw std::logic_error("Headers are not equal");
   }
@@ -181,4 +181,30 @@ void Table::setDifference(Table other) {
   }
 }
 
-void Table::transitiveClosure() {}
+void Table::transitiveClosure() {
+  if (headerRow.size() != 2) {
+    throw std::logic_error(
+        "Transitive closure can only be performed on table with 2 columns");
+  }
+  // Get number of unique elements
+  std::set<std::string> uniqueElements;
+  for (auto i : data) {
+    uniqueElements.insert(i[0]);
+    uniqueElements.insert(i[1]);
+  }
+  int n = uniqueElements.size();
+  if (n < 3) {
+    return;
+  }
+  // Perform a recursive self-join
+  Table t = (*this);
+  Table t2 = (*this);
+  t.setHeader({"0", "1"});
+  for (int i = 2; i < n; ++i) {
+    t2.setHeader({std::to_string(i - 1), std::to_string(i)});
+    t.mergeWith(t2);
+    for (auto newRow : t.getData({"0", std::to_string(i)})) {
+      data.insert(newRow);
+    }
+  }
+}
