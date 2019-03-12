@@ -1,5 +1,6 @@
 #pragma once
 #include "GeneralLexer.h"
+#include <map>
 #include <set>
 
 namespace Parser {
@@ -41,7 +42,20 @@ const static Token Number{TokenType::Number, ""};
 bool isArithmeticOp(Token);
 bool isRelationalOp(Token);
 } // namespace ExprTokens
-
+static std::map<Token, int> precedenceMap = {
+    std::make_pair(ExprTokens::Or, 2),
+    std::make_pair(ExprTokens::And, 2),
+    std::make_pair(ExprTokens::GreaterThan, 3),
+    std::make_pair(ExprTokens::GreaterThanEqual, 3),
+    std::make_pair(ExprTokens::LessThan, 3),
+    std::make_pair(ExprTokens::LessThanEqual, 3),
+    std::make_pair(ExprTokens::Equal, 3),
+    std::make_pair(ExprTokens::NotEqual, 3),
+    std::make_pair(ExprTokens::Plus, 4),
+    std::make_pair(ExprTokens::Minus, 4),
+    std::make_pair(ExprTokens::Modulo, 5),
+    std::make_pair(ExprTokens::Multiply, 5),
+    std::make_pair(ExprTokens::Divide, 5)};
 std::list<Token> parseExpr(std::list<Token> &);
 std::string tokensToString(const std::list<Token> &);
 } // namespace Parser

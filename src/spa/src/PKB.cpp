@@ -33,18 +33,22 @@ void PKB::setParentT(int s1, int s2) {
 }
 
 void PKB::setUses(int s, std::string v) {
+  setVar({v});
   usesSTable.insertRow({std::to_string(s), v});
 }
 
 void PKB::setUses(std::string p, std::string v) {
+  setVar({v});
   usesPTable.insertRow({p, v});
 }
 
 void PKB::setModifies(int s, std::string v) {
+  setVar({v});
   modifiesSTable.insertRow({std::to_string(s), v});
 }
 
 void PKB::setModifies(std::string p, std::string v) {
+  setVar({v});
   modifiesPTable.insertRow({p, v});
 }
 
