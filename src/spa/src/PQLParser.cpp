@@ -98,21 +98,72 @@ void PQLParser::expectTokenIn(std::vector<string> expectedTokens) {
 
 void PQLParser::setQueryTarget() {
   getNextToken();
-  std::map<std::string, QueryEntityType>::iterator it =
-      entityMaps.find(token.name);
-  if (it != entityMaps.end()) {
-    QueryEntity qe = QueryEntity(it->second, token.name);
-    this->target = qe;
-  } else {
-    throw std::logic_error("No matched synonym have been declared.");
+  if (token.name == "BOOLEAN") {
+	  this->target.push_back(QueryEntity(QueryEntityType::Boolean, ""));
+	  return;
+  }
+  else if (token.name == "<") {
+	  insertTarget();
+  }
+  else {
+	  std::map<std::string, QueryEntityType>::iterator it =
+		  entityMaps.find(token.name);
+	  if (it != entityMaps.end()) {
+		  if (tokenQueue.front().name == ".") {
+			  getNextToken();
+			  getNextToken();
+			  this->target.push_back(QueryEntity(QueryEntityType::Attrref, it->first + "." + token.name, it->second));
+		  }
+		  else {
+			  this->target.push_back(QueryEntity(it->second, token.name));
+		  }
+	  }
+	  else {
+		  throw std::logic_error("No matched synonym have been declared.");
+	  }
   }
 }
 
+void PQLParser::insertTarget() {
+	getNextToken();
+	std::map<std::string, QueryEntityType>::iterator it =
+		entityMaps.find(token.name);
+	if (it != entityMaps.end()) {
+		if (tokenQueue.front().name == ".") {
+			getNextToken();
+			getNextToken();
+			this->target.push_back(QueryEntity(QueryEntityType::Attrref, it->first + "." + token.name, it->second));
+		}
+		else {
+			this->target.push_back(QueryEntity(it->second, token.name));
+		}
+	}
+	else {
+		throw std::logic_error("No matched synonym have been declared.");
+	}
+	getNextToken();
+	if (token.name == ",") {
+		insertTarget();
+	}
+	else {
+		expectToken(">");
+	}
+}
+
 void PQLParser::tokenizeSelect() {
-  while (!this->tokenQueue.empty()) {
+	string previous = "";
+	string current = "";
+	while (!this->tokenQueue.empty()) {
     getNextToken();
     expectTokenIn(this->expectedIndicatorTokens);
-    if (token.name == "such that") {
+	current = token.name;
+	if (token.name == "and") {
+		if (previous == "") {
+			throw std::logic_error("Cannot have 'and' as the first clause");
+		}
+		current = previous;
+	}
+    if (current == "such that") {
       getNextToken();
       expectTokenIn(expectedClauseTokens);
       if (token.name == "Follows") {
@@ -145,9 +196,12 @@ void PQLParser::tokenizeSelect() {
         insertClauseUseS();
         expectToken(")");
       }
-    } else { // pattern
+    } else if (current == "pattern"){
       insertClausePattern();
+    } else { //with
+      insertClauseWith();
     }
+    previous = current;
   }
 }
 
@@ -347,8 +401,8 @@ void PQLParser::insertQueryEntityProgline() {
     throw std::logic_error("'" + token.name + "'" + " has been declared.");
   }
   QueryEntity qe =
-      QueryEntity(QueryEntityType::Stmt, checkNameValidity(token.name));
-  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Stmt));
+      QueryEntity(QueryEntityType::Progline, checkNameValidity(token.name));
+  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Progline));
   this->selectors.push_back(qe);
   getNextToken();
   if (token.name == ",") {
@@ -412,25 +466,19 @@ QueryEntity PQLParser::determineQueryEntity() {
   }
 }
 
-void PQLParser::checkFPValidity(
+void PQLParser::checkFPNValidity(
     QueryEntity firstEntity,
     QueryEntity secondEntity) { // Stmt,Read,Print,Call,While,If,Assign,Line,
                                 // Underscore are allowed
-  std::vector<QueryEntityType> validTypes{
-      QueryEntityType::Assign,    QueryEntityType::If,
-      QueryEntityType::While,     QueryEntityType::Call,
-      QueryEntityType::Print,     QueryEntityType::Read,
-      QueryEntityType::Stmt,      QueryEntityType::Line,
-      QueryEntityType::Underscore};
   QueryEntityType firstType = firstEntity.type;
   QueryEntityType secondType = secondEntity.type;
-  if (std::find(validTypes.begin(), validTypes.end(), firstType) !=
-          validTypes.end() &&
-      std::find(validTypes.begin(), validTypes.end(), secondType) !=
-          validTypes.end()) {
+  if (std::find(validationTable["FPN12"].begin(), validationTable["FPN12"].end(), firstType) !=
+	  validationTable["FPN12"].end() &&
+      std::find(validationTable["FPN12"].begin(), validationTable["FPN12"].end(), secondType) !=
+	  validationTable["FPN12"].end()) {
     return;
   }
-  throw std::invalid_argument("invalid argument combination for clauses");
+  throw std::invalid_argument("invalid argument type for clauses");
 }
 
 void PQLParser::checkModifiesValidity(
@@ -455,7 +503,7 @@ void PQLParser::checkModifiesValidity(
           validTypesSecond.end()) {
     return;
   }
-  throw std::invalid_argument("invalid argument combination for clauses");
+  throw std::invalid_argument("invalid argument type for clauses");
 }
 
 void PQLParser::checkUsesValidity(
@@ -480,14 +528,14 @@ void PQLParser::checkUsesValidity(
           validTypesSecond.end()) {
     return;
   }
-  throw std::invalid_argument("invalid argument combination for clauses");
+  throw std::invalid_argument("invalid argument type for clauses");
 }
 
 void PQLParser::insertClauseFollows() {
   QueryEntity firstEntity = determineQueryEntity();
   expectToken(",");
   QueryEntity secondEntity = determineQueryEntity();
-  checkFPValidity(firstEntity, secondEntity);
+  checkFPNValidity(firstEntity, secondEntity);
   Clause c = Clause(ClauseType::Follows,
                     vector<QueryEntity>{firstEntity, secondEntity});
   this->clauses.push_back(c);
@@ -497,7 +545,7 @@ void PQLParser::insertClauseFollowsT() {
   QueryEntity firstEntity = determineQueryEntity();
   expectToken(",");
   QueryEntity secondEntity = determineQueryEntity();
-  checkFPValidity(firstEntity, secondEntity);
+  checkFPNValidity(firstEntity, secondEntity);
   Clause c = Clause(ClauseType::FollowsT,
                     vector<QueryEntity>{firstEntity, secondEntity});
   this->clauses.push_back(c);
@@ -507,7 +555,7 @@ void PQLParser::insertClauseParent() {
   QueryEntity firstEntity = determineQueryEntity();
   expectToken(",");
   QueryEntity secondEntity = determineQueryEntity();
-  checkFPValidity(firstEntity, secondEntity);
+  checkFPNValidity(firstEntity, secondEntity);
   Clause c = Clause(ClauseType::Parent,
                     vector<QueryEntity>{firstEntity, secondEntity});
   this->clauses.push_back(c);
@@ -517,7 +565,7 @@ void PQLParser::insertClauseParentT() {
   QueryEntity firstEntity = determineQueryEntity();
   expectToken(",");
   QueryEntity secondEntity = determineQueryEntity();
-  checkFPValidity(firstEntity, secondEntity);
+  checkFPNValidity(firstEntity, secondEntity);
   Clause c = Clause(ClauseType::ParentT,
                     vector<QueryEntity>{firstEntity, secondEntity});
   this->clauses.push_back(c);
@@ -557,31 +605,87 @@ void PQLParser::insertClausePattern() {
       entityMaps.find(token.name);
   if (it != entityMaps.end()) {
     QueryEntityType qet = it->second;
-    if (qet != QueryEntityType::Assign) {
-      throw std::invalid_argument(
-          "syn-assign must be declared as synonym of assignment for pattern");
-    }
-    QueryEntity firstPara = QueryEntity(qet, token.name);
-    expectToken("(");
-    QueryEntity qe = determineQueryEntity();
-    std::vector<QueryEntityType> validTypes{QueryEntityType::Variable,
-                                            QueryEntityType::Name,
-                                            QueryEntityType::Underscore};
-    if (std::find(validTypes.begin(), validTypes.end(), qe.type) !=
-        validTypes.end()) {
-      QueryEntity secondPara = QueryEntity(qe.type, qe.name);
-      expectToken(",");
-      QueryEntity thirdPara = parseExpression();
-      Clause c = Clause(ClauseType::AssignPatt,
-                        vector<QueryEntity>{firstPara, secondPara, thirdPara});
-      this->clauses.push_back(c);
-    } else {
-      throw std::invalid_argument(
-          "Invalid query entity type for first parameter of pattern.");
+    if(qet == QueryEntityType::Assign)
+    {
+	insertAssignPattern(token.name);
+    } else if (qet == QueryEntityType::If)
+    {
+	insertIfPattern(token.name);
+    } else if (qet == QueryEntityType::While)
+    {
+	insertWhilePattern(token.name);
+    } else
+    {
+	throw std::invalid_argument(
+		"synonym must be declared of type assignment, if or while for pattern");
     }
   } else {
     throw std::logic_error("No matched synonym have been declared.");
   }
+}
+
+void PQLParser::insertAssignPattern(string name)
+{
+  QueryEntity firstPara = QueryEntity(QueryEntityType::Assign, name);
+  expectToken("(");
+  QueryEntity qe = determineQueryEntity();
+  std::vector<QueryEntityType> validTypes{ QueryEntityType::Variable, QueryEntityType::Name, QueryEntityType::Underscore };
+  if (std::find(validTypes.begin(), validTypes.end(), qe.type) != validTypes.end()) {
+    QueryEntity secondPara = QueryEntity(qe.type, qe.name);
+    expectToken(",");
+    QueryEntity thirdPara = parseExpression();
+    Clause c = Clause(ClauseType::AssignPatt,
+	    vector<QueryEntity>{firstPara, secondPara, thirdPara});
+    this->clauses.push_back(c);
+  }
+  else {
+    throw std::invalid_argument(
+	    "Invalid query entity type for second parameter of assign pattern.");
+  }
+}
+
+void PQLParser::insertIfPattern(string name)
+{
+	QueryEntity firstPara = QueryEntity(QueryEntityType::If, name);
+	expectToken("(");
+	QueryEntity qe = determineQueryEntity();
+	std::vector<QueryEntityType> validTypes{ QueryEntityType::Variable, QueryEntityType::Name, QueryEntityType::Underscore };
+	if (std::find(validTypes.begin(), validTypes.end(), qe.type) != validTypes.end()) {
+		QueryEntity secondPara = QueryEntity(qe.type, qe.name);
+		expectToken(",");
+		expectToken("_");
+		expectToken(",");
+		expectToken("_");
+		expectToken(")");
+		Clause c = Clause(ClauseType::IfPatt,
+			vector<QueryEntity>{firstPara, secondPara});
+		this->clauses.push_back(c);
+	}
+	else {
+		throw std::invalid_argument(
+			"Invalid query entity type for second parameter of if pattern.");
+	}
+}
+
+void PQLParser::insertWhilePattern(string name)
+{
+	QueryEntity firstPara = QueryEntity(QueryEntityType::While, name);
+	expectToken("(");
+	QueryEntity qe = determineQueryEntity();
+	std::vector<QueryEntityType> validTypes{ QueryEntityType::Variable, QueryEntityType::Name, QueryEntityType::Underscore };
+	if (std::find(validTypes.begin(), validTypes.end(), qe.type) != validTypes.end()) {
+		QueryEntity secondPara = QueryEntity(qe.type, qe.name);
+		expectToken(",");
+		expectToken("_");
+		expectToken(")");
+		Clause c = Clause(ClauseType::WhilePatt,
+			vector<QueryEntity>{firstPara, secondPara});
+		this->clauses.push_back(c);
+	}
+	else {
+		throw std::invalid_argument(
+			"Invalid query entity type for second parameter of while pattern.");
+	}
 }
 
 int precedence(char c) {
@@ -730,6 +834,52 @@ QueryEntity PQLParser::parseExpression() {
   {
     throw std::logic_error("Invalid Expression");
   }
+}
+
+QueryEntity PQLParser::determineWithClauseEntity() {
+	getNextToken();
+	if (isInt(token.name)) {
+		return QueryEntity(QueryEntityType::Line, token.name);
+	}
+	else if (token.name == "\"") {
+		getNextToken();
+		QueryEntity qe = QueryEntity(QueryEntityType::Name, token.name);
+		expectToken("\"");
+		return qe;
+	}
+	else {
+		std::map<std::string, QueryEntityType>::iterator it =
+			entityMaps.find(token.name);
+		if (it != entityMaps.end()) {
+			QueryEntityType qet = it->second;
+			if (qet == QueryEntityType::Constant) {
+				throw std::invalid_argument(
+					"invalid to have constant synonym as the argument for clauses");
+			}
+			if (tokenQueue.front().name == ".") {
+				getNextToken();
+				getNextToken();
+				return QueryEntity(QueryEntityType::Attrref, it->first + "." + token.name, qet);
+			}
+			else {
+				if (qet != QueryEntityType::Progline) {
+					throw std::invalid_argument(
+						"synonym must be of type 'prog_line' in with clause");
+				}
+				return QueryEntity(qet, token.name);
+			}
+		}
+		throw std::logic_error("No matched synonym have been declared.");
+	}
+}
+
+void PQLParser::insertClauseWith() {
+	QueryEntity firstEntity = determineQueryEntity();
+	expectToken("=");
+	QueryEntity secondEntity = determineQueryEntity();
+	Clause c = Clause(ClauseType::With,
+		vector<QueryEntity>{firstEntity, secondEntity});
+	this->clauses.push_back(c);
 }
 
 Query PQLParser::constructQuery() {

@@ -44,14 +44,48 @@ private:
   std::vector<string> expectedEntityTokens = {
       "variable", "procedure", "if",     "while",    "read",     "print",
       "call",     "stmt",      "assign", "constant", "prog_line"};
-  std::vector<string> expectedIndicatorTokens = {"such that", "pattern"};
+  std::vector<string> expectedIndicatorTokens = {"such that", "pattern", "with"};
   std::vector<string> expectedClauseTokens = {
-      "Follows", "Follows*", "Parent", "Parent*", "Uses", "Modifies"};
+      "Follows", "Follows*", "Parent", "Parent*", "Uses", "Modifies", "Call", "Call*", "Next", "Next*"};
+  std::map<std::string, std::vector<QueryEntityType>> validationTable = {
+	  {"FPN12", {
+	  QueryEntityType::Assign,    QueryEntityType::If,
+	  QueryEntityType::While,     QueryEntityType::Call,
+	  QueryEntityType::Print,     QueryEntityType::Read,
+	  QueryEntityType::Stmt,      QueryEntityType::Line,
+	  QueryEntityType::Underscore}},
+	  {"U1", {
+	  QueryEntityType::Assign, QueryEntityType::If,
+	  QueryEntityType::While,  QueryEntityType::Call,
+	  QueryEntityType::Print,  QueryEntityType::Stmt,
+	  QueryEntityType::Line,   QueryEntityType::Procedure,
+	  QueryEntityType::Name}},
+	  {"M1", {
+	  QueryEntityType::Assign, QueryEntityType::If,
+	  QueryEntityType::While,  QueryEntityType::Call,
+	  QueryEntityType::Read,  QueryEntityType::Stmt,
+	  QueryEntityType::Line,   QueryEntityType::Procedure,
+	  QueryEntityType::Name}},
+	  {"UM2", {
+	  QueryEntityType::Variable, QueryEntityType::Name,
+	  QueryEntityType::Underscore}},
+	  {"PA1", {
+	  QueryEntityType::Assign, QueryEntityType::If,
+	  QueryEntityType::While}},
+	  {"PA2", {
+	  QueryEntityType::Expression, QueryEntityType::Underscore}},
+	  {"C12", {
+	  QueryEntityType::Procedure, QueryEntityType::Name,
+	  QueryEntityType::Underscore}},
+	  {"W12", {
+	  QueryEntityType::Name, QueryEntityType::Line,
+	  QueryEntityType::Attrref, QueryEntityType::Progline}}
+  };
   Query query;
   std::queue<QueryToken> tokenQueue;
   QueryToken token;
   std::map<std::string, QueryEntityType> entityMaps;
-  QueryEntity target;
+  std::vector<QueryEntity> target;
   std::vector<QueryEntity> selectors;
   std::vector<Clause> clauses;
 
@@ -59,6 +93,7 @@ private:
   void expectToken(std::string);
   void expectTokenIn(std::vector<string>);
   void setQueryTarget();
+  void insertTarget();
   void tokenizeSelect();
 
   void insertQueryEntityVariable();
@@ -74,7 +109,7 @@ private:
   void insertQueryEntityProgline();
 
   QueryEntity determineQueryEntity();
-  void checkFPValidity(QueryEntity, QueryEntity);
+  void checkFPNValidity(QueryEntity, QueryEntity);
   void checkModifiesValidity(QueryEntity, QueryEntity);
   void checkUsesValidity(QueryEntity, QueryEntity);
   void insertClauseFollows();
@@ -86,12 +121,17 @@ private:
 
   string convertToPostfix(string s);
   void insertClausePattern();
+  void insertAssignPattern(string);
+  void insertIfPattern(string);
+  void insertWhilePattern(string);
   QueryEntity parseExpression();
   Query constructQuery();
   bool isInt(string s);
   bool isDefined(string s);
   string checkNameValidity(string s);
 
+  QueryEntity determineWithClauseEntity();
+  void insertClauseWith();
   /*void Tokenize(string input);
   void tokenizeVariable(vector<string>);
   void tokenizeCall(vector<string>);

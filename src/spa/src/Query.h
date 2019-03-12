@@ -19,6 +19,8 @@ enum class QueryEntityType {
   Line,
   Name,
   Underscore,
+  Progline,
+  Attrref,
 };
 
 enum class ClauseType {
@@ -29,16 +31,23 @@ enum class ClauseType {
   UsesS,
   ModifiesS,
   AssignPatt,
+  IfPatt,
+  WhilePatt,
+  With,
 };
 
 struct QueryEntity {
   QueryEntity() {
     this->type = QueryEntityType::Assign; // default
     this->name = "";
+	this->attrRefSynonymType = QueryEntityType::Assign; // default, only used when this QueryEntity is of type Attrref
   };
 
   QueryEntity(QueryEntityType type, std::string name = "")
       : type(type), name(name){};
+
+  QueryEntity(QueryEntityType type, std::string name, QueryEntityType type2)
+	  : type(type), name(name), attrRefSynonymType(type2) {};
 
   bool operator==(QueryEntity other) {
     return this->type == other.type && this->name == other.name;
@@ -46,6 +55,7 @@ struct QueryEntity {
 
   QueryEntityType type;
   std::string name;
+  QueryEntityType attrRefSynonymType;
 };
 
 class Clause {
@@ -60,10 +70,10 @@ public:
 
 class Query {
 public:
-  QueryEntity target;
+  std::vector<QueryEntity> target;
   std::vector<QueryEntity> selectors;
   std::vector<Clause> clauses;
-  void setQuery(QueryEntity t, std::vector<QueryEntity> s,
+  void setQuery(std::vector<QueryEntity> t, std::vector<QueryEntity> s,
                 std::vector<Clause> c);
 
   bool isValid();
