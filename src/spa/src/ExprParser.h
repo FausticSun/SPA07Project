@@ -1,5 +1,6 @@
 #pragma once
 #include "GeneralLexer.h"
+#include <set>
 
 namespace Parser {
 namespace ExprTokens {
@@ -9,8 +10,8 @@ const static Token Minus{TokenType::Operator, "-"};
 const static Token Multiply{TokenType::Operator, "*"};
 const static Token Divide{TokenType::Operator, "/"};
 const static Token Modulo{TokenType::Operator, "%"};
-const static std::list<Token> ArithmeticOperators{Plus, Minus, Multiply, Divide,
-                                                  Modulo};
+const static std::set<Token> ArithmeticOperators{Plus, Minus, Multiply, Divide,
+                                                 Modulo};
 // Relational Operators
 const static Token GreaterThan{TokenType::Operator, ">"};
 const static Token GreaterThanEqual{TokenType::Operator, ">="};
@@ -21,7 +22,7 @@ const static Token NotEqual{TokenType::Operator, "!="};
 const static Token Not{TokenType::Operator, "!"};
 const static Token And{TokenType::Operator, "&&"};
 const static Token Or{TokenType::Operator, "||"};
-const static std::list<Token> RelationalOperators{
+const static std::set<Token> RelationalOperators{
     GreaterThan, GreaterThanEqual, LessThan, LessThanEqual,
     Equal,       NotEqual,         Not,      And,
     Or};

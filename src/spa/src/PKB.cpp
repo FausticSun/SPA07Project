@@ -115,6 +115,7 @@ Table PKB::getAssignMatches(std::string expr, bool partial) {
       table.insertRow({std::to_string(kv.first), kv.second.first});
     }
   }
+  return table;
 }
 
 Table PKB::getWhileMatches() { return whileTable; }
