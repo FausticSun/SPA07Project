@@ -6,7 +6,7 @@ Token SIMPLEParser::expect(Token token) {
   if (tokens.empty()) {
     throw std::logic_error("Expected more tokens but ran out");
   }
-  if ((token.type == TokenType::Identifier && token.value == "" &&
+  if ((token.type == TokenType::Identifier && token.value.empty() &&
        tokens.front().type == TokenType::Identifier) ||
       tokens.front() == token) {
     auto t = tokens.front();

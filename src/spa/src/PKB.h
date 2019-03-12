@@ -12,13 +12,12 @@ class PKB {
 private:
   // Range of statements from first (inclusive) and last (exclusive)
   typedef std::pair<int, int> StmtRange;
-  typedef std::set<std::pair<std::string, std::string>> EdgeList;
 
   // General entities
   int stmtCount = 0;
-  std::set<std::string> varTable;
+  Table varTable{1};
   std::map<std::string, StmtRange> procTable;
-  std::set<int> constTable;
+  Table constTable{1};
   std::map<StatementType, std::set<int>> stmtTable;
 
   // PQL Relation Tables
@@ -38,7 +37,9 @@ private:
   Table callProcNameTable{2};
 
   // Pattern Tables
-  std::map<std::string, std::pair<std::string, std::string>> assignTable;
+  std::map<int, std::pair<std::string, std::string>> assignTable;
+  Table whileTable{2};
+  Table ifTable{2};
 
 public:
   // Setters
@@ -86,7 +87,7 @@ public:
   // Table getAffects() const;
   // Table getAffectsT() const;
   // Pattern getter
-  Table getAssignMatches(std::string var, std::string expr, bool partial);
-  Table getWhileMatches(std::string var);
-  Table getIfMatches(std::string var);
+  Table getAssignMatches(std::string expr, bool partial);
+  Table getWhileMatches();
+  Table getIfMatches();
 };
