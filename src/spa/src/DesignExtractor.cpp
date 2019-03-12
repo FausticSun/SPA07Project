@@ -1,5 +1,6 @@
 #include "DesignExtractor.h"
 #include "Table.h"
+#include <list>
 
 // Check program contains no calls to non-existing procedure
 void validateProcs(std::unique_ptr<PKB> &pkb) {
@@ -19,16 +20,12 @@ void validateProcs(std::unique_ptr<PKB> &pkb) {
 
 // Check program contains no cyclic calls
 void validateCyclicCalls(std::unique_ptr<PKB> &pkb) {
-  // Extract to adjacent list
-  std::map<std::string, std::set<std::string>> adjList;
-  for (auto data : pkb->getCalls().getData()) {
-    adjList[data[0]].insert(data[1]);
-  }
-  // Peform DFS
-  std::list<std::string> stack;
-  std::map<std::string, bool> visited;
-  while (!stack.empty()) {
-  }
+  // Get nodes with no incoming edge
+  std::set<std::string> allNodes;
+  std::set<std::string> procTable = pkb->getProcTable();
+  // Toposort
+  auto edgeList = pkb->getCalls().getData();
+  std::list<std::string> sortedProcs;
 }
 
 void populateFollowsT(std::unique_ptr<PKB> &pkb) {
