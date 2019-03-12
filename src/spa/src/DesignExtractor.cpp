@@ -22,7 +22,7 @@ void validateProcs(std::unique_ptr<PKB> &pkb) {
 void validateCyclicCalls(std::unique_ptr<PKB> &pkb) {
   // Get nodes with no incoming edge
   std::set<std::string> allNodes;
-  std::set<std::string> procTable = pkb->getProcTable();
+  auto procTable = pkb->getProcTable();
   // Toposort
   auto edgeList = pkb->getCalls().getData();
   std::list<std::string> sortedProcs;
@@ -32,7 +32,7 @@ void populateFollowsT(std::unique_ptr<PKB> &pkb) {
   auto table = pkb->getFollows();
   table.transitiveClosure();
   for (auto data : table.getData()) {
-    pkb->setFollowsT(data[0], data[1]);
+    pkb->setFollowsT(std::stoi(data[0]), std::stoi(data[1]));
   }
 }
 
@@ -40,15 +40,15 @@ void populateParentT(std::unique_ptr<PKB> &pkb) {
   auto table = pkb->getParent();
   table.transitiveClosure();
   for (auto data : table.getData()) {
-    pkb->setParentT(data[0], data[1]);
+    pkb->setParentT(std::stoi(data[0]), std::stoi(data[1]));
   }
 }
 
 void populateCallsT(std::unique_ptr<PKB> &pkb) {
-  auto table = pkb->getCall();
+  auto table = pkb->getCalls();
   table.transitiveClosure();
   for (auto data : table.getData()) {
-    pkb->setCallT(data[0], data[1]);
+    pkb->setCallsT(data[0], data[1]);
   }
 }
 
