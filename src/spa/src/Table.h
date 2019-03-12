@@ -17,7 +17,11 @@ public:
   void setHeader(HeaderRow headers);
   void modifyHeader(std::string oldHeader, std::string newHeader);
   void insertRow(DataRow row);
-  std::set<DataRow> getCols(HeaderRow cols) const;
+  std::set<DataRow> getData(HeaderRow cols) const;
+  std::set<DataRow> getData() const;
   bool empty() const;
   void mergeWith(Table other);
+  void concatenate(Table other);
+  void setDifference(Table other);
+  void transitiveClosure();
 };

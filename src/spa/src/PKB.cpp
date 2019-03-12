@@ -3,6 +3,9 @@
 void PKB::setVar(const std::string &var) { varTable.insertRow({var}); }
 
 void PKB::setProc(const std::string &proc, int start, int end) {
+  if (procTable.count(proc) == 1) {
+    throw std::logic_error("Procedure already exists");
+  }
   procTable.insert(std::make_pair(proc, StmtRange(start, end)));
   stmtCount = end - 1 > stmtCount ? end - 1 : stmtCount;
 }

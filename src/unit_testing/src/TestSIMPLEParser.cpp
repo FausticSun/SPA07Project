@@ -1,9 +1,13 @@
 #include "GeneralLexer.h"
 #include "SIMPLEParser.h"
 #include "catch.hpp"
+#include <sstream>
 
 SCENARIO("Empty program") {
-  std::list<Token> tokens;
+  std::string program = R"()";
+  std::stringstream ss;
+  ss << program;
+  std::list<Token> tokens = Lexer::tokenize(ss);
   REQUIRE_THROWS(Parser::parseSIMPLE(tokens));
 }
 

@@ -34,6 +34,15 @@ void Table::setHeader(HeaderRow headers) {
   headerRow = headers;
 }
 
+void Table::modifyHeader(std::string oldHeader, std::string newHeader) {
+  for (auto it = headerRow.begin(); it != headerRow.end(); ++it) {
+    if (it->compare(oldHeader) == 0) {
+      it->assign(newHeader);
+      break;
+    }
+  }
+}
+
 void Table::insertRow(DataRow row) {
   if (row.size() != headerRow.size()) {
     throw std::logic_error("Data row size and header row size mismatch");
@@ -41,7 +50,9 @@ void Table::insertRow(DataRow row) {
   data.insert(row);
 }
 
-std::set<Table::DataRow> Table::getCols(HeaderRow cols) const {
+std::set<Table::DataRow> Table::getData(HeaderRow cols) const { return data; }
+
+std::set<Table::DataRow> Table::getData(HeaderRow cols) const {
   std::vector<int> indices;
   std::set<DataRow> requestedData;
 
@@ -142,3 +153,32 @@ void Table::mergeWith(Table other) {
     }
   }
 }
+
+void Table::concatenate(Table other) {
+  if (headerRow != other.headerRow) {
+    throw std::logic_error("Headers are not equal");
+  }
+  for (auto row : other.data) {
+    data.insert(row);
+  }
+}
+
+void Table::setDifference(Table other) {
+  if (headerRow != other.headerRow) {
+    throw std::logic_error("Headers are not equal");
+  }
+  auto thisIt = data.begin();
+  auto otherIt = other.data.begin();
+  while (thisIt != data.end() && otherIt != other.data.end()) {
+    if ((*thisIt) < (*otherIt)) {
+      ++thisIt;
+    } else if ((*thisIt) == (*otherIt)) {
+      thisIt = data.erase(thisIt);
+      ++otherIt;
+    } else {
+      ++otherIt;
+    }
+  }
+}
+
+void Table::transitiveClosure() {}
