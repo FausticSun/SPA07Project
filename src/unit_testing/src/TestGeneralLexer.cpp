@@ -62,9 +62,9 @@ SCENARIO("Many spaces") {
 
 SCENARIO("Operators") {
   std::stringstream ss;
-  ss << "=+-*/%_><!&&||>=<=!===";
+  ss << "=+-*/%><!&&||>=<=!===";
   auto tokens = Lexer::tokenize(ss);
-  REQUIRE(tokens.size() == 16);
+  REQUIRE(tokens.size() == 15);
   for (auto it = tokens.begin(); it != tokens.end(); ++it) {
     REQUIRE(it->type == TokenType::Operator);
   }
@@ -75,7 +75,6 @@ SCENARIO("Operators") {
   REQUIRE((++it)->value == "*");
   REQUIRE((++it)->value == "/");
   REQUIRE((++it)->value == "%");
-  REQUIRE((++it)->value == "_");
   REQUIRE((++it)->value == ">");
   REQUIRE((++it)->value == "<");
   REQUIRE((++it)->value == "!");
@@ -89,9 +88,9 @@ SCENARIO("Operators") {
 
 SCENARIO("Delimiters") {
   std::stringstream ss;
-  ss << "{(\"#.,;\")}";
+  ss << "{(\"#.,;\")}_";
   auto tokens = Lexer::tokenize(ss);
-  REQUIRE(tokens.size() == 10);
+  REQUIRE(tokens.size() == 11);
   for (auto it = tokens.begin(); it != tokens.end(); ++it) {
     REQUIRE(it->type == TokenType::Delimiter);
   }
@@ -106,4 +105,5 @@ SCENARIO("Delimiters") {
   REQUIRE((++it)->value == "\"");
   REQUIRE((++it)->value == ")");
   REQUIRE((++it)->value == "}");
+  REQUIRE((++it)->value == "_");
 }
