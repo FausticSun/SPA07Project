@@ -35,6 +35,7 @@ Token recognizePunctuation(std::istream &stream) {
   case ',':
   case '.':
   case '#':
+  case '_':
     type = TokenType::Delimiter;
     value += char(stream.get());
     break;
@@ -43,7 +44,6 @@ Token recognizePunctuation(std::istream &stream) {
   case '*':
   case '/':
   case '%':
-  case '_':
     type = TokenType::Operator;
     value += char(stream.get());
     break;

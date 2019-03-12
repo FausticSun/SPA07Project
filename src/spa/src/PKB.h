@@ -14,22 +14,30 @@ private:
   typedef std::pair<int, int> StmtRange;
   typedef std::set<std::pair<std::string, std::string>> EdgeList;
 
+  // General entities
   int stmtCount = 0;
   std::set<std::string> varTable;
   std::map<std::string, StmtRange> procTable;
   std::set<int> constTable;
   std::map<StatementType, std::set<int>> stmtTable;
-  EdgeList followsTable;
-  EdgeList followsTTable;
-  EdgeList parentTable;
-  EdgeList parentTTable;
-  EdgeList usesPTable;
-  EdgeList usesSTable;
-  EdgeList modifiesPTable;
-  EdgeList modifiesSTable;
-  EdgeList callsTable;
-  EdgeList callsTTable;
-  EdgeList nextTable;
+
+  // PQL Relation Tables
+  Table followsTable{2};
+  Table followsTTable{2};
+  Table parentTable{2};
+  Table parentTTable{2};
+  Table usesPTable{2};
+  Table usesSTable{2};
+  Table modifiesPTable{2};
+  Table modifiesSTable{2};
+  Table callsTable{2};
+  Table callsTTable{2};
+  Table nextTable{2};
+
+  // Other Relation Tables
+  Table callProcNameTable{2};
+
+  // Pattern Tables
   std::map<std::string, std::pair<std::string, std::string>> assignTable;
 
 public:
@@ -44,10 +52,10 @@ public:
   void setFollowsT(int, int);
   void setParent(int, int);
   void setParentT(int, int);
-  void setUsesP(int, std::string);
-  void setUsesS(std::string, std::string);
-  void setModifiesP(int, std::string);
-  void setModifiesS(std::string, std::string);
+  void setUses(int, std::string);
+  void setUses(std::string, std::string);
+  void setModifies(int, std::string);
+  void setModifies(std::string, std::string);
   void setCalls(std::string, std::string);
   void setCallsT(std::string, std::string);
   void setNext(int, int);

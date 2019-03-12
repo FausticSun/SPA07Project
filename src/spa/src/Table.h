@@ -15,6 +15,7 @@ public:
   explicit Table(HeaderRow headers);
   explicit Table(int noOfCols);
   void setHeader(HeaderRow headers);
+  void modifyHeader(std::string oldHeader, std::string newHeader);
   void insertRow(DataRow row);
   std::set<DataRow> getCols(HeaderRow cols) const;
   bool empty() const;

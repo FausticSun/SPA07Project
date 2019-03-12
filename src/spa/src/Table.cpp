@@ -98,7 +98,7 @@ void Table::mergeWith(Table other) {
     }
     // Iterate through DataRow in this table
     for (auto thisIt = data.begin(); thisIt != data.end(); ++thisIt) {
-      // Find a row in other table that has the same data in common cols
+      // Find rows in other table that has the same data in common cols
       bool foundCommon = false;
       for (auto otherIt = other.data.begin(); otherIt != other.data.end();
            ++otherIt) {
@@ -117,9 +117,8 @@ void Table::mergeWith(Table other) {
           }
           thisIt = data.erase(thisIt);
           thisIt = data.insert(thisIt, dataRow);
-          data.erase(otherIt);
+          otherIt = data.erase(otherIt);
           foundCommon = true;
-          break;
         }
       }
       // No common cols, delete the row

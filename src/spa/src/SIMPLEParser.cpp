@@ -86,7 +86,7 @@ SIMPLEParser::StmtInfo SIMPLEParser::parseStmt() {
     exitStmtLst = parseWhile(stmtNo);
   } else if (tokens.front() == SIMPLETokens::If) {
     exitStmtLst = parseIf(stmtNo);
-  } else if (tokens.front() == SIMPLETokens::Identifier) {
+  } else if (tokens.front().type == TokenType::Identifier) {
     exitStmtLst = parseAssign(stmtNo);
   } else {
     throw std::logic_error("Error parsing statement");
