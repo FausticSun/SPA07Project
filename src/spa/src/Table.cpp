@@ -54,6 +54,10 @@ void Table::insertRow(DataRow row) {
 
 std::set<Table::DataRow> Table::getData() const { return data; }
 
+int Table::size() const { return data.size(); }
+
+bool Table::contains(DataRow row) { return data.count(row) == 1; }
+
 std::set<Table::DataRow> Table::getData(HeaderRow cols) const {
   std::vector<int> indices;
   std::set<DataRow> requestedData;

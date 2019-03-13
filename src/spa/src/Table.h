@@ -20,6 +20,8 @@ public:
   void insertRow(DataRow row);
   std::set<DataRow> getData(HeaderRow cols) const;
   std::set<DataRow> getData() const;
+  int size() const;
+  bool contains(DataRow);
   bool empty() const;
   void mergeWith(const Table &other);
   void concatenate(const Table &other);

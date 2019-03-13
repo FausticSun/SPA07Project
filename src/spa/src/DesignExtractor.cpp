@@ -64,8 +64,8 @@ void populateUsesS(std::unique_ptr<PKB> &pkb) {
   auto usesSTable = pkb->getUsesS();
   usesSTable.setHeader({"s1", "v"});
 
-  table.concatenate(parentTTable);
-  table.concatenate(usesSTable);
+  table.mergeWith(parentTTable);
+  table.mergeWith(usesSTable);
   for (auto data : table.getData({"w/ifs", "s1"})) {
     pkb->setUses(std::stoi(data[0]), data[1]);
   }
@@ -83,8 +83,8 @@ void populateModifiesS(std::unique_ptr<PKB> &pkb) {
   auto modifiesSTable = pkb->getModifiesS();
   modifiesSTable.setHeader({"s1", "v"});
 
-  table.concatenate(parentTTable);
-  table.concatenate(modifiesSTable);
+  table.mergeWith(parentTTable);
+  table.mergeWith(modifiesSTable);
   for (auto data : table.getData({"w/ifs", "s1"})) {
     pkb->setModifies(std::stoi(data[0]), data[1]);
   }
