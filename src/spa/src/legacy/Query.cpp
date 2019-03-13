@@ -8,7 +8,7 @@ bool Clause::isValid() {
   return true;
 }
 
-void Query::setQuery(QueryEntity t, std::vector<QueryEntity> s,
+void Query::setQuery(std::vector<QueryEntity> t, std::vector<QueryEntity> s,
                      std::vector<Clause> c) {
 
   this->target = t;
