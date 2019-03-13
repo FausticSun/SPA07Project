@@ -66,13 +66,13 @@ private:
 	  QueryEntityType::Read,  QueryEntityType::Stmt,
 	  QueryEntityType::Line,   QueryEntityType::Procedure,
 	  QueryEntityType::Name}},
-	  {"UM2", {
+	  {"UMPAT2", {
 	  QueryEntityType::Variable, QueryEntityType::Name,
 	  QueryEntityType::Underscore}},
-	  {"PA1", {
+	  {"PAT1", {
 	  QueryEntityType::Assign, QueryEntityType::If,
 	  QueryEntityType::While}},
-	  {"PA2", {
+	  {"PAT3", {
 	  QueryEntityType::Expression, QueryEntityType::Underscore}},
 	  {"C12", {
 	  QueryEntityType::Procedure, QueryEntityType::Name,
@@ -112,12 +112,19 @@ private:
   void checkFPNValidity(QueryEntity, QueryEntity);
   void checkModifiesValidity(QueryEntity, QueryEntity);
   void checkUsesValidity(QueryEntity, QueryEntity);
+  void checkWithValidity(QueryEntity, QueryEntity);
+  void checkCallsValidity(QueryEntity, QueryEntity);
+  void checkPatValidity(QueryEntityType);
   void insertClauseFollows();
   void insertClauseFollowsT();
   void insertClauseParent();
   void insertClauseParentT();
   void insertClauseModifiesS();
   void insertClauseUseS();
+  void insertClauseNext();
+  void insertClauseNextT();
+  void insertClauseCalls();
+  void insertClauseCallsT();
 
   string convertToPostfix(string s);
   void insertClausePattern();
