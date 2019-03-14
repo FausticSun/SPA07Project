@@ -60,6 +60,10 @@ void PKB::setCallsT(std::string p1, std::string p2) {
   callsTTable.insertRow({p1, p2});
 }
 
+// void PKB::setCallProcName(int s, std::string p) {
+//   callProcNameTable.insertRow({std::to_string(s), p});
+// }
+
 void PKB::setNext(int s1, int s2) {
   nextTable.insertRow({std::to_string(s1), std::to_string(s2)});
 }
@@ -113,6 +117,7 @@ Table PKB::getModifiesP() const { return modifiesPTable; }
 Table PKB::getCalls() const { return callsTable; }
 Table PKB::getCallsT() const { return callsTTable; }
 Table PKB::getNext() const { return nextTable; }
+Table PKB::getCallProcNameTable() const { return callProcNameTable; }
 
 Table PKB::getAssignMatches(std::string expr, bool partial) {
   Table table{2};

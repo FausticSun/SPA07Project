@@ -59,6 +59,7 @@ public:
   void setModifies(std::string, std::string);
   void setCalls(std::string, std::string);
   void setCallsT(std::string, std::string);
+  // void setCallProcName(int, std::string);
   void setNext(int, int);
   // Pattern setters
   void setAssign(int, std::string &, std::string &);
@@ -86,6 +87,7 @@ public:
   // Table getNextT() const;
   // Table getAffects() const;
   // Table getAffectsT() const;
+  Table getCallProcNameTable() const;
   // Pattern getter
   Table getAssignMatches(std::string expr, bool partial);
   Table getWhileMatches();
