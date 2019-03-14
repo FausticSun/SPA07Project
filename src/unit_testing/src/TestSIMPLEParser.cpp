@@ -190,3 +190,37 @@ TEST_CASE("Print statement") {
   REQUIRE(usesPTable.size() == 1);
   REQUIRE(usesPTable.contains({"main", "a"}));
 }
+
+TEST_CASE("Assign statement") {
+  std::string program = R"(
+  procedure main {
+    a = b + c;
+  }
+  )";
+  std::stringstream ss;
+  ss << program;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  auto pkb = Parser::parseSIMPLE(tokens);
+  // Uses(s, v)
+  auto usesSTable = pkb->getUsesS();
+  REQUIRE(usesSTable.size() == 2);
+  REQUIRE(usesSTable.contains({"1", "b"}));
+  REQUIRE(usesSTable.contains({"1", "c"}));
+  // Uses(p, v)
+  auto usesPTable = pkb->getUsesP();
+  REQUIRE(usesPTable.size() == 2);
+  REQUIRE(usesPTable.contains({"main", "b"}));
+  REQUIRE(usesPTable.contains({"main", "c"}));
+  // Modifies(s, v)
+  auto modifiesSTable = pkb->getModifiesS();
+  REQUIRE(modifiesSTable.size() == 1);
+  REQUIRE(modifiesSTable.contains({"1", "a"}));
+  // Modifies(p, v)
+  auto modifiesPTable = pkb->getModifiesP();
+  REQUIRE(modifiesPTable.size() == 1);
+  REQUIRE(modifiesPTable.contains({"main", "a"}));
+  // Assign pattern
+  auto assignTable = pkb->getAssignMatches("b c + ", true);
+  REQUIRE(assignTable.size() == 1);
+  REQUIRE(assignTable.contains({"1"}));
+}
