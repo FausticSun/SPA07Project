@@ -1,6 +1,68 @@
 #include "DesignExtractor.h"
 #include "Table.h"
 #include <list>
+#include <queue>
+#include <stack>
+
+// Kahn's algorithm
+std::vector<std::string> topologicalSort(Table callsTable) {
+  // Create adjMap as graph DS and initialize all in degrees to 0
+  std::map<std::string, std::vector<std::string>> adjMap;
+  std::map<std::string, int> inDegree;
+  for (auto data : callsTable.getData()) {
+    adjMap[data[0]].push_back(data[1]);
+    inDegree[data[0]] = 0;
+    inDegree[data[1]] = 0;
+  }
+
+  // Traverse adjMap to fill in degrees of vertices
+  for (auto const &i : adjMap) {
+    for (auto const &j : adjMap[i.first]) {
+      inDegree[j]++;
+    }
+  }
+
+  // Enqueue all vertices with in degree 0
+  std::queue<std::string> queue;
+  for (auto const &i : inDegree) {
+    if (inDegree[i.first] == 0) {
+      queue.push(i.first);
+    }
+  }
+
+  // Counter to track number of vertices visited
+  int counter = 0;
+  std::stack<std::string> stack;
+  while (!queue.empty()) {
+    std::string u = queue.front();
+    queue.pop();
+    stack.push(u);
+
+    // Iterate through neighbours of u and decrease their in degree by 1
+    // Enqueue if in degree of v becomes 0
+    for (auto const &v : adjMap[u]) {
+      inDegree[v]--;
+      if (inDegree[v] == 0) {
+        queue.push(v);
+      }
+    }
+    counter++;
+  }
+
+  // Check for cycle
+  if (counter != adjMap.size()) {
+    throw std::logic_error("PKB contains cyclical calls");
+  }
+
+  // Transfer from stack to vector
+  std::vector<std::string> topologicalOrder;
+  while (!stack.empty()) {
+    topologicalOrder.push_back(stack.top());
+    stack.pop();
+  }
+
+  return topologicalOrder;
+}
 
 // Check program contains no calls to non-existing procedure
 void validateProcs(std::unique_ptr<PKB> &pkb) {
@@ -20,12 +82,8 @@ void validateProcs(std::unique_ptr<PKB> &pkb) {
 
 // Check program contains no cyclic calls
 void validateCyclicCalls(std::unique_ptr<PKB> &pkb) {
-  // Get nodes with no incoming edge
-  std::set<std::string> allNodes;
-  auto procTable = pkb->getProcTable();
-  // Toposort
-  auto edgeList = pkb->getCalls().getData();
-  std::list<std::string> sortedProcs;
+  auto callsTable = pkb->getCalls();
+  topologicalSort(callsTable);
 }
 
 void populateFollowsT(std::unique_ptr<PKB> &pkb) {
@@ -91,10 +149,20 @@ void populateModifiesS(std::unique_ptr<PKB> &pkb) {
 }
 
 void populateUsesAndModifiesS(std::unique_ptr<PKB> &pkb) {
-  auto callsTable = pkb->getCallsT();
+  auto callsTable = pkb->getCalls();
+  std::vector<std::string> topologicalOrder = topologicalSort(callsTable);
 }
 
 void populateCFG(std::unique_ptr<PKB> &pkb) {}
+
+std::vector<std::string> topologicalSortS(Table callsTable) {
+  std::vector<std::string> list;
+  std::map<std::string, std::vector<std::string>> adjMap;
+  for (auto data : callsTable.getData()) {
+    adjMap[data[0]].push_back(data[1]);
+  }
+  return list;
+}
 
 void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {
   validateProcs(pkb);
