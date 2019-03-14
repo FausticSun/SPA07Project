@@ -100,6 +100,7 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseRead(int stmtNo) {
   expect(SIMPLETokens::Semicolon);
 
   pkb->setStmtType(stmtNo, StatementType::Read);
+  pkb->setModifies(currentProc, var);
   pkb->setModifies(stmtNo, var);
   return {stmtNo};
 }
@@ -110,6 +111,7 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parsePrint(int stmtNo) {
   expect(SIMPLETokens::Semicolon);
 
   pkb->setStmtType(stmtNo, StatementType::Print);
+  pkb->setUses(currentProc, var);
   pkb->setUses(stmtNo, var);
   return {stmtNo};
 }
@@ -172,6 +174,7 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseAssign(int stmtNo) {
   expect(SIMPLETokens::Semicolon);
 
   pkb->setStmtType(stmtNo, StatementType::Assign);
+  pkb->setModifies(currentProc, var);
   pkb->setModifies(stmtNo, var);
   setUsesExpr(stmtNo, postfix);
   auto postfixString = tokensToString(postfix);
@@ -231,6 +234,7 @@ void SIMPLEParser::setUsesExpr(int stmtNo, std::list<Token> postfix) {
       pkb->setConst(std::stoi(token.value));
       break;
     case TokenType::Identifier:
+      pkb->setUses(currentProc, token.value);
       pkb->setUses(stmtNo, token.value);
       break;
     default:
