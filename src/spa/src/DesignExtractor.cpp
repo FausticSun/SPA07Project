@@ -148,21 +148,62 @@ void populateModifiesS(std::unique_ptr<PKB> &pkb) {
   }
 }
 
+Table getDerivedTableForCallStmt(Table &callsTable, Table &otherTable,
+                                 std::string proc) {
+  callsTable.setHeader({"p1", "p2"});
+  otherTable.setHeader({"p2", "v"});
+  Table table{1};
+  table.setHeader({"p2"});
+  table.insertRow({proc});
+  table.mergeWith(callsTable);
+  table.mergeWith(otherTable);
+  return table;
+}
+
+Table getDerivedTableForProcedure(Table &callProcNameTable, Table &otherTable,
+                                  std::string proc) {
+  callProcNameTable.setHeader({"s", "p2"});
+  otherTable.setHeader({"p2", "v"});
+  Table table{1};
+  table.setHeader({"p2"});
+  table.insertRow({proc});
+  table.mergeWith(callProcNameTable);
+  table.mergeWith(otherTable);
+  return table;
+}
+
 void populateUsesAndModifiesS(std::unique_ptr<PKB> &pkb) {
   auto callsTable = pkb->getCalls();
+  auto callProcNameTable = pkb->getCallProcNameTable();
+  auto usesPTable = pkb->getUsesP();
+  auto modifiesPTable = pkb->getModifiesP();
+
   std::vector<std::string> topologicalOrder = topologicalSort(callsTable);
+  for (auto const proc : topologicalOrder) {
+    // Update call stmt itself
+    Table t1 = getDerivedTableForCallStmt(callsTable, usesPTable, proc);
+    for (auto data : t1.getData({"p1", "v"})) {
+      pkb->setUses(data[0], data[1]);
+    }
+    Table t2 = getDerivedTableForCallStmt(callsTable, modifiesPTable, proc);
+    for (auto data : t2.getData({"p1", "v"})) {
+      pkb->setModifies(data[0], data[1]);
+    }
+
+    // Update procedure that contains call stmt
+    Table t3 = getDerivedTableForProcedure(callProcNameTable, usesPTable, proc);
+    for (auto data : t3.getData({"s", "v"})) {
+      pkb->setUses(std::stoi(data[0]), data[1]);
+    }
+    Table t4 =
+        getDerivedTableForProcedure(callProcNameTable, modifiesPTable, proc);
+    for (auto data : t4.getData({"s", "v"})) {
+      pkb->setModifies(std::stoi(data[0]), data[1]);
+    }
+  }
 }
 
 void populateCFG(std::unique_ptr<PKB> &pkb) {}
-
-std::vector<std::string> topologicalSortS(Table callsTable) {
-  std::vector<std::string> list;
-  std::map<std::string, std::vector<std::string>> adjMap;
-  for (auto data : callsTable.getData()) {
-    adjMap[data[0]].push_back(data[1]);
-  }
-  return list;
-}
 
 void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {
   validateProcs(pkb);
