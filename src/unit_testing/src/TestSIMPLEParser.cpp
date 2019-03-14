@@ -222,5 +222,5 @@ TEST_CASE("Assign statement") {
   // Assign pattern
   auto assignTable = pkb->getAssignMatches("b c + ", true);
   REQUIRE(assignTable.size() == 1);
-  REQUIRE(assignTable.contains({"1"}));
+  REQUIRE(assignTable.contains({"1", "a"}));
 }

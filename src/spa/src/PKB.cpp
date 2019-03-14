@@ -115,11 +115,11 @@ Table PKB::getCallsT() const { return callsTTable; }
 Table PKB::getNext() const { return nextTable; }
 
 Table PKB::getAssignMatches(std::string expr, bool partial) {
-  Table table{1};
+  Table table{2};
   for (auto kv : assignTable) {
     if ((partial && kv.second.second.find(expr) != std::string::npos) ||
         (!partial && kv.second.second == expr)) {
-      table.insertRow({std::to_string(kv.first)});
+      table.insertRow({std::to_string(kv.first), kv.second.first});
     }
   }
   return table;
