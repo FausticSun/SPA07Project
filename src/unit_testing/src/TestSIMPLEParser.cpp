@@ -73,7 +73,7 @@ TEST_CASE("Variables extraction") {
     } else {
       read g;
     }
-    while (h < i) then {
+    while (h < i) {
       read j;
     }
   }

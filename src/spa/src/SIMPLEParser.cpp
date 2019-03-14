@@ -31,8 +31,8 @@ void SIMPLEParser::parseProgram() {
 
 void SIMPLEParser::parseProcedure() {
   int firstStmtNo = stmtCounter + 1;
-  currentProc = expect(SIMPLETokens::Procedure).value;
-  expect(SIMPLETokens::Identifier);
+  expect(SIMPLETokens::Procedure);
+  currentProc = expect(SIMPLETokens::Identifier).value;
   expect(SIMPLETokens::LeftBrace);
   parseStmtLst(PROCEDURE);
   expect(SIMPLETokens::RightBrace);
