@@ -126,14 +126,15 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseCall(int stmtNo) {
 
 SIMPLEParser::ExitStmtLst SIMPLEParser::parseWhile(int stmtNo) {
   expect(SIMPLETokens::While);
-  expect(SIMPLETokens::LeftBrace);
-  auto postfix = parseWhileCondExpr();
-  expect(SIMPLETokens::RightBrace);
   expect(SIMPLETokens::LeftParentheses);
-  auto exitStmtLst = parseStmtLst(stmtNo);
+  auto postfix = parseWhileCondExpr();
   expect(SIMPLETokens::RightParentheses);
+  expect(SIMPLETokens::LeftBrace);
+  auto exitStmtLst = parseStmtLst(stmtNo);
+  expect(SIMPLETokens::RightBrace);
 
   pkb->setStmtType(stmtNo, StatementType::While);
+  setUsesExpr(stmtNo, postfix);
   // Extract next
   // Connect exit stmts to this while stmt
   for (int i : exitStmtLst) {
@@ -144,17 +145,21 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseWhile(int stmtNo) {
 
 SIMPLEParser::ExitStmtLst SIMPLEParser::parseIf(int stmtNo) {
   expect(SIMPLETokens::If);
-  expect(SIMPLETokens::LeftBrace);
+  expect(SIMPLETokens::LeftParentheses);
   auto postfix = parseIfCondExpr();
-  expect(SIMPLETokens::RightBrace);
+  expect(SIMPLETokens::RightParentheses);
   expect(SIMPLETokens::Then);
-  expect(SIMPLETokens::LeftParentheses);
+  expect(SIMPLETokens::LeftBrace);
   auto thenExitStmtLst = parseStmtLst(stmtNo);
-  expect(SIMPLETokens::RightParentheses);
+  expect(SIMPLETokens::RightBrace);
   expect(SIMPLETokens::Else);
-  expect(SIMPLETokens::LeftParentheses);
+  expect(SIMPLETokens::LeftBrace);
   auto elseExitStmtLst = parseStmtLst(stmtNo);
-  expect(SIMPLETokens::RightParentheses);
+  expect(SIMPLETokens::RightBrace);
+
+  pkb->setStmtType(stmtNo, StatementType::If);
+  setUsesExpr(stmtNo, postfix);
+
   ExitStmtLst exitStmtLst(thenExitStmtLst);
   exitStmtLst.assign(elseExitStmtLst.begin(), elseExitStmtLst.end());
   return exitStmtLst;
@@ -184,7 +189,7 @@ std::list<Token> SIMPLEParser::parseWhileCondExpr() {
   if (tokens.empty()) {
     throw std::logic_error("Condition expression cannot be empty");
   }
-  return parseExpr(tokens);
+  return parseExpr(exprTokens);
 }
 
 std::list<Token> SIMPLEParser::parseIfCondExpr() {
@@ -197,7 +202,7 @@ std::list<Token> SIMPLEParser::parseIfCondExpr() {
   if (tokens.empty()) {
     throw std::logic_error("Condition expression cannot be empty");
   }
-  return parseExpr(tokens);
+  return parseExpr(exprTokens);
 }
 
 std::list<Token> SIMPLEParser::parseAssignExpr() {
@@ -209,7 +214,7 @@ std::list<Token> SIMPLEParser::parseAssignExpr() {
   if (tokens.empty()) {
     throw std::logic_error("Expression cannot be empty");
   }
-  auto postfix = parseExpr(tokens);
+  auto postfix = parseExpr(exprTokens);
   for (auto token : postfix) {
     if (ExprTokens::isRelationalOp(token)) {
       throw std::logic_error(

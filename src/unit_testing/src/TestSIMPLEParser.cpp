@@ -68,17 +68,17 @@ TEST_CASE("Variables extraction") {
     read a;
     print b;
     c = d;
-    if (d > e) then {
-      read f;  
+    if (e > f) then {
+      read g;  
     } else {
-      read g;
+      read h;
     }
-    while (h < i) {
-      read j;
+    while (i < j) {
+      read k;
     }
   }
   procedure proc2 {
-    read k;
+    read l;
   }
   )";
   std::stringstream ss;
@@ -87,7 +87,7 @@ TEST_CASE("Variables extraction") {
   auto pkb = Parser::parseSIMPLE(tokens);
   // Variables
   auto varTable = pkb->getVarTable();
-  REQUIRE(varTable.size() == 11);
+  REQUIRE(varTable.size() == 12);
   REQUIRE(varTable.contains({"a"}));
   REQUIRE(varTable.contains({"b"}));
   REQUIRE(varTable.contains({"c"}));
@@ -99,6 +99,7 @@ TEST_CASE("Variables extraction") {
   REQUIRE(varTable.contains({"i"}));
   REQUIRE(varTable.contains({"j"}));
   REQUIRE(varTable.contains({"k"}));
+  REQUIRE(varTable.contains({"l"}));
 }
 
 TEST_CASE("Read statement") {
