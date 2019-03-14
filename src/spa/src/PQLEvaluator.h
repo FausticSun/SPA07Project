@@ -31,8 +31,9 @@ public:
 
 private:
   PKB mypkb;
-  list<string> executeSimpleQuery(vector<QueryEntity> t);
-  Table getdataByTtype(QueryEntityType q);
+  Table executeSimpleQuery(vector<QueryEntity> t);
+  Table getdataByTtype(QueryEntity q);
+  Table dataFilter(Table data, Clause c);
   bool isSynonym(QueryEntityType q);
   bool isUnderscore(QueryEntityType q);
   bool isConstant(QueryEntityType q);
