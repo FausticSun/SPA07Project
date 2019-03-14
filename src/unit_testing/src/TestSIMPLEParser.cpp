@@ -62,6 +62,55 @@ TEST_CASE("Multiple non-empty procedure") {
   REQUIRE(procTable.contains({"proc3"}));
 }
 
+TEST_CASE("Statement extraction") {
+  std::string program = R"(
+  procedure proc1 {
+    read a;
+    print b;
+    c = d;
+    if (e > f) then {
+      read g;  
+    } else {
+      read h;
+    }
+    while (i < j) {
+      read k;
+      call proc2;
+    }
+  }
+  procedure proc2 {
+    read l;
+  }
+  )";
+  std::stringstream ss;
+  ss << program;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  auto pkb = Parser::parseSIMPLE(tokens);
+  // Statement
+  auto readStmtTable = pkb->getStmtType(StatementType::Read);
+  REQUIRE(readStmtTable.size() == 5);
+  REQUIRE(readStmtTable.contains({"1"}));
+  REQUIRE(readStmtTable.contains({"5"}));
+  REQUIRE(readStmtTable.contains({"6"}));
+  REQUIRE(readStmtTable.contains({"8"}));
+  REQUIRE(readStmtTable.contains({"10"}));
+  auto printStmtTable = pkb->getStmtType(StatementType::Print);
+  REQUIRE(printStmtTable.size() == 1);
+  REQUIRE(printStmtTable.contains({"2"}));
+  auto assignStmtTable = pkb->getStmtType(StatementType::Assign);
+  REQUIRE(assignStmtTable.size() == 1);
+  REQUIRE(assignStmtTable.contains({"3"}));
+  auto ifStmtTable = pkb->getStmtType(StatementType::If);
+  REQUIRE(ifStmtTable.size() == 1);
+  REQUIRE(ifStmtTable.contains({"4"}));
+  auto whileStmtTable = pkb->getStmtType(StatementType::While);
+  REQUIRE(whileStmtTable.size() == 1);
+  REQUIRE(whileStmtTable.contains({"7"}));
+  auto callStmtTable = pkb->getStmtType(StatementType::Call);
+  REQUIRE(callStmtTable.size() == 1);
+  REQUIRE(callStmtTable.contains({"9"}));
+}
+
 TEST_CASE("Variables extraction") {
   std::string program = R"(
   procedure proc1 {
