@@ -50,6 +50,20 @@ SCENARIO("Table") {
       THEN("an exception is throw") { REQUIRE_THROWS(t.setHeader(header)); }
     }
   }
+  GIVEN("a table with 3 columns containing some data") {
+    Table t({"h1", "h2", "h3"});
+    t.insertRow({"1", "2", "3"});
+    t.insertRow({"a", "b", "c"});
+    WHEN("a column is dropped") {
+      t.dropColumn("h2");
+      THEN("the column and its data is dropped") {
+        std::vector<std::string> header{"h1", "h3"};
+        REQUIRE(t.getHeader() == header);
+        REQUIRE(t.contains({"1", "3"}));
+        REQUIRE(t.contains({"a", "c"}));
+      }
+    }
+  }
   GIVEN("2 tables with common columns") {
     Table t1({"h1", "h2", "h3", "h4"});
     t1.insertRow({"1", "a", "2", "a"});
