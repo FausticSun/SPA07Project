@@ -277,3 +277,134 @@ TEST_CASE("If statement") {
   REQUIRE(ifCondTable.contains({"1", "a"}));
   REQUIRE(ifCondTable.contains({"1", "b"}));
 }
+
+TEST_CASE("Assign operators") {
+  std::string program = R"(
+  procedure main {
+    a = b * c + d / e - f % g;
+  }
+  )";
+  std::stringstream ss;
+  ss << program;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  auto pkb = Parser::parseSIMPLE(tokens);
+  // Uses(s, v)
+  auto usesSTable = pkb->getUsesS();
+  REQUIRE(usesSTable.size() == 6);
+  REQUIRE(usesSTable.contains({"1", "b"}));
+  REQUIRE(usesSTable.contains({"1", "c"}));
+  REQUIRE(usesSTable.contains({"1", "d"}));
+  REQUIRE(usesSTable.contains({"1", "e"}));
+  REQUIRE(usesSTable.contains({"1", "f"}));
+  REQUIRE(usesSTable.contains({"1", "g"}));
+  // Modifies(s, v)
+  auto modifiesSTable = pkb->getModifiesS();
+  REQUIRE(modifiesSTable.size() == 1);
+  REQUIRE(modifiesSTable.contains({"1", "a"}));
+  // Assign pattern
+  auto assignTable = pkb->getAssignMatches("b c * d e / + f g % - ", true);
+  REQUIRE(assignTable.size() == 1);
+  REQUIRE(assignTable.contains({"1", "a"}));
+}
+
+TEST_CASE("Follows relations") {
+  std::string program = R"(
+  procedure main {
+    read a;
+    read a;
+    while (a > b) {
+      read a;
+      read a;
+    }
+    if (a > b) then {
+      read a;
+      read a;
+    } else {
+      read a;
+      read a;
+    }
+    read a;
+    read a;
+  }
+  )";
+  std::stringstream ss;
+  ss << program;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  auto pkb = Parser::parseSIMPLE(tokens);
+  // Follows(s1, s2)
+  auto followsTable = pkb->getFollows();
+  REQUIRE(followsTable.size() == 8);
+  // Within proc
+  REQUIRE(followsTable.contains({"1", "2"}));
+  REQUIRE(followsTable.contains({"2", "3"}));
+  REQUIRE(followsTable.contains({"3", "6"}));
+  REQUIRE(followsTable.contains({"6", "11"}));
+  REQUIRE(followsTable.contains({"11", "12"}));
+  // Within while
+  REQUIRE(followsTable.contains({"4", "5"}));
+  // Within if
+  REQUIRE(followsTable.contains({"7", "8"}));
+  REQUIRE(followsTable.contains({"9", "10"}));
+}
+
+TEST_CASE("Parent relations") {
+  std::string program = R"(
+  procedure main {
+    while (a > b) {
+      if (a > b) then {
+        while (a > b) {
+          read a;
+        }
+      } else {
+        while (a > b) {
+          read a;
+        }
+      }      
+    }
+  }
+  )";
+  std::stringstream ss;
+  ss << program;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  auto pkb = Parser::parseSIMPLE(tokens);
+  // Follows(s1, s2)
+  auto parentTable = pkb->getParent();
+  REQUIRE(parentTable.size() == 5);
+  REQUIRE(parentTable.contains({"1", "2"}));
+  REQUIRE(parentTable.contains({"2", "3"}));
+  REQUIRE(parentTable.contains({"3", "4"}));
+  REQUIRE(parentTable.contains({"2", "5"}));
+  REQUIRE(parentTable.contains({"5", "6"}));
+}
+
+TEST_CASE("Next relations") {
+  std::string program = R"(
+  procedure main {
+    read a;
+    while (a > b) {
+      read a;
+      if (a > b) then {
+        read a;
+      } else {
+        read a;
+      }
+    }
+    read a;
+  }
+  )";
+  std::stringstream ss;
+  ss << program;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  auto pkb = Parser::parseSIMPLE(tokens);
+  // Follows(s1, s2)
+  auto nextTable = pkb->getNext();
+  REQUIRE(nextTable.size() == 8);
+  REQUIRE(nextTable.contains({"1", "2"}));
+  REQUIRE(nextTable.contains({"2", "3"}));
+  REQUIRE(nextTable.contains({"2", "7"}));
+  REQUIRE(nextTable.contains({"3", "4"}));
+  REQUIRE(nextTable.contains({"4", "5"}));
+  REQUIRE(nextTable.contains({"4", "6"}));
+  REQUIRE(nextTable.contains({"5", "2"}));
+  REQUIRE(nextTable.contains({"6", "2"}));
+}

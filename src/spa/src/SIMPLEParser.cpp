@@ -61,6 +61,9 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseStmtLst(int parent) {
     }
   }
   // Extract Next
+  if (parent != -1) {
+    pkb->setNext(parent, stmtInfoLst.front().first);
+  }
   if (stmtInfoLst.size() > 1) {
     for (auto it = stmtInfoLst.begin(); it != std::prev(stmtInfoLst.end());
          ++it) {
@@ -175,8 +178,10 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseIf(int stmtNo) {
       pkb->setIf(stmtNo, t.value);
     }
   }
+
   ExitStmtLst exitStmtLst(thenExitStmtLst);
-  exitStmtLst.assign(elseExitStmtLst.begin(), elseExitStmtLst.end());
+  exitStmtLst.insert(exitStmtLst.end(), elseExitStmtLst.begin(),
+                     elseExitStmtLst.end());
   return exitStmtLst;
 }
 
