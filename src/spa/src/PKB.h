@@ -63,8 +63,10 @@ public:
   void setNext(int, int);
   // Pattern setters
   void setAssign(int, std::string &, std::string &);
-  void setIf(int, std::string &);
-  void setWhile(int, std::string &);
+  void setIf(int, const std::string &);
+  void setWhile(int, const std::string &);
+  // Other setters
+  void setCallProcName(int, const std::string &);
 
   // Getters
   // Entity getter
@@ -92,4 +94,6 @@ public:
   Table getAssignMatches(std::string expr, bool partial);
   Table getWhileMatches();
   Table getIfMatches();
+  // Other getters
+  Table getCallProcName();
 };

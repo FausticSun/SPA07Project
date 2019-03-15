@@ -31,8 +31,8 @@ void SIMPLEParser::parseProgram() {
 
 void SIMPLEParser::parseProcedure() {
   int firstStmtNo = stmtCounter + 1;
-  currentProc = expect(SIMPLETokens::Procedure).value;
-  expect(SIMPLETokens::Identifier);
+  expect(SIMPLETokens::Procedure);
+  currentProc = expect(SIMPLETokens::Identifier).value;
   expect(SIMPLETokens::LeftBrace);
   parseStmtLst(PROCEDURE);
   expect(SIMPLETokens::RightBrace);
@@ -61,6 +61,9 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseStmtLst(int parent) {
     }
   }
   // Extract Next
+  if (parent != -1) {
+    pkb->setNext(parent, stmtInfoLst.front().first);
+  }
   if (stmtInfoLst.size() > 1) {
     for (auto it = stmtInfoLst.begin(); it != std::prev(stmtInfoLst.end());
          ++it) {
@@ -100,6 +103,7 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseRead(int stmtNo) {
   expect(SIMPLETokens::Semicolon);
 
   pkb->setStmtType(stmtNo, StatementType::Read);
+  pkb->setModifies(currentProc, var);
   pkb->setModifies(stmtNo, var);
   return {stmtNo};
 }
@@ -110,6 +114,7 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parsePrint(int stmtNo) {
   expect(SIMPLETokens::Semicolon);
 
   pkb->setStmtType(stmtNo, StatementType::Print);
+  pkb->setUses(currentProc, var);
   pkb->setUses(stmtNo, var);
   return {stmtNo};
 }
@@ -121,19 +126,28 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseCall(int stmtNo) {
 
   pkb->setStmtType(stmtNo, StatementType::Call);
   pkb->setCalls(currentProc, proc);
+  pkb->setCallProcName(stmtNo, proc);
   return {stmtNo};
 }
 
 SIMPLEParser::ExitStmtLst SIMPLEParser::parseWhile(int stmtNo) {
   expect(SIMPLETokens::While);
-  expect(SIMPLETokens::LeftBrace);
-  auto postfix = parseWhileCondExpr();
-  expect(SIMPLETokens::RightBrace);
   expect(SIMPLETokens::LeftParentheses);
-  auto exitStmtLst = parseStmtLst(stmtNo);
+  auto postfix = parseWhileCondExpr();
   expect(SIMPLETokens::RightParentheses);
+  expect(SIMPLETokens::LeftBrace);
+  auto exitStmtLst = parseStmtLst(stmtNo);
+  expect(SIMPLETokens::RightBrace);
 
   pkb->setStmtType(stmtNo, StatementType::While);
+  // Extract uses
+  setUsesExpr(stmtNo, postfix);
+  // Extract while pattern
+  for (auto t : postfix) {
+    if (t.type == TokenType::Identifier) {
+      pkb->setWhile(stmtNo, t.value);
+    }
+  }
   // Extract next
   // Connect exit stmts to this while stmt
   for (int i : exitStmtLst) {
@@ -144,19 +158,31 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseWhile(int stmtNo) {
 
 SIMPLEParser::ExitStmtLst SIMPLEParser::parseIf(int stmtNo) {
   expect(SIMPLETokens::If);
-  expect(SIMPLETokens::LeftBrace);
+  expect(SIMPLETokens::LeftParentheses);
   auto postfix = parseIfCondExpr();
-  expect(SIMPLETokens::RightBrace);
+  expect(SIMPLETokens::RightParentheses);
   expect(SIMPLETokens::Then);
-  expect(SIMPLETokens::LeftParentheses);
+  expect(SIMPLETokens::LeftBrace);
   auto thenExitStmtLst = parseStmtLst(stmtNo);
-  expect(SIMPLETokens::RightParentheses);
+  expect(SIMPLETokens::RightBrace);
   expect(SIMPLETokens::Else);
-  expect(SIMPLETokens::LeftParentheses);
+  expect(SIMPLETokens::LeftBrace);
   auto elseExitStmtLst = parseStmtLst(stmtNo);
-  expect(SIMPLETokens::RightParentheses);
+  expect(SIMPLETokens::RightBrace);
+
+  pkb->setStmtType(stmtNo, StatementType::If);
+  // Extract uses
+  setUsesExpr(stmtNo, postfix);
+  // Extract if pattern
+  for (auto t : postfix) {
+    if (t.type == TokenType::Identifier) {
+      pkb->setIf(stmtNo, t.value);
+    }
+  }
+
   ExitStmtLst exitStmtLst(thenExitStmtLst);
-  exitStmtLst.assign(elseExitStmtLst.begin(), elseExitStmtLst.end());
+  exitStmtLst.insert(exitStmtLst.end(), elseExitStmtLst.begin(),
+                     elseExitStmtLst.end());
   return exitStmtLst;
 }
 
@@ -167,6 +193,7 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseAssign(int stmtNo) {
   expect(SIMPLETokens::Semicolon);
 
   pkb->setStmtType(stmtNo, StatementType::Assign);
+  pkb->setModifies(currentProc, var);
   pkb->setModifies(stmtNo, var);
   setUsesExpr(stmtNo, postfix);
   auto postfixString = tokensToString(postfix);
@@ -184,7 +211,7 @@ std::list<Token> SIMPLEParser::parseWhileCondExpr() {
   if (tokens.empty()) {
     throw std::logic_error("Condition expression cannot be empty");
   }
-  return parseExpr(tokens);
+  return parseExpr(exprTokens);
 }
 
 std::list<Token> SIMPLEParser::parseIfCondExpr() {
@@ -197,7 +224,7 @@ std::list<Token> SIMPLEParser::parseIfCondExpr() {
   if (tokens.empty()) {
     throw std::logic_error("Condition expression cannot be empty");
   }
-  return parseExpr(tokens);
+  return parseExpr(exprTokens);
 }
 
 std::list<Token> SIMPLEParser::parseAssignExpr() {
@@ -209,7 +236,7 @@ std::list<Token> SIMPLEParser::parseAssignExpr() {
   if (tokens.empty()) {
     throw std::logic_error("Expression cannot be empty");
   }
-  auto postfix = parseExpr(tokens);
+  auto postfix = parseExpr(exprTokens);
   for (auto token : postfix) {
     if (ExprTokens::isRelationalOp(token)) {
       throw std::logic_error(
@@ -226,6 +253,7 @@ void SIMPLEParser::setUsesExpr(int stmtNo, std::list<Token> postfix) {
       pkb->setConst(std::stoi(token.value));
       break;
     case TokenType::Identifier:
+      pkb->setUses(currentProc, token.value);
       pkb->setUses(stmtNo, token.value);
       break;
     default:

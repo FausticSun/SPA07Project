@@ -18,6 +18,7 @@ public:
   void setHeader(HeaderRow headers);
   void modifyHeader(std::string oldHeader, std::string newHeader);
   void insertRow(DataRow row);
+  void dropColumn(std::string toDrop);
   std::set<DataRow> getData(HeaderRow cols) const;
   std::set<DataRow> getData() const;
   int size() const;
