@@ -76,6 +76,10 @@ void PKB::setWhile(int w, const std::string &v) {
   whileTable.insertRow({std::to_string(w), v});
 }
 
+void PKB::setCallProcName(int stmtNo, const std::string &procName) {
+  callProcNameTable.insertRow({std::to_string(stmtNo), procName});
+}
+
 Table PKB::getVarTable() const { return varTable; }
 
 Table PKB::getProcTable() const {
@@ -127,3 +131,4 @@ Table PKB::getAssignMatches(std::string expr, bool partial) {
 
 Table PKB::getWhileMatches() { return whileTable; }
 Table PKB::getIfMatches() { return ifTable; }
+Table PKB::getCallProcName() { return callProcNameTable; }

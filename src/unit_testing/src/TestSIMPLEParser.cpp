@@ -225,6 +225,34 @@ TEST_CASE("Assign statement") {
   REQUIRE(assignTable.contains({"1", "a"}));
 }
 
+TEST_CASE("Call statement") {
+  std::string program = R"(
+  procedure proc1 {
+    call proc2;
+  }
+  procedure proc2 {
+    call proc3;
+  }
+  procedure proc3 {
+    print a;
+  }
+  )";
+  std::stringstream ss;
+  ss << program;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  auto pkb = Parser::parseSIMPLE(tokens);
+  // Calls(p1, p2)
+  auto callsTable = pkb->getCalls();
+  REQUIRE(callsTable.size() == 2);
+  REQUIRE(callsTable.contains({"proc1", "proc2"}));
+  REQUIRE(callsTable.contains({"proc2", "proc3"}));
+  // Call proc name
+  auto callProcNameTable = pkb->getCallProcName();
+  REQUIRE(callProcNameTable.size() == 2);
+  REQUIRE(callProcNameTable.contains({"1", "proc2"}));
+  REQUIRE(callProcNameTable.contains({"2", "proc3"}));
+}
+
 TEST_CASE("While statement") {
   std::string program = R"(
   procedure main {

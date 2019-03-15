@@ -126,6 +126,7 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseCall(int stmtNo) {
 
   pkb->setStmtType(stmtNo, StatementType::Call);
   pkb->setCalls(currentProc, proc);
+  pkb->setCallProcName(stmtNo, proc);
   return {stmtNo};
 }
 
