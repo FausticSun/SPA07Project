@@ -82,9 +82,9 @@ SCENARIO("test for simple queries") {
     REQUIRE(result.size() == 5);
   }
   SECTION("Get procedure") {
-	  string query = "procedure p; Select p";
-	  list<string> result = pe.evaluateQuery(query);
-	  REQUIRE(result.size() == 5);
+    string query = "procedure p; Select p";
+    list<string> result = pe.evaluateQuery(query);
+    REQUIRE(result.size() == 5);
   }
   SECTION("Get stmt") {
     string query = "stmt s; Select s";
@@ -97,27 +97,26 @@ SCENARIO("test for simple queries") {
     REQUIRE(result.size() == 1);
   }
   SECTION("Get while") {
-	  string query = "while w; Select w";
-	  list<string> result = pe.evaluateQuery(query);
-	  REQUIRE(result.size() == 1);
+    string query = "while w; Select w";
+    list<string> result = pe.evaluateQuery(query);
+    REQUIRE(result.size() == 1);
   }
 
   SECTION("Get if") {
-	  string query = "if ifs; Select ifs";
-	  list<string> result = pe.evaluateQuery(query);
-	  REQUIRE(result.size() == 1);
+    string query = "if ifs; Select ifs";
+    list<string> result = pe.evaluateQuery(query);
+    REQUIRE(result.size() == 1);
   }
   SECTION("Get assign") {
-	  string query = "assign a; Select a";
-	  list<string> result = pe.evaluateQuery(query);
-	  REQUIRE(result.size() == 3);
+    string query = "assign a; Select a";
+    list<string> result = pe.evaluateQuery(query);
+    REQUIRE(result.size() == 3);
   }
   SECTION("Get prog_line") {
-	  string query = "prog_line p; Select p";
-	  list<string> result = pe.evaluateQuery(query);
-	  REQUIRE(result.size() == 9);
+    string query = "prog_line p; Select p";
+    list<string> result = pe.evaluateQuery(query);
+    REQUIRE(result.size() == 9);
   }
-
 }
 
 SCENARIO("test for query with one clause") {
@@ -143,9 +142,9 @@ SCENARIO("test for query with one clause") {
     REQUIRE(result.front() == "1");
   }
   SECTION("Follows(s,s)") {
-	  string query = "stmt s; Select s such that Follows (s,s)";
-	  list<string> result = pe.evaluateQuery(query);
-	  REQUIRE(result.size() == 0);
+    string query = "stmt s; Select s such that Follows (s,s)";
+    list<string> result = pe.evaluateQuery(query);
+    REQUIRE(result.size() == 0);
   }
   SECTION("FollowsT") {
     string query = "stmt s; Select s such that Follows* (s,6)";
@@ -156,9 +155,9 @@ SCENARIO("test for query with one clause") {
     REQUIRE(result.front() == "4");
   }
   SECTION("FollowsT(s,s)") {
-	  string query = "stmt s; Select s such that Follows* (s,s)";
-	  list<string> result = pe.evaluateQuery(query);
-	  REQUIRE(result.size() == 0);
+    string query = "stmt s; Select s such that Follows* (s,s)";
+    list<string> result = pe.evaluateQuery(query);
+    REQUIRE(result.size() == 0);
   }
   SECTION("Parent") {
     string query = "stmt s; Select s such that Parent (s,4)";
@@ -167,9 +166,9 @@ SCENARIO("test for query with one clause") {
     REQUIRE(result.front() == "1");
   }
   SECTION("Parent(s,s)") {
-	  string query = "stmt s; Select s such that Parent (s,s)";
-	  list<string> result = pe.evaluateQuery(query);
-	  REQUIRE(result.size() == 0);
+    string query = "stmt s; Select s such that Parent (s,s)";
+    list<string> result = pe.evaluateQuery(query);
+    REQUIRE(result.size() == 0);
   }
   SECTION("ParentT") {
     string query = "stmt s; Select s such that Parent* (s,3)";
@@ -180,9 +179,9 @@ SCENARIO("test for query with one clause") {
     REQUIRE(result.front() == "2");
   }
   SECTION("ParentT") {
-	  string query = "stmt s; Select s such that Parent* (s,s)";
-	  list<string> result = pe.evaluateQuery(query);
-	  REQUIRE(result.size() == 0);
+    string query = "stmt s; Select s such that Parent* (s,s)";
+    list<string> result = pe.evaluateQuery(query);
+    REQUIRE(result.size() == 0);
   }
   SECTION("Pattern") {
     string query = "assign s; Select s pattern s(\"a\",_\"x*y\"_)";
