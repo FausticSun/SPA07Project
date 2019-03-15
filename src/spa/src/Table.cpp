@@ -52,7 +52,31 @@ void Table::insertRow(DataRow row) {
   data.insert(row);
 }
 
+void Table::dropColumn(std::string toDrop) {
+  int idx = -1;
+  for (int i = 0; i < headerRow.size(); ++i) {
+    if (headerRow[i] == toDrop) {
+      idx = i;
+      break;
+    }
+  }
+  if (idx == -1) {
+    throw std::logic_error("Header not found");
+  }
+  headerRow.erase(headerRow.begin() + idx);
+  std::set<DataRow> newData;
+  for (auto row : data) {
+    row.erase(row.begin() + idx);
+    newData.insert(row);
+  }
+  data = newData;
+}
+
 std::set<Table::DataRow> Table::getData() const { return data; }
+
+int Table::size() const { return data.size(); }
+
+bool Table::contains(DataRow row) { return data.count(row) == 1; }
 
 std::set<Table::DataRow> Table::getData(HeaderRow cols) const {
   std::vector<int> indices;

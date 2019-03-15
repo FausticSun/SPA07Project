@@ -68,12 +68,16 @@ void PKB::setAssign(int a, std::string &v, std::string &expr) {
   assignTable.insert(std::make_pair(a, std::make_pair(v, expr)));
 }
 
-void PKB::setIf(int ifs, std::string &v) {
+void PKB::setIf(int ifs, const std::string &v) {
   ifTable.insertRow({std::to_string(ifs), v});
 }
 
-void PKB::setWhile(int w, std::string &v) {
+void PKB::setWhile(int w, const std::string &v) {
   whileTable.insertRow({std::to_string(w), v});
+}
+
+void PKB::setCallProcName(int stmtNo, const std::string &procName) {
+  callProcNameTable.insertRow({std::to_string(stmtNo), procName});
 }
 
 Table PKB::getVarTable() const { return varTable; }
@@ -127,3 +131,4 @@ Table PKB::getAssignMatches(std::string expr, bool partial) {
 
 Table PKB::getWhileMatches() { return whileTable; }
 Table PKB::getIfMatches() { return ifTable; }
+Table PKB::getCallProcName() { return callProcNameTable; }
