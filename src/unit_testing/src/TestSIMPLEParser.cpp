@@ -224,3 +224,56 @@ TEST_CASE("Assign statement") {
   REQUIRE(assignTable.size() == 1);
   REQUIRE(assignTable.contains({"1", "a"}));
 }
+
+TEST_CASE("While statement") {
+  std::string program = R"(
+  procedure main {
+    while (a > b) {
+      print c;
+    }
+  }
+  )";
+  std::stringstream ss;
+  ss << program;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  auto pkb = Parser::parseSIMPLE(tokens);
+  // Uses(s, v)
+  auto usesSTable = pkb->getUsesS();
+  REQUIRE(usesSTable.size() == 3);
+  REQUIRE(usesSTable.contains({"1", "a"}));
+  REQUIRE(usesSTable.contains({"1", "b"}));
+  REQUIRE(usesSTable.contains({"2", "c"}));
+  // While pattern
+  auto whileCondTable = pkb->getWhileMatches();
+  REQUIRE(whileCondTable.size() == 2);
+  REQUIRE(whileCondTable.contains({"1", "a"}));
+  REQUIRE(whileCondTable.contains({"1", "b"}));
+}
+
+TEST_CASE("If statement") {
+  std::string program = R"(
+  procedure main {
+    if (a > b) then {
+      print c;
+    } else {
+      print d;
+    }
+  }
+  )";
+  std::stringstream ss;
+  ss << program;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  auto pkb = Parser::parseSIMPLE(tokens);
+  // Uses(s, v)
+  auto usesSTable = pkb->getUsesS();
+  REQUIRE(usesSTable.size() == 4);
+  REQUIRE(usesSTable.contains({"1", "a"}));
+  REQUIRE(usesSTable.contains({"1", "b"}));
+  REQUIRE(usesSTable.contains({"2", "c"}));
+  REQUIRE(usesSTable.contains({"3", "d"}));
+  // If pattern
+  auto ifCondTable = pkb->getIfMatches();
+  REQUIRE(ifCondTable.size() == 2);
+  REQUIRE(ifCondTable.contains({"1", "a"}));
+  REQUIRE(ifCondTable.contains({"1", "b"}));
+}

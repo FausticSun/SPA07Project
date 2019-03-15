@@ -136,7 +136,14 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseWhile(int stmtNo) {
   expect(SIMPLETokens::RightBrace);
 
   pkb->setStmtType(stmtNo, StatementType::While);
+  // Extract uses
   setUsesExpr(stmtNo, postfix);
+  // Extract while pattern
+  for (auto t : postfix) {
+    if (t.type == TokenType::Identifier) {
+      pkb->setWhile(stmtNo, t.value);
+    }
+  }
   // Extract next
   // Connect exit stmts to this while stmt
   for (int i : exitStmtLst) {
@@ -160,8 +167,14 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseIf(int stmtNo) {
   expect(SIMPLETokens::RightBrace);
 
   pkb->setStmtType(stmtNo, StatementType::If);
+  // Extract uses
   setUsesExpr(stmtNo, postfix);
-
+  // Extract if pattern
+  for (auto t : postfix) {
+    if (t.type == TokenType::Identifier) {
+      pkb->setIf(stmtNo, t.value);
+    }
+  }
   ExitStmtLst exitStmtLst(thenExitStmtLst);
   exitStmtLst.assign(elseExitStmtLst.begin(), elseExitStmtLst.end());
   return exitStmtLst;
