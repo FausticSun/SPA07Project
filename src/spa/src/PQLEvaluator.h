@@ -23,6 +23,17 @@ using namespace std;
 //  bool contains(QueryEntity &q);
 //};
 
+struct ClauseResult {
+	bool isBool;
+	bool boolValue;
+	Table data = Table(0);
+
+	ClauseResult(bool iB, bool bValue) {
+		isBool = iB;
+		boolValue = bValue;
+	};
+};
+
 class PqlEvaluator {
 public:
   PqlEvaluator(const PKB &pkb);
@@ -32,8 +43,11 @@ public:
 private:
   PKB mypkb;
   Table executeSimpleQuery(vector<QueryEntity> t);
+	Table executeComplexQuery(Query q);
   Table getdataByTtype(QueryEntity q);
-  Table dataFilter(Table data, Clause c);
+  ClauseResult dataFilter(Table data, Clause c);
+  Table resultExtractor(Table result, Query q);
+  list<string> resultFormater(Table t);
   bool isSynonym(QueryEntityType q);
   bool isUnderscore(QueryEntityType q);
   bool isConstant(QueryEntityType q);
@@ -43,14 +57,14 @@ private:
   StatementType convertQType(QueryEntityType q);
 
   //ClauseResult getModifies(Clause c);
-//ClauseResult getUses(Clause c);
-//ClauseResult getParent(Clause c);
-//ClauseResult getParentS(Clause c);
-//ClauseResult getFollows(Clause c);
-//ClauseResult getFollowsS(Clause c);
-//ClauseResult getAssPatern(Clause c);
+  //ClauseResult getUses(Clause c);
+  //ClauseResult getParent(Clause c);
+  //ClauseResult getParentS(Clause c);
+  //ClauseResult getFollows(Clause c);
+  //ClauseResult getFollowsS(Clause c);
+  //ClauseResult getAssPatern(Clause c);
 
-	//bool validateType(string result, QueryEntityType q);
+  //bool validateType(string result, QueryEntityType q);
   //bool validateStmt(string result, QueryEntityType q);
   //bool isCons(string result, QueryEntityType q);
 };
