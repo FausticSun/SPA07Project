@@ -148,8 +148,8 @@ void populateModifiesS(std::unique_ptr<PKB> &pkb) {
   }
 }
 
-Table getDerivedTableForCallStmt(Table &callsTable, Table &otherTable,
-                                 std::string proc) {
+Table getDerivedTableForProcedure(Table &callsTable, Table &otherTable,
+                                  std::string proc) {
   callsTable.setHeader({"p1", "p2"});
   otherTable.setHeader({"p2", "v"});
   Table table{1};
@@ -160,8 +160,8 @@ Table getDerivedTableForCallStmt(Table &callsTable, Table &otherTable,
   return table;
 }
 
-Table getDerivedTableForProcedure(Table &callProcNameTable, Table &otherTable,
-                                  std::string proc) {
+Table getDerivedTableForCallStmt(Table &callProcNameTable, Table &otherTable,
+                                 std::string proc) {
   callProcNameTable.setHeader({"s", "p2"});
   otherTable.setHeader({"p2", "v"});
   Table table{1};
@@ -180,23 +180,23 @@ void populateUsesAndModifiesS(std::unique_ptr<PKB> &pkb) {
 
   std::vector<std::string> topologicalOrder = topologicalSort(callsTable);
   for (auto const proc : topologicalOrder) {
-    // Update call stmt itself
-    Table t1 = getDerivedTableForCallStmt(callsTable, usesPTable, proc);
+    // Update procedure that contains call stmt
+    Table t1 = getDerivedTableForProcedure(callsTable, usesPTable, proc);
     for (auto data : t1.getData({"p1", "v"})) {
       pkb->setUses(data[0], data[1]);
     }
-    Table t2 = getDerivedTableForCallStmt(callsTable, modifiesPTable, proc);
+    Table t2 = getDerivedTableForProcedure(callsTable, modifiesPTable, proc);
     for (auto data : t2.getData({"p1", "v"})) {
       pkb->setModifies(data[0], data[1]);
     }
 
-    // Update procedure that contains call stmt
-    Table t3 = getDerivedTableForProcedure(callProcNameTable, usesPTable, proc);
+    // Update call stmt itself
+    Table t3 = getDerivedTableForCallStmt(callProcNameTable, usesPTable, proc);
     for (auto data : t3.getData({"s", "v"})) {
       pkb->setUses(std::stoi(data[0]), data[1]);
     }
     Table t4 =
-        getDerivedTableForProcedure(callProcNameTable, modifiesPTable, proc);
+        getDerivedTableForCallStmt(callProcNameTable, modifiesPTable, proc);
     for (auto data : t4.getData({"s", "v"})) {
       pkb->setModifies(std::stoi(data[0]), data[1]);
     }
