@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 
-vector<string> split(const string &s, const char delim = ' ') {
+vector<string> split(const string &s, const char delim = '.') {
   vector<string> sv;
   sv.clear();
   istringstream iss(s);
@@ -118,10 +118,12 @@ Table PqlEvaluator::resultExtractor(Table result, Query q) {
 }
 
 list<string> PqlEvaluator::resultFormater(Table t) {
-  set<vector<string>>::iterator iterRow = t.getData().begin();
+	set<vector<string>> tempData = t.getData();
+  set<vector<string>>::iterator iterRow ;
   list<string> result;
   string tuple = "";
-  for (iterRow; iterRow != t.getData().end(); ++iterRow) {
+  
+  for (iterRow = tempData.begin(); iterRow != tempData.end(); iterRow++) {
     vector<string> temp = *iterRow;
     for (int i = 0; i < temp.size(); i++) {
       tuple = tuple + temp[i] + " ";
@@ -143,13 +145,22 @@ Table PqlEvaluator::executeSimpleQuery(vector<QueryEntity> t) {
       return result;
     }
     if (isSynonym(q.type)) {
-      tables.push_back(getdataByTtype(q.type));
+			Table t = getdataByTtype(q.type);
+			t.setHeader({q.name});
+      tables.push_back(t);
     } else if (isConstant(q.type)) {
       Table t(1);
       t.insertRow({q.name});
       t.setHeader({to_string(count)});
       tables.push_back(t);
       count++;
+    }else if(isAttr(q.type)) {
+			Table t = getdataWith(q);
+      if(t.getHeader().size()==2) {
+				t.dropColumn(t.getHeader()[0]);
+      }
+      
+			tables.push_back(t);
     }
   }
   Table result = tables[0];
@@ -235,6 +246,12 @@ Table PqlEvaluator::executeComplexQuery(Query q) {
 		else if (iter->clauseType == ClauseType::Next) {
 			data = mypkb.getNext();
 			result = dataFilter(data, *iter);
+		}else if(iter->clauseType == ClauseType::Calls) {
+			data = mypkb.getCalls();
+			result = dataFilter(data, *iter);
+		}else if(iter->clauseType == ClauseType::CallsT) {
+			data = mypkb.getCalls();
+			result = dataFilter(data, *iter);
 		}
 		/*else if (iter->clauseType == ClauseType::NextT) {
 
@@ -242,12 +259,12 @@ Table PqlEvaluator::executeComplexQuery(Query q) {
     if (result.isBool && !result.boolValue) {
 
       if (q.target.front().type == QueryEntityType::Boolean) {
-        Table result(1);
-        result.insertRow({"False"});
-        return result;
+        Table resultTable(1);
+				resultTable.insertRow({"False"});
+        return resultTable;
       }
-      Table result(0);
-      return result;
+      Table resultTable(0);
+      return resultTable;
     }
     if (result.isBool && result.boolValue) {
 
