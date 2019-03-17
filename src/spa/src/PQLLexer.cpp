@@ -1,5 +1,5 @@
 #include "PQLLexer.h"
-#include "Relation.h"
+//#include "Relation.h"
 #include <algorithm>
 #include <queue>
 #include <string.h>
@@ -1886,7 +1886,7 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 	for (int i = 0; i < token.size(); i++) {
 		if (token[i].find("=") != token[i].npos) {
 			appear_equal = true;
-			if (token[i][token[i].length] == '=') {
+			if (token[i][token[i].length()] == '=') {
 				end = i + 1;
 			}
 			else {
@@ -1897,6 +1897,9 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 	for (int j = 0; j <= end; j++) {
 		//whole.append(whole, token[j]);
 		whole.append(token[j]);
+	}
+	for (int n = 0; n <= end; n++) {
+		token.erase(token.begin());
 	}
 	for (int m = 0; m <= whole.length(); m++) {
 		if (whole[m] == '=') {
@@ -1953,5 +1956,6 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 			//tokenQueue.push(TokenType::Identifier, whole.substr(m + 1, whole.length() - m - 1));
 		}
 	}
+	return token;
 }
 
