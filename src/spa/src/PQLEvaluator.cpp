@@ -89,13 +89,13 @@ Table PqlEvaluator::resultExtractor(Table result, Query q) {
       if (find(result.getHeader().begin(), result.getHeader().end(),
                temp[0]) != result.getHeader().end()) {
         set<vector<string>> datarows = result.getData({temp[0]});
-        Table temp(1);
-        temp.setHeader({"temp"});
+        Table tempTable(1);
+				tempTable.setHeader({"temp"});
         for (vector<string> row : datarows) {
-          temp.insertRow(row);
+					tempTable.insertRow(row);
         }
         t.modifyHeader(t.getHeader()[0], "temp");
-        t.mergeWith(temp);
+        t.mergeWith(tempTable);
         if (t.getHeader().size() == 2) {
           t.dropColumn("temp");
         }
@@ -109,11 +109,11 @@ Table PqlEvaluator::resultExtractor(Table result, Query q) {
       }
     }
   }
-  Table result = tables[0];
+  Table resultTable = tables[0];
   for (int i = 1; i < tables.size(); i++) {
-    result.mergeWith(tables[i]);
+		resultTable.mergeWith(tables[i]);
   }
-  return result;
+  return resultTable;
 
 }
 
@@ -318,13 +318,13 @@ ClauseResult PqlEvaluator::withEvaluate(Clause c) {
       Table t = getdataByTtype(q.type);
       t.setHeader({c.parameters[0].name + "=" + c.parameters[0].name});
       tables.push_back(t);
-      expectation.push_back(make_pair(t.getHeader[0], q.name));
+      expectation.push_back(make_pair(t.getHeader()[0], q.name));
     } else if (isAttr(q.type)) {
       Table t = getdataWith(q);
       t.modifyHeader(q.name, c.parameters[0].name + "=" + c.parameters[0].name);
       tables.push_back(t);
       vector<string> temp = split(q.name, '.');
-      expectation.push_back(make_pair(t.getHeader[0], temp[0]));
+      expectation.push_back(make_pair(t.getHeader()[0], temp[0]));
     }
   }
   tables[0].mergeWith(tables[1]);
