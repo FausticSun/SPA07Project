@@ -1,38 +1,21 @@
 #include "PQLParser.h"
 
 #include <PQLEvaluator.h>
+#include <iostream>
+#include <sstream>
 
-//bool checkForFalse(vector<ClauseResult> clauseResults) {
-//  vector<ClauseResult>::iterator iter = clauseResults.begin();
-//  for (iter; iter != clauseResults.end(); iter++) {
-//    if ((iter->isBool == true) && (iter->bValue == false)) {
-//      return true;
-//    }
-//  }
-//  return false;
-//}
-//
-//bool isAllTrue(vector<ClauseResult> clauseResults) {
-//  vector<ClauseResult>::iterator iter = clauseResults.begin();
-//  for (iter; iter != clauseResults.end(); iter++) {
-//    if ((iter->isBool == false)) {
-//      return false;
-//    }
-//  }
-//  return true;
-//}
-//
-//vector<ClauseResult> removeBoolean(vector<ClauseResult> clauseResults) {
-//  vector<ClauseResult>::iterator iter = clauseResults.begin();
-//  for (iter; iter != clauseResults.end();) {
-//    if (iter->isBool == true) {
-//      iter = clauseResults.erase(iter);
-//    } else {
-//      iter++;
-//    }
-//  }
-//  return clauseResults;
-//}
+vector<string> split(const string &s, const char delim = ' ') {
+  vector<string> sv;
+  sv.clear();
+  istringstream iss(s);
+  string temp;
+
+  while (getline(iss, temp, delim)) {
+    sv.emplace_back(move(temp));
+  }
+
+  return sv;
+}
 
 bool isPartial(string s) {
   char ending = '_';
@@ -44,32 +27,7 @@ bool isPartial(string s) {
 
 string removeUnderscore(string s) { return s.substr(1, s.size() - 2); }
 
-//bool ClauseResult::contains(QueryEntity &q) {
-//  for (int i = 0; i < titles.size(); i++) {
-//    if (titles[i].name == q.name && titles[i].type == q.type) {
-//      return true;
-//    }
-//  }
-//  return false;
-//}
-
 PqlEvaluator::PqlEvaluator(const PKB &pkb) { this->mypkb = pkb; }
-
-list<string> PqlEvaluator::evaluateQuery(string query) {
-  list<string> results;
-  try {
-    PQLParser pp;
-    queue<QueryToken> tokens = pp.parse(query);
-    Query q = pp.buildQuery(tokens);
-    results = executeQuery(q);
-  } catch (invalid_argument ia) {
-    return results;
-  } catch (logic_error le) {
-    return results;
-  }
-
-  return results;
-}
 
 list<string> PqlEvaluator::executeQuery(Query &q) {
   Table resultTable(0);
@@ -84,6 +42,79 @@ list<string> PqlEvaluator::executeQuery(Query &q) {
   return results;
 
   return results;
+}
+
+Table PqlEvaluator::resultExtractor(Table result, Query q) {
+  if (q.target.front() == QueryEntityType::Boolean) {
+    if (result.size() > 0) {
+      Table t(1);
+      t.insertRow({"TRUE"});
+      return t;
+    }
+    Table t(1);
+    t.insertRow({"FALSE"});
+    return t;
+  }
+  if (result.empty()) {
+    return Table(0);
+  }
+  int count = 0;
+  vector<Table> tables;
+  for (int i = 0; i < q.target.size(); i++) {
+    if (isConstant(q.target[i].type)) {
+      Table t(1);
+      t.insertRow({q.target[i].name});
+      t.setHeader({to_string(count)});
+      tables.push_back(t);
+      count++;
+    } else if (isSynonym(q.target[i].type)) {
+      if (find(result.getHeader().begin(), result.getHeader().end(),
+               q.target[i].name) != result.getHeader().end()) {
+        set<vector<string>> datarows = result.getData({q.target[i].name});
+        Table t(1);
+        t.setHeader({q.target[i].name});
+        for (vector<string> row : datarows) {
+          t.insertRow(row);
+        }
+        tables.push_back(t);
+      } else {
+        Table t = getdataByTtype(q.target[i].type);
+        tables.push_back(t);
+
+      }
+    } else if (isAttr(q.target[i].type)) {
+      //lishan
+      Table t = getdataWith(q.target[i]);
+      vector<string> temp = split(q.target[i].name, '.');
+      if (find(result.getHeader().begin(), result.getHeader().end(),
+               temp[0]) != result.getHeader().end()) {
+        set<vector<string>> datarows = result.getData({temp[0]});
+        Table temp(1);
+        temp.setHeader({"temp"});
+        for (vector<string> row : datarows) {
+          temp.insertRow(row);
+        }
+        t.modifyHeader(t.getHeader()[0], "temp");
+        t.mergeWith(temp);
+        if (t.getHeader().size() == 2) {
+          t.dropColumn("temp");
+        }
+        tables.push_back(t);
+
+      } else {
+        if (t.getHeader().size() == 2) {
+          t.dropColumn(t.getHeader()[0]);
+        }
+        tables.push_back(t);
+      }
+    }
+  }
+  Table result = tables[0];
+  for (int i = 1; i < tables.size(); i++) {
+    result.mergeWith(tables[i]);
+  }
+  return result;
+
 }
 
 list<string> PqlEvaluator::resultFormater(Table t) {
@@ -102,60 +133,110 @@ list<string> PqlEvaluator::resultFormater(Table t) {
   return result;
 }
 
-Table PqlEvaluator::resultExtractor(Table result, Query q) {
-  if (q.target.front() == QueryEntityType::Boolean) {
-    if (result.size() > 0) {
+Table PqlEvaluator::executeSimpleQuery(vector<QueryEntity> t) {
+  int count = 0;
+  vector<Table> tables;
+  for (QueryEntity q : t) {
+    if (q.type == QueryEntityType::Boolean) {
+      Table result(1);
+      result.insertRow({"TRUE"});
+      return result;
+    }
+    if (isSynonym(q.type)) {
+      tables.push_back(getdataByTtype(q.type));
+    } else if (isConstant(q.type)) {
       Table t(1);
-      t.insertRow({"TRUE"});
-      return t;
-    }else {
-			Table t(1);
-			t.insertRow({ "FALSE" });
-			return t;
+      t.insertRow({q.name});
+      t.setHeader({to_string(count)});
+      tables.push_back(t);
+      count++;
     }
-    
-  }else {
-    if(result.empty()) {
-			return Table(0);
-    }
-		else {
-			int count = 0;
-			vector<Table> tables;
-			for (int i = 0; i < q.target.size(); i++) {
-				if (isConstant(q.target[i].type)) {
-					Table t(1);
-					t.insertRow({ q.target[i].name });
-					t.setHeader({ to_string(count) });
-					tables.push_back(t);
-					count++;
-				}
-				else if (isSynonym(q.target[i].type)) {
-					if (find(result.getHeader().begin(), result.getHeader().end(),
-						q.target[i].name) != result.getHeader().end()) {
-						set<vector<string>> datarows = result.getData({ q.target[i].name });
-						Table t(1);
-						t.setHeader({ q.target[i].name });
-						for (vector<string> row : datarows) {
-							t.insertRow(row);
-						}
-						tables.push_back(t);
-					}
-					else {
-						Table t = getdataByTtype(q.target[i].type);
-						tables.push_back(t);
-
-					}
-				}
-			}
-			Table result = tables[0];
-			for (int i = 1; i < tables.size(); i++) {
-				result.mergeWith(tables[i]);
-			}
-			return result;
-		}
-		
   }
-  
+  Table result = tables[0];
+  for (int i = 1; i < tables.size(); i++) {
+    result.mergeWith(tables[i]);
+  }
+  return result;
+}
+
+Table PqlEvaluator::executeComplexQuery(Query q) {
+  vector<Clause> clauses = q.clauses;
+  vector<Table> tables;
+  vector<Clause>::iterator iter = clauses.begin();
+  Table data(0);
+  ClauseResult result;
+  for (iter; iter != clauses.end(); ++iter) {
+    if (iter->clauseType != ClauseType::With) {
+      if (iter->clauseType == ClauseType::ModifiesS) {
+        if ((iter->parameters.front().type == QueryEntityType::Procedure ||
+             iter->parameters.front().type == QueryEntityType::Name)) {
+          data = mypkb.getModifiesP();
+        } else {
+          data = mypkb.getModifiesS();
+        }
+      } else if (iter->clauseType == ClauseType::UsesS) {
+        if ((iter->parameters.front().type == QueryEntityType::Procedure ||
+             iter->parameters.front().type == QueryEntityType::Name)) {
+          data = mypkb.getUsesP();
+        } else {
+          data = mypkb.getUsesS();
+        }
+
+      } else if (iter->clauseType == ClauseType::Parent) {
+        data = mypkb.getParent();
+      } else if (iter->clauseType == ClauseType::ParentT) {
+        data = mypkb.getParentT();
+      } else if (iter->clauseType == ClauseType::Follows) {
+        data = mypkb.getFollows();
+      } else if (iter->clauseType == ClauseType::FollowsT) {
+        data = mypkb.getFollowsT();
+      } else if (iter->clauseType == ClauseType::AssignPatt) {
+        if (isConstant(iter->parameters[2].type)) {
+          if (isPartial(iter->parameters[2].name)) {
+            data = mypkb.
+              getAssignMatches(removeUnderscore(iter->parameters[2].name),
+                               true);
+          } else {
+            data = mypkb.getAssignMatches((iter->parameters[2].name), false);
+          }
+        } else {
+          data = mypkb.getAssignMatches("", true);
+        }
+      } else if (iter->clauseType == ClauseType::WhilePatt) {
+        data = mypkb.getWhileMatches();
+      } else if (iter->clauseType == ClauseType::IfPatt) {
+        data = mypkb.getIfMatches();
+      }
+      result = dataFilter(data, *iter);
+    } else {
+      result = withEvaluate(*iter);
+    }
+    if (result.isBool && !result.boolValue) {
+
+      if (q.target.front().type == QueryEntityType::Boolean) {
+        Table result(1);
+        result.insertRow({"False"});
+        return result;
+      }
+      Table result(0);
+      return result;
+    }
+    if (result.isBool && result.boolValue) {
+
+    } else {
+      tables.push_back(data);
+    }
+  }
+  if (!tables.empty()) {
+    for (int i = 1; i < tables.size(); i++) {
+      tables[0].mergeWith(tables[i]);
+    }
+    Table complexResult = resultExtractor(tables[0], q);
+    return complexResult;
+  }
+  Table simpleResult = executeSimpleQuery(q.target);
+  return simpleResult;
+
 }
 
 ClauseResult PqlEvaluator::dataFilter(Table data, Clause c) {
@@ -196,114 +277,54 @@ ClauseResult PqlEvaluator::dataFilter(Table data, Clause c) {
   return ClauseResult(true, true);
 }
 
-Table PqlEvaluator::executeSimpleQuery(vector<QueryEntity> t) {
-  int count = 0;
+ClauseResult PqlEvaluator::withEvaluate(Clause c) {
   vector<Table> tables;
-  for (QueryEntity q : t) {
-    if (q.type == QueryEntityType::Boolean) {
-      Table result(1);
-      result.insertRow({"TRUE"});
-      return result;
-    }
-    if (isSynonym(q.type)) {
-      tables.push_back(getdataByTtype(q.type));
-    } else if (isConstant(q.type)) {
+  vector<pair<string, string>> expectation;
+  for (QueryEntity q : c.parameters) {
+    if (isConstant(q.type)) {
       Table t(1);
       t.insertRow({q.name});
-      t.setHeader({to_string(count)});
+      t.setHeader({c.parameters[0].name + "=" + c.parameters[0].name});
       tables.push_back(t);
-      count++;
+    } else if (isSynonym(q.type)) {
+      Table t = getdataByTtype(q.type);
+      t.setHeader({c.parameters[0].name + "=" + c.parameters[0].name});
+      tables.push_back(t);
+      expectation.push_back(make_pair(t.getHeader[0], q.name));
+    } else if (isAttr(q.type)) {
+      Table t = getdataWith(q);
+      t.modifyHeader(q.name, c.parameters[0].name + "=" + c.parameters[0].name);
+      tables.push_back(t);
+      vector<string> temp = split(q.name, '.');
+      expectation.push_back(make_pair(t.getHeader[0], temp[0]));
     }
   }
-  Table result = tables[0];
-  for (int i = 1; i < tables.size(); i++) {
-    result.mergeWith(tables[i]);
+  tables[0].mergeWith(tables[1]);
+  if (tables[0].empty()) {
+    return ClauseResult(true, false);
   }
+  if (expectation.empty()) {
+    return ClauseResult(true, true);
+  }
+  set<vector<string>> data;
+  Table t(expectation.size());
+  if (expectation.size() == 1) {
+    data = tables[0].getData({expectation[0].first});
+    t.setHeader({expectation[0].second});
+  } else if (expectation.size() == 2) {
+    data = tables[0].getData({expectation[0].first, expectation[1].first});
+    t.setHeader({expectation[0].second, expectation[1].second});
+  }
+
+  set<vector<string>>::iterator iterRow = data.begin();
+  for (iterRow; iterRow != data.end(); ++iterRow) {
+    vector<string> temp = *iterRow;
+    t.insertRow(temp);
+  }
+  ClauseResult result(false, true);
+  result.data = t;
   return result;
 }
-
-Table PqlEvaluator::executeComplexQuery(Query q) {
-  vector<Clause> clauses = q.clauses;
-	vector<Table> tables;
-  vector<Clause>::iterator iter = clauses.begin();
-  Table data(0);
-  for (iter; iter != clauses.end(); ++iter) {
-    if (iter->clauseType == ClauseType::ModifiesS) {
-      if ((iter->parameters.front().type == QueryEntityType::Procedure ||
-           iter->parameters.front().type == QueryEntityType::Name)) {
-        data = mypkb.getModifiesP();
-      } else {
-        data = mypkb.getModifiesS();
-      }
-    } else if (iter->clauseType == ClauseType::UsesS) {
-      if ((iter->parameters.front().type == QueryEntityType::Procedure ||
-           iter->parameters.front().type == QueryEntityType::Name)) {
-        data = mypkb.getUsesP();
-      } else {
-        data = mypkb.getUsesS();
-      }
-
-    } else if (iter->clauseType == ClauseType::Parent) {
-      data = mypkb.getParent();
-    } else if (iter->clauseType == ClauseType::ParentT) {
-      data = mypkb.getParentT();
-    } else if (iter->clauseType == ClauseType::Follows) {
-      data = mypkb.getFollows();
-    } else if (iter->clauseType == ClauseType::FollowsT) {
-      data = mypkb.getFollowsT();
-    } else if (iter->clauseType == ClauseType::AssignPatt) {
-      if (isConstant(iter->parameters[2].type)) {
-        if (isPartial(iter->parameters[2].name)) {
-          data = mypkb.
-            getAssignMatches(removeUnderscore(iter->parameters[2].name), true);
-        } else {
-          data = mypkb.getAssignMatches((iter->parameters[2].name), false);
-        }
-      } else {
-        data = mypkb.getAssignMatches("", true);
-      }
-    } else if (iter->clauseType == ClauseType::WhilePatt) {
-      data = mypkb.getWhileMatches();
-    } else if (iter->clauseType == ClauseType::IfPatt) {
-      data = mypkb.getIfMatches();
-    } else if (iter->clauseType == ClauseType::With) {
-
-    }
-    ClauseResult result = dataFilter(data, *iter);
-    if (result.isBool && !result.boolValue) {
-			
-      if(q.target.front().type == QueryEntityType::Boolean) {
-				Table result(1);
-				result.insertRow({"False"});
-				return result;
-      }
-			else {
-				Table result(0);
-				return result;
-			}
-    }
-    if (result.isBool && result.boolValue) {
-
-    } else {
-      tables.push_back(data);
-    }
-  }
-	if (!tables.empty()) {
-		for (int i = 1; i < tables.size(); i++) {
-			tables[0].mergeWith(tables[i]);
-		}
-		Table result = resultExtractor(tables[0], q);
-		return result;
-	}else {
-		Table result = executeSimpleQuery(q.target);
-		return result;
-	}
-	
- 
-}
-
-// booleans: cons cons,cons _,_ cons, _ _
-// data: s cons, cons s, s s, s _, _ s
 
 Table PqlEvaluator::getdataByTtype(QueryEntity q) {
   if (isSynonym(q.type)) {
@@ -326,22 +347,41 @@ Table PqlEvaluator::getdataByTtype(QueryEntity q) {
   }
 }
 
-bool PqlEvaluator::isSynonym(QueryEntityType q) {
-  return q == QueryEntityType::Stmt || q == QueryEntityType::Read ||
-         q == QueryEntityType::Print || q == QueryEntityType::Call ||
-         q == QueryEntityType::While || q == QueryEntityType::If ||
-         q == QueryEntityType::Assign || q == QueryEntityType::Variable ||
-         q == QueryEntityType::Constant || q == QueryEntityType::Procedure ||
-         q == QueryEntityType::Progline;
-}
+Table PqlEvaluator::getdataWith(QueryEntity q) {
+  if (q.type != QueryEntityType::Attrref) {
+    return Table(0);
+  }
+  vector<string> temp = split(q.name);
 
-bool PqlEvaluator::isUnderscore(QueryEntityType q) {
-  return q == QueryEntityType::Underscore;
-}
-
-bool PqlEvaluator::isConstant(QueryEntityType q) {
-  return q == QueryEntityType::Expression || q == QueryEntityType::Boolean ||
-         q == QueryEntityType::Line || q == QueryEntityType::Name;
+  Table result(0);
+  if (temp[1] == "stmt#" || temp[1] == "value") {
+    result = getdataByTtype(q.attrRefSynonymType);
+    result.setHeader({q.name});
+  } else if (temp[1] == "procName") {
+    if (q.attrRefSynonymType == QueryEntityType::Procedure) {
+      result = getdataByTtype(q.attrRefSynonymType);
+      result.setHeader({q.name});
+    } else if (q.attrRefSynonymType == QueryEntityType::Call) {
+      result = mypkb.getCallProcName();
+      result.setHeader({temp[0], q.name});
+    }
+  } else if (temp[1] == "varName") {
+    if (q.attrRefSynonymType == QueryEntityType::Variable) {
+      result = getdataByTtype(q.attrRefSynonymType);
+      result.setHeader({q.name});
+    } else if (q.attrRefSynonymType == QueryEntityType::Read) {
+      Table read = getdataByTtype(QueryEntityType::Read);
+      Table modifies = mypkb.getModifiesS();
+      read.mergeWith(modifies);
+      read.setHeader({temp[0], q.name});
+    } else if (q.attrRefSynonymType == QueryEntityType::Print) {
+      Table print = getdataByTtype(QueryEntityType::Print);
+      Table uses = mypkb.getUsesS();
+      print.mergeWith(uses);
+      uses.setHeader({temp[0], q.name});
+    }
+  }
+  return result;
 }
 
 StatementType PqlEvaluator::convertQType(QueryEntityType q) {
@@ -361,11 +401,24 @@ StatementType PqlEvaluator::convertQType(QueryEntityType q) {
     return StatementType::Stmt;
 }
 
-//
-//bool PqlEvaluator::isVar(string result, QueryEntityType q) {
-//  return mypkb.isVar(result) && q == QueryEntityType::Variable;
-//}
-//
-//bool PqlEvaluator::isPro(string result, QueryEntityType q) {
-//  return mypkb.isProc(result) && q == QueryEntityType::Procedure;
-//}
+bool PqlEvaluator::isSynonym(QueryEntityType q) {
+  return q == QueryEntityType::Stmt || q == QueryEntityType::Read ||
+         q == QueryEntityType::Print || q == QueryEntityType::Call ||
+         q == QueryEntityType::While || q == QueryEntityType::If ||
+         q == QueryEntityType::Assign || q == QueryEntityType::Variable ||
+         q == QueryEntityType::Constant || q == QueryEntityType::Procedure ||
+         q == QueryEntityType::Progline;
+}
+
+bool PqlEvaluator::isUnderscore(QueryEntityType q) {
+  return q == QueryEntityType::Underscore;
+}
+
+bool PqlEvaluator::isConstant(QueryEntityType q) {
+  return q == QueryEntityType::Expression || q == QueryEntityType::Boolean ||
+         q == QueryEntityType::Line || q == QueryEntityType::Name;
+}
+
+bool PqlEvaluator::isAttr(QueryEntityType q) {
+  return q == QueryEntityType::Attrref;
+}
