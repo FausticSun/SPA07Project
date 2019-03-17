@@ -1,5 +1,4 @@
 #include "PQLLexer.h"
-#include "Relation.h"
 #include <algorithm>
 #include <queue>
 #include <string.h>
@@ -1167,8 +1166,8 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
                                   first_s.substr(1, first_s.length() - 2)));
         tokenQueue.push(make_pair(TokenType::Separator, "\""));
       } else {
-        //throw invalid_argument("first parameter format error");
-		  tokenQueue.push(make_pair(TokenType::Identifier, first_s));
+        // throw invalid_argument("first parameter format error");
+        tokenQueue.push(make_pair(TokenType::Identifier, first_s));
       }
     }
     tokenQueue.push(make_pair(TokenType::Separator, ","));
