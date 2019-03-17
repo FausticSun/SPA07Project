@@ -60,10 +60,6 @@ void PKB::setCallsT(std::string p1, std::string p2) {
   callsTTable.insertRow({p1, p2});
 }
 
-// void PKB::setCallProcName(int s, std::string p) {
-//   callProcNameTable.insertRow({std::to_string(s), p});
-// }
-
 void PKB::setNext(int s1, int s2) {
   nextTable.insertRow({std::to_string(s1), std::to_string(s2)});
 }
@@ -83,6 +79,8 @@ void PKB::setWhile(int w, const std::string &v) {
 void PKB::setCallProcName(int stmtNo, const std::string &procName) {
   callProcNameTable.insertRow({std::to_string(stmtNo), procName});
 }
+
+void PKB::setCFG(std::string proc, CFG graph) { CFGs[proc] = graph; }
 
 Table PKB::getVarTable() const { return varTable; }
 
@@ -145,3 +143,4 @@ Table PKB::getAssignMatches(std::string expr, bool partial) {
 Table PKB::getWhileMatches() { return whileTable; }
 Table PKB::getIfMatches() { return ifTable; }
 Table PKB::getCallProcName() { return callProcNameTable; }
+CFG PKB::getCFG(std::string proc) { return CFGs[proc]; }

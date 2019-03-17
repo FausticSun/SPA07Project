@@ -1,4 +1,5 @@
 #pragma once
+#include "CFG.h"
 #include "Table.h"
 #include <map>
 #include <set>
@@ -19,6 +20,7 @@ private:
   std::map<std::string, StmtRange> procTable;
   Table constTable{1};
   std::map<StatementType, std::set<int>> stmtTable;
+  std::map<std::string, CFG> CFGs;
 
   // PQL Relation Tables
   Table followsTable{2};
@@ -59,7 +61,6 @@ public:
   void setModifies(std::string, std::string);
   void setCalls(std::string, std::string);
   void setCallsT(std::string, std::string);
-  // void setCallProcName(int, std::string);
   void setNext(int, int);
   // Pattern setters
   void setAssign(int, std::string &, std::string &);
@@ -67,6 +68,7 @@ public:
   void setWhile(int, const std::string &);
   // Other setters
   void setCallProcName(int, const std::string &);
+  void setCFG(std::string, CFG);
 
   // Getters
   // Entity getter
@@ -97,4 +99,5 @@ public:
   Table getIfMatches();
   // Other getters
   Table getCallProcName();
+  CFG getCFG(std::string);
 };
