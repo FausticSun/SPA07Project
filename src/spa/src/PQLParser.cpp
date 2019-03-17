@@ -30,11 +30,13 @@ Query PQLParser::getQuery() { return query; }
 
 Query PQLParser::buildQuery(std::queue<QueryToken> &tokenQueue) {
   this->tokenQueue = tokenQueue;
+  bool hasSelect = false;
   while (!this->tokenQueue.empty()) {
     getNextToken();
     if (token.name == "Select") {
       setQueryTarget();
       tokenizeSelect();
+	  hasSelect = true;
       break;
     }
     expectTokenIn(this->expectedEntityTokens);
@@ -61,6 +63,9 @@ Query PQLParser::buildQuery(std::queue<QueryToken> &tokenQueue) {
     } else {
       insertQueryEntityProgline();
     }
+  }
+  if (!hasSelect) {
+	  throw std::logic_error("Must has 'Select' keyword.");
   }
   return constructQuery();
 }
@@ -109,7 +114,11 @@ void PQLParser::setQueryTarget() {
 	  std::map<std::string, QueryEntityType>::iterator it =
 		  entityMaps.find(token.name);
 	  if (it != entityMaps.end()) {
-		  if (tokenQueue.front().name == ".") {
+		  string next = "";
+		  if (!tokenQueue.empty()) {
+			  next = tokenQueue.front().name;
+		  }
+		  if (next == ".") {
 			  getNextToken();
 			  getNextToken();
 			  this->target.push_back(QueryEntity(QueryEntityType::Attrref, it->first + "." + token.name, it->second));
@@ -129,7 +138,11 @@ void PQLParser::insertTarget() {
 	std::map<std::string, QueryEntityType>::iterator it =
 		entityMaps.find(token.name);
 	if (it != entityMaps.end()) {
-		if (tokenQueue.front().name == ".") {
+		string next = "";
+		if (!tokenQueue.empty()) {
+			next = tokenQueue.front().name;
+		}
+		if (next == ".") {
 			getNextToken();
 			getNextToken();
 			this->target.push_back(QueryEntity(QueryEntityType::Attrref, it->first + "." + token.name, it->second));
@@ -146,7 +159,9 @@ void PQLParser::insertTarget() {
 		insertTarget();
 	}
 	else {
-		expectToken(">");
+		if (token.name != ">") {
+			throw std::logic_error("Expected '>' but got '" + token.name + "'");
+		}
 	}
 }
 
@@ -929,7 +944,11 @@ QueryEntity PQLParser::determineWithClauseEntity() {
 			  throw std::invalid_argument(
 				  "invalid to have constant synonym as the argument for clauses");
 		  }
-		  if (tokenQueue.front().name == ".") {
+		  string next = "";
+		  if (!tokenQueue.empty()) {
+			  next = tokenQueue.front().name;
+		  }
+		  if (next == ".") {
 			  getNextToken();
 			  getNextToken();
 			  return QueryEntity(QueryEntityType::Attrref, it->first + "." + token.name, qet);
@@ -947,9 +966,9 @@ QueryEntity PQLParser::determineWithClauseEntity() {
 }
 
 void PQLParser::insertClauseWith() {
-	QueryEntity firstEntity = determineQueryEntity();
+	QueryEntity firstEntity = determineWithClauseEntity();
 	expectToken("=");
-	QueryEntity secondEntity = determineQueryEntity();
+	QueryEntity secondEntity = determineWithClauseEntity();
 	checkWithValidity(firstEntity, secondEntity);
 	Clause c = Clause(ClauseType::With,
 		vector<QueryEntity>{firstEntity, secondEntity});

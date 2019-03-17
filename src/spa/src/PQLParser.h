@@ -44,7 +44,7 @@ private:
   std::vector<string> expectedEntityTokens = {
       "variable", "procedure", "if",     "while",    "read",     "print",
       "call",     "stmt",      "assign", "constant", "prog_line"};
-  std::vector<string> expectedIndicatorTokens = {"such that", "pattern", "with"};
+  std::vector<string> expectedIndicatorTokens = {"such that", "pattern", "with", "and"};
   std::vector<string> expectedClauseTokens = {
       "Follows", "Follows*", "Parent", "Parent*", "Uses", "Modifies", "Call", "Call*", "Next", "Next*"};
   std::map<std::string, std::vector<QueryEntityType>> validationTable = {
