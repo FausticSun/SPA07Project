@@ -68,7 +68,7 @@ public:
   void setWhile(int, const std::string &);
   // Other setters
   void setCallProcName(int, const std::string &);
-  void setCFG(std::string, CFG);
+  void setCFG(std::string, CFG &);
 
   // Getters
   // Entity getter

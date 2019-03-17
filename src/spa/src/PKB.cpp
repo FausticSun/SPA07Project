@@ -80,7 +80,7 @@ void PKB::setCallProcName(int stmtNo, const std::string &procName) {
   callProcNameTable.insertRow({std::to_string(stmtNo), procName});
 }
 
-void PKB::setCFG(std::string proc, CFG graph) { CFGs[proc] = graph; }
+void PKB::setCFG(std::string proc, CFG &graph) { CFGs[proc] = graph; }
 
 Table PKB::getVarTable() const { return varTable; }
 
