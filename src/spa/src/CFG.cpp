@@ -2,6 +2,8 @@
 #include <queue>
 #include <stack>
 
+CFG::CFG() {}
+
 CFG::CFG(int start, Table nextTable, Table whileIfTable) {
   // Count number of lines
   std::set<int> lineNumbers;
@@ -26,14 +28,19 @@ CFG::CFG(int start, Table nextTable, Table whileIfTable) {
     }
   }
 
-  // Populate compressedGraph
+  // Populate forward and reverse CompressedGraph
   populateReferenceMap(whileIfTable, inDegree);
-  compressedGraph.resize(numCompressedNodes + 1);
+  forwardCompressedGraph.resize(numCompressedNodes + 1);
+  reverseCompressedGraph.resize(numCompressedNodes + 1);
   populateCompressedGraph();
 }
 
-std::vector<std::vector<int>> CFG::getCompressedGraph() {
-  return compressedGraph;
+std::vector<std::vector<int>> CFG::getForwardCompressedGraph() {
+  return forwardCompressedGraph;
+}
+
+std::vector<std::vector<int>> CFG::getReverseCompressedGraph() {
+  return reverseCompressedGraph;
 }
 
 void CFG::populateReferenceMap(Table whileIfTable, std::vector<int> inDegree) {
@@ -81,7 +88,8 @@ void CFG::populateReferenceMap(Table whileIfTable, std::vector<int> inDegree) {
 }
 
 void CFG::populateCompressedGraph() {
-  // Traverse the initialGraph and populate compressedGraph using referenceMap
+  // Traverse the initialGraph and populate forward and reverse CompressedGraph
+  // using referenceMap
   std::vector<bool> visited(initialGraph.size() + 1, false);
   std::queue<int> queue;
   queue.push(1);
@@ -98,7 +106,8 @@ void CFG::populateCompressedGraph() {
       }
 
       if (referenceMap[v] != referenceMap[u]) {
-        compressedGraph[referenceMap[u]].push_back(referenceMap[v]);
+        forwardCompressedGraph[referenceMap[u]].push_back(referenceMap[v]);
+        reverseCompressedGraph[referenceMap[v]].push_back(referenceMap[u]);
       }
     }
   }
