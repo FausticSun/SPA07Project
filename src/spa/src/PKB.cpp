@@ -110,6 +110,14 @@ Table PKB::getStmtType(StatementType type) {
   return table;
 }
 
+Table PKB::getProcStmt() {
+  Table table{2};
+  for (auto p : procTable) {
+    table.insertRow({p.first, std::to_string(p.second.first)});
+  }
+  return table;
+}
+
 Table PKB::getFollows() const { return followsTable; }
 Table PKB::getFollowsT() const { return followsTTable; }
 Table PKB::getParent() const { return parentTable; }

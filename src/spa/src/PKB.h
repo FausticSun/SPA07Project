@@ -74,6 +74,7 @@ public:
   Table getProcTable() const;
   Table getConstTable() const;
   Table getStmtType(StatementType);
+  Table getProcStmt();
   // Relation getter
   Table getFollows() const;
   Table getFollowsT() const;
