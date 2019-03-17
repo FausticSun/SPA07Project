@@ -165,52 +165,80 @@ Table PqlEvaluator::executeComplexQuery(Query q) {
   vector<Clause>::iterator iter = clauses.begin();
   Table data(0);
   ClauseResult result;
-  for (iter; iter != clauses.end(); ++iter) {
-    if (iter->clauseType != ClauseType::With) {
-      if (iter->clauseType == ClauseType::ModifiesS) {
-        if ((iter->parameters.front().type == QueryEntityType::Procedure ||
-             iter->parameters.front().type == QueryEntityType::Name)) {
-          data = mypkb.getModifiesP();
-        } else {
-          data = mypkb.getModifiesS();
-        }
-      } else if (iter->clauseType == ClauseType::UsesS) {
-        if ((iter->parameters.front().type == QueryEntityType::Procedure ||
-             iter->parameters.front().type == QueryEntityType::Name)) {
-          data = mypkb.getUsesP();
-        } else {
-          data = mypkb.getUsesS();
-        }
+	for (iter; iter != clauses.end(); ++iter) {
 
-      } else if (iter->clauseType == ClauseType::Parent) {
-        data = mypkb.getParent();
-      } else if (iter->clauseType == ClauseType::ParentT) {
-        data = mypkb.getParentT();
-      } else if (iter->clauseType == ClauseType::Follows) {
-        data = mypkb.getFollows();
-      } else if (iter->clauseType == ClauseType::FollowsT) {
-        data = mypkb.getFollowsT();
-      } else if (iter->clauseType == ClauseType::AssignPatt) {
-        if (isConstant(iter->parameters[2].type)) {
-          if (isPartial(iter->parameters[2].name)) {
-            data = mypkb.
-              getAssignMatches(removeUnderscore(iter->parameters[2].name),
-                               true);
-          } else {
-            data = mypkb.getAssignMatches((iter->parameters[2].name), false);
-          }
-        } else {
-          data = mypkb.getAssignMatches("", true);
-        }
-      } else if (iter->clauseType == ClauseType::WhilePatt) {
-        data = mypkb.getWhileMatches();
-      } else if (iter->clauseType == ClauseType::IfPatt) {
-        data = mypkb.getIfMatches();
-      }
-      result = dataFilter(data, *iter);
-    } else {
-      result = withEvaluate(*iter);
-    }
+		if (iter->clauseType == ClauseType::ModifiesS) {
+			if ((iter->parameters.front().type == QueryEntityType::Procedure ||
+				iter->parameters.front().type == QueryEntityType::Name)) {
+				data = mypkb.getModifiesP();
+			}
+			else {
+				data = mypkb.getModifiesS();
+			}
+			result = dataFilter(data, *iter);
+		}
+		else if (iter->clauseType == ClauseType::UsesS) {
+			if ((iter->parameters.front().type == QueryEntityType::Procedure ||
+				iter->parameters.front().type == QueryEntityType::Name)) {
+				data = mypkb.getUsesP();
+			}
+			else {
+				data = mypkb.getUsesS();
+			}
+			result = dataFilter(data, *iter);
+
+		}
+		else if (iter->clauseType == ClauseType::Parent) {
+			data = mypkb.getParent();
+			result = dataFilter(data, *iter);
+		}
+		else if (iter->clauseType == ClauseType::ParentT) {
+			data = mypkb.getParentT();
+			result = dataFilter(data, *iter);
+		}
+		else if (iter->clauseType == ClauseType::Follows) {
+			data = mypkb.getFollows();
+			result = dataFilter(data, *iter);
+		}
+		else if (iter->clauseType == ClauseType::FollowsT) {
+			data = mypkb.getFollowsT();
+			result = dataFilter(data, *iter);
+		}
+		else if (iter->clauseType == ClauseType::AssignPatt) {
+			if (isConstant(iter->parameters[2].type)) {
+				if (isPartial(iter->parameters[2].name)) {
+					data = mypkb.
+						getAssignMatches(removeUnderscore(iter->parameters[2].name),
+							true);
+				}
+				else {
+					data = mypkb.getAssignMatches((iter->parameters[2].name), false);
+				}
+			}
+			else {
+				data = mypkb.getAssignMatches("", true);
+			}
+			result = dataFilter(data, *iter);
+		}
+		else if (iter->clauseType == ClauseType::WhilePatt) {
+			data = mypkb.getWhileMatches();
+			result = dataFilter(data, *iter);
+		}
+		else if (iter->clauseType == ClauseType::IfPatt) {
+			data = mypkb.getIfMatches();
+			result = dataFilter(data, *iter);
+		}
+
+		else if (iter->clauseType == ClauseType::With) {
+			result = withEvaluate(*iter);
+		}
+		else if (iter->clauseType == ClauseType::Next) {
+			data = mypkb.getNext();
+			result = dataFilter(data, *iter);
+		}
+		/*else if (iter->clauseType == ClauseType::NextT) {
+
+		}*/
     if (result.isBool && !result.boolValue) {
 
       if (q.target.front().type == QueryEntityType::Boolean) {
