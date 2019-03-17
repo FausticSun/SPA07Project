@@ -1044,13 +1044,13 @@ vector<string> PQLLexer::tokenizeSelect(vector<string> token) {
 		string before_dot = "";
 		string after_dot = "";
 		int dot_appear = 0;
-		for (int i = 0; i < token[0].length; i++) {
+		for (int i = 0; i < token[0].length(); i++) {
 			if (token[0][i] == '.') {
 				dot_appear = i;
 			}
 		}
-		before_dot = token[0].substr(0, i);
-		after_dot = token[0].substr(i + 1, token[0].length - i - 1);
+		before_dot = token[0].substr(0, dot_appear);
+		after_dot = token[0].substr(dot_appear + 1, token[0].length() - dot_appear - 1);
 		tokenQueue.push(make_pair(TokenType::Identifier, before_dot));
 		tokenQueue.push(make_pair(TokenType::Separator, "."));
 		tokenQueue.push(make_pair(TokenType::Identifier, after_dot));
@@ -1066,7 +1066,8 @@ vector<string> PQLLexer::tokenizeSelect(vector<string> token) {
 			}
 		}
 		for (int j = 0; j <= angle_appear; j++) {
-			whole.append(whole, token[j]);
+			whole.append(token[j]);
+			//whole.append(whole, token[j]);
 		}
 		for (int m = 0; m <= angle_appear; m++) {
 			token.erase(token.begin());
@@ -1074,51 +1075,51 @@ vector<string> PQLLexer::tokenizeSelect(vector<string> token) {
 		int string_begin = 1;;
 		int string_end;
 		int index = 0;
-		while (index < whole.length) {
-			if (whole[index] == ",") {
+		while (index < whole.length()) {
+			if (whole[index] == ',') {
 				if (whole.substr(string_begin, index - string_begin).find(".") != whole.substr(string_begin, index - string_begin).npos)
 				{
 					string before_dot = "";
 					string after_dot = "";
 					int dot_appear = 0;
-					for (int i = 0; i < whole.length; i++) {
+					for (int i = 0; i < whole.length(); i++) {
 						if (whole[i] == '.') {
 							dot_appear = i;
 						}
 					}
-					before_dot = whole.substr(0, i - 1);
-					after_dot = whole.substr(i + 1, whole.length - i - 1);
+					before_dot = whole.substr(0, dot_appear - 1);
+					after_dot = whole.substr(dot_appear + 1, whole.length() - dot_appear - 1);
 					tokenQueue.push(make_pair(TokenType::Identifier, before_dot));
 					tokenQueue.push(make_pair(TokenType::Separator, "."));
 					tokenQueue.push(make_pair(TokenType::Identifier, after_dot));
 				}
 				else {
-					tokenQueue.push(TokenType::Identifier, whole.substr(string_begin, index - string_begin));
+					tokenQueue.push(make_pair(TokenType::Identifier, whole.substr(string_begin, index - string_begin)));
 				}
 				string_begin = index + 1;
-				tokenQueue.push(TokenType::Separator, ",");
+				tokenQueue.push(make_pair(TokenType::Separator, ","));
 			}
-			else if (whole[index] == ">") {
+			else if (whole[index] == '>') {
 				if (whole.substr(string_begin, index - string_begin).find(".") != whole.substr(string_begin, index - string_begin).npos)
 				{
 					string before_dot = "";
 					string after_dot = "";
 					int dot_appear = 0;
-					for (int i = 0; i < whole.length; i++) {
+					for (int i = 0; i < whole.length(); i++) {
 						if (whole[i] == '.') {
 							dot_appear = i;
 						}
 					}
-					before_dot = whole.substr(0, i - 1);
-					after_dot = whole.substr(i + 1, whole.length - i - 1);
+					before_dot = whole.substr(0, dot_appear - 1);
+					after_dot = whole.substr(dot_appear + 1, whole.length() - dot_appear - 1);
 					tokenQueue.push(make_pair(TokenType::Identifier, before_dot));
 					tokenQueue.push(make_pair(TokenType::Separator, "."));
 					tokenQueue.push(make_pair(TokenType::Identifier, after_dot));
 				}
 				else {
-					tokenQueue.push(TokenType::Identifier, whole.substr(string_begin, index - string_begin));
+					tokenQueue.push(make_pair(TokenType::Identifier, whole.substr(string_begin, index - string_begin)));
 				}
-				tokenQueue.push(TokenType::Separator, ">");
+				tokenQueue.push(make_pair(TokenType::Separator, ">"));
 			}
 			
 			index++;
@@ -1877,7 +1878,7 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 }
 
 vector<string> PQLLexer::tokenizeWith(vector<string> token) {
-	tokenQueue.push(TokenType::Keyword, "with");
+	tokenQueue.push(make_pair(TokenType::Keyword, "with"));
 	string whole = "";
 	bool appear_equal = false;
 	int end;
@@ -1893,9 +1894,10 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 		}
 	}
 	for (int j = 0; j <= end; j++) {
-		whole.append(whole, token[j]);
+		//whole.append(whole, token[j]);
+		whole.append(token[j]);
 	}
-	for (int m = 0; m <= whole.length; m++) {
+	for (int m = 0; m <= whole.length(); m++) {
 		if (whole[m] == '=') {
 			//tokenQueue.push(TokenType::Identifier, whole.substr(0, m - 1));
 			if (whole.substr(0, m).find(".") != whole.substr(0, m).npos)
@@ -1908,8 +1910,8 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 						dot_appear = i;
 					}
 				}
-				before_dot = whole.substr(0, i);
-				after_dot = whole.substr(i + 1, whole.length - i - 1);
+				before_dot = whole.substr(0, dot_appear);
+				after_dot = whole.substr(dot_appear + 1, whole.length() - dot_appear - 1);
 				tokenQueue.push(make_pair(TokenType::Identifier, before_dot));
 				tokenQueue.push(make_pair(TokenType::Separator, "."));
 				tokenQueue.push(make_pair(TokenType::Identifier, after_dot));
@@ -1920,34 +1922,34 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 				tokenQueue.push(make_pair(TokenType::Separator, "\""));
 			}
 			else {
-				tokenQueue.push(TokenType::Identifier, whole.substr(0, m));
+				tokenQueue.push(make_pair(TokenType::Identifier, whole.substr(0, m)));
 			}
-			tokenQueue.push(TokenType::Separator, "=");
-			if (whole.substr(m + 1, whole.length - m - 1).find(".") != whole.substr(m + 1, whole.length - m - 1).npos)
+			tokenQueue.push(make_pair(TokenType::Separator, "="));
+			if (whole.substr(m + 1, whole.length() - m - 1).find(".") != whole.substr(m + 1, whole.length() - m - 1).npos)
 			{
 				string before_dot = "";
 				string after_dot = "";
 				int dot_appear = 0;
-				for (int i = m + 1; i < whole.length; i++) {
+				for (int i = m + 1; i < whole.length(); i++) {
 					if (whole[i] == '.') {
 						dot_appear = i;
 					}
 				}
-				before_dot = whole.substr(m + 1, i);
-				after_dot = whole.substr(i + 1, whole.length - i - 1);
+				before_dot = whole.substr(m + 1, dot_appear);
+				after_dot = whole.substr(dot_appear + 1, whole.length() - dot_appear - 1);
 				tokenQueue.push(make_pair(TokenType::Identifier, before_dot));
 				tokenQueue.push(make_pair(TokenType::Separator, "."));
 				tokenQueue.push(make_pair(TokenType::Identifier, after_dot));
 			}
-			else if (whole.substr(m + 1, whole.length - m - 1).find("\"") != whole.substr(m + 1, whole.length - m - 1).npos) {
+			else if (whole.substr(m + 1, whole.length() - m - 1).find("\"") != whole.substr(m + 1, whole.length() - m - 1).npos) {
 				tokenQueue.push(make_pair(TokenType::Separator, "\""));
-				tokenQueue.push(make_pair(TokenType::Identifier, whole.substr(m + 2, whole.length - m - 3)));
+				tokenQueue.push(make_pair(TokenType::Identifier, whole.substr(m + 2, whole.length() - m - 3)));
 				tokenQueue.push(make_pair(TokenType::Separator, "\""));
 			}
 			else {
-				tokenQueue.push(TokenType::Identifier, whole.substr(m + 1, whole.length - m - 1));
+				tokenQueue.push(make_pair(TokenType::Identifier, whole.substr(m + 1, whole.length() - m - 1)));
 			}
-			//tokenQueue.push(TokenType::Identifier, whole.substr(m + 1, whole.length - m - 1));
+			//tokenQueue.push(TokenType::Identifier, whole.substr(m + 1, whole.length() - m - 1));
 		}
 	}
 }
