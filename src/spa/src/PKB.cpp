@@ -68,13 +68,19 @@ void PKB::setAssign(int a, std::string &v, std::string &expr) {
   assignTable.insert(std::make_pair(a, std::make_pair(v, expr)));
 }
 
-void PKB::setIf(int ifs, std::string &v) {
+void PKB::setIf(int ifs, const std::string &v) {
   ifTable.insertRow({std::to_string(ifs), v});
 }
 
-void PKB::setWhile(int w, std::string &v) {
+void PKB::setWhile(int w, const std::string &v) {
   whileTable.insertRow({std::to_string(w), v});
 }
+
+void PKB::setCallProcName(int stmtNo, const std::string &procName) {
+  callProcNameTable.insertRow({std::to_string(stmtNo), procName});
+}
+
+void PKB::setCFG(std::string proc, CFG &graph) { CFGs[proc] = graph; }
 
 Table PKB::getVarTable() const { return varTable; }
 
@@ -102,6 +108,14 @@ Table PKB::getStmtType(StatementType type) {
   return table;
 }
 
+Table PKB::getProcStmt() {
+  Table table{2};
+  for (auto p : procTable) {
+    table.insertRow({p.first, std::to_string(p.second.first)});
+  }
+  return table;
+}
+
 Table PKB::getFollows() const { return followsTable; }
 Table PKB::getFollowsT() const { return followsTTable; }
 Table PKB::getParent() const { return parentTable; }
@@ -113,6 +127,7 @@ Table PKB::getModifiesP() const { return modifiesPTable; }
 Table PKB::getCalls() const { return callsTable; }
 Table PKB::getCallsT() const { return callsTTable; }
 Table PKB::getNext() const { return nextTable; }
+Table PKB::getCallProcNameTable() const { return callProcNameTable; }
 
 Table PKB::getAssignMatches(std::string expr, bool partial) {
   Table table{2};
@@ -127,3 +142,5 @@ Table PKB::getAssignMatches(std::string expr, bool partial) {
 
 Table PKB::getWhileMatches() { return whileTable; }
 Table PKB::getIfMatches() { return ifTable; }
+Table PKB::getCallProcName() { return callProcNameTable; }
+CFG PKB::getCFG(std::string proc) { return CFGs[proc]; }

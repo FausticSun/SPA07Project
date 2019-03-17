@@ -198,6 +198,7 @@ void PQLLexer::Tokenize(string input) {
 		else if (token[0] == "with") {
 			token = tokenizeWith(token);
 		}
+
       }
     } else {
       throw invalid_argument("wrong keyword");
