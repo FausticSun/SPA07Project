@@ -78,6 +78,7 @@ private:
   vector<string> tokenizeProcedure(vector<string>);
   vector<string> tokenizeSelect(vector<string>);
   vector<string> tokenizePattern(vector<string>);
+  vector<string> tokenizeWith(vector<string>);
   vector<string> tokenizeParent(vector<string>);
   vector<string> tokenizeParentT(vector<string>);
   vector<string> tokenizeFollows(vector<string>);
