@@ -186,7 +186,12 @@ void PQLLexer::Tokenize(string input) {
                      (token[0].find("Follows") != token[0].npos &&
                       token[0][7] == '(')) {
             token = tokenizeFollows(token);
-          } else {
+		  }
+		  else if (token[0] == "and") {
+			  token.erase(token.begin());
+			  tokenQueue.push(make_pair(TokenType::Keyword, "and"));
+		  }
+		  else {
             throw("wrong format of selection!");
           }
 
@@ -194,7 +199,7 @@ void PQLLexer::Tokenize(string input) {
                    (token[0].find("pattern") != token[0].npos &&
                     token[0][7] == '(')) {
           token = tokenizePattern(token);
-		}
+		} 
 		else if (token[0].find("with") != token[0].npos) {
 			token = tokenizeWith(token);
 		}
