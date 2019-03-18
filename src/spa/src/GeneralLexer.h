@@ -2,6 +2,7 @@
 #include <istream>
 #include <list>
 
+namespace Lexer {
 enum class TokenType { Identifier, Number, Operator, Delimiter, Whitespace };
 
 struct Token {
@@ -26,7 +27,5 @@ struct Token {
     return !(lhs == rhs);
   }
 };
-
-namespace Lexer {
 std::list<Token> tokenize(std::istream &stream);
-};
+}; // namespace Lexer

@@ -1,5 +1,8 @@
 #include "ExprParser.h"
 
+using Lexer::Token;
+using Lexer::TokenType;
+
 namespace Parser {
 bool ExprTokens::isArithmeticOp(Token t) {
   return ArithmeticOperators.find(t) != ArithmeticOperators.end();
@@ -100,7 +103,7 @@ std::list<Token> parseExpr(std::list<Token> &tokens) {
 }
 
 std::string tokensToString(const std::list<Token> &tokens) {
-  std::string str;
+  std::string str = " ";
   for (auto t : tokens) {
     str.append(t.value + " ");
   }

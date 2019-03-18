@@ -2,6 +2,7 @@
 
 #include <string>
 
+namespace PQLLexerToken {
 enum class TokenType {
   Assign,
   If,
@@ -42,3 +43,4 @@ struct Token {
   Token(const TokenType type, const std::string &name)
       : type(type), name(name) {}
 };
+} // namespace PQLLexerToken
