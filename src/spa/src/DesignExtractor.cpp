@@ -124,7 +124,7 @@ void populateUsesS(std::unique_ptr<PKB> &pkb) {
 
   table.mergeWith(parentTTable);
   table.mergeWith(usesSTable);
-  for (auto data : table.getData({"w/ifs", "s1"})) {
+  for (auto data : table.getData({"w/ifs", "v"})) {
     pkb->setUses(std::stoi(data[0]), data[1]);
   }
 }
@@ -143,7 +143,7 @@ void populateModifiesS(std::unique_ptr<PKB> &pkb) {
 
   table.mergeWith(parentTTable);
   table.mergeWith(modifiesSTable);
-  for (auto data : table.getData({"w/ifs", "s1"})) {
+  for (auto data : table.getData({"w/ifs", "v"})) {
     pkb->setModifies(std::stoi(data[0]), data[1]);
   }
 }
