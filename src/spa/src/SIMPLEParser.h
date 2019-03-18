@@ -6,27 +6,27 @@
 namespace Parser {
 namespace SIMPLETokens {
 // Keywords
-const static Token Procedure{TokenType::Identifier, "procedure"};
-const static Token Read{TokenType::Identifier, "read"};
-const static Token Print{TokenType::Identifier, "print"};
-const static Token Call{TokenType::Identifier, "call"};
-const static Token While{TokenType::Identifier, "while"};
-const static Token If{TokenType::Identifier, "if"};
-const static Token Then{TokenType::Identifier, "then"};
-const static Token Else{TokenType::Identifier, "else"};
+const static Lexer::Token Procedure{Lexer::TokenType::Identifier, "procedure"};
+const static Lexer::Token Read{Lexer::TokenType::Identifier, "read"};
+const static Lexer::Token Print{Lexer::TokenType::Identifier, "print"};
+const static Lexer::Token Call{Lexer::TokenType::Identifier, "call"};
+const static Lexer::Token While{Lexer::TokenType::Identifier, "while"};
+const static Lexer::Token If{Lexer::TokenType::Identifier, "if"};
+const static Lexer::Token Then{Lexer::TokenType::Identifier, "then"};
+const static Lexer::Token Else{Lexer::TokenType::Identifier, "else"};
 
 // Operators
-const static Token Assign{TokenType::Operator, "="};
+const static Lexer::Token Assign{Lexer::TokenType::Operator, "="};
 
 // Delimiters
-const static Token LeftBrace{TokenType::Delimiter, "{"};
-const static Token RightBrace{TokenType::Delimiter, "}"};
-const static Token LeftParentheses{TokenType::Delimiter, "("};
-const static Token RightParentheses{TokenType::Delimiter, ")"};
-const static Token Semicolon{TokenType::Delimiter, ";"};
+const static Lexer::Token LeftBrace{Lexer::TokenType::Delimiter, "{"};
+const static Lexer::Token RightBrace{Lexer::TokenType::Delimiter, "}"};
+const static Lexer::Token LeftParentheses{Lexer::TokenType::Delimiter, "("};
+const static Lexer::Token RightParentheses{Lexer::TokenType::Delimiter, ")"};
+const static Lexer::Token Semicolon{Lexer::TokenType::Delimiter, ";"};
 
 // Identifier
-const static Token Identifier{TokenType::Identifier, ""};
+const static Lexer::Token Identifier{Lexer::TokenType::Identifier, ""};
 }; // namespace SIMPLETokens
 
 class SIMPLEParser {
@@ -36,7 +36,7 @@ private:
   typedef std::pair<int, ExitStmtLst> StmtInfo;
   static const int PROCEDURE = -1;
 
-  std::list<Token> tokens;
+  std::list<Lexer::Token> tokens;
   std::unique_ptr<PKB> pkb;
   std::list<std::string> nextStack;
   std::string currentProc;
@@ -44,7 +44,7 @@ private:
   int stmtCounter;
 
   // Parsing
-  Token expect(Token token);
+  Lexer::Token expect(Lexer::Token tokens);
   void parseProgram();
   void parseProcedure();
   ExitStmtLst parseStmtLst(int parent);
@@ -55,18 +55,18 @@ private:
   ExitStmtLst parseWhile(int stmtNo);
   ExitStmtLst parseIf(int stmtNo);
   ExitStmtLst parseAssign(int stmtNo);
-  std::list<Token> parseWhileCondExpr();
-  std::list<Token> parseIfCondExpr();
-  std::list<Token> parseAssignExpr();
+  std::list<Lexer::Token> parseWhileCondExpr();
+  std::list<Lexer::Token> parseIfCondExpr();
+  std::list<Lexer::Token> parseAssignExpr();
 
   // Utility
   int getStmtNo();
-  void setUsesExpr(int, std::list<Token>);
+  void setUsesExpr(int, std::list<Lexer::Token>);
 
 public:
-  SIMPLEParser(std::list<Token>);
+  SIMPLEParser(std::list<Lexer::Token>);
   std::unique_ptr<PKB> getPKB();
 };
 
-std::unique_ptr<PKB> parseSIMPLE(std::list<Token>);
+std::unique_ptr<PKB> parseSIMPLE(std::list<Lexer::Token>);
 } // namespace Parser
