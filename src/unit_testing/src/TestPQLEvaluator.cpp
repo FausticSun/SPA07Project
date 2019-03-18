@@ -428,56 +428,341 @@ SCENARIO("target in clause,one clause") {
   }
 }
 
-
-SCENARIO("Simple Query") {
+SCENARIO("simple select, no clauses") {
 	PKB pkb = buildPKB();
 	PqlEvaluator pe(pkb);
-  SECTION("Select Boolean") {
+	SECTION("Select Boolean") {
 		Query q;
-		QueryEntity stmt(QueryEntityType::Boolean, "Boolean");
+		QueryEntity boolean(QueryEntityType::Boolean, "");
 		QueryEntity ass(QueryEntityType::Assign, "a");
 		vector<QueryEntity> targets;
 		vector<QueryEntity> sele;
 		vector<Clause> clause;
-		targets.push_back(stmt);
+		targets.push_back(boolean);
 		sele.push_back(ass);
 		q.setQuery(targets, sele, clause);
 		list<string> result = pe.executeQuery(q);
 		REQUIRE(result.size() == 1);
 		REQUIRE(contains(result, "TRUE"));
-  }
-  SECTION("Select Tuple") {
+	}
+	SECTION("Select Tuple") {
 		Query q;
 		QueryEntity p(QueryEntityType::Procedure, "p");
-		QueryEntity cp(QueryEntityType::Attrref, "c.procName",QueryEntityType::Call);
-		QueryEntity a(QueryEntityType::Name, "a");
-		QueryEntity l(QueryEntityType::Line, "1");
+		QueryEntity c(QueryEntityType::Call, "c");
+		QueryEntity w(QueryEntityType::While, "w");
+		QueryEntity cp(QueryEntityType::Attrref, "c.procName", QueryEntityType::Call);
 		vector<QueryEntity> targets;
 		vector<QueryEntity> sele;
 		vector<Clause> clause;
 		targets.push_back(p);
 		targets.push_back(cp);
-		targets.push_back(a); 
-		targets.push_back(l);
+		targets.push_back(w);
 		sele.push_back(p);
 		sele.push_back(cp);
-		sele.push_back(a);
-		sele.push_back(l);
+		sele.push_back(c);
+		sele.push_back(w);
 		q.setQuery(targets, sele, clause);
 		list<string> result = pe.executeQuery(q);
 		REQUIRE(result.size() == 12);
-		REQUIRE(contains(result, "main one a 1"));
-		REQUIRE(contains(result, "main two a 1"));
-		REQUIRE(contains(result, "main three a 1"));
-		REQUIRE(contains(result, "one one a 1"));
-		REQUIRE(contains(result, "one two a 1"));
-		REQUIRE(contains(result, "one three a 1"));
-		REQUIRE(contains(result, "two one a 1"));
-		REQUIRE(contains(result, "two two a 1"));
-		REQUIRE(contains(result, "two three a 1"));
-		REQUIRE(contains(result, "three one a 1"));
-		REQUIRE(contains(result, "three two a 1"));
-		REQUIRE(contains(result, "three three a 1"));
-  }
+		REQUIRE(contains(result, "main one 7"));
+		REQUIRE(contains(result, "main two 7"));
+		REQUIRE(contains(result, "main three 7"));
+		REQUIRE(contains(result, "one one 7"));
+		REQUIRE(contains(result, "one two 7"));
+		REQUIRE(contains(result, "one three 7"));
+		REQUIRE(contains(result, "two one 7"));
+		REQUIRE(contains(result, "two two 7"));
+		REQUIRE(contains(result, "two three 7"));
+		REQUIRE(contains(result, "three one 7"));
+		REQUIRE(contains(result, "three two 7"));
+		REQUIRE(contains(result, "three three 7"));
+	}
 
+}
+
+SCENARIO("test one with clause evaluate") {
+	PKB pkb = buildPKB();
+	PqlEvaluator pe(pkb);
+	SECTION("with attrref = synonym") {
+		Query q;
+		QueryEntity w(QueryEntityType::While, "w");
+		QueryEntity pl(QueryEntityType::Progline, "pl");
+		QueryEntity firstPara(QueryEntityType::Attrref, "w.stmt#", QueryEntityType::While);
+		Clause with(ClauseType::With, vector<QueryEntity>{firstPara, pl});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(pl);
+		sele.push_back(w);
+		sele.push_back(pl);
+		clause.push_back(with);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 1);
+		REQUIRE(contains(result, "7"));
+	}
+	SECTION("with attrref = ident") {
+		Query q;
+		QueryEntity r(QueryEntityType::Read, "r");
+		QueryEntity name(QueryEntityType::Name, "x");
+		QueryEntity firstPara(QueryEntityType::Attrref, "r.varName", QueryEntityType::Read);
+		Clause with(ClauseType::With, vector<QueryEntity>{firstPara, name});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(r);
+		sele.push_back(r);
+		clause.push_back(with);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 1);
+		REQUIRE(contains(result, "15"));
+	}
+	SECTION("with attrref = Integer") {
+		Query q;
+		QueryEntity c(QueryEntityType::Constant, "c");
+		QueryEntity INT(QueryEntityType::Line, "1");
+		QueryEntity firstPara(QueryEntityType::Attrref, "c.value", QueryEntityType::Constant);
+		Clause with(ClauseType::With, vector<QueryEntity>{firstPara, INT});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(c);
+		sele.push_back(c);
+		clause.push_back(with);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 1);
+		REQUIRE(contains(result, "1"));
+	}
+	SECTION("with synonym = Integer") {
+		Query q;
+		QueryEntity pl(QueryEntityType::Progline, "pl");
+		QueryEntity INT(QueryEntityType::Line, "2");
+		Clause with(ClauseType::With, vector<QueryEntity>{pl, INT});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(pl);
+		sele.push_back(pl);
+		clause.push_back(with);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 1);
+		REQUIRE(contains(result, "2"));
+	}
+}
+
+SCENARIO("test one Next clause evaluate") {
+	PKB pkb = buildPKB();
+	PqlEvaluator pe(pkb);
+	SECTION("(int, int)") {
+		Query q;
+		QueryEntity Int1(QueryEntityType::Line, "1");
+		QueryEntity Int2(QueryEntityType::Line, "2");
+		QueryEntity boolean(QueryEntityType::Boolean, "");
+		Clause next(ClauseType::Next, vector<QueryEntity>{Int1, Int2});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(boolean);
+		clause.push_back(next);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 1);
+		REQUIRE(contains(result, "TRUE"));
+	}
+	SECTION("(syn, int)") {
+		Query q;
+		QueryEntity w(QueryEntityType::While, "w");
+		QueryEntity Int(QueryEntityType::Line, "8");
+		Clause next(ClauseType::Next, vector<QueryEntity>{w, Int});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(w);
+		sele.push_back(w);
+		clause.push_back(next);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 1);
+		REQUIRE(contains(result, "7"));
+	}
+	SECTION("(syn, syn)") {
+		Query q;
+		QueryEntity w(QueryEntityType::While, "w");
+		QueryEntity s(QueryEntityType::Stmt, "s");
+		Clause next(ClauseType::Next, vector<QueryEntity>{w, s});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(s);
+		sele.push_back(w);
+		sele.push_back(s);
+		clause.push_back(next);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 1);
+		REQUIRE(contains(result, "8"));
+	}
+	SECTION("(_, int)") {
+		Query q;
+		QueryEntity boolean(QueryEntityType::Boolean, "");
+		QueryEntity unders(QueryEntityType::Underscore, "_");
+		QueryEntity Int(QueryEntityType::Line, "13");
+		Clause next(ClauseType::Next, vector<QueryEntity>{unders, Int});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(boolean);
+		clause.push_back(next);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 1);
+		REQUIRE(contains(result, "FALSE"));
+	}
+}
+
+SCENARIO("test one Next* clause evaluate") {
+	PKB pkb = buildPKB();
+	PqlEvaluator pe(pkb);
+	SECTION("(int, int)") {
+		Query q;
+		QueryEntity Int1(QueryEntityType::Line, "1");
+		QueryEntity Int2(QueryEntityType::Line, "10");
+		QueryEntity boolean(QueryEntityType::Boolean, "");
+		Clause next(ClauseType::NextT, vector<QueryEntity>{Int1, Int2});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(boolean);
+		clause.push_back(next);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 1);
+		REQUIRE(contains(result, "TRUE"));
+	}
+	SECTION("(syn, int)") {
+		Query q;
+		QueryEntity ifs(QueryEntityType::If, "ifs");
+		QueryEntity Int(QueryEntityType::Line, "10");
+		Clause next(ClauseType::NextT, vector<QueryEntity>{ifs, Int});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(ifs);
+		sele.push_back(ifs);
+		clause.push_back(next);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 2);
+		REQUIRE(contains(result, "4"));
+		REQUIRE(contains(result, "8"));
+	}
+	SECTION("(syn, syn)") {
+		Query q;
+		QueryEntity w(QueryEntityType::While, "w");
+		QueryEntity s(QueryEntityType::Stmt, "s");
+		Clause next(ClauseType::NextT, vector<QueryEntity>{w, s});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(s);
+		sele.push_back(w);
+		sele.push_back(s);
+		clause.push_back(next);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 4);
+		REQUIRE(contains(result, "7"));
+		REQUIRE(contains(result, "8"));
+		REQUIRE(contains(result, "9"));
+		REQUIRE(contains(result, "10"));
+	}
+	SECTION("(_, int)") {
+		Query q;
+		QueryEntity boolean(QueryEntityType::Boolean, "");
+		QueryEntity unders(QueryEntityType::Underscore, "_");
+		QueryEntity Int(QueryEntityType::Line, "13");
+		Clause next(ClauseType::NextT, vector<QueryEntity>{unders, Int});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(boolean);
+		clause.push_back(next);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 1);
+		REQUIRE(contains(result, "FALSE"));
+	}
+}
+
+SCENARIO("test one Calls clause evaluate") {
+	PKB pkb = buildPKB();
+	PqlEvaluator pe(pkb);
+	SECTION("(int, int)") {
+		Query q;
+		QueryEntity Int1(QueryEntityType::Line, "1");
+		QueryEntity Int2(QueryEntityType::Line, "2");
+		QueryEntity boolean(QueryEntityType::Boolean, "");
+		Clause next(ClauseType::Next, vector<QueryEntity>{Int1, Int2});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(boolean);
+		clause.push_back(next);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 1);
+		REQUIRE(contains(result, "TRUE"));
+	}
+	SECTION("(syn, int)") {
+		Query q;
+		QueryEntity w(QueryEntityType::While, "w");
+		QueryEntity Int(QueryEntityType::Line, "8");
+		Clause next(ClauseType::Next, vector<QueryEntity>{w, Int});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(w);
+		sele.push_back(w);
+		clause.push_back(next);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 1);
+		REQUIRE(contains(result, "7"));
+	}
+	SECTION("(syn, syn)") {
+		Query q;
+		QueryEntity w(QueryEntityType::While, "w");
+		QueryEntity s(QueryEntityType::Stmt, "s");
+		Clause next(ClauseType::Next, vector<QueryEntity>{w, s});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(s);
+		sele.push_back(w);
+		sele.push_back(s);
+		clause.push_back(next);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 1);
+		REQUIRE(contains(result, "8"));
+	}
+	SECTION("(_, int)") {
+		Query q;
+		QueryEntity boolean(QueryEntityType::Boolean, "");
+		QueryEntity unders(QueryEntityType::Underscore, "_");
+		QueryEntity Int(QueryEntityType::Line, "13");
+		Clause next(ClauseType::Next, vector<QueryEntity>{unders, Int});
+		vector<QueryEntity> targets;
+		vector<QueryEntity> sele;
+		vector<Clause> clause;
+		targets.push_back(boolean);
+		clause.push_back(next);
+		q.setQuery(targets, sele, clause);
+		list<string> result = pe.executeQuery(q);
+		REQUIRE(result.size() == 1);
+		REQUIRE(contains(result, "FALSE"));
+	}
 }

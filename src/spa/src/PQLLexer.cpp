@@ -186,7 +186,12 @@ void PQLLexer::Tokenize(string input) {
                      (token[0].find("Follows") != token[0].npos &&
                       token[0][7] == '(')) {
             token = tokenizeFollows(token);
-          } else {
+		  }
+		  else if (token[0] == "and") {
+			  token.erase(token.begin());
+			  tokenQueue.push(make_pair(TokenType::Keyword, "and"));
+		  }
+		  else {
             throw("wrong format of selection!");
           }
 
@@ -194,8 +199,8 @@ void PQLLexer::Tokenize(string input) {
                    (token[0].find("pattern") != token[0].npos &&
                     token[0][7] == '(')) {
           token = tokenizePattern(token);
-		}
-		else if (token[0] == "with") {
+		} 
+		else if (token[0].find("with") != token[0].npos) {
 			token = tokenizeWith(token);
 		}
 
@@ -1013,7 +1018,7 @@ void PQLLexer::expectionOfSelect(vector<string> token) {
   } else if (token[0] == "pattern") {
 
   }
-  else if (token[0] == "with") {
+  else if (token[0].find("with") != token[0].npos) {
 
   }
   else {
@@ -1883,13 +1888,14 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 
 vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 	tokenQueue.push(make_pair(TokenType::Keyword, "with"));
+	token[0] = token[0].substr(4, token[0].length() - 4);
 	string whole = "";
 	bool appear_equal = false;
-	int end;
+	int end = 0;
 	for (int i = 0; i < token.size(); i++) {
 		if (token[i].find("=") != token[i].npos) {
 			appear_equal = true;
-			if (token[i][token[i].length()] == '=') {
+			if (token[i][token[i].length() - 1] == '=') {
 				end = i + 1;
 			}
 			else {
@@ -1915,17 +1921,18 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 				for (int i = 0; i < m; i++) {
 					if (whole[i] == '.') {
 						dot_appear = i;
+						break;
 					}
 				}
 				before_dot = whole.substr(0, dot_appear);
-				after_dot = whole.substr(dot_appear + 1, whole.length() - dot_appear - 1);
+				after_dot = whole.substr(dot_appear + 1, m - dot_appear - 1);
 				tokenQueue.push(make_pair(TokenType::Identifier, before_dot));
 				tokenQueue.push(make_pair(TokenType::Separator, "."));
 				tokenQueue.push(make_pair(TokenType::Identifier, after_dot));
 			}
 			else if (whole.substr(0, m).find("\"") != whole.substr(0, m).npos) {
 				tokenQueue.push(make_pair(TokenType::Separator, "\""));
-				tokenQueue.push(make_pair(TokenType::Identifier, whole.substr(2, m - 1)));
+				tokenQueue.push(make_pair(TokenType::Identifier, whole.substr(1, m - 1)));
 				tokenQueue.push(make_pair(TokenType::Separator, "\""));
 			}
 			else {
@@ -1942,7 +1949,7 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 						dot_appear = i;
 					}
 				}
-				before_dot = whole.substr(m + 1, dot_appear);
+				before_dot = whole.substr(m + 1, dot_appear - m - 1);
 				after_dot = whole.substr(dot_appear + 1, whole.length() - dot_appear - 1);
 				tokenQueue.push(make_pair(TokenType::Identifier, before_dot));
 				tokenQueue.push(make_pair(TokenType::Separator, "."));

@@ -91,6 +91,7 @@ TEST_CASE("Testing procedure a") {
 
 TEST_CASE("Testing read a") {
   const string input = "read a; Select a";
+  //const string input = "read a; Select BOOLEAN with \"hallo\" = a.progName";
   queue<pair<TokenType, string>> res;
   PQLLexer p(input);
 
