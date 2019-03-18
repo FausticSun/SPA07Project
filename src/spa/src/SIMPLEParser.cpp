@@ -206,8 +206,8 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseAssign(int stmtNo) {
 
 std::list<Token> SIMPLEParser::parseWhileCondExpr() {
   std::list<Token> exprTokens;
-  while (*(tokens.begin()) != SIMPLETokens::RightParentheses &&
-         *(std::next(tokens.begin())) != SIMPLETokens::LeftBrace) {
+  while (!(*(tokens.begin()) == SIMPLETokens::RightParentheses &&
+           *(std::next(tokens.begin())) == SIMPLETokens::LeftBrace)) {
     exprTokens.push_back(tokens.front());
     tokens.pop_front();
   }
@@ -219,8 +219,8 @@ std::list<Token> SIMPLEParser::parseWhileCondExpr() {
 
 std::list<Token> SIMPLEParser::parseIfCondExpr() {
   std::list<Token> exprTokens;
-  while (*(tokens.begin()) != SIMPLETokens::RightParentheses &&
-         *(std::next(tokens.begin())) != SIMPLETokens::Then) {
+  while (!(*(tokens.begin()) == SIMPLETokens::RightParentheses &&
+           *(std::next(tokens.begin())) == SIMPLETokens::Then)) {
     exprTokens.push_back(tokens.front());
     tokens.pop_front();
   }
