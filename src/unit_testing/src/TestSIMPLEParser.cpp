@@ -3,6 +3,9 @@
 #include "catch.hpp"
 #include <sstream>
 
+using Lexer::Token;
+using Lexer::TokenType;
+
 TEST_CASE("Empty program") {
   std::string program = R"()";
   std::stringstream ss;

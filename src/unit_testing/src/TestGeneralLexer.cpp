@@ -2,6 +2,9 @@
 #include "catch.hpp"
 #include <sstream>
 
+using Lexer::Token;
+using Lexer::TokenType;
+
 SCENARIO("Single alphabetic identifier") {
   std::stringstream ss;
   ss << "Test" << '\n';

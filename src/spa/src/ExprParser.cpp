@@ -1,5 +1,8 @@
 #include "ExprParser.h"
 
+using Lexer::Token;
+using Lexer::TokenType;
+
 namespace Parser {
 bool ExprTokens::isArithmeticOp(Token t) {
   return ArithmeticOperators.find(t) != ArithmeticOperators.end();
