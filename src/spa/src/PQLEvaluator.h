@@ -13,7 +13,10 @@ struct ClauseResult {
   bool isBool;
   bool boolValue;
   Table data = Table(0);
-  ClauseResult();
+  ClauseResult() {
+		isBool = false;
+		boolValue = false;
+	};
 
   ClauseResult(bool iB, bool bValue) {
     isBool = iB;
