@@ -17,6 +17,13 @@ string standerize(string str) {
       str[i] = ' ';
     }
   }
+  for (int i = 0; i < str.length() - 5; i++) {
+	  if (str.substr(i, 4) == "with") {
+		  if (str[i + 4] != ' ') {
+			  throw("wrong format with clause");
+		  }
+	  }
+  }
   std::string::iterator new_end =
       std::unique(str.begin(), str.end(), BothAreSpaces);
   str.erase(new_end, str.end());
@@ -1980,7 +1987,7 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 			}
 			else if (whole.substr(0, m).find("\"") != whole.substr(0, m).npos) {
 				tokenQueue.push(make_pair(TokenType::Separator, "\""));
-				tokenQueue.push(make_pair(TokenType::Identifier, whole.substr(1, m - 1)));
+				tokenQueue.push(make_pair(TokenType::Identifier, whole.substr(1, m - 2)));
 				tokenQueue.push(make_pair(TokenType::Separator, "\""));
 			}
 			else {

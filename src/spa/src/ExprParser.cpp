@@ -103,7 +103,7 @@ std::list<Token> parseExpr(std::list<Token> &tokens) {
 }
 
 std::string tokensToString(const std::list<Token> &tokens) {
-  std::string str;
+  std::string str = " ";
   for (auto t : tokens) {
     str.append(t.value + " ");
   }

@@ -41,6 +41,49 @@ Table getCols(vector<string> s,Table t) {
   }
 
 }
+Table duplicateCols(string s,Table t) {
+	if (t.getHeader().size() == 1) {
+		set<vector<string>> rows = t.getData();
+		Table result(2);
+		result.setHeader({ t.getHeader()[0], s });
+		for (vector<string> row : rows) {
+			row.push_back(row[0]);
+			result.insertRow(row);
+		}
+		return result;
+	}
+	else {
+		return Table(0);
+	}
+}
+Table rowsToTable(set<vector<string>> rows, vector<string> header) {
+	Table result(header.size());
+	result.setHeader(header);
+	for (vector<string> row : rows) {
+		if (row.size() == header.size()) {
+			result.insertRow(row);
+		}
+		else {
+			return Table(0);
+		}
+	}
+	return result;
+}
+Table selfJoin(Table t) {
+  if(t.getHeader().size()==2) {
+		Table result(2);
+		result.setHeader(t.getHeader());
+    for(vector<string> row:t.getData()) {
+      if(row[0]==row[1]) {
+				result.insertRow(row);
+      }
+    }
+		return result;
+  }
+	else {
+		return Table(0);
+	}
+}
 
 PqlEvaluator::PqlEvaluator(const PKB &pkb) { this->mypkb = pkb; }
 
@@ -61,9 +104,7 @@ list<string> PqlEvaluator::executeQuery(Query &q) {
 
 Table PqlEvaluator::resultExtractor(Table result, Query q) {
 	vector<string> s;
-	vector<string> attr;
-	vector<string> cons;
-	int count = 0;
+	vector<QueryEntity> attr;
 	vector<Table> tables;
 	Table tempTable(0);
   if (q.target.front() == QueryEntityType::Boolean) {
@@ -78,78 +119,37 @@ Table PqlEvaluator::resultExtractor(Table result, Query q) {
   }
   if (result.empty()) {
     return Table(0);
-  }
-
-  for(int i = 0;i<q.target.size();i++) {
-    if(isConstant(q.target[i].type)) {
-			Table t(1);
-			t.insertRow({ q.target[i].name });
-			t.setHeader({ to_string(count) });
-			tables.push_back(t);
-			count++;
-    } else if(isSynonym(q.target[i].type)) {
-			if (find(result.getHeader().begin(), result.getHeader().end(),
-				q.target[i].name) != result.getHeader().end()) {
-				s.push_back(q.target[i].name);
-				/*set<vector<string>> datarows = result.getData({ q.target[i].name });
-				Table t(1);
-				t.setHeader({ q.target[i].name });
-				for (vector<string> row : datarows) {
-					t.insertRow(row);
+  }else {
+		vector<string> header;
+		for (QueryEntity qe : q.target) {
+			if (isAttr(qe.type)) {
+				vector<string> temp = split(qe.name, '.');
+				if (find(header.begin(), header.end(), temp[0])!= header.end()) {
+					Table t = getdataWith(qe);
+					tables.push_back(t);
 				}
-				tables.push_back(t);*/
-			}
-			else {
-				Table t = getdataByTtype(q.target[i].type);
-				tables.push_back(t);
-
-			}
-    } else if(isAttr(q.target[i].type)) {
-			Table t = getdataWith(q.target[i]);
-			vector<string> temp = split(q.target[i].name, '.');
-			if (find(result.getHeader().begin(), result.getHeader().end(),
-				temp[0]) != result.getHeader().end()) {
-				attr.push_back(temp[0]);
-				s.push_back(temp[0]);
-				/*set<vector<string>> datarows = result.getData({ temp[0] });
-				Table tempTable(1);
-				tempTable.setHeader({ "temp" });
-				for (vector<string> row : datarows) {
-					tempTable.insertRow(row);
-				}
-				t.modifyHeader(t.getHeader()[0], "temp");
-				t.mergeWith(tempTable);
-				if (t.getHeader().size() == 2) {
-					t.dropColumn("temp");
-				}
-				tables.push_back(t);*/
-
-			}
-			else {
-				if (t.getHeader().size() == 2) {
+				else {
+					Table t = getdataWith(qe);
 					t.dropColumn(t.getHeader()[0]);
+					tables.push_back(t);
 				}
-				tables.push_back(t);
 			}
-    }
+			else if (isSynonym(qe.type)) {
+				if (find(header.begin(), header.end(), qe.name) != header.end()) {
+				}
+				else {
+					Table t = getdataByTtype(qe.type);
+					tables.push_back(t);
+				}
+			}
+			s.push_back(qe.name);
+		}
+		for (Table t : tables) {
+			result.mergeWith(t);
+		}
   }
-	tempTable = getCols(s,result);
+	Table resultTable = rowsToTable(result.getData(s),s);
   
-  for (int i = 0; i < q.target.size(); i++) {
-    if (isConstant(q.target[i].type)) {
-      
-    } else if (isSynonym(q.target[i].type)) {
-     
-    } else if (isAttr(q.target[i].type)) {
-      //lishan
-      
-      
-    }
-  }
-  Table resultTable = tables[0];
-  for (int i = 1; i < tables.size(); i++) {
-		resultTable.mergeWith(tables[i]);
-  }
   return resultTable;
 
 }
@@ -297,7 +297,7 @@ Table PqlEvaluator::executeComplexQuery(Query q) {
 
       if (q.target.front().type == QueryEntityType::Boolean) {
         Table resultTable(1);
-				resultTable.insertRow({"False"});
+				resultTable.insertRow({"FALSE"});
         return resultTable;
       }
       Table resultTable(0);
@@ -306,7 +306,7 @@ Table PqlEvaluator::executeComplexQuery(Query q) {
     if (result.isBool && result.boolValue) {
 
     } else {
-      tables.push_back(data);
+      tables.push_back(result.data);
     }
   }
   if (!tables.empty()) {
@@ -325,33 +325,46 @@ ClauseResult PqlEvaluator::dataFilter(Table data, Clause c) {
   QueryEntity qe1 = c.parameters[0];
   QueryEntity qe2 = c.parameters[1];
   vector<Table> columns;
-  data.setHeader({"qe1", "qe2"});
+  data.setHeader({"1", "2"});
   if (!isUnderscore(qe1.type)) {
     Table col1 = getdataByTtype(qe1);
-    col1.setHeader({"qe1"});
+    col1.setHeader({"1"});
     columns.push_back(col1);
   }
   if (!isUnderscore(qe2.type)) {
     Table col2 = getdataByTtype(qe2);
-    col2.setHeader({"qe2"});
+    col2.setHeader({"2"});
     columns.push_back(col2);
   }
   for (int i = 0; i < columns.size(); i++) {
     data.mergeWith(columns[i]);
   }
-  data.setHeader({qe1.name, qe2.name});
+
+	if (isSynonym(qe1.type) && isSynonym(qe2.type) && qe1.name == qe2.name) {
+		data = selfJoin(data);
+	}
 
   if (data.empty()) {
     ClauseResult result(true, false);
     return result;
   }
+  
   if (isSynonym(qe1.type) || isSynonym(qe2.type)) {
     if (!isSynonym(qe1.type)) {
-      data.dropColumn(qe1.name);
+      data.dropColumn("1");
     }
+   
     if (!isSynonym(qe2.type)) {
-      data.dropColumn(qe2.name);
+      data.dropColumn("2");
     }
+		for (string title : data.getHeader()) {
+		  if(title=="1") {
+				data.modifyHeader("1", qe1.name);
+		  }
+			else if(title=="2") {
+				data.modifyHeader("2", qe2.name);
+			}
+		}
     ClauseResult result(false, false);
     result.data = data;
     return result;
@@ -393,16 +406,17 @@ ClauseResult PqlEvaluator::withEvaluate(Clause c) {
   if (expectation.size() == 1) {
     data = tables[0].getData({expectation[0].first});
     t.setHeader({expectation[0].second});
-  } else if (expectation.size() == 2) {
+		t = rowsToTable(data, { expectation[0].second });
+  } else if (expectation.size() == 2 && expectation[0].second != expectation[1].second) {
     data = tables[0].getData({expectation[0].first, expectation[1].first});
     t.setHeader({expectation[0].second, expectation[1].second});
+		t = rowsToTable(data, { expectation[0].second, expectation[1].second });
   }
-
-  set<vector<string>>::iterator iterRow = data.begin();
-  for (iterRow; iterRow != data.end(); ++iterRow) {
-    vector<string> temp = *iterRow;
-    t.insertRow(temp);
-  }
+	else if (expectation.size() == 2 && expectation[0].second == expectation[1].second) {
+		data = tables[0].getData({ expectation[0].first});
+		t.setHeader({ expectation[0].second});
+		t = rowsToTable(data,{ expectation[0].second });
+	}
   ClauseResult result(false, true);
   result.data = t;
   return result;
@@ -438,11 +452,13 @@ Table PqlEvaluator::getdataWith(QueryEntity q) {
   Table result(0);
   if (temp[1] == "stmt#" || temp[1] == "value") {
     result = getdataByTtype(q.attrRefSynonymType);
-    result.setHeader({q.name});
+		result.setHeader({temp[0]});
+		result = duplicateCols(q.name, result);
   } else if (temp[1] == "procName") {
     if (q.attrRefSynonymType == QueryEntityType::Procedure) {
       result = getdataByTtype(q.attrRefSynonymType);
-      result.setHeader({q.name});
+      result.setHeader({temp[0]});
+			result = duplicateCols(q.name, result);
     } else if (q.attrRefSynonymType == QueryEntityType::Call) {
       result = mypkb.getCallProcName();
       result.setHeader({temp[0], q.name});
@@ -450,17 +466,24 @@ Table PqlEvaluator::getdataWith(QueryEntity q) {
   } else if (temp[1] == "varName") {
     if (q.attrRefSynonymType == QueryEntityType::Variable) {
       result = getdataByTtype(q.attrRefSynonymType);
-      result.setHeader({q.name});
+			result.setHeader({ temp[0] });
+			result = duplicateCols(q.name, result);
     } else if (q.attrRefSynonymType == QueryEntityType::Read) {
       Table read = getdataByTtype(QueryEntityType::Read);
       Table modifies = mypkb.getModifiesS();
+			read.setHeader({ temp[0] });
+			modifies.setHeader({temp[0],q.name});
       read.mergeWith(modifies);
       read.setHeader({temp[0], q.name});
+			result = read;
     } else if (q.attrRefSynonymType == QueryEntityType::Print) {
       Table print = getdataByTtype(QueryEntityType::Print);
       Table uses = mypkb.getUsesS();
+			print.setHeader({temp[0]});
+			uses.setHeader({temp[0],q.name});
       print.mergeWith(uses);
       uses.setHeader({temp[0], q.name});
+			result = uses;
     }
   }
   return result;

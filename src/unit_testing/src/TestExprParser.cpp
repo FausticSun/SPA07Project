@@ -10,7 +10,7 @@ TEST_CASE("Empty expression") {
   std::list<Token> tokens = Lexer::tokenize(ss);
   auto postfix = Parser::parseExpr(tokens);
   auto postfixString = Parser::tokensToString(postfix);
-  REQUIRE(postfixString == "");
+  REQUIRE(postfixString == " ");
 }
 
 TEST_CASE("Simple expression") {
@@ -20,7 +20,7 @@ TEST_CASE("Simple expression") {
   std::list<Token> tokens = Lexer::tokenize(ss);
   auto postfix = Parser::parseExpr(tokens);
   auto postfixString = Parser::tokensToString(postfix);
-  REQUIRE(postfixString == "1 2 + ");
+  REQUIRE(postfixString == " 1 2 + ");
 }
 
 TEST_CASE("Left associativity") {
@@ -30,7 +30,7 @@ TEST_CASE("Left associativity") {
   std::list<Token> tokens = Lexer::tokenize(ss);
   auto postfix = Parser::parseExpr(tokens);
   auto postfixString = Parser::tokensToString(postfix);
-  REQUIRE(postfixString == "1 2 + 3 + ");
+  REQUIRE(postfixString == " 1 2 + 3 + ");
 }
 
 TEST_CASE("Different precedence") {
@@ -40,7 +40,7 @@ TEST_CASE("Different precedence") {
   std::list<Token> tokens = Lexer::tokenize(ss);
   auto postfix = Parser::parseExpr(tokens);
   auto postfixString = Parser::tokensToString(postfix);
-  REQUIRE(postfixString == "1 2 3 * + ");
+  REQUIRE(postfixString == " 1 2 3 * + ");
 }
 
 TEST_CASE("Single set of parentheses") {
@@ -50,7 +50,7 @@ TEST_CASE("Single set of parentheses") {
   std::list<Token> tokens = Lexer::tokenize(ss);
   auto postfix = Parser::parseExpr(tokens);
   auto postfixString = Parser::tokensToString(postfix);
-  REQUIRE(postfixString == "1 2 3 + + ");
+  REQUIRE(postfixString == " 1 2 3 + + ");
 }
 
 TEST_CASE("Multiple nest parentheses") {
@@ -61,7 +61,7 @@ TEST_CASE("Multiple nest parentheses") {
   std::list<Token> tokens = Lexer::tokenize(ss);
   auto postfix = Parser::parseExpr(tokens);
   auto postfixString = Parser::tokensToString(postfix);
-  REQUIRE(postfixString == "1 2 3 4 5 6 7 8 9 10 + + + + + + + + + ");
+  REQUIRE(postfixString == " 1 2 3 4 5 6 7 8 9 10 + + + + + + + + + ");
 }
 
 TEST_CASE("All arithmetic operators") {
@@ -71,7 +71,7 @@ TEST_CASE("All arithmetic operators") {
   std::list<Token> tokens = Lexer::tokenize(ss);
   auto postfix = Parser::parseExpr(tokens);
   auto postfixString = Parser::tokensToString(postfix);
-  REQUIRE(postfixString == "1 2 * 3 4 / + 5 6 % - ");
+  REQUIRE(postfixString == " 1 2 * 3 4 / + 5 6 % - ");
 }
 
 TEST_CASE("Single relational operator") {
@@ -81,5 +81,5 @@ TEST_CASE("Single relational operator") {
   std::list<Token> tokens = Lexer::tokenize(ss);
   auto postfix = Parser::parseExpr(tokens);
   auto postfixString = Parser::tokensToString(postfix);
-  REQUIRE(postfixString == "a b == ");
+  REQUIRE(postfixString == " a b == ");
 }
