@@ -29,7 +29,8 @@ CFG::CFG(int start, Table nextTable, Table whileIfTable) {
   }
 
   // Populate forward and reverse CompressedGraph
-  populateReferenceMap(whileIfTable, inDegree);
+  populateInitialToCompressed(whileIfTable, inDegree);
+  populateCompressedToInitial();
   forwardCompressedGraph.resize(numCompressedNodes + 1);
   reverseCompressedGraph.resize(numCompressedNodes + 1);
   populateCompressedGraph();
@@ -43,12 +44,17 @@ std::vector<std::vector<int>> CFG::getReverseCompressedGraph() {
   return reverseCompressedGraph;
 }
 
-void CFG::populateReferenceMap(Table whileIfTable, std::vector<int> inDegree) {
-  // Iterative DFS to populate referenceMap
+int CFG::getCompressed(int i) { return initialToCompressed[i]; }
+
+std::vector<int> CFG::getInitial(int c) { return compressedToInitial[c]; }
+
+void CFG::populateInitialToCompressed(Table whileIfTable,
+                                      std::vector<int> inDegree) {
+  // Iterative DFS to populate initialToCompressed
   std::vector<bool> visited(initialGraph.size() + 1, false);
   std::stack<int> stack;
   stack.push(1);
-  referenceMap[1] = numCompressedNodes;
+  initialToCompressed[1] = numCompressedNodes;
 
   while (!stack.empty()) {
     int u = stack.top();
@@ -64,22 +70,22 @@ void CFG::populateReferenceMap(Table whileIfTable, std::vector<int> inDegree) {
         if (whileIfTable.contains({std::to_string(v)})) {
           // Child is while or if statement
           numCompressedNodes++;
-          referenceMap[v] = numCompressedNodes;
+          initialToCompressed[v] = numCompressedNodes;
         } else if (!initialGraph[v].empty() && initialGraph[v][0] < v) {
           // Child is last statement of while loop
           numCompressedNodes++;
-          referenceMap[v] = numCompressedNodes;
+          initialToCompressed[v] = numCompressedNodes;
         } else if (inDegree[v] > 1) {
           // Child has in degree > 1
           numCompressedNodes++;
-          referenceMap[v] = numCompressedNodes;
+          initialToCompressed[v] = numCompressedNodes;
         } else {
           // Parent is while or if statement
           if (whileIfTable.contains({std::to_string(u)})) {
             numCompressedNodes++;
-            referenceMap[v] = numCompressedNodes;
+            initialToCompressed[v] = numCompressedNodes;
           } else {
-            referenceMap[v] = referenceMap[u];
+            initialToCompressed[v] = initialToCompressed[u];
           }
         }
       }
@@ -87,9 +93,15 @@ void CFG::populateReferenceMap(Table whileIfTable, std::vector<int> inDegree) {
   }
 }
 
+void CFG::populateCompressedToInitial() {
+  for (auto i : initialToCompressed) {
+    compressedToInitial[i.second].push_back(i.first);
+  }
+}
+
 void CFG::populateCompressedGraph() {
   // Traverse the initialGraph and populate forward and reverse CompressedGraph
-  // using referenceMap
+  // using initialToCompressed
   std::vector<bool> visited(initialGraph.size() + 1, false);
   std::queue<int> queue;
   queue.push(1);
@@ -105,9 +117,11 @@ void CFG::populateCompressedGraph() {
         visited[v] = true;
       }
 
-      if (referenceMap[v] != referenceMap[u]) {
-        forwardCompressedGraph[referenceMap[u]].push_back(referenceMap[v]);
-        reverseCompressedGraph[referenceMap[v]].push_back(referenceMap[u]);
+      if (initialToCompressed[v] != initialToCompressed[u]) {
+        forwardCompressedGraph[initialToCompressed[u]].push_back(
+            initialToCompressed[v]);
+        reverseCompressedGraph[initialToCompressed[v]].push_back(
+            initialToCompressed[u]);
       }
     }
   }
