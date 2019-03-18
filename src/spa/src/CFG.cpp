@@ -71,10 +71,6 @@ void CFG::populateInitialToCompressed(Table whileIfTable,
           // Child is while or if statement
           numCompressedNodes++;
           initialToCompressed[v] = numCompressedNodes;
-        } else if (!initialGraph[v].empty() && initialGraph[v][0] < v) {
-          // Child is last statement of while loop
-          numCompressedNodes++;
-          initialToCompressed[v] = numCompressedNodes;
         } else if (inDegree[v] > 1) {
           // Child has in degree > 1
           numCompressedNodes++;
