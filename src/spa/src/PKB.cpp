@@ -127,6 +127,12 @@ Table PKB::getModifiesP() const { return modifiesPTable; }
 Table PKB::getCalls() const { return callsTable; }
 Table PKB::getCallsT() const { return callsTTable; }
 Table PKB::getNext() const { return nextTable; }
+
+Table PKB::getNextT(std::string, std::string) {
+	CFG graph = getCFG("A");
+	// populateNextT(graph)
+}
+
 Table PKB::getCallProcNameTable() const { return callProcNameTable; }
 
 Table PKB::getAssignMatches(std::string expr, bool partial) {

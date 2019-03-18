@@ -89,7 +89,8 @@ public:
   Table getCalls() const;
   Table getCallsT() const;
   Table getNext() const;
-  // Table getNextT() const;
+  Table getNextT(std::string, std::string);
+  // Table getNextT(Type (forward or reverse), std::string);
   // Table getAffects() const;
   // Table getAffectsT() const;
   Table getCallProcNameTable() const;
