@@ -69,6 +69,21 @@ Table rowsToTable(set<vector<string>> rows, vector<string> header) {
 	}
 	return result;
 }
+Table selfJoin(Table t) {
+  if(t.getHeader().size()==2) {
+		Table result(2);
+		result.setHeader(t.getHeader());
+    for(vector<string> row:t.getData()) {
+      if(row[0]==row[1]) {
+				result.insertRow(row);
+      }
+    }
+		return result;
+  }
+	else {
+		return Table(0);
+	}
+}
 
 PqlEvaluator::PqlEvaluator(const PKB &pkb) { this->mypkb = pkb; }
 
@@ -310,33 +325,46 @@ ClauseResult PqlEvaluator::dataFilter(Table data, Clause c) {
   QueryEntity qe1 = c.parameters[0];
   QueryEntity qe2 = c.parameters[1];
   vector<Table> columns;
-  data.setHeader({"qe1", "qe2"});
+  data.setHeader({"1", "2"});
   if (!isUnderscore(qe1.type)) {
     Table col1 = getdataByTtype(qe1);
-    col1.setHeader({"qe1"});
+    col1.setHeader({"1"});
     columns.push_back(col1);
   }
   if (!isUnderscore(qe2.type)) {
     Table col2 = getdataByTtype(qe2);
-    col2.setHeader({"qe2"});
+    col2.setHeader({"2"});
     columns.push_back(col2);
   }
   for (int i = 0; i < columns.size(); i++) {
     data.mergeWith(columns[i]);
   }
-  data.setHeader({qe1.name, qe2.name});
+
+	if (isSynonym(qe1.type) && isSynonym(qe2.type) && qe1.name == qe2.name) {
+		data = selfJoin(data);
+	}
 
   if (data.empty()) {
     ClauseResult result(true, false);
     return result;
   }
+  
   if (isSynonym(qe1.type) || isSynonym(qe2.type)) {
     if (!isSynonym(qe1.type)) {
-      data.dropColumn(qe1.name);
+      data.dropColumn("1");
     }
+   
     if (!isSynonym(qe2.type)) {
-      data.dropColumn(qe2.name);
+      data.dropColumn("2");
     }
+		for (string title : data.getHeader()) {
+		  if(title=="1") {
+				data.modifyHeader("1", qe1.name);
+		  }
+			else if(title=="2") {
+				data.modifyHeader("2", qe2.name);
+			}
+		}
     ClauseResult result(false, false);
     result.data = data;
     return result;
