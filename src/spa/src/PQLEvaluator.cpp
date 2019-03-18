@@ -342,6 +342,7 @@ ClauseResult PqlEvaluator::dataFilter(Table data, Clause c) {
 
 	if (isSynonym(qe1.type) && isSynonym(qe2.type) && qe1.name == qe2.name) {
 		data = selfJoin(data);
+		data.dropColumn("2");
 	}
 
   if (data.empty()) {
