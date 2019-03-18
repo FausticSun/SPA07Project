@@ -60,7 +60,7 @@ Table rowsToTable(set<vector<string>> rows, vector<string> header) {
 	Table result(header.size());
 	result.setHeader(header);
 	for (vector<string> row : rows) {
-		if (row.size == header.size()) {
+		if (row.size() == header.size()) {
 			result.insertRow(row);
 		}
 		else {
@@ -105,10 +105,11 @@ Table PqlEvaluator::resultExtractor(Table result, Query q) {
   if (result.empty()) {
     return Table(0);
   }else {
+		vector<string> header;
 		for (QueryEntity qe : q.target) {
 			if (isAttr(qe.type)) {
 				vector<string> temp = split(qe.name, '.');
-				if (find(result.getHeader().begin(), result.getHeader().end(), temp[0])!= result.getHeader().end()) {
+				if (find(header.begin(), header.end(), temp[0])!= header.end()) {
 					Table t = getdataWith(qe);
 					tables.push_back(t);
 				}
@@ -119,7 +120,7 @@ Table PqlEvaluator::resultExtractor(Table result, Query q) {
 				}
 			}
 			else if (isSynonym(qe.type)) {
-				if (find(result.getHeader().begin(), result.getHeader().end(), qe.name) != result.getHeader().end()) {
+				if (find(header.begin(), header.end(), qe.name) != header.end()) {
 				}
 				else {
 					Table t = getdataByTtype(qe.type);
@@ -281,7 +282,7 @@ Table PqlEvaluator::executeComplexQuery(Query q) {
 
       if (q.target.front().type == QueryEntityType::Boolean) {
         Table resultTable(1);
-				resultTable.insertRow({"False"});
+				resultTable.insertRow({"FALSE"});
         return resultTable;
       }
       Table resultTable(0);
@@ -290,7 +291,7 @@ Table PqlEvaluator::executeComplexQuery(Query q) {
     if (result.isBool && result.boolValue) {
 
     } else {
-      tables.push_back(data);
+      tables.push_back(result.data);
     }
   }
   if (!tables.empty()) {
@@ -442,13 +443,19 @@ Table PqlEvaluator::getdataWith(QueryEntity q) {
     } else if (q.attrRefSynonymType == QueryEntityType::Read) {
       Table read = getdataByTtype(QueryEntityType::Read);
       Table modifies = mypkb.getModifiesS();
+			read.setHeader({ temp[0] });
+			modifies.setHeader({temp[0],q.name});
       read.mergeWith(modifies);
       read.setHeader({temp[0], q.name});
+			result = read;
     } else if (q.attrRefSynonymType == QueryEntityType::Print) {
       Table print = getdataByTtype(QueryEntityType::Print);
       Table uses = mypkb.getUsesS();
+			print.setHeader({temp[0]});
+			uses.setHeader({temp[0],q.name});
       print.mergeWith(uses);
       uses.setHeader({temp[0], q.name});
+			result = uses;
     }
   }
   return result;
