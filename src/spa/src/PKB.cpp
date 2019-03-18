@@ -1,219 +1,146 @@
 #include "PKB.h"
 
-void PKB::insertVar(const std::string &var) { this->varTable.insert(var); }
+void PKB::setVar(const std::string &var) { varTable.insertRow({var}); }
 
-void PKB::insertProc(const std::string &proc) {
-  if (this->procTable.find(proc) == this->procTable.end()) {
-    this->procTable.insert(proc);
-  } else {
-    throw std::invalid_argument(
-        "'" + proc +
-        "' is already used. "
-        "Cannot have two procedures with the same name.");
+void PKB::setProc(const std::string &proc, int start, int end) {
+  if (procTable.count(proc) == 1) {
+    throw std::logic_error("Procedure already exists");
   }
+  procTable.insert(std::make_pair(proc, StmtRange(start, end)));
+  stmtCount = end - 1 > stmtCount ? end - 1 : stmtCount;
 }
 
-void PKB::insertConstant(const int constant) {
-  this->constTable.insert(std::to_string(constant));
+void PKB::setStmtType(int stmt, StatementType type) {
+  stmtTable[type].insert(stmt);
 }
 
-void PKB::insertAssign(int stmtNo, std::string &var, std::string &proc) {
-  auto fullExpr =
-      std::make_pair<std::string, std::string>(std::move(var), std::move(proc));
-  this->assignTable[std::to_string(stmtNo)] = fullExpr;
+void PKB::setConst(int cons) { constTable.insertRow({std::to_string(cons)}); }
+
+void PKB::setFollows(int s1, int s2) {
+  followsTable.insertRow({std::to_string(s1), std::to_string(s2)});
 }
 
-void PKB::insertStatement(const std::string &stmt, const StatementType type) {
-  stmtCount++;
-  this->stmtTable[type].insert(stmt);
+void PKB::setFollowsT(int s1, int s2) {
+  followsTTable.insertRow({std::to_string(s1), std::to_string(s2)});
 }
 
-void PKB::setFollows(int s, int t) {
-  this->followsTable.setRelation(std::to_string(s), std::to_string(t));
+void PKB::setParent(int s1, int s2) {
+  parentTable.insertRow({std::to_string(s1), std::to_string(s2)});
 }
 
-void PKB::setFollowsT(int s, int t) {
-  this->followsTTable.setRelation(std::to_string(s), std::to_string(t));
+void PKB::setParentT(int s1, int s2) {
+  parentTTable.insertRow({std::to_string(s1), std::to_string(s2)});
 }
 
-void PKB::setParent(int s, int t) {
-  this->parentTable.setRelation(std::to_string(s), std::to_string(t));
+void PKB::setUses(int s, std::string v) {
+  setVar({v});
+  usesSTable.insertRow({std::to_string(s), v});
 }
 
-void PKB::setParentT(int s, int t) {
-  this->parentTTable.setRelation(std::to_string(s), std::to_string(t));
+void PKB::setUses(std::string p, std::string v) {
+  setVar({v});
+  usesPTable.insertRow({p, v});
 }
 
-void PKB::setUses(int s, std::string t) {
-  this->usesTable.setRelation(std::to_string(s), t);
+void PKB::setModifies(int s, std::string v) {
+  setVar({v});
+  modifiesSTable.insertRow({std::to_string(s), v});
 }
 
-void PKB::setUses(std::string s, std::string t) {
-  this->usesTable.setRelation(s, t);
+void PKB::setModifies(std::string p, std::string v) {
+  setVar({v});
+  modifiesPTable.insertRow({p, v});
 }
 
-void PKB::setModifies(int s, std::string t) {
-  this->modifiesTable.setRelation(std::to_string(s), t);
+void PKB::setCalls(std::string p1, std::string p2) {
+  callsTable.insertRow({p1, p2});
 }
 
-void PKB::setModifies(std::string s, std::string t) {
-  this->modifiesTable.setRelation(s, t);
+void PKB::setCallsT(std::string p1, std::string p2) {
+  callsTTable.insertRow({p1, p2});
 }
 
-const std::set<std::string> PKB::getVarTable() const { return this->varTable; }
-
-const std::set<std::string> PKB::getProcTable() const {
-  return this->procTable;
+void PKB::setNext(int s1, int s2) {
+  nextTable.insertRow({std::to_string(s1), std::to_string(s2)});
 }
 
-const std::set<std::string> PKB::getConstTable() const {
-  return this->constTable;
+void PKB::setAssign(int a, std::string &v, std::string &expr) {
+  assignTable.insert(std::make_pair(a, std::make_pair(v, expr)));
 }
 
-bool PKB::isVar(std::string var) {
-  return varTable.find(var) != varTable.end();
+void PKB::setIf(int ifs, const std::string &v) {
+  ifTable.insertRow({std::to_string(ifs), v});
 }
 
-bool PKB::isProc(std::string proc) {
-  return procTable.find(proc) != procTable.end();
+void PKB::setWhile(int w, const std::string &v) {
+  whileTable.insertRow({std::to_string(w), v});
 }
 
-int PKB::getStatementCount() { return this->stmtCount; }
+void PKB::setCallProcName(int stmtNo, const std::string &procName) {
+  callProcNameTable.insertRow({std::to_string(stmtNo), procName});
+}
 
-const std::set<std::string> PKB::getStatementsOfType(StatementType type) const {
+void PKB::setCFG(std::string proc, CFG &graph) { CFGs[proc] = graph; }
+
+Table PKB::getVarTable() const { return varTable; }
+
+Table PKB::getProcTable() const {
+  Table table{1};
+  for (auto p : procTable) {
+    table.insertRow({p.first});
+  }
+  return table;
+}
+
+Table PKB::getConstTable() const { return constTable; }
+
+Table PKB::getStmtType(StatementType type) {
+  Table table{1};
   if (type == StatementType::Stmt) {
-    std::set<std::string> allStmt;
-    for (int i = 1; i <= stmtCount; i++) {
-      allStmt.insert(std::to_string(i));
+    for (int i = 1; i <= stmtCount; ++i) {
+      table.insertRow({std::to_string(i)});
     }
-    return allStmt;
   } else {
-    if (this->stmtTable.find(type) != this->stmtTable.end()) {
-      return this->stmtTable.at(type);
-    } else {
-      return std::set<std::string>();
+    for (auto i : stmtTable[type]) {
+      table.insertRow({std::to_string(i)});
     }
   }
+  return table;
 }
 
-StatementType PKB::getStatementType(std::string s) {
-  for (auto it = this->stmtTable.begin(); it != this->stmtTable.end(); ++it) {
-    if (it->second.find(s) != it->second.end()) {
-      return it->first;
+Table PKB::getProcStmt() {
+  Table table{2};
+  for (auto p : procTable) {
+    table.insertRow({p.first, std::to_string(p.second.first)});
+  }
+  return table;
+}
+
+Table PKB::getFollows() const { return followsTable; }
+Table PKB::getFollowsT() const { return followsTTable; }
+Table PKB::getParent() const { return parentTable; }
+Table PKB::getParentT() const { return parentTTable; }
+Table PKB::getUsesS() const { return usesSTable; }
+Table PKB::getUsesP() const { return usesPTable; }
+Table PKB::getModifiesS() const { return modifiesSTable; }
+Table PKB::getModifiesP() const { return modifiesPTable; }
+Table PKB::getCalls() const { return callsTable; }
+Table PKB::getCallsT() const { return callsTTable; }
+Table PKB::getNext() const { return nextTable; }
+Table PKB::getCallProcNameTable() const { return callProcNameTable; }
+
+Table PKB::getAssignMatches(std::string expr, bool partial) {
+  Table table{2};
+  for (auto kv : assignTable) {
+    if ((partial && kv.second.second.find(expr) != std::string::npos) ||
+        (!partial && kv.second.second == expr)) {
+      table.insertRow({std::to_string(kv.first), kv.second.first});
     }
   }
-  return StatementType::Invalid;
+  return table;
 }
 
-bool PKB::follows(std::string s, std::string t) {
-  return this->followsTable.hasForwardRelation(s, t);
-}
-
-std::set<std::string> PKB::getFollows(std::string s) {
-  return this->followsTable.getForwardRelations(s);
-}
-
-std::set<std::string> PKB::getFollowedBy(std::string s) {
-  return this->followsTable.getReverseRelations(s);
-}
-
-std::vector<std::vector<std::string>> PKB::getFollowsTable() {
-  return this->followsTable.getTable();
-}
-
-bool PKB::followsT(std::string s, std::string t) {
-  return this->followsTTable.hasForwardRelation(s, t);
-}
-
-std::set<std::string> PKB::getFollowsT(std::string s) {
-  return this->followsTTable.getForwardRelations(s);
-}
-
-std::set<std::string> PKB::getFollowedByT(std::string s) {
-  return this->followsTTable.getReverseRelations(s);
-}
-
-std::vector<std::vector<std::string>> PKB::getFollowsTTable() {
-  return this->followsTTable.getTable();
-}
-
-bool PKB::parent(std::string s, std::string t) {
-  return this->parentTable.hasForwardRelation(s, t);
-}
-
-std::set<std::string> PKB::getParent(std::string s) {
-  return this->parentTable.getForwardRelations(s);
-}
-
-std::set<std::string> PKB::getParentOf(std::string s) {
-  return this->parentTable.getReverseRelations(s);
-}
-
-std::vector<std::vector<std::string>> PKB::getParentTable() {
-  return this->parentTable.getTable();
-}
-
-bool PKB::parentT(std::string s, std::string t) {
-  return this->parentTTable.hasForwardRelation(s, t);
-}
-
-std::set<std::string> PKB::getParentT(std::string s) {
-  return this->parentTTable.getForwardRelations(s);
-}
-
-std::set<std::string> PKB::getParentOfT(std::string s) {
-  return this->parentTTable.getReverseRelations(s);
-}
-
-std::vector<std::vector<std::string>> PKB::getParentTTable() {
-  return this->parentTTable.getTable();
-}
-
-bool PKB::uses(std::string s, std::string t) {
-  return this->usesTable.hasForwardRelation(s, t);
-}
-
-std::set<std::string> PKB::getUses(std::string s) {
-  return this->usesTable.getForwardRelations(s);
-}
-
-std::set<std::string> PKB::getUsedBy(std::string s) {
-  return this->usesTable.getReverseRelations(s);
-}
-
-bool PKB::modifies(std::string s, std::string t) {
-  return this->modifiesTable.hasForwardRelation(s, t);
-}
-
-std::set<std::string> PKB::getModifies(std::string s) {
-  return this->modifiesTable.getForwardRelations(s);
-}
-
-std::set<std::string> PKB::getModifiedBy(std::string s) {
-  return this->modifiesTable.getReverseRelations(s);
-}
-
-bool PKB::matchAssign(std::string stmtNo, std::string var, std::string expr,
-                      bool partial) {
-  if (assignTable.find(stmtNo) == assignTable.end()) {
-    return false;
-  } else {
-    return (var == "" || assignTable[stmtNo].first == var) &&
-           ((!partial && assignTable[stmtNo].second == expr) ||
-            (partial &&
-             assignTable[stmtNo].second.find(expr) != std::string::npos));
-  }
-}
-
-std::set<std::string> PKB::getAssignMatches(std::string var, std::string expr,
-                                            bool partial) {
-  std::set<std::string> results;
-  for (auto it = assignTable.begin(); it != assignTable.end(); ++it) {
-    if ((var == "" || it->second.first == var) &&
-        ((!partial && it->second.second == expr) ||
-         (partial && it->second.second.find(expr) != std::string::npos))) {
-      results.insert(it->first);
-    }
-  }
-  return results;
-}
+Table PKB::getWhileMatches() { return whileTable; }
+Table PKB::getIfMatches() { return ifTable; }
+Table PKB::getCallProcName() { return callProcNameTable; }
+CFG PKB::getCFG(std::string proc) { return CFGs[proc]; }

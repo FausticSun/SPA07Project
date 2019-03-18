@@ -3,6 +3,7 @@
 
 #include "catch.hpp"
 
+using namespace PQLLexerToken;
 using namespace std;
 
 TEST_CASE("Testing basic declaration variable") {
@@ -91,6 +92,7 @@ TEST_CASE("Testing procedure a") {
 
 TEST_CASE("Testing read a") {
   const string input = "read a; Select a";
+  // const string input = "read a; Select BOOLEAN with \"hallo\" = a.progName";
   queue<pair<TokenType, string>> res;
   PQLLexer p(input);
 
@@ -119,10 +121,10 @@ TEST_CASE("Testing read a") {
 
 TEST_CASE("Testing prog_line a") {
   const string input = "prog_line a; Select a";
-  // const string input = "stmt	  s       ,      s1			; Select 	s
-  // such 	that Follows(s1, s)"; const string input = "prog_line a; Select
-  // a pattern a(a, _\"(a b)\"_) such that Uses(w, \"ff\")"; const string input =
-  // "assign a, a1 Select v such that Modifies(\"SpecificationTest\", \"x\")";
+  // const string input = "stmt	  s       ,      s1			; Select
+  // s such 	that Follows(s1, s)"; const string input = "prog_line a; Select
+  // a pattern a(a, _\"(a b)\"_) such that Uses(w, \"ff\")"; const string input
+  // = "assign a, a1 Select v such that Modifies(\"SpecificationTest\", \"x\")";
   queue<pair<TokenType, string>> res;
   PQLLexer p(input);
 
@@ -658,8 +660,8 @@ TEST_CASE("Testing print with 2 parameters version 3") {
 
 TEST_CASE("Testing Follows") {
   const string input = "assign a; while w; Select a such that Follows(w, a)";
-  // const string input = "stmt	  s       ,      s1			;Select 	s
-  // such 	that Follows(s1, s)";
+  // const string input = "stmt	  s       ,      s1			;Select
+  // s such 	that Follows(s1, s)";
   queue<pair<TokenType, string>> res;
   PQLLexer p(input);
 

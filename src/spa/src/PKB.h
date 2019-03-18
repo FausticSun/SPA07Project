@@ -1,44 +1,56 @@
 #pragma once
-
-#include "RelationTable.h"
+#include "CFG.h"
+#include "Table.h"
 #include <map>
 #include <set>
 #include <string>
 #include <utility>
 #include <vector>
 
-enum class StatementType {
-  Stmt,
-  Assign,
-  If,
-  While,
-  Read,
-  Call,
-  Print,
-  Invalid
-};
+enum class StatementType { Stmt, Assign, If, While, Read, Call, Print };
 
 class PKB {
 private:
+  // Range of statements from first (inclusive) and last (exclusive)
+  typedef std::pair<int, int> StmtRange;
+
+  // General entities
   int stmtCount = 0;
-  std::set<std::string> varTable;
-  std::set<std::string> procTable;
-  std::set<std::string> constTable;
-  std::map<StatementType, std::set<std::string>> stmtTable;
-  RelationTable followsTable;
-  RelationTable followsTTable;
-  RelationTable parentTable;
-  RelationTable parentTTable;
-  RelationTable usesTable;
-  RelationTable modifiesTable;
-  std::map<std::string, std::pair<std::string, std::string>> assignTable;
+  Table varTable{1};
+  std::map<std::string, StmtRange> procTable;
+  Table constTable{1};
+  std::map<StatementType, std::set<int>> stmtTable;
+  std::map<std::string, CFG> CFGs;
+
+  // PQL Relation Tables
+  Table followsTable{2};
+  Table followsTTable{2};
+  Table parentTable{2};
+  Table parentTTable{2};
+  Table usesPTable{2};
+  Table usesSTable{2};
+  Table modifiesPTable{2};
+  Table modifiesSTable{2};
+  Table callsTable{2};
+  Table callsTTable{2};
+  Table nextTable{2};
+
+  // Other Relation Tables
+  Table callProcNameTable{2};
+
+  // Pattern Tables
+  std::map<int, std::pair<std::string, std::string>> assignTable;
+  Table whileTable{2};
+  Table ifTable{2};
 
 public:
-  void insertVar(const std::string &);
-  void insertProc(const std::string &);
-  void insertStatement(const std::string &, StatementType);
-  void insertConstant(int);
-  void insertAssign(int, std::string &, std::string &);
+  // Setters
+  // Entity setters
+  void setVar(const std::string &);
+  void setProc(const std::string &, int, int);
+  void setStmtType(int, StatementType);
+  void setConst(int);
+  // Relation setters
   void setFollows(int, int);
   void setFollowsT(int, int);
   void setParent(int, int);
@@ -47,38 +59,45 @@ public:
   void setUses(std::string, std::string);
   void setModifies(int, std::string);
   void setModifies(std::string, std::string);
-  const std::set<std::string> getVarTable() const;
-  const std::set<std::string> getProcTable() const;
-  const std::set<std::string> getConstTable() const;
-  bool isVar(std::string);
-  bool isProc(std::string);
-  int getStatementCount();
-  const std::set<std::string> getStatementsOfType(StatementType) const;
-  StatementType getStatementType(std::string);
-  bool follows(std::string, std::string);
-  std::set<std::string> getFollows(std::string);
-  std::set<std::string> getFollowedBy(std::string);
-  std::vector<std::vector<std::string>> getFollowsTable();
-  bool followsT(std::string, std::string);
-  std::set<std::string> getFollowsT(std::string);
-  std::set<std::string> getFollowedByT(std::string);
-  std::vector<std::vector<std::string>> getFollowsTTable();
-  bool parent(std::string, std::string);
-  std::set<std::string> getParent(std::string);
-  std::set<std::string> getParentOf(std::string);
-  std::vector<std::vector<std::string>> getParentTable();
-  bool parentT(std::string, std::string);
-  std::set<std::string> getParentT(std::string);
-  std::set<std::string> getParentOfT(std::string);
-  std::vector<std::vector<std::string>> getParentTTable();
-  bool uses(std::string, std::string);
-  std::set<std::string> getUses(std::string);
-  std::set<std::string> getUsedBy(std::string);
-  bool modifies(std::string, std::string);
-  std::set<std::string> getModifies(std::string);
-  std::set<std::string> getModifiedBy(std::string);
-  bool matchAssign(std::string stmtNo, std::string var, std::string expr,
-                   bool partial);
-  std::set<std::string> getAssignMatches(std::string var, std::string expr,
-                                         bool partial);
+  void setCalls(std::string, std::string);
+  void setCallsT(std::string, std::string);
+  void setNext(int, int);
+  // Pattern setters
+  void setAssign(int, std::string &, std::string &);
+  void setIf(int, const std::string &);
+  void setWhile(int, const std::string &);
+  // Other setters
+  void setCallProcName(int, const std::string &);
+  void setCFG(std::string, CFG &);
+
+  // Getters
+  // Entity getter
+  Table getVarTable() const;
+  Table getProcTable() const;
+  Table getConstTable() const;
+  Table getStmtType(StatementType);
+  Table getProcStmt();
+  // Relation getter
+  Table getFollows() const;
+  Table getFollowsT() const;
+  Table getParent() const;
+  Table getParentT() const;
+  Table getUsesP() const;
+  Table getUsesS() const;
+  Table getModifiesP() const;
+  Table getModifiesS() const;
+  Table getCalls() const;
+  Table getCallsT() const;
+  Table getNext() const;
+  // Table getNextT() const;
+  // Table getAffects() const;
+  // Table getAffectsT() const;
+  Table getCallProcNameTable() const;
+  // Pattern getter
+  Table getAssignMatches(std::string expr, bool partial);
+  Table getWhileMatches();
+  Table getIfMatches();
+  // Other getters
+  Table getCallProcName();
+  CFG getCFG(std::string);
 };

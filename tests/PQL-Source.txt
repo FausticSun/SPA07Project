@@ -1,0 +1,30 @@
+procedure main{
+x = a+1;//1
+a = b;//2
+x = b+a;//3
+if(a>b){//4
+call one;//5
+}
+else {
+call two;//6
+}
+while(a>2){//7
+if(x>a){//8
+a =a +1;//9
+}else{
+call three;//10
+}
+}
+}
+
+procedure one{
+x = a; //11
+}
+procedure two{
+x= b;//12
+}
+procedure three{
+x=c;//13
+print c;//14
+read x;//15
+}
