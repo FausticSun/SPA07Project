@@ -2,6 +2,9 @@
 #include <cctype>
 #include <limits>
 
+using Lexer::Token;
+using Lexer::TokenType;
+
 namespace {
 Token recognizeIdentifier(std::istream &stream) {
   std::string value;

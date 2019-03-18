@@ -3,6 +3,9 @@
 #include "PKB.h"
 #include <memory>
 
+using Lexer::Token;
+using Lexer::TokenType;
+
 namespace Parser {
 namespace SIMPLETokens {
 // Keywords

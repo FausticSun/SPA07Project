@@ -3,6 +3,9 @@
 #include <map>
 #include <set>
 
+using Lexer::Token;
+using Lexer::TokenType;
+
 namespace Parser {
 namespace ExprTokens {
 // Arithmetic Operators

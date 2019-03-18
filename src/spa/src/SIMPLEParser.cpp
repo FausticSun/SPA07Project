@@ -1,6 +1,9 @@
 #include "SIMPLEParser.h"
 #include "ExprParser.h"
 
+using Lexer::Token;
+using Lexer::TokenType;
+
 namespace Parser {
 Token SIMPLEParser::expect(Token token) {
   if (tokens.empty()) {

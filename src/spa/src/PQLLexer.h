@@ -6,6 +6,7 @@
 #include <tuple>
 
 using namespace std;
+using namespace PQLLexerToken;
 
 /*DeclarationType {
         Variable,
