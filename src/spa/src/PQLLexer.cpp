@@ -813,7 +813,7 @@ vector<string> PQLLexer::tokenizeIf(vector<string> token) {
     }
   }
   if (end) {
-    expectionOfDeclaration(token);
+expectionOfDeclaration(token);
   }
 
   return token;
