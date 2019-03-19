@@ -207,12 +207,9 @@ void populateCFG(std::unique_ptr<PKB> &pkb) {
   auto whileIfTable = pkb->getStmtType(StatementType::While);
   auto ifTable = pkb->getStmtType(StatementType::If);
   whileIfTable.concatenate(ifTable);
-
-  for (auto data : pkb->getProcStmt().getData()) {
-    CFG graph = CFG{std::stoi(data[1]), std::stoi(data[2]), pkb->getNext(),
-                    whileIfTable, pkb->getStmtCount()};
-    pkb->setCFG(data[0], graph);
-  }
+  CFG graph = CFG{pkb->getProcStmt(), pkb->getNext(), whileIfTable,
+                  pkb->getStmtCount()};
+  pkb->setCFG(graph);
 }
 
 void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {
