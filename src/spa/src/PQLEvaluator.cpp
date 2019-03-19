@@ -139,6 +139,7 @@ Table PqlEvaluator::resultExtractor(Table result, Query q) {
 				}
 				else {
 					Table t = getdataByTtype(qe.type);
+					t.setHeader({ qe.name });
 					tables.push_back(t);
 				}
 			}
