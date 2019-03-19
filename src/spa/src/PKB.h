@@ -100,4 +100,5 @@ public:
   // Other getters
   Table getCallProcName();
   CFG getCFG(std::string);
+  int getStmtCount();
 };

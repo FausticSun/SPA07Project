@@ -12,13 +12,13 @@ private:
   // Map from compressed node index to original line number
   std::map<int, std::vector<int>> compressedToInitial;
   int numCompressedNodes = 0;
-  void populateInitialToCompressed(Table, std::vector<int>);
+  void populateInitialToCompressed(int, Table, std::vector<int>);
   void populateCompressedToInitial();
   void populateCompressedGraph();
 
 public:
   CFG();
-  CFG(int, Table, Table);
+  CFG(int, int, Table, Table, int);
   std::vector<std::vector<int>> getForwardCompressedGraph();
   std::vector<std::vector<int>> getReverseCompressedGraph();
   std::vector<int> getInitial(int c);
