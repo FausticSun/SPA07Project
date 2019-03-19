@@ -194,6 +194,18 @@ void PQLLexer::Tokenize(string input) {
                       token[0][7] == '(')) {
             token = tokenizeFollows(token);
 		  }
+		  else if (token[0] == "Next") {
+			  token = tokenizeNext(token);
+		  }
+		  else if (token[0] == "Next*") {
+			  token = tokenizeNextT(token);
+		  }
+		  else if (token[0] == "Calls") {
+			  token = tokenizeCalls(token);
+		  }
+		  else if (token[0] == "Calls*") {
+			  token = tokenizeCallsT(token);
+		  }
 		  else if (token[0] == "and") {
 			  token.erase(token.begin());
 			  tokenQueue.push(make_pair(TokenType::Keyword, "and"));
@@ -2024,3 +2036,451 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 	return token;
 }
 
+vector<string> PQLLexer::tokenizeNext(vector<string> token) {
+	int check = 1;
+	int n0 = -1, n1 = -1, n2 = -1, n3, iter = 0;
+	string s;
+	bool appearQuo;
+	appearQuo = false;
+	// KEYWORD, "(" "," ")" ";"
+
+	while (!token.empty() && check == 1) {
+		if (token[iter].find(")") != token[iter].npos) {
+			check = 0;
+		}
+		iter++;
+	}
+	iter = iter - 1;
+	s = token[0];
+	for (int i = 1; i <= iter; i++) {
+
+		s = s + token[i];
+	}
+	for (int i = 0; i < iter + 1; i++) {
+		token.erase(token.begin());
+	}
+	for (int i = 0; i < s.length(); i++) {
+		// no space
+		if (s[i] == '(') {
+			n0 = i;
+		}
+		if (s[i] == ',') {
+			n1 = i;
+		}
+		if (s[i] == ')') {
+			n2 = i;
+		}
+	}
+	if (n0 != -1 && n1 != -1 && n2 != -1) {
+		tokenQueue.push(make_pair(TokenType::Keyword, "Next"));
+		tokenQueue.push(make_pair(TokenType::Separator, "("));
+		tokenQueue.push(
+			make_pair(TokenType::Identifier, s.substr(n0 + 1, n1 - 1 - n0)));
+		tokenQueue.push(make_pair(TokenType::Separator, ","));
+		tokenQueue.push(
+			make_pair(TokenType::Identifier, s.substr(n1 + 1, n2 - 1 - n1)));
+		tokenQueue.push(make_pair(TokenType::Separator, ")"));
+	}
+	else {
+		throw invalid_argument("lack , or ; or ( or )");
+	}
+
+	if (s.find(";") != s.npos) {
+		throw invalid_argument("no semicollumn");
+	}
+
+	else if (!token.empty() && token[0] == "such" &&
+		token[1].find("that") != token[1].npos) {
+
+		//tokenQueue.push(make_pair(TokenType::Keyword, "such that"));
+		//if (token[1].length() != 4) {
+		//  token[1] = token[1].substr(4, token[1].length() - 4);
+		//  token.erase(token.begin());
+		//} else {
+		//  token.erase(token.begin());
+		//  token.erase(token.begin());
+		//}
+
+	}
+	else if (!token.empty() && token[0] == "pattern") {
+		token = tokenizePattern(token);
+	}
+	else {
+		if (!token.empty()) {
+			throw invalid_argument("should be pattern or such that or and");
+		}
+	}
+	return token;
+}
+
+vector<string> PQLLexer::tokenizeNextT(vector<string> token) {
+	int check = 1;
+	int n0 = -1, n1 = -1, n2 = -1, n3, iter = 0;
+	string s;
+	bool appearQuo;
+	appearQuo = false;
+	// KEYWORD, "(" "," ")" ";"
+
+	while (!token.empty() && check == 1) {
+		if (token[iter].find(")") != token[iter].npos) {
+			check = 0;
+		}
+		iter++;
+	}
+	iter = iter - 1;
+	s = token[0];
+	for (int i = 1; i <= iter; i++) {
+
+		s = s + token[i];
+	}
+	for (int i = 0; i < iter + 1; i++) {
+		token.erase(token.begin());
+	}
+	for (int i = 0; i < s.length(); i++) {
+		// no space
+		if (s[i] == '(') {
+			n0 = i;
+		}
+		if (s[i] == ',') {
+			n1 = i;
+		}
+		if (s[i] == ')') {
+			n2 = i;
+		}
+	}
+	if (n0 != -1 && n1 != -1 && n2 != -1) {
+		tokenQueue.push(make_pair(TokenType::Keyword, "Next*"));
+		tokenQueue.push(make_pair(TokenType::Separator, "("));
+		tokenQueue.push(
+			make_pair(TokenType::Identifier, s.substr(n0 + 1, n1 - 1 - n0)));
+		tokenQueue.push(make_pair(TokenType::Separator, ","));
+		tokenQueue.push(
+			make_pair(TokenType::Identifier, s.substr(n1 + 1, n2 - 1 - n1)));
+		tokenQueue.push(make_pair(TokenType::Separator, ")"));
+	}
+	else {
+		throw invalid_argument("lack , or ; or ( or )");
+	}
+
+	if (s.find(";") != s.npos) {
+		throw invalid_argument("no semicollumn");
+	}
+
+	else if (!token.empty() && token[0] == "such" &&
+		token[1].find("that") != token[1].npos) {
+		tokenQueue.push(make_pair(TokenType::Keyword, "such that"));
+		if (token[1].length() != 4) {
+			token[1] = token[1].substr(4, token[1].length() - 4);
+			token.erase(token.begin());
+		}
+		else {
+			token.erase(token.begin());
+			token.erase(token.begin());
+		}
+
+	}
+	else if (!token.empty() && token[0] == "pattern") {
+		token = tokenizePattern(token);
+	}
+	else {
+		if (!token.empty()) {
+			throw invalid_argument("should be pattern or such that or and");
+		}
+	}
+	return token;
+}
+
+vector<string> PQLLexer::tokenizeCalls(vector<string> token) {
+	int check = 1;
+	int n0 = -1, n1 = -1, n2 = -1, n3, iter = 0;
+	string s;
+	string first_s;
+	string second_s;
+	bool findFirstBra;
+	int endQuo;
+	// KEYWORD, "(" "," ")" ";"
+	bool appearQuo;
+	bool appearCom;
+	int count;
+	appearQuo = false;
+	endQuo = 0;
+	count = 0;
+	appearCom = false;
+	findFirstBra = false;
+	while (iter != token.size() && check == 1) {
+
+		if ((endQuo == 2 || endQuo == 0) &&
+			token[iter].find(")") != token[iter].npos && appearCom) {
+			check = 0;
+			break;
+		}
+		if (token[iter].find("\"") != token[iter].npos && appearCom) {
+			endQuo++;
+		}
+		if (token[iter].find(",") != token[iter].npos) {
+			appearCom = true;
+		}
+		iter++;
+	}
+	appearCom = false;
+	endQuo = 0;
+	if (iter == token.size()) {
+		iter = iter - 1;
+	}
+	s = token[0];
+	for (int i = 1; i <= iter; i++) {
+
+		if (count == 0) {
+			s = s + token[i];
+			if (token[i].find("\"") != token[i].npos) {
+				for (int j = 0; j < token[i].length(); j++) {
+					if (token[i] == "\"") {
+						if (count == 0) {
+							count = 1;
+						}
+						else {
+							count = 0;
+						}
+					}
+				}
+			}
+		}
+		else {
+			s = s + " " + token[i];
+			if (token[i].find("\"") != token[i].npos) {
+				for (int j = 0; j < token[i].length(); j++) {
+					if (token[i] == "\"") {
+						if (count == 0) {
+							count = 1;
+						}
+						else {
+							count = 0;
+						}
+					}
+				}
+			}
+		}
+	}
+	for (int i = 0; i < iter + 1; i++) {
+		token.erase(token.begin());
+	}
+	for (int i = 0; i < s.length(); i++) {
+		// no space
+		if (s[i] == '(' && findFirstBra == false) {
+			n0 = i;
+			findFirstBra = true;
+		}
+		if (s[i] == ')' && appearCom && (endQuo == 2 || endQuo == 0)) {
+			n2 = i;
+		}
+		if (s[i] == '\"' && appearCom) {
+			endQuo++;
+		}
+		if (s[i] == ',') {
+			n1 = i;
+			appearCom = true;
+		}
+	}
+	if (n0 != -1 && n1 != -1 && n2 != -1) {
+		tokenQueue.push(make_pair(TokenType::Keyword, "Calls"));
+		tokenQueue.push(make_pair(TokenType::Separator, "("));
+		first_s = s.substr(n0 + 1, n1 - 1 - n0);
+		if (first_s.length() == 1) {
+
+			tokenQueue.push(make_pair(TokenType::Identifier, first_s));
+
+		}
+		else {
+			if (first_s[0] == '\"' && first_s[first_s.length() - 1] == '\"') {
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+				tokenQueue.push(make_pair(TokenType::Identifier,
+					first_s.substr(1, first_s.length() - 2)));
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+			}
+			else {
+				tokenQueue.push(make_pair(TokenType::Identifier, first_s));
+			}
+		}
+		tokenQueue.push(make_pair(TokenType::Separator, ","));
+		second_s = s.substr(n1 + 1, n2 - 1 - n1);
+		if (second_s.length() == 1) {
+
+			tokenQueue.push(make_pair(TokenType::Identifier, second_s));
+
+		}
+		else {
+			if (second_s[0] == '\"' && second_s[second_s.length() - 1] == '\"') {
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+				tokenQueue.push(make_pair(TokenType::Identifier,
+					second_s.substr(1, second_s.length() - 2)));
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+			}
+		}
+		tokenQueue.push(make_pair(TokenType::Separator, ")"));
+	}
+	else {
+		throw invalid_argument("lack , or ; or ( or )");
+	}
+
+	if (s.find(";") != s.npos) {
+		throw invalid_argument("no semicollumn");
+	}
+
+	else if (!token.empty() && token[0] == "pattern") {
+		token = tokenizePattern(token);
+	}
+	else {
+		if (!token.empty()) {
+			throw invalid_argument("should be pattern or such that or and");
+		}
+	}
+	return token;
+}
+
+
+vector<string> PQLLexer::tokenizeCallsT(vector<string> token) {
+	int check = 1;
+	int n0 = -1, n1 = -1, n2 = -1, n3, iter = 0;
+	string s;
+	string first_s;
+	string second_s;
+	bool findFirstBra;
+	int endQuo;
+	// KEYWORD, "(" "," ")" ";"
+	bool appearQuo;
+	bool appearCom;
+	int count;
+	appearQuo = false;
+	endQuo = 0;
+	count = 0;
+	appearCom = false;
+	findFirstBra = false;
+	while (iter != token.size() && check == 1) {
+
+		if ((endQuo == 2 || endQuo == 0) &&
+			token[iter].find(")") != token[iter].npos && appearCom) {
+			check = 0;
+			break;
+		}
+		if (token[iter].find("\"") != token[iter].npos && appearCom) {
+			endQuo++;
+		}
+		if (token[iter].find(",") != token[iter].npos) {
+			appearCom = true;
+		}
+		iter++;
+	}
+	appearCom = false;
+	endQuo = 0;
+	if (iter == token.size()) {
+		iter = iter - 1;
+	}
+	s = token[0];
+	for (int i = 1; i <= iter; i++) {
+
+		if (count == 0) {
+			s = s + token[i];
+			if (token[i].find("\"") != token[i].npos) {
+				for (int j = 0; j < token[i].length(); j++) {
+					if (token[i] == "\"") {
+						if (count == 0) {
+							count = 1;
+						}
+						else {
+							count = 0;
+						}
+					}
+				}
+			}
+		}
+		else {
+			s = s + " " + token[i];
+			if (token[i].find("\"") != token[i].npos) {
+				for (int j = 0; j < token[i].length(); j++) {
+					if (token[i] == "\"") {
+						if (count == 0) {
+							count = 1;
+						}
+						else {
+							count = 0;
+						}
+					}
+				}
+			}
+		}
+	}
+	for (int i = 0; i < iter + 1; i++) {
+		token.erase(token.begin());
+	}
+	for (int i = 0; i < s.length(); i++) {
+		// no space
+		if (s[i] == '(' && findFirstBra == false) {
+			n0 = i;
+			findFirstBra = true;
+		}
+		if (s[i] == ')' && appearCom && (endQuo == 2 || endQuo == 0)) {
+			n2 = i;
+		}
+		if (s[i] == '\"' && appearCom) {
+			endQuo++;
+		}
+		if (s[i] == ',') {
+			n1 = i;
+			appearCom = true;
+		}
+	}
+	if (n0 != -1 && n1 != -1 && n2 != -1) {
+		tokenQueue.push(make_pair(TokenType::Keyword, "Calls*"));
+		tokenQueue.push(make_pair(TokenType::Separator, "("));
+		first_s = s.substr(n0 + 1, n1 - 1 - n0);
+		if (first_s.length() == 1) {
+
+			tokenQueue.push(make_pair(TokenType::Identifier, first_s));
+
+		}
+		else {
+			if (first_s[0] == '\"' && first_s[first_s.length() - 1] == '\"') {
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+				tokenQueue.push(make_pair(TokenType::Identifier,
+					first_s.substr(1, first_s.length() - 2)));
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+			}
+			else {
+				tokenQueue.push(make_pair(TokenType::Identifier, first_s));
+			}
+		}
+		tokenQueue.push(make_pair(TokenType::Separator, ","));
+		second_s = s.substr(n1 + 1, n2 - 1 - n1);
+		if (second_s.length() == 1) {
+
+			tokenQueue.push(make_pair(TokenType::Identifier, second_s));
+
+		}
+		else {
+			if (second_s[0] == '\"' && second_s[second_s.length() - 1] == '\"') {
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+				tokenQueue.push(make_pair(TokenType::Identifier,
+					second_s.substr(1, second_s.length() - 2)));
+				tokenQueue.push(make_pair(TokenType::Separator, "\""));
+			}
+		}
+		tokenQueue.push(make_pair(TokenType::Separator, ")"));
+	}
+	else {
+		throw invalid_argument("lack , or ; or ( or )");
+	}
+
+	if (s.find(";") != s.npos) {
+		throw invalid_argument("no semicollumn");
+	}
+
+	else if (!token.empty() && token[0] == "pattern") {
+		token = tokenizePattern(token);
+	}
+	else {
+		if (!token.empty()) {
+			throw invalid_argument("should be pattern or such that or and");
+		}
+	}
+	return token;
+}
