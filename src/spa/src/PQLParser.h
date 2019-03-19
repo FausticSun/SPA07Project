@@ -49,7 +49,7 @@ private:
                                                  "and"};
   std::vector<string> expectedClauseTokens = {
       "Follows",  "Follows*", "Parent", "Parent*", "Uses",
-      "Modifies", "Call",     "Call*",  "Next",    "Next*"};
+      "Modifies", "Calls",     "Calls*",  "Next",    "Next*"};
   std::map<std::string, std::vector<QueryEntityType>> validationTable = {
       {"FPN12",
        {QueryEntityType::Assign, QueryEntityType::If, QueryEntityType::While,
