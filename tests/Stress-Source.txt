@@ -14,7 +14,7 @@ procedure main {
                                 v = a % b * (c + d) + e * f / (g - h);
                                 \\ Complex ambiguous expression tree
                                 w = 1 + 1 * 1 + 1 * 1 + 1 * 1 + 1;
-		\\ Nested brackets
+								\\ Nested brackets
                                 x = (a * ( b / (c + d)) + e) * f;
                             } else {
                                 \\ 4 nested layers of conditionals
@@ -24,10 +24,34 @@ procedure main {
                             }
                         } else {
                             print a;
+							call one;
                         }
                     } 
+					call two;
                 }
             } 
         }
     }
+	call three;
+}
+
+
+procedure one{
+	x = a;
+	x = 3;
+}
+
+procedure two{
+	x= b;
+	call three;
+}
+
+procedure three{
+	x=c;
+	print c;
+	read x;
+}
+
+procedure four{
+	x = 1;
 }

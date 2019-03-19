@@ -6,12 +6,12 @@ none
 2-comment
 assign a;
 Select a such that Follows(a, _)
-9, 8, 10
+9, 8, 10, 18, 20, 22
 5000
 3-comment
 print p;
 Select p such that Follows(_, 9)
-13, 14
+13, 14, 23
 5000
 4-comment
 stmt s;
@@ -21,12 +21,12 @@ none
 5-comment
 stmt s1, s2;
 Select s2 such that Follows*(s1, s2)
-9, 10, 11
+9, 10, 11, 15, 16, 17, 19, 21, 23, 24
 5000
 6-comment
 while w;
 Select w such that Follows*(w, _)
-none
+1, 5
 5000
 7-comment
 while w;
@@ -66,12 +66,12 @@ Select ifs such that Parent*(_, _)
 14-comment
 procedure p;
 Select p such that Uses(p, "a")
-main
+main, one
 5000
 15-comment
 assign a;
 Select a such that Uses("main", "b")
-8, 9, 10, 11
+8, 9, 10, 11, 18, 19, 20, 22
 5000
 16-comment
 if ifs;
@@ -96,12 +96,12 @@ none
 20-comment
 procedure p;
 Select p such that Modifies("main", "w")
-main
+main, one, two, three
 5000
 21-comment
 stmt s;
 Select s such that Modifies(s, _)
-1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15, 16, 17, 18, 19, 20, 21, 22, 24
 5000
 22-comment
 stmt s;
@@ -216,17 +216,17 @@ Select a pattern a(_, _"((a*(b/(c+d)))+e)"_)
 45-comment
 assign a;
 Select a pattern a(_, _)
-8, 9, 10, 11
+8, 9, 10, 11, 18, 19, 20, 22
 5000
 46-comment
 assign a, a1;
 Select a pattern a(_, _) such that Follows(a1, a) 
-9, 10, 11
+9, 10, 11, 19
 5000
 47-comment
 assign a, a1;
 Select a such that Follows(a1, a) pattern a(_, _)
-9, 10, 11
+9, 10, 11, 19
 5000
 48-comment
 assign a, a1; variable v;
@@ -302,4 +302,24 @@ Select w such that Modifies(w, v) pattern a(v, _"f"_)
 assign a; while w; variable v;
 Select w pattern a(_, _"e"_) such that Modifies(w, "b")
 none
+5000
+63-comment
+
+Select BOOLEAN
+TRUE
+5000
+64-comment
+variable v; assign a;
+Select BOOLEAN pattern a(v, "notexist")
+FALSE
+5000
+65-comment
+variable v; assign a;
+Select BOOLEAN pattern a(v, _)
+TRUE
+5000
+66-comment
+variable v; assign a; procedure p;
+Select p pattern a(v, _)
+main, one, two, three
 5000
