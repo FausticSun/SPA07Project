@@ -80,7 +80,7 @@ void PKB::setCallProcName(int stmtNo, const std::string &procName) {
   callProcNameTable.insertRow({std::to_string(stmtNo), procName});
 }
 
-void PKB::setCFG(std::string proc, CFG &graph) { CFGs[proc] = graph; }
+void PKB::setCFG(CFG &graph) { cfg = graph; }
 
 Table PKB::getVarTable() const { return varTable; }
 
@@ -144,5 +144,5 @@ Table PKB::getAssignMatches(std::string expr, bool partial) {
 Table PKB::getWhileMatches() { return whileTable; }
 Table PKB::getIfMatches() { return ifTable; }
 Table PKB::getCallProcName() { return callProcNameTable; }
-CFG PKB::getCFG(std::string proc) { return CFGs[proc]; }
+CFG PKB::getCFG() { return cfg; }
 int PKB::getStmtCount() { return stmtCount; }
