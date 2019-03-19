@@ -203,20 +203,14 @@ void populateUsesAndModifiesC(std::unique_ptr<PKB> &pkb) {
 }
 
 void populateCFG(std::unique_ptr<PKB> &pkb) {
-  // Get first line number of each procedure
-  auto procStmtTable = pkb->getProcStmt();
-  procStmtTable.setHeader({"proc", "n1"});
-  auto nextTable = pkb->getNext();
-  nextTable.setHeader({"n1", "n2"});
-  procStmtTable.mergeWith(nextTable);
-
   // Get all while and if line numbers
   auto whileIfTable = pkb->getStmtType(StatementType::While);
   auto ifTable = pkb->getStmtType(StatementType::If);
   whileIfTable.concatenate(ifTable);
 
-  for (auto data : procStmtTable.getData({"proc", "n1"})) {
-    CFG graph = CFG{std::stoi(data[1]), pkb->getNext(), whileIfTable};
+  for (auto data : pkb->getProcStmt().getData()) {
+    CFG graph = CFG{std::stoi(data[1]), std::stoi(data[2]), pkb->getNext(),
+                    whileIfTable, pkb->getStmtCount()};
     pkb->setCFG(data[0], graph);
   }
 }
