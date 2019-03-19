@@ -51,7 +51,3 @@ procedure three{
 	print c;
 	read x;
 }
-
-procedure four{
-	x = 1;
-}

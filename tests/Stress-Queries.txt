@@ -320,6 +320,26 @@ TRUE
 5000
 66-comment
 variable v; assign a; procedure p;
-Select p pattern a(v, _)
+Select <p> pattern a(v, _)
 main, one, two, three
+5000
+67-comment
+variable v; assign a; procedure p;
+Select <p, p.procName> pattern a(v, _)
+main main, one one, two two, three three
+5000
+68-comment
+variable v; assign a; print p;
+Select p pattern a(v, _)
+13, 14, 23
+5000
+69-comment
+variable v; assign a; print p;
+Select <p, p.varName> pattern a(v, _)
+13 b, 14 a, 23 c
+5000
+70-comment
+constant c; variable v; assign a; 
+Select <c.value> pattern a(v, _)
+12321, 100, 1, 3, 2, 4, 0
 5000
