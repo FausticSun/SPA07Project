@@ -1329,7 +1329,7 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 				string_begin = i + 1;
 			}
 			else if (s[i] == ',') {
-				first_string = s.substr(string_begin, i - string_begin - 1);
+				first_string = s.substr(string_begin, i - string_begin);
 				break;
 			}
 		}
@@ -1370,7 +1370,7 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 			tokenQueue.push(make_pair(TokenType::Identifier, s.substr(7, n0 - 7)));
 			tokenQueue.push(make_pair(TokenType::Separator, "("));
 			first_s = s.substr(n0 + 1, n1 - 1 - n0);
-			if (first_s.length() == 1) {
+			if (first_s.find("\"") == first_s.npos) {
 				if (first_s[0] == '_') {
 					tokenQueue.push(make_pair(TokenType::Identifier, "_"));
 
@@ -1393,7 +1393,7 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 			}
 			tokenQueue.push(make_pair(TokenType::Separator, ","));
 			second_s = s.substr(n1 + 1, n2 - 1 - n1);
-			if (second_s.length() == 1) {
+			if (second_s.find("\"") == second_s.npos) {
 				if (second_s[0] == '_') {
 					tokenQueue.push(make_pair(TokenType::Identifier, "_"));
 				}
@@ -1862,7 +1862,7 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
     tokenQueue.push(make_pair(TokenType::Keyword, "Uses"));
     tokenQueue.push(make_pair(TokenType::Separator, "("));
     first_s = s.substr(n0 + 1, n1 - 1 - n0);
-    if (first_s.length() == 1) {
+    if (first_s.find("\"") == first_s.npos) {
 
       tokenQueue.push(make_pair(TokenType::Identifier, first_s));
 
@@ -1878,7 +1878,7 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
     }
     tokenQueue.push(make_pair(TokenType::Separator, ","));
     second_s = s.substr(n1 + 1, n2 - 1 - n1);
-    if (second_s.length() == 1) {
+    if (second_s.find("\"") == second_s.npos) {
 
       tokenQueue.push(make_pair(TokenType::Identifier, second_s));
 
@@ -2013,7 +2013,7 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
     tokenQueue.push(make_pair(TokenType::Keyword, "Modifies"));
     tokenQueue.push(make_pair(TokenType::Separator, "("));
     first_s = s.substr(n0 + 1, n1 - 1 - n0);
-    if (first_s.length() == 1) {
+    if (first_s.find("\"") == first_s.npos) {
 
       tokenQueue.push(make_pair(TokenType::Identifier, first_s));
 
@@ -2029,7 +2029,7 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
     }
     tokenQueue.push(make_pair(TokenType::Separator, ","));
     second_s = s.substr(n1 + 1, n2 - 1 - n1);
-    if (second_s.length() == 1) {
+    if (second_s.find("\"") == second_s.npos) {
 
       tokenQueue.push(make_pair(TokenType::Identifier, second_s));
 
