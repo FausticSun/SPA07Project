@@ -122,4 +122,35 @@ procedure SpecificationTest {
 	while (((x == 0) && (y == 0)) || (z == 0)) {
 		read y;
 	}
+	if(ABC>0){
+		call one;
+	} else {
+		call three;
+	}
+}
+
+procedure one {
+	x=a;
+	a = (x + a) * j /h;
+	while(a>1) {
+		if(x>a){
+			a= a+1;
+			call two;
+		} else{
+			x = x+1;
+			call three;
+		}
+		x = x+a;
+	}
+}
+
+procedure two {
+read a;
+print x;
+call three;
+}
+
+procedure three {
+j = j + x * a;
+print j;
 }
