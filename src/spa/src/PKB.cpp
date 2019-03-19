@@ -109,9 +109,10 @@ Table PKB::getStmtType(StatementType type) {
 }
 
 Table PKB::getProcStmt() {
-  Table table{2};
+  Table table{3};
   for (auto p : procTable) {
-    table.insertRow({p.first, std::to_string(p.second.first)});
+    table.insertRow({p.first, std::to_string(p.second.first),
+                     std::to_string(p.second.second)});
   }
   return table;
 }
@@ -144,3 +145,4 @@ Table PKB::getWhileMatches() { return whileTable; }
 Table PKB::getIfMatches() { return ifTable; }
 Table PKB::getCallProcName() { return callProcNameTable; }
 CFG PKB::getCFG(std::string proc) { return CFGs[proc]; }
+int PKB::getStmtCount() { return stmtCount; }
