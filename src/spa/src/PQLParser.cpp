@@ -948,10 +948,6 @@ QueryEntity PQLParser::determineWithClauseEntity() {
         entityMaps.find(token.name);
     if (it != entityMaps.end()) {
       QueryEntityType qet = it->second;
-      if (qet == QueryEntityType::Constant) {
-        throw std::invalid_argument(
-            "invalid to have constant synonym as the argument for clauses");
-      }
       string next = "";
       if (!tokenQueue.empty()) {
         next = tokenQueue.front().name;
