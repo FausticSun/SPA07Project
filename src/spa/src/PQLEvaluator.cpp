@@ -120,7 +120,7 @@ Table PqlEvaluator::resultExtractor(Table result, Query q) {
   if (result.empty()) {
     return Table(0);
   }else {
-		vector<string> header;
+		vector<string> header = result.getHeader();
 		for (QueryEntity qe : q.target) {
 			if (isAttr(qe.type)) {
 				vector<string> temp = split(qe.name, '.');
