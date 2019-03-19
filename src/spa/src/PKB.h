@@ -89,7 +89,8 @@ public:
   Table getCalls() const;
   Table getCallsT() const;
   Table getNext() const;
-  // Table getNextT() const;
+  Table getNextT() const;
+  Table getNextT(int, bool) const;
   // Table getAffects() const;
   // Table getAffectsT() const;
   Table getCallProcNameTable() const;

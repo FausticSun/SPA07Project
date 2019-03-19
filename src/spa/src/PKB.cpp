@@ -128,6 +128,10 @@ Table PKB::getModifiesP() const { return modifiesPTable; }
 Table PKB::getCalls() const { return callsTable; }
 Table PKB::getCallsT() const { return callsTTable; }
 Table PKB::getNext() const { return nextTable; }
+Table PKB::getNextT() const { return cfg.getNextT(); }
+Table PKB::getNextT(int s, bool isLeftConstant) const {
+  return cfg.getNextT(s, isLeftConstant);
+}
 Table PKB::getCallProcNameTable() const { return callProcNameTable; }
 
 Table PKB::getAssignMatches(std::string expr, bool partial) {
