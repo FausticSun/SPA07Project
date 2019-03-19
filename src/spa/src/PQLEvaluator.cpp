@@ -122,16 +122,19 @@ Table PqlEvaluator::resultExtractor(Table result, Query q) {
   }else {
 		vector<string> header = result.getHeader();
 		for (QueryEntity qe : q.target) {
+			header = result.getHeader();
 			if (isAttr(qe.type)) {
 				vector<string> temp = split(qe.name, '.');
 				if (find(header.begin(), header.end(), temp[0])!= header.end()) {
 					Table t = getdataWith(qe);
 					tables.push_back(t);
+					result.mergeWith(t);
 				}
 				else {
 					Table t = getdataWith(qe);
 					t.dropColumn(t.getHeader()[0]);
 					tables.push_back(t);
+					result.mergeWith(t);
 				}
 			}
 			else if (isSynonym(qe.type)) {
@@ -141,13 +144,14 @@ Table PqlEvaluator::resultExtractor(Table result, Query q) {
 					Table t = getdataByTtype(qe.type);
 					t.setHeader({ qe.name });
 					tables.push_back(t);
+					result.mergeWith(t);
 				}
 			}
 			s.push_back(qe.name);
 		}
-		for (Table t : tables) {
+		/*for (Table t : tables) {
 			result.mergeWith(t);
-		}
+		}*/
   }
 	Table resultTable = rowsToTable(result.getData(s),s);
   
@@ -484,8 +488,8 @@ Table PqlEvaluator::getdataWith(QueryEntity q) {
 			print.setHeader({temp[0]});
 			uses.setHeader({temp[0],q.name});
       print.mergeWith(uses);
-      uses.setHeader({temp[0], q.name});
-			result = uses;
+      print.setHeader({temp[0], q.name});
+			result = print;
     }
   }
   return result;
