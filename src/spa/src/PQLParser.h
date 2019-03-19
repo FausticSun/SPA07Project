@@ -77,7 +77,19 @@ private:
         QueryEntityType::Underscore}},
       {"W12",
        {QueryEntityType::Name, QueryEntityType::Line, QueryEntityType::Attrref,
-        QueryEntityType::Progline}}};
+        QueryEntityType::Progline}},
+	  {"procName",
+	   {QueryEntityType::Procedure, QueryEntityType::Call}},
+	  {"varName",
+	   {QueryEntityType::Variable, QueryEntityType::Print, 
+		QueryEntityType::Read}},
+	  {"value",
+	   {QueryEntityType::Constant}},
+	  {"stmt#",
+	   {QueryEntityType::Assign, QueryEntityType::If, QueryEntityType::While,
+		QueryEntityType::Call, QueryEntityType::Read, QueryEntityType::Stmt,
+        QueryEntityType::Print}}
+  };
   Query query;
   std::queue<QueryToken> tokenQueue;
   QueryToken token;
@@ -112,6 +124,7 @@ private:
   void checkWithValidity(QueryEntity, QueryEntity);
   void checkCallsValidity(QueryEntity, QueryEntity);
   void checkPatValidity(QueryEntityType);
+  void checkAttrrefValidity(QueryEntityType, string);
   void insertClauseFollows();
   void insertClauseFollowsT();
   void insertClauseParent();

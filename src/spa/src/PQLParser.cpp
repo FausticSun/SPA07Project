@@ -120,6 +120,7 @@ void PQLParser::setQueryTarget() {
       if (next == ".") {
         getNextToken();
         getNextToken();
+		checkAttrrefValidity(it->second, token.name);
         this->target.push_back(QueryEntity(QueryEntityType::Attrref,
                                            it->first + "." + token.name,
                                            it->second));
@@ -144,6 +145,7 @@ void PQLParser::insertTarget() {
     if (next == ".") {
       getNextToken();
       getNextToken();
+	  checkAttrrefValidity(it->second, token.name);
       this->target.push_back(QueryEntity(
           QueryEntityType::Attrref, it->first + "." + token.name, it->second));
     } else {
@@ -585,6 +587,16 @@ void PQLParser::checkCallsValidity(
   throw std::invalid_argument("invalid argument type for clauses");
 }
 
+void PQLParser::checkAttrrefValidity(
+	QueryEntityType type,
+	string attrName) {
+	if (std::find(validationTable[attrName].begin(), validationTable[attrName].end(),
+		type) != validationTable[attrName].end()) {
+		return;
+	}
+	throw std::invalid_argument("invalid argument type for attrref");
+}
+
 void PQLParser::insertClauseFollows() {
   QueryEntity firstEntity = determineQueryEntity();
   expectToken(",");
@@ -947,6 +959,7 @@ QueryEntity PQLParser::determineWithClauseEntity() {
       if (next == ".") {
         getNextToken();
         getNextToken();
+		checkAttrrefValidity(qet, token.name);
         return QueryEntity(QueryEntityType::Attrref,
                            it->first + "." + token.name, qet);
       } else {
