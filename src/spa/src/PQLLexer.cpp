@@ -2432,7 +2432,7 @@ vector<string> PQLLexer::tokenizeCalls(vector<string> token) {
 		tokenQueue.push(make_pair(TokenType::Keyword, "Calls"));
 		tokenQueue.push(make_pair(TokenType::Separator, "("));
 		first_s = s.substr(n0 + 1, n1 - 1 - n0);
-		if (first_s.length() == 1) {
+		if (first_s.find("\"") == second_s.npos) {
 
 			tokenQueue.push(make_pair(TokenType::Identifier, first_s));
 
@@ -2450,7 +2450,7 @@ vector<string> PQLLexer::tokenizeCalls(vector<string> token) {
 		}
 		tokenQueue.push(make_pair(TokenType::Separator, ","));
 		second_s = s.substr(n1 + 1, n2 - 1 - n1);
-		if (second_s.length() == 1) {
+		if (second_s.find("\"") == second_s.npos) {
 
 			tokenQueue.push(make_pair(TokenType::Identifier, second_s));
 
@@ -2588,7 +2588,7 @@ vector<string> PQLLexer::tokenizeCallsT(vector<string> token) {
 		tokenQueue.push(make_pair(TokenType::Keyword, "Calls*"));
 		tokenQueue.push(make_pair(TokenType::Separator, "("));
 		first_s = s.substr(n0 + 1, n1 - 1 - n0);
-		if (first_s.length() == 1) {
+		if (first_s.find("\"") == first_s.npos) {
 
 			tokenQueue.push(make_pair(TokenType::Identifier, first_s));
 
@@ -2606,7 +2606,7 @@ vector<string> PQLLexer::tokenizeCallsT(vector<string> token) {
 		}
 		tokenQueue.push(make_pair(TokenType::Separator, ","));
 		second_s = s.substr(n1 + 1, n2 - 1 - n1);
-		if (second_s.length() == 1) {
+		if (second_s.find("\"") == second_s.npos) {
 
 			tokenQueue.push(make_pair(TokenType::Identifier, second_s));
 
