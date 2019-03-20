@@ -230,8 +230,8 @@ void PQLLexer::Tokenize(string input) {
 				}
 				else if (token[0] == "and") {
 					token.erase(token.begin());
+					tokenQueue.push(make_pair(TokenType::Keyword, "and"));
 					if (last_keyword == "such that") {
-						tokenQueue.push(make_pair(TokenType::Keyword, "and"));
 						if (token[0] == "Modifies" ||
 							(token[0].find("Modifies") != token[0].npos &&
 								token[0][8] == '(')) {
