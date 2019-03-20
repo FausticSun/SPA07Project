@@ -124,6 +124,7 @@ vector<string> PQLLexer::vectorize(string input) {
 
 void PQLLexer::Tokenize(string input) {
   vector<string> token = vectorize(input);
+  string last_keyword;
   while (!token.empty()) {
     if (token[0] == "procedure") {
       token = tokenizeProcedure(token);
@@ -164,6 +165,7 @@ void PQLLexer::Tokenize(string input) {
 			// token.erase(token.begin());
 			while (!token.empty()) {
 				if (token[0] == "such" && token[1] == "that") {
+					last_keyword = "such that";
 					tokenQueue.push(make_pair(TokenType::Keyword, "such that"));
 					token.erase(token.begin());
 					token.erase(token.begin());
@@ -219,65 +221,76 @@ void PQLLexer::Tokenize(string input) {
 				else if (token[0] == "pattern" ||
 					(token[0].find("pattern") != token[0].npos &&
 						token[0][7] == '(')) {
+					last_keyword = "pattern";
 					token = tokenizePattern(token);
 				}
 				else if (token[0].find("with") != token[0].npos) {
+					last_keyword = "with";
 					token = tokenizeWith(token);
 				}
 				else if (token[0] == "and") {
 					token.erase(token.begin());
-					tokenQueue.push(make_pair(TokenType::Keyword, "and"));
-					if (token[0] == "Modifies" ||
-						(token[0].find("Modifies") != token[0].npos &&
-							token[0][8] == '(')) {
-						token = tokenizeModifies(token);
-					}
-					else if (token[0] == "Uses" ||
-						(token[0].find("Uses") != token[0].npos &&
-							token[0][4] == '(')) {
-						token = tokenizeUses(token);
+					if (last_keyword == "such that") {
+						tokenQueue.push(make_pair(TokenType::Keyword, "and"));
+						if (token[0] == "Modifies" ||
+							(token[0].find("Modifies") != token[0].npos &&
+								token[0][8] == '(')) {
+							token = tokenizeModifies(token);
+						}
+						else if (token[0] == "Uses" ||
+							(token[0].find("Uses") != token[0].npos &&
+								token[0][4] == '(')) {
+							token = tokenizeUses(token);
 
-					}
-					else if (token[0] == "Parent*" ||
-						(token[0].find("Parent*") != token[0].npos &&
-							token[0][7] == '(')) {
-						token = tokenizeParentT(token);
+						}
+						else if (token[0] == "Parent*" ||
+							(token[0].find("Parent*") != token[0].npos &&
+								token[0][7] == '(')) {
+							token = tokenizeParentT(token);
 
+						}
+						else if (token[0] == "Parent" ||
+							(token[0].find("Parent") != token[0].npos &&
+								token[0][6] == '(')) {
+							token = tokenizeParent(token);
+						}
+						else if (token[0] == "Follows*" ||
+							(token[0].find("Follows*") != token[0].npos &&
+								token[0][8] == '(')) {
+							token = tokenizeFollowsT(token);
+						}
+						else if (token[0] == "Follows" ||
+							(token[0].find("Follows") != token[0].npos &&
+								token[0][7] == '(')) {
+							token = tokenizeFollows(token);
+						}
+						else if (token[0] == "Next") {
+							token = tokenizeNext(token);
+						}
+						else if (token[0] == "Next*") {
+							token = tokenizeNextT(token);
+						}
+						else if (token[0] == "Calls") {
+							token = tokenizeCalls(token);
+						}
+						else if (token[0] == "Calls*") {
+							token = tokenizeCallsT(token);
+						}
+						else if (token[0] == "pattern" ||
+							(token[0].find("pattern") != token[0].npos &&
+								token[0][7] == '(')) {
+							token = tokenizePattern(token);
+						}
+					
+						else {
+							throw("wrong format of selection!");
+						}
 					}
-					else if (token[0] == "Parent" ||
-						(token[0].find("Parent") != token[0].npos &&
-							token[0][6] == '(')) {
-						token = tokenizeParent(token);
+					else if (last_keyword == "pattern") {
+						tokenizePattern(token);
 					}
-					else if (token[0] == "Follows*" ||
-						(token[0].find("Follows*") != token[0].npos &&
-							token[0][8] == '(')) {
-						token = tokenizeFollowsT(token);
-					}
-					else if (token[0] == "Follows" ||
-						(token[0].find("Follows") != token[0].npos &&
-							token[0][7] == '(')) {
-						token = tokenizeFollows(token);
-					}
-					else if (token[0] == "Next") {
-						token = tokenizeNext(token);
-					}
-					else if (token[0] == "Next*") {
-						token = tokenizeNextT(token);
-					}
-					else if (token[0] == "Calls") {
-						token = tokenizeCalls(token);
-					}
-					else if (token[0] == "Calls*") {
-						token = tokenizeCallsT(token);
-					}
-					else if (token[0] == "pattern" ||
-						(token[0].find("pattern") != token[0].npos &&
-							token[0][7] == '(')) {
-						token = tokenizePattern(token);
-					}
-					else {
-						throw("wrong format of selection!");
+					else if (last_keyword == "with") {
+						tokenizeWith(token);
 					}
 
 				}
@@ -1318,8 +1331,10 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 		}
 	}
 	if (count_for_commas == 2) {
-		tokenQueue.push(make_pair(TokenType::Keyword, "pattern"));
-		s = s.substr(7, s.length() - 7);
+		if (s.find("pattern") != s.npos) {
+			tokenQueue.push(make_pair(TokenType::Keyword, "pattern"));
+			s = s.substr(7, s.length() - 7);
+		}
 		string first_string;
 		int string_begin = 0;
 		for (int i = 0; i < s.length(); i++) {
@@ -1366,8 +1381,10 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 			}
 		}
 		if (n0 != -1 && n1 != -1 && n2 != -1) {
-			tokenQueue.push(make_pair(TokenType::Keyword, "pattern"));
-			tokenQueue.push(make_pair(TokenType::Identifier, s.substr(7, n0 - 7)));
+			if (s.find("pattern") != s.npos) {
+				tokenQueue.push(make_pair(TokenType::Keyword, "pattern"));
+				tokenQueue.push(make_pair(TokenType::Identifier, s.substr(7, n0 - 7)));
+			}
 			tokenQueue.push(make_pair(TokenType::Separator, "("));
 			first_s = s.substr(n0 + 1, n1 - 1 - n0);
 			if (first_s.find("\"") == first_s.npos) {
@@ -2071,10 +2088,12 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 }
 
 vector<string> PQLLexer::tokenizeWith(vector<string> token) {
-	tokenQueue.push(make_pair(TokenType::Keyword, "with"));
-	token[0] = token[0].substr(4, token[0].length() - 4);
-	if (token[0] == "") {
-		token.erase(token.begin());
+	if (token[0].find("with") != token[0].npos) {
+		tokenQueue.push(make_pair(TokenType::Keyword, "with"));
+		token[0] = token[0].substr(4, token[0].length() - 4);
+		if (token[0] == "") {
+			token.erase(token.begin());
+		}
 	}
 	string whole = "";
 	bool appear_equal = false;
