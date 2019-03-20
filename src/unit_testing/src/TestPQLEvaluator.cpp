@@ -411,7 +411,17 @@ SCENARIO("target in clause,one clause") {
 }
 
 //iteration 2
+SCENARIO("Tables") {
+	SECTION("test") {
+		Table t(2);
+		t.setHeader({"1","2"});
+		t.insertRow({"a","b"});
+		t.insertRow({"b","c"});
+		set<vector<string>> result = t.getData({ "1","1" });
+		REQUIRE(t.size() == 2);
 
+	}
+}
 SCENARIO("simple select, no clauses") {
 	PKB pkb = buildPKB();
 	PqlEvaluator pe(pkb);
