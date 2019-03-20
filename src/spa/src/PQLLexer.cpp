@@ -279,6 +279,7 @@ void PQLLexer::Tokenize(string input) {
 						else if (token[0] == "pattern" ||
 							(token[0].find("pattern") != token[0].npos &&
 								token[0][7] == '(')) {
+							last_keyword = "pattern";
 							token = tokenizePattern(token);
 						}
 					
@@ -1459,6 +1460,7 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 
   }
   else if (!token.empty() && token[0] == "pattern") {
+	
     token = tokenizePattern(token);
   } else {
     if (!token.empty()) {
@@ -2190,7 +2192,7 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 	}
 
 	else if (!token.empty() && token[0] == "pattern") {
-		token = tokenizePattern(token);
+		//token = tokenizePattern(token);
 	}
 	else if (!token.empty() && token[0] == "and") {
 
