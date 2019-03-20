@@ -343,3 +343,73 @@ constant c; variable v; assign a;
 Select <c.value> pattern a(v, _)
 12321, 100, 1, 3, 2, 4, 0
 5000
+71-comment
+constant c; variable v; assign a; 
+Select c.value pattern a(v, _)
+12321, 100, 1, 3, 2, 4, 0
+5000
+72-comment
+constant c;
+Select c with c.value = 0
+0
+5000
+73-comment
+constant c;
+Select c with c.value = 5
+none
+5000
+74-comment
+assign a;
+Select a with a.stmt# = 8
+8
+5000
+75-comment
+read r;
+Select r with r.varName = "x"
+24
+5000
+76-comment
+call c;
+Select c with c.procName = "one"
+15
+5000
+77-comment
+call c1, c2;
+Select <c1, c2> with c1.procName = c2.procName
+17 21, 15 15, 16 16, 17 17, 21 17, 21 21
+5000
+78-comment
+procedure p;
+Select p such that Calls(p, "one")
+main
+5000
+79-comment
+procedure p, p1;
+Select p such that Calls(p, p1)
+main, two
+5000
+80-comment
+procedure p, p1;
+Select p1 such that Calls(p, p1)
+one, two, three
+5000
+81-comment
+procedure p;
+Select p such that Calls*("main", p)
+one, two, three
+5000
+82-comment
+if ifs;
+Select ifs pattern ifs(_,_,_)
+6, 7
+5000
+82-comment
+if ifs;
+Select ifs pattern ifs("s",_,_)
+7
+5000
+83-comment
+if ifs; variable v;
+Select v pattern ifs(v,_,_)
+f, g, h, i, j, k, l, m, n, o, p, q, r, s
+5000
