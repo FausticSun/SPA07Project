@@ -2112,6 +2112,7 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 			else {
 				end = i;
 			}
+			break;
 		}
 	}
 	for (int j = 0; j <= end; j++) {
@@ -2119,11 +2120,16 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 		whole.append(token[j]);
 	}
 	int check_for = 0;
+	int count = 0;
 	for (int n = 0; n <= end; n++) {
-		if (n == end && token[0].find("\"") != token[0].npos) {
+		if (token[0].find("\"") != token[0].npos) {
 			for (int i = 0; i < token[0].length(); i++) {
 				if (token[0][i] == '\"') {
 					check_for = i;
+					count++;
+				}
+				if (count == 2) {
+					break;
 				}
 			}
 			whole = whole.substr(0, whole.length() - token[0].length() + check_for + 1);
@@ -2204,6 +2210,9 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 
 	}
 	else {
+		if (token[0] == "") {
+			token.erase(token.begin());
+		}
 		if (!token.empty()) {
 			throw invalid_argument("should be pattern or such that or and");
 		}
