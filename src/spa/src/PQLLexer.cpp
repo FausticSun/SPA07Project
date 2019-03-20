@@ -287,10 +287,10 @@ void PQLLexer::Tokenize(string input) {
 						}
 					}
 					else if (last_keyword == "pattern") {
-						tokenizePattern(token);
+						token = tokenizePattern(token);
 					}
 					else if (last_keyword == "with") {
-						tokenizeWith(token);
+						token = tokenizeWith(token);
 					}
 
 				}
