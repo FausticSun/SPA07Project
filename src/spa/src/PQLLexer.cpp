@@ -2073,6 +2073,9 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
 vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 	tokenQueue.push(make_pair(TokenType::Keyword, "with"));
 	token[0] = token[0].substr(4, token[0].length() - 4);
+	if (token[0] == "") {
+		token.erase(token.begin());
+	}
 	string whole = "";
 	bool appear_equal = false;
 	int end = 0;
@@ -2091,8 +2094,21 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 		//whole.append(whole, token[j]);
 		whole.append(token[j]);
 	}
+	int check_for = 0;
 	for (int n = 0; n <= end; n++) {
-		token.erase(token.begin());
+		if (n == end && token[0].find("\"") != token[0].npos) {
+			for (int i = 0; i < token[0].length(); i++) {
+				if (token[0][i] == '\"') {
+					check_for = i;
+				}
+			}
+			whole = whole.substr(0, whole.length() - token[0].length() + check_for + 1);
+			token[0] = token[0].substr(check_for + 1, token[0].length() - check_for - 1);
+		}
+		else {
+			token.erase(token.begin());
+		}
+		
 	}
 	for (int m = 0; m <= whole.length(); m++) {
 		if (whole[m] == '=') {
