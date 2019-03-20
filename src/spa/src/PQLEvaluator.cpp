@@ -88,21 +88,20 @@ Table selfJoin(Table t) {
 PqlEvaluator::PqlEvaluator(const PKB &pkb) { this->mypkb = pkb; }
 
 list<string> PqlEvaluator::executeQuery(Query &q) {
-  Table resultTable(0);
   list<string> results;
   if (q.clauses.empty()) {
-    resultTable = executeSimpleQuery(q.target);
+		set<vector<string>> resultTable = executeSimpleQuery(q.target);
     results = resultFormater(resultTable);
     return results;
   }
-  resultTable = executeComplexQuery(q);
+	set<vector<string>> resultTable = executeComplexQuery(q);
   results = resultFormater(resultTable);
   return results;
 
   return results;
 }
 
-Table PqlEvaluator::resultExtractor(Table result, Query q) {
+set<vector<string>> PqlEvaluator::resultExtractor(Table result, Query q) {
 	vector<string> s;
 	vector<QueryEntity> attr;
 	vector<Table> tables;
@@ -111,14 +110,15 @@ Table PqlEvaluator::resultExtractor(Table result, Query q) {
     if (result.size() > 0) {
       Table t(1);
       t.insertRow({"TRUE"});
-      return t;
+      return t.getData();
     }
     Table t(1);
     t.insertRow({"FALSE"});
-    return t;
+    return t.getData();
   }
   if (result.empty()) {
-    return Table(0);
+		set<vector<string>> t;
+    return t;
   }else {
 		vector<string> header = result.getHeader();
 		for (QueryEntity qe : q.target) {
@@ -153,14 +153,14 @@ Table PqlEvaluator::resultExtractor(Table result, Query q) {
 			result.mergeWith(t);
 		}*/
   }
-	Table resultTable = rowsToTable(result.getData(s),s);
+	set<vector<string>> resultTable = result.getData(s);
   
   return resultTable;
 
 }
 
-list<string> PqlEvaluator::resultFormater(Table t) {
-	set<vector<string>> tempData = t.getData();
+list<string> PqlEvaluator::resultFormater(set<vector<string>> t) {
+	set<vector<string>> tempData = t;
   set<vector<string>>::iterator iterRow ;
   list<string> result;
   string tuple = "";
@@ -177,14 +177,15 @@ list<string> PqlEvaluator::resultFormater(Table t) {
   return result;
 }
 
-Table PqlEvaluator::executeSimpleQuery(vector<QueryEntity> t) {
+set<vector<string>> PqlEvaluator::executeSimpleQuery(vector<QueryEntity> t) {
   int count = 0;
+	vector<string> s;
   vector<Table> tables;
   for (QueryEntity q : t) {
     if (q.type == QueryEntityType::Boolean) {
       Table result(1);
       result.insertRow({"TRUE"});
-      return result;
+      return result.getData();
     }
     if (isSynonym(q.type)) {
 			Table t = getdataByTtype(q.type);
@@ -204,15 +205,16 @@ Table PqlEvaluator::executeSimpleQuery(vector<QueryEntity> t) {
       
 			tables.push_back(t);
     }
+		s.push_back(q.name);
   }
   Table result = tables[0];
   for (int i = 1; i < tables.size(); i++) {
     result.mergeWith(tables[i]);
   }
-  return result;
+  return result.getData(s);
 }
 
-Table PqlEvaluator::executeComplexQuery(Query q) {
+set<vector<string>> PqlEvaluator::executeComplexQuery(Query q) {
   vector<Clause> clauses = q.clauses;
   vector<Table> tables;
   vector<Clause>::iterator iter = clauses.begin();
@@ -303,10 +305,10 @@ Table PqlEvaluator::executeComplexQuery(Query q) {
       if (q.target.front().type == QueryEntityType::Boolean) {
         Table resultTable(1);
 				resultTable.insertRow({"FALSE"});
-        return resultTable;
+        return resultTable.getData();
       }
       Table resultTable(0);
-      return resultTable;
+      return resultTable.getData();
     }
     if (result.isBool && result.boolValue) {
 
@@ -318,10 +320,10 @@ Table PqlEvaluator::executeComplexQuery(Query q) {
     for (int i = 1; i < tables.size(); i++) {
       tables[0].mergeWith(tables[i]);
     }
-    Table complexResult = resultExtractor(tables[0], q);
+    set<vector<string>> complexResult = resultExtractor(tables[0], q);
     return complexResult;
   }
-  Table simpleResult = executeSimpleQuery(q.target);
+	set<vector<string>> simpleResult = executeSimpleQuery(q.target);
   return simpleResult;
 
 }
