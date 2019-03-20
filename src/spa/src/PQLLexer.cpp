@@ -1461,7 +1461,7 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
   }
   else if (!token.empty() && token[0] == "pattern") {
 	
-    token = tokenizePattern(token);
+    //token = tokenizePattern(token);
   } else {
     if (!token.empty()) {
       throw invalid_argument("should be pattern or such that or and");
@@ -1539,7 +1539,7 @@ vector<string> PQLLexer::tokenizeFollows(vector<string> token) {
 
   }
   else if (!token.empty() && token[0] == "pattern") {
-    token = tokenizePattern(token);
+    //token = tokenizePattern(token);
   } else {
     if (!token.empty()) {
       throw invalid_argument("should be pattern or such that or and");
@@ -1619,7 +1619,7 @@ vector<string> PQLLexer::tokenizeFollowsT(vector<string> token) {
 
   }
   else if (!token.empty() && token[0] == "pattern") {
-    token = tokenizePattern(token);
+    //token = tokenizePattern(token);
   } else {
     if (!token.empty()) {
       throw invalid_argument("should be pattern or such that or and");
@@ -1700,7 +1700,7 @@ vector<string> PQLLexer::tokenizeParent(vector<string> token) {
 
   }
   else if (!token.empty() && token[0] == "pattern") {
-    token = tokenizePattern(token);
+    //token = tokenizePattern(token);
   } else {
     if (!token.empty()) {
       throw invalid_argument("should be pattern or such that or and");
@@ -1780,7 +1780,7 @@ vector<string> PQLLexer::tokenizeParentT(vector<string> token) {
 
   }
   else if (!token.empty() && token[0] == "pattern") {
-    token = tokenizePattern(token);
+    //token = tokenizePattern(token);
   } else {
     if (!token.empty()) {
       throw invalid_argument("should be pattern or such that or and");
@@ -1922,7 +1922,7 @@ vector<string> PQLLexer::tokenizeUses(vector<string> token) {
   }
 
   else if (!token.empty() && token[0] == "pattern") {
-    token = tokenizePattern(token);
+    //token = tokenizePattern(token);
   }
   else if (!token.empty() && token[0] == "and") {
 
@@ -2073,7 +2073,7 @@ vector<string> PQLLexer::tokenizeModifies(vector<string> token) {
   }
 
   else if (!token.empty() && token[0] == "pattern") {
-	  token = tokenizePattern(token);
+	  //token = tokenizePattern(token);
   }
   else if (!token.empty() && token[0] == "and") {
 
@@ -2278,7 +2278,7 @@ vector<string> PQLLexer::tokenizeNext(vector<string> token) {
 
 	}
 	else if (!token.empty() && token[0] == "pattern") {
-		token = tokenizePattern(token);
+		
 	}
 	else if (!token.empty() && token[0] == "with") {
 
@@ -2364,7 +2364,7 @@ vector<string> PQLLexer::tokenizeNextT(vector<string> token) {
 
 	}
 	else if (!token.empty() && token[0] == "pattern") {
-		token = tokenizePattern(token);
+		//token = tokenizePattern(token);
 	}
 	else {
 		if (!token.empty()) {
@@ -2519,7 +2519,7 @@ vector<string> PQLLexer::tokenizeCalls(vector<string> token) {
 
 	}
 	else if (!token.empty() && token[0] == "pattern") {
-		token = tokenizePattern(token);
+		//token = tokenizePattern(token);
 	}
 	else {
 		if (!token.empty()) {
@@ -2675,7 +2675,7 @@ vector<string> PQLLexer::tokenizeCallsT(vector<string> token) {
 
 	}
 	else if (!token.empty() && token[0] == "pattern") {
-		token = tokenizePattern(token);
+		//token = tokenizePattern(token);
 	}
 	else {
 		if (!token.empty()) {
