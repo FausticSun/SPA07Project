@@ -1386,6 +1386,9 @@ vector<string> PQLLexer::tokenizePattern(vector<string> token) {
 				tokenQueue.push(make_pair(TokenType::Keyword, "pattern"));
 				tokenQueue.push(make_pair(TokenType::Identifier, s.substr(7, n0 - 7)));
 			}
+			else {
+				tokenQueue.push(make_pair(TokenType::Identifier, s.substr(0, n0)));
+			}
 			tokenQueue.push(make_pair(TokenType::Separator, "("));
 			first_s = s.substr(n0 + 1, n1 - 1 - n0);
 			if (first_s.find("\"") == first_s.npos) {
