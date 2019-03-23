@@ -172,7 +172,7 @@ void PQLLexer::Tokenize(string input) {
 				  process_string.pop();
 			  }
 			  if (iden == "such") {
-				  process_string.push("such");
+				  process_string.push("such ");
 			  }
 			  else if (iden == "pattern" || iden == "Select" || iden == "Parent"
 				  || iden == "with" || iden == "Parent*" || iden == "stmt" || iden == "read"
@@ -200,7 +200,7 @@ void PQLLexer::Tokenize(string input) {
 				  process_string.pop();
 			  }
 			  if (iden == "such") {
-				  process_string.push("such");
+				  process_string.push("such ");
 			  }
 			  else if (iden == "pattern" || iden == "Select" || iden == "Parent"
 				  || iden == "with" || iden == "Parent*" || iden == "stmt" || iden == "read"
@@ -209,7 +209,7 @@ void PQLLexer::Tokenize(string input) {
 				  || iden == "procedure" || iden == "call" || iden == "Calls"
 				   || iden == "Next" || iden == "Calls*" || iden == "Next*"
 				  || iden == "Follows" || iden == "Follows*" || iden == "Uses"
-				  || iden == "and"){
+				  || iden == "and" || (iden == "such that")){
 				  tokenQueue.push(make_pair(TokenType::Keyword, iden));
 			  }
 			  else {
@@ -237,7 +237,7 @@ void PQLLexer::Tokenize(string input) {
 				  || iden == "procedure" || iden == "call" || iden == "Calls"
 				  || iden == "Next" || iden == "Calls*" || iden == "Next*"
 				  || iden == "Follows" || iden == "Follows*" || iden == "Uses"
-				  || iden == "and" || (iden == "that" && process_string.front() == "such")) {
+				  || iden == "and" || (iden == "such that")) {
 				  tokenQueue.push(make_pair(TokenType::Keyword, iden));
 			  }
 			  else {
