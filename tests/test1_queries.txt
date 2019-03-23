@@ -1,0 +1,95 @@
+101 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select s such that Follows (18, s)
+none
+5000
+102 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select s such that Next (18, s)
+16
+5000
+103 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select v such that Uses (_, v)
+none
+5000
+104 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select a pattern a (_, _"a-b"_)
+6,7,17
+5000
+105 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select v such that Parent (9, s) and Uses (s, v)
+none
+5000
+106 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select s1 such that Parent* (s, s1) and Uses (s, "x")
+13,14,15,16,17,18
+5000
+107 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select v1 such that Follows* (ifs, a) pattern a (v, _"x"_)
+a,b,c,x,k
+5000
+108 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select p such that Calls* (p, q) and Modifies (p, "x")
+main,swap
+5000
+109 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select a such that Affects (a, 10)
+none
+5000
+110 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select a such that Affects (14, a)
+14
+5000
+111 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select a such that Modifies (a, v) and pattern a (v, _"x+a"_)
+none
+5000
+112 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select s such that Follows* (s, s1) and Next (14, s1)
+14
+5000
+113 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select s such that Follows (s, s1) and Next* (14, s1)
+12,14,19,20
+5000
+114 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select s such that Parent (s, n) with n = c.value
+12,13
+5000
+115 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select <cl, v> such that Modifies (w, v)
+4 a, 4 c, 4 x, 9 a, 9 c, 9 x
+5000
+116 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select <v, w.stmt#> such that Parent (w, s) and Uses (s, v)
+x 13, a 13, a 16, b 16, c 16
+5000
+117 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select a pattern w (v, _) such that Next (w, a) and Modifies (a, v)
+14, 17, 19
+5000
+118 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select s such that Next* (s, s) and Affects* (s, s)
+14, 17, 18
+5000
+119 - 
+stmt s, s1; assign a, a1; while w; if ifs; variable v, v1; procedure p, q; constant c; prog_line n; call cl; read re; print pn;
+Select a such that Affects (a, a1) and Affects* (a1, 20)
+15, 17, 18
+5000
