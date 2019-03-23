@@ -2209,7 +2209,8 @@ vector<string> PQLLexer::tokenizeWith(vector<string> token) {
 	else if (!token.empty() && token[0] == "with") {
 
 	}
-	else {
+	else if (!token.empty()){
+
 		if (token[0] == "") {
 			token.erase(token.begin());
 		}
