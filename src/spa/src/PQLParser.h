@@ -49,7 +49,7 @@ private:
                                                  "and"};
   std::vector<string> expectedClauseTokens = {
       "Follows",  "Follows*", "Parent", "Parent*", "Uses",
-      "Modifies", "Calls",     "Calls*",  "Next",    "Next*"};
+      "Modifies", "Calls",     "Calls*",  "Next",    "Next*", "Affects", "Affects*"};
   std::map<std::string, std::vector<QueryEntityType>> validationTable = {
       {"FPN12",
        {QueryEntityType::Assign, QueryEntityType::If, QueryEntityType::While,
@@ -75,6 +75,9 @@ private:
       {"C12",
        {QueryEntityType::Procedure, QueryEntityType::Name,
         QueryEntityType::Underscore}},
+      {"A12",
+       {QueryEntityType::Assign, QueryEntityType::Line,
+	QueryEntityType::Underscore}},
       {"W12",
        {QueryEntityType::Name, QueryEntityType::Line, QueryEntityType::Attrref,
         QueryEntityType::Progline}},
@@ -123,6 +126,7 @@ private:
   void checkUsesValidity(QueryEntity, QueryEntity);
   void checkWithValidity(QueryEntity, QueryEntity);
   void checkCallsValidity(QueryEntity, QueryEntity);
+  void checkAffectsValidity(QueryEntity, QueryEntity);
   void checkPatValidity(QueryEntityType);
   void checkAttrrefValidity(QueryEntityType, string);
   void insertClauseFollows();
@@ -135,6 +139,8 @@ private:
   void insertClauseNextT();
   void insertClauseCalls();
   void insertClauseCallsT();
+  void insertClauseAffects();
+  void insertClauseAffectsT();
 
   string convertToPostfix(string s);
   void insertClausePattern();
