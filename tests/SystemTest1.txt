@@ -1,0 +1,172 @@
+procedure A {
+	a = a + b; \\1
+	d = f / 3 + r; \\2
+	if (w == x) then { \\3
+		if (y != z) then { \\4
+			read in; \\5
+			q = a; \\6
+		} else {
+			print out; \\7
+			e = 1 + 2 / r; \\8
+		}
+	} else {
+		w = x + y * z; \\9
+	}
+	call B; \\10
+}
+
+procedure B {
+
+	while (a != 0) { \\11
+		b = a - 1; \\12
+		while(d < 7) { \\13
+			if (r != d) then { \\14
+				read a; \\15
+			} else {
+				call C; \\16
+				print a; \\17
+			}
+
+			a = a + b * d % e; \\18
+
+		}
+		i = i + 1; \\19
+	}
+
+	while ((f > 4) || (f <= 1)) { \\20
+		print f; \\21
+		call D; \\22
+		if (d <= 0) then { \\23
+			a = a + 1 * 2; \\24
+		}
+		else {
+			r = t + 1; \\25
+		}
+	}
+	call E; \\26
+}
+
+procedure C {
+	if ( x >= 1) then { \\27
+		read input; \\28
+		a = 1; \\29
+		b = 14; \\30
+		c = 23; \\31
+	} else {
+		while (y < 0) { \\32 
+			a = y + 1; \\33
+			if (x == w + y) then { \\34
+				x = x * 3 + y / z % 5; \\35 
+				y = c + 2 - z; \\36
+			} else {
+				read a; \\37
+				read b; \\38
+				print c; \\39
+			}
+		}
+		call F; \\40
+	}
+
+}
+
+procedure D {
+	while (f == 0) { \\41
+		print result;  \\42
+		e = f + 6 % e; \\43
+		print result; \\44
+	}	
+
+	if (y != a) then { \\45
+		while (w <= z) { \\46
+			a = b - c * 2; \\47
+			t = 5 - (x / y % 2); \\48
+			call F; \\49
+		}
+	} else {
+		while (a - 5 < b) { \\50
+			b = c - w + v; \\51
+			a = 4 / (a % b * c); \\52
+			read in; \\53
+		}
+	} 
+}
+
+procedure E {
+	if (g = 0) then { \\54
+		while (h < 1) { \\55
+			if (j > 2) then { \\56 
+				k = 1; \\57
+			} else { 
+				while(i != 0) { \\58 
+					read something; \\59
+					while (o == O) { \\60
+						print p; \\61
+					}
+				}
+			}
+		}
+	} else {
+		l = m; \\62
+	}
+
+}
+
+procedure F {
+	a = 1; \\63
+	b = 4; \\64
+	e = 7 + 3 / a; \\65 
+	while ((s < 0) && (r > t)) { \\66
+		if (a != 1) then { \\67
+			print result; \\68
+		} else {
+			if (s < t) then { \\69
+				while (w != 0) { \\70
+					result = result + 3 / i; \\71
+				}
+			} else {
+				while ((s - r) == (b % s)) { \\72
+					result = result / 2 + j; \\73
+				}
+			}
+		}
+	}
+}
+
+procedure G {
+if (e != (y + 1)) then { \\74
+	while(((r - 1) <= 4) && ((s + 2) >= 3)) { \\75
+		if (q == p) then { \\76
+			a = 2 - r/ 16; \\77
+		} else { 
+			call A; \\78
+			q =e % 7 + e; \\79
+			while (w == q) { \\80
+				a = b - a + c; \\81
+			}
+		}
+	}
+} else {
+	read some; \\82
+	if (a == 7) then{ \\83
+		d = e - r / (3 + g); \\84
+	} else {
+		while (3 < r) { \\85
+			if (a != t) then { \\86
+				call E; \\87
+			} else {
+				print some; \\88
+				while (some < n) {
+					g = h + i/ j; \\ 89
+				}
+				call A; \\90
+			}
+			d = e + w - y; \\91
+		}
+		print abc; \\92
+	}
+	r = w; \\93
+}
+
+a = e - t; \\94
+}
+
