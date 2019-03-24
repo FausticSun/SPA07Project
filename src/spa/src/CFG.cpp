@@ -26,21 +26,18 @@ CFG::CFG(Table procStmtTable, Table nextTable, Table whileIfTable,
     if (start != 1) {
       numCompressedNodes++;
     }
-    // Procedure only has one statement, initialize 1 node compressed graph
+    // Procedure only has one statement
     if (initialGraph[start].empty()) {
       initialToCompressed[start] = numCompressedNodes;
-      compressedToInitial[numCompressedNodes] = {start};
-      forwardCompressedGraph.push_back({});
-      reverseCompressedGraph.push_back({});
     } else {
-      // Populate forward and reverse CompressedGraph
       populateInitialToCompressed(start, whileIfTable, inDegree);
-      populateCompressedToInitial();
-      forwardCompressedGraph.resize(numCompressedNodes + 1);
-      reverseCompressedGraph.resize(numCompressedNodes + 1);
-      populateCompressedGraph();
     }
   }
+  // Populate forward and reverse CompressedGraph
+  populateCompressedToInitial();
+  forwardCompressedGraph.resize(numCompressedNodes + 1);
+  reverseCompressedGraph.resize(numCompressedNodes + 1);
+  populateCompressedGraph();
 }
 
 void CFG::populateInitialToCompressed(int start, Table whileIfTable,
