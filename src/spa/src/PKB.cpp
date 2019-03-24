@@ -128,9 +128,55 @@ Table PKB::getCalls() const { return callsTable; }
 Table PKB::getCallsT() const { return callsTTable; }
 Table PKB::getNext() const { return nextTable; }
 
-Table PKB::getNextT(std::string, std::string) {
-	CFG graph = getCFG("A");
-	// populateNextT(graph)
+Table PKB::getNextT(bool isForward, std::string n) {
+	CFG cfg = getCFG("A");
+	int numLines = procTable["A"].second - procTable["A"].first; 
+	std::vector<std::vector<int>> compressedCFG;
+	if (isForward) {
+		compressedCFG = cfg.getForwardCompressedGraph();
+	} else {
+		compressedCFG = cfg.getReverseCompressedGraph();
+	}
+	std::vector<bool> visited(numLines + 1, false);
+	visited[0] = true; // no stmt line 0
+
+	int startNode = cfg.getCompressed(std::stoi(n));
+	std::queue<int> q;
+
+	//add everything in node
+	std::vector<int> linesInNode = cfg.getInitial(startNode);
+	int index = std::stoi(n) - linesInNode[0] + 1;
+
+	for (int i = index; i < linesInNode.size(); i++) {
+		nextTTable.insertRow({std::to_string(linesInNode[i])});
+		visited[linesInNode[i]] = true;
+	}
+
+	q.push(startNode);
+	while (!q.empty()) {
+		int curr = q.front();
+		q.pop();
+
+		for (int i : compressedCFG[curr]) {
+			if (!visited[cfg.getInitial(i)[0]]) {
+				for (int j : cfg.getInitial(i)) {
+					if (!visited[j]) {
+						visited[j] = true;
+						nextTTable.insertRow({ std::to_string(j) });
+					}
+				}
+				q.push(i);
+			}
+		}
+	}
+
+	return nextTTable;
+
+
+//	// if type is forward
+//	// do std::vector<std::vector<int>> g = graph.getForwardCompressedGraph();
+//	// else
+//	// do std::vector<std::vector<int>> g = graph.getReverse...();
 }
 
 Table PKB::getCallProcNameTable() const { return callProcNameTable; }

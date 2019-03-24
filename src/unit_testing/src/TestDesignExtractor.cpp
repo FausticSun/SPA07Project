@@ -311,7 +311,7 @@ TEST_CASE("Populate CFG") {
   }
   SECTION("CFG with if nested in while statement") {
     std::unique_ptr<PKB> pkb{new PKB()};
-    pkb->setProc("A", 1, 9);
+    pkb->setProc("A", 1, 11);
     pkb->setNext(1, 2);
     pkb->setNext(2, 3);
     pkb->setNext(3, 4);
