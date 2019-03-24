@@ -1,0 +1,24 @@
+1-comment
+call c; procedure p;
+Select p such that Calls("A",p)
+B
+5000
+2-comment
+call c; procedure p;assign a; prog_line pl;variable v;
+Select p such that Calls*("A",p)
+B,C,D,E,F
+5000
+3-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select p such that Calls(p,p1)
+A,B,C,D,G
+5000
+4-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select p such that Calls*(p1,p)
+A,B,C,D,E,F
+5000
+5-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select <p,p1> such that Call("G",p) and Calls(p,p1)
+A B

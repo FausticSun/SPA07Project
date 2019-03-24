@@ -294,7 +294,7 @@ set<vector<string>> PqlEvaluator::executeComplexQuery(Query q) {
 			data = mypkb.getCalls();
 			result = dataFilter(data, *iter);
 		}else if(iter->clauseType == ClauseType::CallsT) {
-			data = mypkb.getCalls();
+			data = mypkb.getCallsT();
 			result = dataFilter(data, *iter);
 		}
 		else if (iter->clauseType == ClauseType::NextT) {
