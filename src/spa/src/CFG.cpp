@@ -119,57 +119,55 @@ void CFG::populateCompressedGraph() {
 }
 
 std::vector<int> CFG::traverseCFG(int start, bool isForward) const {
-	std::vector<int> result;
-	std::vector<std::vector<int>> compressedCFG;
-	if (isForward) {
-		compressedCFG = forwardCompressedGraph;
-	}
-	else {
-		compressedCFG = reverseCompressedGraph;
-	}
-	std::vector<bool> visited(initialToCompressed.size() + 1, false); 
-	visited[0] = true; // no stmt line 0
+  std::vector<int> result;
+  std::vector<std::vector<int>> compressedCFG;
+  if (isForward) {
+    compressedCFG = forwardCompressedGraph;
+  } else {
+    compressedCFG = reverseCompressedGraph;
+  }
+  std::vector<bool> visited(initialToCompressed.size() + 1, false);
+  visited[0] = true; // no stmt line 0
 
-	int startNode = initialToCompressed.at(start);
-	std::queue<int> q;
+  int startNode = initialToCompressed.at(start);
+  std::queue<int> q;
 
-	//add everything in node
-	std::vector<int> linesInNode = compressedToInitial.at(startNode);
-	int index = start - linesInNode[0] + 1;
+  // add everything in node
+  std::vector<int> linesInNode = compressedToInitial.at(startNode);
+  int index = start - linesInNode[0] + 1;
 
-	for (int i = index; i < linesInNode.size(); i++) {
-		result.push_back(linesInNode[i]);
-		visited[linesInNode[i]] = true;
-	}
+  for (int i = index; i < linesInNode.size(); i++) {
+    result.push_back(linesInNode[i]);
+    visited[linesInNode[i]] = true;
+  }
 
-	q.push(startNode);
-	while (!q.empty()) {
-		int curr = q.front();
-		q.pop();
+  q.push(startNode);
+  while (!q.empty()) {
+    int curr = q.front();
+    q.pop();
 
-		for (int i : compressedCFG[curr]) {
-			if (!visited[compressedToInitial.at(i)[0]]) {
-				for (int j : compressedToInitial.at(i)) {
-					if (!visited[j]) {
-						visited[j] = true;
-						result.push_back(j);
-					}
-				}
-				q.push(i);
-			}
-		}
-	}
-
-	return result;
+    for (int i : compressedCFG[curr]) {
+      if (!visited[compressedToInitial.at(i)[0]]) {
+        for (int j : compressedToInitial.at(i)) {
+          if (!visited[j]) {
+            visited[j] = true;
+            result.push_back(j);
+          }
+        }
+        q.push(i);
+      }
+    }
+  }
+  return result;
 }
 
 Table CFG::getNextT() const {
   Table table{2};
   for (int i = 1; i < initialGraph.size() + 1; i++) {
-	  std::vector<int> result = traverseCFG(i, true);
-	  for (int j : result) {
-		  table.insertRow({ std::to_string(i), std::to_string(j) });
-	  }
+    std::vector<int> result = traverseCFG(i, true);
+    for (int j : result) {
+      table.insertRow({std::to_string(i), std::to_string(j)});
+    }
   }
   return table;
 }
@@ -178,7 +176,7 @@ Table CFG::getNextT(int start, bool isForward) const {
   Table table{1};
   std::vector<int> result = traverseCFG(start, isForward);
   for (int i : result) {
-	  table.insertRow({ std::to_string(i) });
+    table.insertRow({std::to_string(i)});
   }
   return table;
 }
