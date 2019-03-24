@@ -159,6 +159,7 @@ TEST_CASE("Populate Use and Modifies for Call statements") {
   REQUIRE(modifiesSTable.contains({"3", "d"}));
 }
 
+
 // TEST_CASE("Populate CFG") {
 //   SECTION("CFG with no if/while statements") {
 //     std::unique_ptr<PKB> pkb{new PKB()};
@@ -366,3 +367,4 @@ TEST_CASE("Populate Use and Modifies for Call statements") {
 //     REQUIRE_THAT(reverseCFG[1], UnorderedEquals(std::vector<int>{}));
 //   }
 // }
+

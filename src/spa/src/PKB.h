@@ -6,6 +6,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <queue>
 
 enum class StatementType { Stmt, Assign, If, While, Read, Call, Print };
 
@@ -34,6 +35,7 @@ private:
   Table callsTable{2};
   Table callsTTable{2};
   Table nextTable{2};
+  Table nextTTable{1};
 
   // Other Relation Tables
   Table callProcNameTable{2};
@@ -89,6 +91,8 @@ public:
   Table getCalls() const;
   Table getCallsT() const;
   Table getNext() const;
+  Table getNextT(bool, std::string);
+  //Table getNextT(Type (forward or reverse), std::string);
   Table getNextT() const;
   Table getNextT(int, bool) const;
   // Table getAffects() const;
