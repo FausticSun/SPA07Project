@@ -49,22 +49,22 @@ private:
                                                  "and"};
   std::vector<string> expectedClauseTokens = {
       "Follows",  "Follows*", "Parent", "Parent*", "Uses",
-      "Modifies", "Call",     "Call*",  "Next",    "Next*"};
+      "Modifies", "Calls",     "Calls*",  "Next",    "Next*"};
   std::map<std::string, std::vector<QueryEntityType>> validationTable = {
       {"FPN12",
        {QueryEntityType::Assign, QueryEntityType::If, QueryEntityType::While,
         QueryEntityType::Call, QueryEntityType::Print, QueryEntityType::Read,
-        QueryEntityType::Stmt, QueryEntityType::Line,
+        QueryEntityType::Stmt, QueryEntityType::Line, QueryEntityType::Progline,
         QueryEntityType::Underscore}},
       {"U1",
        {QueryEntityType::Assign, QueryEntityType::If, QueryEntityType::While,
         QueryEntityType::Call, QueryEntityType::Print, QueryEntityType::Stmt,
-        QueryEntityType::Line, QueryEntityType::Procedure,
+        QueryEntityType::Line, QueryEntityType::Procedure, QueryEntityType::Progline,
         QueryEntityType::Name}},
       {"M1",
        {QueryEntityType::Assign, QueryEntityType::If, QueryEntityType::While,
         QueryEntityType::Call, QueryEntityType::Read, QueryEntityType::Stmt,
-        QueryEntityType::Line, QueryEntityType::Procedure,
+        QueryEntityType::Line, QueryEntityType::Procedure, QueryEntityType::Progline,
         QueryEntityType::Name}},
       {"UMPAT2",
        {QueryEntityType::Variable, QueryEntityType::Name,
@@ -77,7 +77,19 @@ private:
         QueryEntityType::Underscore}},
       {"W12",
        {QueryEntityType::Name, QueryEntityType::Line, QueryEntityType::Attrref,
-        QueryEntityType::Progline}}};
+        QueryEntityType::Progline}},
+	  {"procName",
+	   {QueryEntityType::Procedure, QueryEntityType::Call}},
+	  {"varName",
+	   {QueryEntityType::Variable, QueryEntityType::Print, 
+		QueryEntityType::Read}},
+	  {"value",
+	   {QueryEntityType::Constant}},
+	  {"stmt#",
+	   {QueryEntityType::Assign, QueryEntityType::If, QueryEntityType::While,
+		QueryEntityType::Call, QueryEntityType::Read, QueryEntityType::Stmt,
+        QueryEntityType::Print}}
+  };
   Query query;
   std::queue<QueryToken> tokenQueue;
   QueryToken token;
@@ -112,6 +124,7 @@ private:
   void checkWithValidity(QueryEntity, QueryEntity);
   void checkCallsValidity(QueryEntity, QueryEntity);
   void checkPatValidity(QueryEntityType);
+  void checkAttrrefValidity(QueryEntityType, string);
   void insertClauseFollows();
   void insertClauseFollowsT();
   void insertClauseParent();

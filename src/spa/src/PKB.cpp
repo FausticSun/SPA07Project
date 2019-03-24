@@ -80,7 +80,7 @@ void PKB::setCallProcName(int stmtNo, const std::string &procName) {
   callProcNameTable.insertRow({std::to_string(stmtNo), procName});
 }
 
-void PKB::setCFG(std::string proc, CFG &graph) { CFGs[proc] = graph; }
+void PKB::setCFG(CFG &graph) { cfg = graph; }
 
 Table PKB::getVarTable() const { return varTable; }
 
@@ -109,9 +109,10 @@ Table PKB::getStmtType(StatementType type) {
 }
 
 Table PKB::getProcStmt() {
-  Table table{2};
+  Table table{3};
   for (auto p : procTable) {
-    table.insertRow({p.first, std::to_string(p.second.first)});
+    table.insertRow({p.first, std::to_string(p.second.first),
+                     std::to_string(p.second.second)});
   }
   return table;
 }
@@ -179,6 +180,11 @@ Table PKB::getNextT(bool isForward, std::string n) {
 //	// do std::vector<std::vector<int>> g = graph.getReverse...();
 }
 
+Table PKB::getNextT() const { return cfg.getNextT(); }
+Table PKB::getNextT(int s, bool isLeftConstant) const {
+  return cfg.getNextT(s, isLeftConstant);
+}
+
 Table PKB::getCallProcNameTable() const { return callProcNameTable; }
 
 Table PKB::getAssignMatches(std::string expr, bool partial) {
@@ -195,4 +201,5 @@ Table PKB::getAssignMatches(std::string expr, bool partial) {
 Table PKB::getWhileMatches() { return whileTable; }
 Table PKB::getIfMatches() { return ifTable; }
 Table PKB::getCallProcName() { return callProcNameTable; }
-CFG PKB::getCFG(std::string proc) { return CFGs[proc]; }
+CFG PKB::getCFG() { return cfg; }
+int PKB::getStmtCount() { return stmtCount; }

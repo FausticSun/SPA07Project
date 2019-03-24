@@ -148,7 +148,7 @@ void populateModifiesS(std::unique_ptr<PKB> &pkb) {
   }
 }
 
-Table getTableForCallProc(Table &callsTable, Table &otherTable,
+Table getTableForCallProc(Table callsTable, Table otherTable,
                           std::string proc) {
   callsTable.setHeader({"p1", "p2"});
   otherTable.setHeader({"p2", "v"});
@@ -160,7 +160,7 @@ Table getTableForCallProc(Table &callsTable, Table &otherTable,
   return table;
 }
 
-Table getTableForCallStmt(Table &callProcNameTable, Table &otherTable,
+Table getTableForCallStmt(Table callProcNameTable, Table otherTable,
                           std::string proc) {
   callProcNameTable.setHeader({"s", "p2"});
   otherTable.setHeader({"p2", "v"});
@@ -174,28 +174,26 @@ Table getTableForCallStmt(Table &callProcNameTable, Table &otherTable,
 
 void populateUsesAndModifiesC(std::unique_ptr<PKB> &pkb) {
   auto callsTable = pkb->getCalls();
-  auto callProcNameTable = pkb->getCallProcNameTable();
-  auto usesPTable = pkb->getUsesP();
-  auto modifiesPTable = pkb->getModifiesP();
-
   std::vector<std::string> topologicalOrder = topologicalSort(callsTable);
   for (auto const proc : topologicalOrder) {
     // Update procedure that contains call stmt
-    Table t1 = getTableForCallProc(callsTable, usesPTable, proc);
+    Table t1 = getTableForCallProc(pkb->getCalls(), pkb->getUsesP(), proc);
     for (auto data : t1.getData({"p1", "v"})) {
       pkb->setUses(data[0], data[1]);
     }
-    Table t2 = getTableForCallProc(callsTable, modifiesPTable, proc);
+    Table t2 = getTableForCallProc(pkb->getCalls(), pkb->getModifiesP(), proc);
     for (auto data : t2.getData({"p1", "v"})) {
       pkb->setModifies(data[0], data[1]);
     }
 
     // Update call stmt itself
-    Table t3 = getTableForCallStmt(callProcNameTable, usesPTable, proc);
+    Table t3 =
+        getTableForCallStmt(pkb->getCallProcNameTable(), pkb->getUsesP(), proc);
     for (auto data : t3.getData({"s", "v"})) {
       pkb->setUses(std::stoi(data[0]), data[1]);
     }
-    Table t4 = getTableForCallStmt(callProcNameTable, modifiesPTable, proc);
+    Table t4 = getTableForCallStmt(pkb->getCallProcNameTable(),
+                                   pkb->getModifiesP(), proc);
     for (auto data : t4.getData({"s", "v"})) {
       pkb->setModifies(std::stoi(data[0]), data[1]);
     }
@@ -203,22 +201,13 @@ void populateUsesAndModifiesC(std::unique_ptr<PKB> &pkb) {
 }
 
 void populateCFG(std::unique_ptr<PKB> &pkb) {
-  // Get first line number of each procedure
-  auto procStmtTable = pkb->getProcStmt();
-  procStmtTable.setHeader({"proc", "n1"});
-  auto nextTable = pkb->getNext();
-  nextTable.setHeader({"n1", "n2"});
-  procStmtTable.mergeWith(nextTable);
-
   // Get all while and if line numbers
   auto whileIfTable = pkb->getStmtType(StatementType::While);
   auto ifTable = pkb->getStmtType(StatementType::If);
   whileIfTable.concatenate(ifTable);
-
-  for (auto data : procStmtTable.getData({"proc", "n1"})) {
-    CFG graph = CFG{std::stoi(data[1]), pkb->getNext(), whileIfTable};
-    pkb->setCFG(data[0], graph);
-  }
+  CFG graph = CFG{pkb->getProcStmt(), pkb->getNext(), whileIfTable,
+                  pkb->getStmtCount()};
+  pkb->setCFG(graph);
 }
 
 void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {

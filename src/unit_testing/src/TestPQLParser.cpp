@@ -1029,6 +1029,75 @@ SCENARIO("Delcare invalid synonyms in with clause") {
                       "synonym must be of type 'prog_line' in with clause");
 }
 
+SCENARIO("wrong argument type for attrref") {
+	SECTION("stmt.varName") {
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "stmt"));
+		tokens.push(QueryToken(TokenType::Identifier, "s"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "s"));
+		tokens.push(QueryToken(TokenType::Identifier, "with"));
+		tokens.push(QueryToken(TokenType::Identifier, "s"));
+		tokens.push(QueryToken(TokenType::Identifier, "."));
+		tokens.push(QueryToken(TokenType::Identifier, "varName"));
+		tokens.push(QueryToken(TokenType::Identifier, "="));
+		tokens.push(QueryToken(TokenType::Identifier, "5"));
+		PQLParser p = PQLParser();
+		REQUIRE_THROWS_WITH(p.buildQuery(tokens),
+			"invalid argument type for attrref");
+	}
+
+	SECTION("var.procName") {
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "variable"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, "with"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, "."));
+		tokens.push(QueryToken(TokenType::Identifier, "procName"));
+		tokens.push(QueryToken(TokenType::Identifier, "="));
+		tokens.push(QueryToken(TokenType::Identifier, "main"));
+		PQLParser p = PQLParser();
+		REQUIRE_THROWS_WITH(p.buildQuery(tokens),
+			"invalid argument type for attrref");
+	}
+
+	SECTION("constant.stmt#") {
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "constant"));
+		tokens.push(QueryToken(TokenType::Identifier, "c"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "c"));
+		tokens.push(QueryToken(TokenType::Identifier, "."));
+		tokens.push(QueryToken(TokenType::Identifier, "stmt#"));
+		PQLParser p = PQLParser();
+		REQUIRE_THROWS_WITH(p.buildQuery(tokens),
+			"invalid argument type for attrref");
+	}
+
+	SECTION("var.value") {
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "variable"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, "."));
+		tokens.push(QueryToken(TokenType::Identifier, "value"));
+		PQLParser p = PQLParser();
+		REQUIRE_THROWS_WITH(p.buildQuery(tokens),
+			"invalid argument type for attrref");
+	}
+	
+}
+
+//
+
 SCENARIO("test select BOOLEAN") {
   queue<QueryToken> tokens;
   tokens.push(QueryToken(TokenType::Identifier, "variable"));
@@ -1082,6 +1151,34 @@ SCENARIO("test select attrref") {
       REQUIRE(tar.front().attrRefSynonymType == QueryEntityType::Procedure);
     }
   }
+}
+
+SCENARIO("test select tuple with one target") {
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "assign"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "a1"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
+	tokens.push(QueryToken(TokenType::Identifier, "<"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ">"));
+	PQLParser p = PQLParser();
+	const Query q = p.buildQuery(tokens);
+	const std::vector<QueryEntity> selectors = q.selectors;
+	const vector<QueryEntity> tar = q.target;
+
+	WHEN("Successfully parsed:") {
+		SECTION("selectors: two QueryEntity is inside") {
+			REQUIRE(selectors.size() == 2);
+		}
+		SECTION("1 in the tuple targets") {
+			REQUIRE(tar.size() == 1);
+			REQUIRE(tar[0].name == "a");
+			REQUIRE(tar[0].type == QueryEntityType::Assign);
+		}
+	}
 }
 
 SCENARIO("test select tuple") {

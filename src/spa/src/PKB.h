@@ -21,7 +21,7 @@ private:
   std::map<std::string, StmtRange> procTable;
   Table constTable{1};
   std::map<StatementType, std::set<int>> stmtTable;
-  std::map<std::string, CFG> CFGs;
+  CFG cfg;
 
   // PQL Relation Tables
   Table followsTable{2};
@@ -70,7 +70,7 @@ public:
   void setWhile(int, const std::string &);
   // Other setters
   void setCallProcName(int, const std::string &);
-  void setCFG(std::string, CFG &);
+  void setCFG(CFG &);
 
   // Getters
   // Entity getter
@@ -93,6 +93,8 @@ public:
   Table getNext() const;
   Table getNextT(bool, std::string);
   //Table getNextT(Type (forward or reverse), std::string);
+  Table getNextT() const;
+  Table getNextT(int, bool) const;
   // Table getAffects() const;
   // Table getAffectsT() const;
   Table getCallProcNameTable() const;
@@ -102,5 +104,6 @@ public:
   Table getIfMatches();
   // Other getters
   Table getCallProcName();
-  CFG getCFG(std::string);
+  CFG getCFG();
+  int getStmtCount();
 };

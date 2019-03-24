@@ -1,4 +1,5 @@
 #include "ExprParser.h"
+#include <string>
 
 using Lexer::Token;
 using Lexer::TokenType;
@@ -105,7 +106,11 @@ std::list<Token> parseExpr(std::list<Token> &tokens) {
 std::string tokensToString(const std::list<Token> &tokens) {
   std::string str = " ";
   for (auto t : tokens) {
-    str.append(t.value + " ");
+    if (t.type == TokenType::Number) {
+      str.append(std::to_string(std::stoi(t.value)) + " ");
+    } else {
+      str.append(t.value + " ");
+    }
   }
   return str;
 }

@@ -4,57 +4,52 @@
 
 CFG::CFG() {}
 
-CFG::CFG(int start, Table nextTable, Table whileIfTable) {
-  // Count number of lines
-  std::set<int> lineNumbers;
-  for (auto data : nextTable.getData()) {
-    lineNumbers.insert(std::stoi(data[0]));
-    lineNumbers.insert(std::stoi(data[1]));
-  }
-
+CFG::CFG(Table procStmtTable, Table nextTable, Table whileIfTable,
+         int stmtCount) {
   // Populate initialGraph from nextTable (1-based indexing)
-  initialGraph.resize(lineNumbers.size() + 1);
+  initialGraph.resize(stmtCount + 1);
   for (auto data : nextTable.getData()) {
     int u = std::stoi(data[0]);
     int v = std::stoi(data[1]);
     initialGraph[u].push_back(v);
   }
-
   // Populate inDegree
-  std::vector<int> inDegree(lineNumbers.size() + 1, 0);
+  std::vector<int> inDegree(stmtCount + 1, 0);
   for (int i = 1; i < initialGraph.size(); ++i) {
     for (auto j : initialGraph[i]) {
       inDegree[j]++;
     }
   }
-
-  // Populate forward and reverse CompressedGraph
-  populateInitialToCompressed(whileIfTable, inDegree);
-  populateCompressedToInitial();
-  forwardCompressedGraph.resize(numCompressedNodes + 1);
-  reverseCompressedGraph.resize(numCompressedNodes + 1);
-  populateCompressedGraph();
+  for (auto data : procStmtTable.getData()) {
+    int start = std::stoi(data[1]);
+    // Not first procedure of program
+    if (start != 1) {
+      numCompressedNodes++;
+    }
+    // Procedure only has one statement, initialize 1 node compressed graph
+    if (initialGraph[start].empty()) {
+      initialToCompressed[start] = numCompressedNodes;
+      compressedToInitial[numCompressedNodes] = {start};
+      forwardCompressedGraph.push_back({});
+      reverseCompressedGraph.push_back({});
+    } else {
+      // Populate forward and reverse CompressedGraph
+      populateInitialToCompressed(start, whileIfTable, inDegree);
+      populateCompressedToInitial();
+      forwardCompressedGraph.resize(numCompressedNodes + 1);
+      reverseCompressedGraph.resize(numCompressedNodes + 1);
+      populateCompressedGraph();
+    }
+  }
 }
 
-std::vector<std::vector<int>> CFG::getForwardCompressedGraph() {
-  return forwardCompressedGraph;
-}
-
-std::vector<std::vector<int>> CFG::getReverseCompressedGraph() {
-  return reverseCompressedGraph;
-}
-
-int CFG::getCompressed(int i) { return initialToCompressed[i]; }
-
-std::vector<int> CFG::getInitial(int c) { return compressedToInitial[c]; }
-
-void CFG::populateInitialToCompressed(Table whileIfTable,
+void CFG::populateInitialToCompressed(int start, Table whileIfTable,
                                       std::vector<int> inDegree) {
   // Iterative DFS to populate initialToCompressed
   std::vector<bool> visited(initialGraph.size() + 1, false);
   std::stack<int> stack;
-  stack.push(1);
-  initialToCompressed[1] = numCompressedNodes;
+  stack.push(start);
+  initialToCompressed[start] = numCompressedNodes;
 
   while (!stack.empty()) {
     int u = stack.top();
@@ -121,4 +116,22 @@ void CFG::populateCompressedGraph() {
       }
     }
   }
+}
+
+std::vector<int> CFG::traverseCFG(int start, bool isForward) const {
+  // flora's traversal code here
+  return {};
+}
+
+Table CFG::getNextT() const {
+  Table table{2};
+  // traverse from every node and put results into table
+  return table;
+}
+
+Table CFG::getNextT(int start, bool isForward) const {
+  Table table{1};
+  std::vector<int> result = traverseCFG(start, isForward);
+  // put result into table
+  return table;
 }

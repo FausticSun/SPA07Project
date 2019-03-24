@@ -31,10 +31,10 @@ public:
 
 private:
   PKB mypkb;
-  Table resultExtractor(Table result, Query q);
-  list<string> resultFormater(Table t);
-  Table executeSimpleQuery(vector<QueryEntity> t);
-  Table executeComplexQuery(Query q);
+	set<vector<string>> resultExtractor(Table result, Query q);
+  list<string> resultFormater(set<vector<string>> t);
+	set<vector<string>> executeSimpleQuery(vector<QueryEntity> t);
+	set<vector<string>> executeComplexQuery(Query q);
   Table getdataByTtype(QueryEntity q);
   Table getdataWith(QueryEntity q);
   ClauseResult dataFilter(Table data, Clause c);
