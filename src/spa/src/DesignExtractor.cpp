@@ -1,187 +1,223 @@
 #include "DesignExtractor.h"
+#include "Table.h"
+#include <list>
+#include <queue>
+#include <stack>
 
-DesignExtractor::DesignExtractor(std::unique_ptr<TNode> &AST) : pkb(new PKB()) {
-  traverseAST(AST);
-  derivesFollowsParentTransitiveClosure();
-  deriveUsesAndModifies();
-}
-
-std::unique_ptr<PKB> DesignExtractor::getPKB() { return std::move(pkb); }
-
-void DesignExtractor::traverseAST(std::unique_ptr<TNode> &AST) {
-  switch (AST->type) {
-  case TNodeType::Procedure:
-    pkb->insertProc(AST->name);
-    this->procName = AST->name; // temp solution
-    break;
-  case TNodeType::Variable:
-    pkb->insertVar(AST->name);
-    break;
-  case TNodeType::If:
-    pkb->insertStatement(std::to_string(AST->statementNumber),
-                         StatementType::If);
-    extractParent(AST);
-
-    extractUses(AST->children.front(), AST->statementNumber);
-    break;
-  case TNodeType::While:
-    pkb->insertStatement(std::to_string(AST->statementNumber),
-                         StatementType::While);
-    extractParent(AST);
-
-    extractUses(AST->children.front(), AST->statementNumber);
-    break;
-  case TNodeType::Assign:
-    pkb->insertStatement(std::to_string(AST->statementNumber),
-                         StatementType::Assign);
-    extractUses(AST->children.back(), AST->statementNumber);
-    extractModifies(AST->children.front(), AST->statementNumber);
-    extractAssign(AST);
-    break;
-  case TNodeType::Print:
-    pkb->insertStatement(std::to_string(AST->statementNumber),
-                         StatementType::Print);
-    extractUses(AST->children.front(), AST->statementNumber);
-    break;
-  case TNodeType::Read:
-    pkb->insertStatement(std::to_string(AST->statementNumber),
-                         StatementType::Read);
-    extractModifies(AST->children.front(), AST->statementNumber);
-  case TNodeType::StatementList:
-    extractFollows(AST);
-    break;
-  case TNodeType::Constant:
-    pkb->insertConstant(std::stoi(AST->name));
-    break;
-  default:
-    break;
+// Kahn's algorithm
+std::vector<std::string> topologicalSort(Table callsTable) {
+  // Create adjMap as graph DS and initialize all in degrees to 0
+  std::map<std::string, std::vector<std::string>> adjMap;
+  std::map<std::string, int> inDegree;
+  for (auto data : callsTable.getData()) {
+    adjMap[data[0]].push_back(data[1]);
+    inDegree[data[0]] = 0;
+    inDegree[data[1]] = 0;
   }
-  for (std::unique_ptr<TNode> &child : AST->children) {
-    traverseAST(child);
-  }
-}
 
-void DesignExtractor::extractUses(std::unique_ptr<TNode> &AST, int parent) {
-  if (AST->children.empty() && AST->type == TNodeType::Variable) {
-    pkb->setUses(parent, AST->name);
-    pkb->setUses(procName, AST->name); // temp solution
-    return;
+  // Traverse adjMap to fill in degrees of vertices
+  for (auto const &i : adjMap) {
+    for (auto const &j : adjMap[i.first]) {
+      inDegree[j]++;
+    }
   }
-  for (auto &tNode : AST->children) {
-    extractUses(tNode, parent);
+
+  // Enqueue all vertices with in degree 0
+  std::queue<std::string> queue;
+  for (auto const &i : inDegree) {
+    if (inDegree[i.first] == 0) {
+      queue.push(i.first);
+    }
   }
-}
 
-void DesignExtractor::extractModifies(std::unique_ptr<TNode> &AST, int parent) {
-  pkb->setModifies(parent, AST->name);
-  pkb->setModifies(procName, AST->name); // temp solution
-}
+  // Counter to track number of vertices visited
+  int counter = 0;
+  std::stack<std::string> stack;
+  while (!queue.empty()) {
+    std::string u = queue.front();
+    queue.pop();
+    stack.push(u);
 
-void DesignExtractor::deriveUsesAndModifies() {
-  for (auto type : {StatementType::While, StatementType::If}) {
-    const std::set<std::string> stmts = pkb->getStatementsOfType(type);
-    for (auto stmt : stmts) {
-      const std::set<std::string> containerStmts = pkb->getParentT(stmt);
-      for (auto containerStmt : containerStmts) {
-        const std::set<std::string> usesVars = pkb->getUses(containerStmt);
-        const std::set<std::string> modifiesVars =
-            pkb->getModifies(containerStmt);
-        for (auto usesVar : usesVars) {
-          pkb->setUses(std::stoi(stmt), usesVar);
-        }
-        for (auto modifiesVar : modifiesVars) {
-          pkb->setModifies(std::stoi(stmt), modifiesVar);
-        }
+    // Iterate through neighbours of u and decrease their in degree by 1
+    // Enqueue if in degree of v becomes 0
+    for (auto const &v : adjMap[u]) {
+      inDegree[v]--;
+      if (inDegree[v] == 0) {
+        queue.push(v);
       }
+    }
+    counter++;
+  }
+
+  // Check for cycle
+  if (counter != adjMap.size()) {
+    throw std::logic_error("PKB contains cyclical calls");
+  }
+
+  // Transfer from stack to vector
+  std::vector<std::string> topologicalOrder;
+  while (!stack.empty()) {
+    topologicalOrder.push_back(stack.top());
+    stack.pop();
+  }
+
+  return topologicalOrder;
+}
+
+// Check program contains no calls to non-existing procedure
+void validateProcs(std::unique_ptr<PKB> &pkb) {
+  auto procTable = pkb->getProcTable();
+  std::set<std::string> actualProcs;
+  for (auto i : procTable.getData()) {
+    actualProcs.insert(i[0]);
+  }
+
+  auto callTable = pkb->getCalls();
+  for (auto i : callTable.getData()) {
+    if (actualProcs.find(i[1]) == actualProcs.end()) {
+      throw std::logic_error("PKB contains call to non-existent procedure");
     }
   }
 }
 
-void DesignExtractor::derivesFollowsParentTransitiveClosure() {
-  int size = pkb->getStatementCount();
-  auto followsTable = pkb->getFollowsTable();
-  auto followsTMat = floydWarshall(followsTable, size);
-  for (int i = 0; i < size; ++i) {
-    for (int j = 0; j < size; ++j) {
-      if (i == j) {
-        continue;
-      }
-      if (followsTMat[i][j]) {
-        pkb->setFollowsT(i + 1, j + 1);
-      }
+// Check program contains no cyclic calls
+void validateCyclicCalls(std::unique_ptr<PKB> &pkb) {
+  auto callsTable = pkb->getCalls();
+  topologicalSort(callsTable);
+}
+
+void populateFollowsT(std::unique_ptr<PKB> &pkb) {
+  auto table = pkb->getFollows();
+  table.transitiveClosure();
+  for (auto data : table.getData()) {
+    pkb->setFollowsT(std::stoi(data[0]), std::stoi(data[1]));
+  }
+}
+
+void populateParentT(std::unique_ptr<PKB> &pkb) {
+  auto table = pkb->getParent();
+  table.transitiveClosure();
+  for (auto data : table.getData()) {
+    pkb->setParentT(std::stoi(data[0]), std::stoi(data[1]));
+  }
+}
+
+void populateCallsT(std::unique_ptr<PKB> &pkb) {
+  auto table = pkb->getCalls();
+  table.transitiveClosure();
+  for (auto data : table.getData()) {
+    pkb->setCallsT(data[0], data[1]);
+  }
+}
+
+void populateUsesS(std::unique_ptr<PKB> &pkb) {
+  // parent*(w/ifs, s1) and uses(s1, v)
+  auto table = pkb->getStmtType(StatementType::While);
+  table.concatenate(pkb->getStmtType(StatementType::If));
+  table.setHeader({"w/ifs"});
+
+  auto parentTTable = pkb->getParentT();
+  parentTTable.setHeader({"w/ifs", "s1"});
+
+  auto usesSTable = pkb->getUsesS();
+  usesSTable.setHeader({"s1", "v"});
+
+  table.mergeWith(parentTTable);
+  table.mergeWith(usesSTable);
+  for (auto data : table.getData({"w/ifs", "v"})) {
+    pkb->setUses(std::stoi(data[0]), data[1]);
+  }
+}
+
+void populateModifiesS(std::unique_ptr<PKB> &pkb) {
+  // parent*(w/ifs, s1) and modifies(s1, v)
+  auto table = pkb->getStmtType(StatementType::While);
+  table.concatenate(pkb->getStmtType(StatementType::If));
+  table.setHeader({"w/ifs"});
+
+  auto parentTTable = pkb->getParentT();
+  parentTTable.setHeader({"w/ifs", "s1"});
+
+  auto modifiesSTable = pkb->getModifiesS();
+  modifiesSTable.setHeader({"s1", "v"});
+
+  table.mergeWith(parentTTable);
+  table.mergeWith(modifiesSTable);
+  for (auto data : table.getData({"w/ifs", "v"})) {
+    pkb->setModifies(std::stoi(data[0]), data[1]);
+  }
+}
+
+Table getTableForCallProc(Table callsTable, Table otherTable,
+                          std::string proc) {
+  callsTable.setHeader({"p1", "p2"});
+  otherTable.setHeader({"p2", "v"});
+  Table table{1};
+  table.setHeader({"p2"});
+  table.insertRow({proc});
+  table.mergeWith(callsTable);
+  table.mergeWith(otherTable);
+  return table;
+}
+
+Table getTableForCallStmt(Table callProcNameTable, Table otherTable,
+                          std::string proc) {
+  callProcNameTable.setHeader({"s", "p2"});
+  otherTable.setHeader({"p2", "v"});
+  Table table{1};
+  table.setHeader({"p2"});
+  table.insertRow({proc});
+  table.mergeWith(callProcNameTable);
+  table.mergeWith(otherTable);
+  return table;
+}
+
+void populateUsesAndModifiesC(std::unique_ptr<PKB> &pkb) {
+  auto callsTable = pkb->getCalls();
+  std::vector<std::string> topologicalOrder = topologicalSort(callsTable);
+  for (auto const proc : topologicalOrder) {
+    // Update procedure that contains call stmt
+    Table t1 = getTableForCallProc(pkb->getCalls(), pkb->getUsesP(), proc);
+    for (auto data : t1.getData({"p1", "v"})) {
+      pkb->setUses(data[0], data[1]);
+    }
+    Table t2 = getTableForCallProc(pkb->getCalls(), pkb->getModifiesP(), proc);
+    for (auto data : t2.getData({"p1", "v"})) {
+      pkb->setModifies(data[0], data[1]);
+    }
+
+    // Update call stmt itself
+    Table t3 =
+        getTableForCallStmt(pkb->getCallProcNameTable(), pkb->getUsesP(), proc);
+    for (auto data : t3.getData({"s", "v"})) {
+      pkb->setUses(std::stoi(data[0]), data[1]);
+    }
+    Table t4 = getTableForCallStmt(pkb->getCallProcNameTable(),
+                                   pkb->getModifiesP(), proc);
+    for (auto data : t4.getData({"s", "v"})) {
+      pkb->setModifies(std::stoi(data[0]), data[1]);
     }
   }
-  auto parentTable = pkb->getParentTable();
-  auto parentTMat = floydWarshall(parentTable, size);
-  for (int i = 0; i < size; ++i) {
-    for (int j = 0; j < size; ++j) {
-      if (i == j) {
-        continue;
-      }
-      if (parentTMat[i][j]) {
-        pkb->setParentT(i + 1, j + 1);
-      }
-    }
-  }
 }
 
-void DesignExtractor::extractFollows(std::unique_ptr<TNode> &AST) {
-  if (AST->children.size() < 2) {
-    return;
-  }
-  for (auto it1 = AST->children.begin(); it1 != std::prev(AST->children.end());
-       ++it1) {
-    pkb->setFollows((*it1)->statementNumber,
-                    (*(std::next(it1)))->statementNumber);
-  }
+void populateCFG(std::unique_ptr<PKB> &pkb) {
+  // Get all while and if line numbers
+  auto whileIfTable = pkb->getStmtType(StatementType::While);
+  auto ifTable = pkb->getStmtType(StatementType::If);
+  whileIfTable.concatenate(ifTable);
+  CFG graph = CFG{pkb->getProcStmt(), pkb->getNext(), whileIfTable,
+                  pkb->getStmtCount()};
+  pkb->setCFG(graph);
 }
 
-void DesignExtractor::extractParent(std::unique_ptr<TNode> &AST) {
-  int parent = AST->statementNumber;
-  for (auto tNodeIt = std::next(AST->children.begin());
-       tNodeIt != AST->children.end(); ++tNodeIt) {
-    for (auto childIt = (*tNodeIt)->children.begin();
-         childIt != (*tNodeIt)->children.end(); ++childIt) {
-      pkb->setParent(AST->statementNumber, (*childIt)->statementNumber);
-    }
-  }
-}
-
-void DesignExtractor::extractAssign(std::unique_ptr<TNode> &AST) {
-  auto var = AST->children.front()->name;
-  auto expr = " " + extractPostfix(AST->children.back());
-  pkb->insertAssign(AST->statementNumber, var, expr);
-}
-
-std::vector<std::vector<bool>>
-DesignExtractor::floydWarshall(std::vector<std::vector<std::string>> &table,
-                               int size) {
-  std::vector<std::vector<bool>> matrix(size, std::vector<bool>(size, false));
-  for (auto it = table.begin(); it != table.end(); ++it) {
-    int i = std::stoi(it->at(0)) - 1;
-    int j = std::stoi(it->at(1)) - 1;
-    matrix[i][j] = true;
-  }
-  for (int i = 0; i < size; ++i) {
-    matrix[i][i] = true;
-  }
-  for (int k = 0; k < size; ++k) {
-    for (int i = 0; i < size; ++i) {
-      for (int j = 0; j < size; ++j) {
-        if (matrix[i][k] && matrix[k][j]) {
-          matrix[i][j] = true;
-        }
-      }
-    }
-  }
-  return matrix;
-}
-
-std::string DesignExtractor::extractPostfix(std::unique_ptr<TNode> &AST) {
-  std::string expr;
-  for (auto it = AST->children.begin(); it != AST->children.end(); ++it) {
-    expr += extractPostfix(*it);
-  }
-  expr += AST->name + " ";
-  return expr;
+void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {
+  validateProcs(pkb);
+  validateCyclicCalls(pkb);
+  populateFollowsT(pkb);
+  populateParentT(pkb);
+  populateCallsT(pkb);
+  populateUsesS(pkb);
+  populateModifiesS(pkb);
+  populateUsesAndModifiesC(pkb);
+  populateCFG(pkb);
 }

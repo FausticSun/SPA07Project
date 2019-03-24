@@ -6,6 +6,7 @@
 #include <tuple>
 
 using namespace std;
+using namespace PQLLexerToken;
 
 /*DeclarationType {
         Variable,
@@ -78,8 +79,13 @@ private:
   vector<string> tokenizeProcedure(vector<string>);
   vector<string> tokenizeSelect(vector<string>);
   vector<string> tokenizePattern(vector<string>);
+  vector<string> tokenizeWith(vector<string>);
   vector<string> tokenizeParent(vector<string>);
   vector<string> tokenizeParentT(vector<string>);
+  vector<string> tokenizeCalls(vector<string>);
+  vector<string> tokenizeCallsT(vector<string>);
+  vector<string> tokenizeNext(vector<string>);
+  vector<string> tokenizeNextT(vector<string>);
   vector<string> tokenizeFollows(vector<string>);
   vector<string> tokenizeFollowsT(vector<string>);
   vector<string> tokenizeModifies(vector<string>);

@@ -2,24 +2,16 @@
 
 #include "catch.hpp"
 
+using namespace PQLLexerToken;
 using namespace std;
-
-SCENARIO("parse an empty query token") {
-  queue<QueryToken> tokens;
-  PQLParser p = PQLParser();
-  const Query q = p.buildQuery(tokens);
-  const std::vector<QueryEntity> selectors = q.selectors;
-
-  WHEN("Successfully parsed:") {
-    SECTION("selectors: none") { REQUIRE(selectors.size() == 0); }
-  }
-}
 
 SCENARIO("Only declare one variable a") {
   queue<QueryToken> tokens;
   tokens.push(QueryToken(TokenType::Identifier, "variable"));
   tokens.push(QueryToken(TokenType::Identifier, "a"));
   tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "Select"));
+  tokens.push(QueryToken(TokenType::Identifier, "a"));
   PQLParser p = PQLParser();
   const Query q = p.buildQuery(tokens);
   const std::vector<QueryEntity> selectors = q.selectors;
@@ -41,6 +33,8 @@ SCENARIO("Declare 2 variables a and b") {
   tokens.push(QueryToken(TokenType::Identifier, ","));
   tokens.push(QueryToken(TokenType::Identifier, "b"));
   tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "Select"));
+  tokens.push(QueryToken(TokenType::Identifier, "b"));
   PQLParser p = PQLParser();
   const Query q = p.buildQuery(tokens);
   const std::vector<QueryEntity> selectors = q.selectors;
@@ -69,6 +63,8 @@ SCENARIO("Declare several different type of query entities, one for each") {
   tokens.push(QueryToken(TokenType::Identifier, "stmt"));
   tokens.push(QueryToken(TokenType::Identifier, "s"));
   tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "Select"));
+  tokens.push(QueryToken(TokenType::Identifier, "s"));
   PQLParser p = PQLParser();
   const Query q = p.buildQuery(tokens);
   const std::vector<QueryEntity> selectors = q.selectors;
@@ -108,6 +104,8 @@ SCENARIO("Declare several different type of query entities, several for each") {
   tokens.push(QueryToken(TokenType::Identifier, ","));
   tokens.push(QueryToken(TokenType::Identifier, "c3"));
   tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "Select"));
+  tokens.push(QueryToken(TokenType::Identifier, "r1"));
   PQLParser p = PQLParser();
   const Query q = p.buildQuery(tokens);
   const std::vector<QueryEntity> selectors = q.selectors;
@@ -151,7 +149,7 @@ SCENARIO("Select all variables") {
   PQLParser p = PQLParser();
   const Query q = p.buildQuery(tokens);
   const std::vector<QueryEntity> selectors = q.selectors;
-  const QueryEntity tar = q.target;
+  const std::vector<QueryEntity> tar = q.target;
 
   WHEN("Successfully parsed:") {
     SECTION("selectors: one QueryEntity is inside") {
@@ -161,8 +159,8 @@ SCENARIO("Select all variables") {
       REQUIRE(qe.type == QueryEntityType::Variable);
     }
     SECTION("target") {
-      REQUIRE(tar.name == "a");
-      REQUIRE(tar.type == QueryEntityType::Variable);
+      REQUIRE(tar.front().name == "a");
+      REQUIRE(tar.front().type == QueryEntityType::Variable);
     }
   }
 }
@@ -186,7 +184,7 @@ SCENARIO("Including one such that clause") {
     Query q = p.buildQuery(tokens);
     std::vector<QueryEntity> selectors = q.selectors;
     std::vector<Clause> clauses = q.clauses;
-    QueryEntity tar = q.target;
+    std::vector<QueryEntity> tar = q.target;
 
     WHEN("Successfully parsed:") {
       SECTION("selectors: one QueryEntity is inside") {
@@ -196,8 +194,8 @@ SCENARIO("Including one such that clause") {
         REQUIRE(qe.type == QueryEntityType::Assign);
       }
       SECTION("target") {
-        REQUIRE(tar.name == "a");
-        REQUIRE(tar.type == QueryEntityType::Assign);
+        REQUIRE(tar.front().name == "a");
+        REQUIRE(tar.front().type == QueryEntityType::Assign);
       }
       SECTION("clauses: one Follows clause is inside") {
         REQUIRE(clauses.size() == 1);
@@ -229,7 +227,7 @@ SCENARIO("Including one such that clause") {
     Query q = p.buildQuery(tokens);
     std::vector<QueryEntity> selectors = q.selectors;
     std::vector<Clause> clauses = q.clauses;
-    QueryEntity tar = q.target;
+    std::vector<QueryEntity> tar = q.target;
     WHEN("Successfully parsed:") {
       SECTION("selectors: one QueryEntity is inside") {
         REQUIRE(selectors.size() == 1);
@@ -238,8 +236,8 @@ SCENARIO("Including one such that clause") {
         REQUIRE(qe.type == QueryEntityType::While);
       }
       SECTION("target") {
-        REQUIRE(tar.name == "w");
-        REQUIRE(tar.type == QueryEntityType::While);
+        REQUIRE(tar.front().name == "w");
+        REQUIRE(tar.front().type == QueryEntityType::While);
       }
       SECTION("clauses: one FollowsT clause is inside") {
         REQUIRE(clauses.size() == 1);
@@ -271,7 +269,7 @@ SCENARIO("Including one such that clause") {
     Query q = p.buildQuery(tokens);
     std::vector<QueryEntity> selectors = q.selectors;
     std::vector<Clause> clauses = q.clauses;
-    QueryEntity tar = q.target;
+    std::vector<QueryEntity> tar = q.target;
     WHEN("Successfully parsed:") {
       SECTION("selectors: one QueryEntity is inside") {
         REQUIRE(selectors.size() == 1);
@@ -280,8 +278,8 @@ SCENARIO("Including one such that clause") {
         REQUIRE(qe.type == QueryEntityType::Call);
       }
       SECTION("target") {
-        REQUIRE(tar.name == "c");
-        REQUIRE(tar.type == QueryEntityType::Call);
+        REQUIRE(tar.front().name == "c");
+        REQUIRE(tar.front().type == QueryEntityType::Call);
       }
       SECTION("clauses: one Parent clause is inside") {
         REQUIRE(clauses.size() == 1);
@@ -313,7 +311,7 @@ SCENARIO("Including one such that clause") {
     Query q = p.buildQuery(tokens);
     std::vector<QueryEntity> selectors = q.selectors;
     std::vector<Clause> clauses = q.clauses;
-    QueryEntity tar = q.target;
+    std::vector<QueryEntity> tar = q.target;
     WHEN("Successfully parsed:") {
       SECTION("selectors: one QueryEntity is inside") {
         REQUIRE(selectors.size() == 1);
@@ -322,8 +320,8 @@ SCENARIO("Including one such that clause") {
         REQUIRE(qe.type == QueryEntityType::Print);
       }
       SECTION("target") {
-        REQUIRE(tar.name == "pr");
-        REQUIRE(tar.type == QueryEntityType::Print);
+        REQUIRE(tar.front().name == "pr");
+        REQUIRE(tar.front().type == QueryEntityType::Print);
       }
       SECTION("clauses: one ParentT clause is inside") {
         REQUIRE(clauses.size() == 1);
@@ -358,20 +356,20 @@ SCENARIO("Including one such that clause") {
     Query q = p.buildQuery(tokens);
     std::vector<QueryEntity> selectors = q.selectors;
     std::vector<Clause> clauses = q.clauses;
-    QueryEntity tar = q.target;
+    std::vector<QueryEntity> tar = q.target;
     WHEN("Successfully parsed:") {
       SECTION("selectors: two QueryEntity is inside") {
         REQUIRE(selectors.size() == 2);
         QueryEntity qe = selectors.front();
         QueryEntity qe2 = selectors[1];
         REQUIRE(qe.name == "pl");
-        REQUIRE(qe.type == QueryEntityType::Stmt);
+        REQUIRE(qe.type == QueryEntityType::Progline);
         REQUIRE(qe2.name == "v");
         REQUIRE(qe2.type == QueryEntityType::Variable);
       }
       SECTION("target") {
-        REQUIRE(tar.name == "pl");
-        REQUIRE(tar.type == QueryEntityType::Stmt);
+        REQUIRE(tar.front().name == "pl");
+        REQUIRE(tar.front().type == QueryEntityType::Progline);
       }
       SECTION("clauses: one ModifiesS clause is inside") {
         REQUIRE(clauses.size() == 1);
@@ -407,7 +405,7 @@ SCENARIO("Including one such that clause") {
     Query q = p.buildQuery(tokens);
     std::vector<QueryEntity> selectors = q.selectors;
     std::vector<Clause> clauses = q.clauses;
-    QueryEntity tar = q.target;
+    std::vector<QueryEntity> tar = q.target;
     WHEN("Successfully parsed:") {
       SECTION("selectors: one QueryEntity is inside") {
         REQUIRE(selectors.size() == 1);
@@ -416,8 +414,8 @@ SCENARIO("Including one such that clause") {
         REQUIRE(qe.type == QueryEntityType::Variable);
       }
       SECTION("target") {
-        REQUIRE(tar.name == "v");
-        REQUIRE(tar.type == QueryEntityType::Variable);
+        REQUIRE(tar.front().name == "v");
+        REQUIRE(tar.front().type == QueryEntityType::Variable);
       }
       SECTION("clauses: one UsesS clause is inside") {
         REQUIRE(clauses.size() == 1);
@@ -583,7 +581,175 @@ SCENARIO("Test pattern clause strange case") {
   }
 }
 
+SCENARIO("test while pattern clause") {
+  queue<QueryToken> tokens;
+  tokens.push(QueryToken(TokenType::Identifier, "while"));
+  tokens.push(QueryToken(TokenType::Identifier, "w"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "variable"));
+  tokens.push(QueryToken(TokenType::Identifier, "v"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "Select"));
+  tokens.push(QueryToken(TokenType::Identifier, "w"));
+  tokens.push(QueryToken(TokenType::Identifier, "pattern"));
+  tokens.push(QueryToken(TokenType::Identifier, "w"));
+  tokens.push(QueryToken(TokenType::Identifier, "("));
+  tokens.push(QueryToken(TokenType::Identifier, "v"));
+  tokens.push(QueryToken(TokenType::Identifier, ","));
+  tokens.push(QueryToken(TokenType::Identifier, "_"));
+  tokens.push(QueryToken(TokenType::Identifier, ")"));
+  tokens.push(QueryToken(TokenType::Identifier, "pattern"));
+  tokens.push(QueryToken(TokenType::Identifier, "w"));
+  tokens.push(QueryToken(TokenType::Identifier, "("));
+  tokens.push(QueryToken(TokenType::Identifier, "\""));
+  tokens.push(QueryToken(TokenType::Identifier, "b"));
+  tokens.push(QueryToken(TokenType::Identifier, "\""));
+  tokens.push(QueryToken(TokenType::Identifier, ","));
+  tokens.push(QueryToken(TokenType::Identifier, "_"));
+  tokens.push(QueryToken(TokenType::Identifier, ")"));
+  tokens.push(QueryToken(TokenType::Identifier, "and"));
+  tokens.push(QueryToken(TokenType::Identifier, "w"));
+  tokens.push(QueryToken(TokenType::Identifier, "("));
+  tokens.push(QueryToken(TokenType::Identifier, "_"));
+  tokens.push(QueryToken(TokenType::Identifier, ","));
+  tokens.push(QueryToken(TokenType::Identifier, "_"));
+  tokens.push(QueryToken(TokenType::Identifier, ")"));
+
+  PQLParser p = PQLParser();
+  const Query q = p.buildQuery(tokens);
+  const std::vector<QueryEntity> selectors = q.selectors;
+  const std::vector<Clause> clauses = q.clauses;
+  const vector<QueryEntity> tar = q.target;
+
+  WHEN("Successfully parsed:") {
+    SECTION("selectors: two QueryEntity is inside") {
+      REQUIRE(selectors.size() == 2);
+    }
+    SECTION("1 target") {
+      REQUIRE(tar.size() == 1);
+      REQUIRE(tar[0].name == "w");
+      REQUIRE(tar[0].type == QueryEntityType::While);
+    }
+    SECTION("clauses: 3 while pattern clauses are inside") {
+      REQUIRE(clauses.size() == 3);
+      Clause c1 = clauses.front();
+      Clause c2 = clauses[1];
+      Clause c3 = clauses[2];
+      std::vector<QueryEntity> parameters1 = c1.parameters;
+      std::vector<QueryEntity> parameters2 = c2.parameters;
+      std::vector<QueryEntity> parameters3 = c3.parameters;
+      REQUIRE(c1.clauseType == ClauseType::WhilePatt);
+      REQUIRE(parameters1[0].name == "w");
+      REQUIRE(parameters1[0].type == QueryEntityType::While);
+      REQUIRE(parameters1[1].name == "v");
+      REQUIRE(parameters1[1].type == QueryEntityType::Variable);
+
+      REQUIRE(c2.clauseType == ClauseType::WhilePatt);
+      REQUIRE(parameters2[0].name == "w");
+      REQUIRE(parameters2[0].type == QueryEntityType::While);
+      REQUIRE(parameters2[1].name == "b");
+      REQUIRE(parameters2[1].type == QueryEntityType::Name);
+
+      REQUIRE(c3.clauseType == ClauseType::WhilePatt);
+      REQUIRE(parameters3[0].name == "w");
+      REQUIRE(parameters3[0].type == QueryEntityType::While);
+      REQUIRE(parameters3[1].name == "_");
+      REQUIRE(parameters3[1].type == QueryEntityType::Underscore);
+    }
+  }
+}
+
+SCENARIO("test if pattern clause") {
+  queue<QueryToken> tokens;
+  tokens.push(QueryToken(TokenType::Identifier, "if"));
+  tokens.push(QueryToken(TokenType::Identifier, "ifs"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "variable"));
+  tokens.push(QueryToken(TokenType::Identifier, "v"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "Select"));
+  tokens.push(QueryToken(TokenType::Identifier, "ifs"));
+  tokens.push(QueryToken(TokenType::Identifier, "pattern"));
+  tokens.push(QueryToken(TokenType::Identifier, "ifs"));
+  tokens.push(QueryToken(TokenType::Identifier, "("));
+  tokens.push(QueryToken(TokenType::Identifier, "v"));
+  tokens.push(QueryToken(TokenType::Identifier, ","));
+  tokens.push(QueryToken(TokenType::Identifier, "_"));
+  tokens.push(QueryToken(TokenType::Identifier, ","));
+  tokens.push(QueryToken(TokenType::Identifier, "_"));
+  tokens.push(QueryToken(TokenType::Identifier, ")"));
+  tokens.push(QueryToken(TokenType::Identifier, "and"));
+  tokens.push(QueryToken(TokenType::Identifier, "ifs"));
+  tokens.push(QueryToken(TokenType::Identifier, "("));
+  tokens.push(QueryToken(TokenType::Identifier, "\""));
+  tokens.push(QueryToken(TokenType::Identifier, "b"));
+  tokens.push(QueryToken(TokenType::Identifier, "\""));
+  tokens.push(QueryToken(TokenType::Identifier, ","));
+  tokens.push(QueryToken(TokenType::Identifier, "_"));
+  tokens.push(QueryToken(TokenType::Identifier, ","));
+  tokens.push(QueryToken(TokenType::Identifier, "_"));
+  tokens.push(QueryToken(TokenType::Identifier, ")"));
+  tokens.push(QueryToken(TokenType::Identifier, "pattern"));
+  tokens.push(QueryToken(TokenType::Identifier, "ifs"));
+  tokens.push(QueryToken(TokenType::Identifier, "("));
+  tokens.push(QueryToken(TokenType::Identifier, "_"));
+  tokens.push(QueryToken(TokenType::Identifier, ","));
+  tokens.push(QueryToken(TokenType::Identifier, "_"));
+  tokens.push(QueryToken(TokenType::Identifier, ","));
+  tokens.push(QueryToken(TokenType::Identifier, "_"));
+  tokens.push(QueryToken(TokenType::Identifier, ")"));
+
+  PQLParser p = PQLParser();
+  const Query q = p.buildQuery(tokens);
+  const std::vector<QueryEntity> selectors = q.selectors;
+  const std::vector<Clause> clauses = q.clauses;
+  const vector<QueryEntity> tar = q.target;
+
+  WHEN("Successfully parsed:") {
+    SECTION("selectors: two QueryEntity is inside") {
+      REQUIRE(selectors.size() == 2);
+    }
+    SECTION("1 target") {
+      REQUIRE(tar.size() == 1);
+      REQUIRE(tar[0].name == "ifs");
+      REQUIRE(tar[0].type == QueryEntityType::If);
+    }
+    SECTION("clauses: 3 if pattern clauses are inside") {
+      REQUIRE(clauses.size() == 3);
+      Clause c1 = clauses.front();
+      Clause c2 = clauses[1];
+      Clause c3 = clauses[2];
+      std::vector<QueryEntity> parameters1 = c1.parameters;
+      std::vector<QueryEntity> parameters2 = c2.parameters;
+      std::vector<QueryEntity> parameters3 = c3.parameters;
+      REQUIRE(c1.clauseType == ClauseType::IfPatt);
+      REQUIRE(parameters1[0].name == "ifs");
+      REQUIRE(parameters1[0].type == QueryEntityType::If);
+      REQUIRE(parameters1[1].name == "v");
+      REQUIRE(parameters1[1].type == QueryEntityType::Variable);
+
+      REQUIRE(c2.clauseType == ClauseType::IfPatt);
+      REQUIRE(parameters2[0].name == "ifs");
+      REQUIRE(parameters2[0].type == QueryEntityType::If);
+      REQUIRE(parameters2[1].name == "b");
+      REQUIRE(parameters2[1].type == QueryEntityType::Name);
+
+      REQUIRE(c3.clauseType == ClauseType::IfPatt);
+      REQUIRE(parameters3[0].name == "ifs");
+      REQUIRE(parameters3[0].type == QueryEntityType::If);
+      REQUIRE(parameters3[1].name == "_");
+      REQUIRE(parameters3[1].type == QueryEntityType::Underscore);
+    }
+  }
+}
+
 // Scenarios that will throw exceptions
+SCENARIO("parse an empty query token") {
+  queue<QueryToken> tokens;
+  PQLParser p = PQLParser();
+  REQUIRE_THROWS_WITH(p.buildQuery(tokens), "Must has 'Select' keyword.");
+}
+
 SCENARIO("select nothing") {
   queue<QueryToken> tokens;
   tokens.push(QueryToken(TokenType::Identifier, "variable"));
@@ -707,7 +873,7 @@ SCENARIO("have procedure name as the first argument for Parent") {
   tokens.push(QueryToken(TokenType::Identifier, ")"));
   PQLParser p = PQLParser();
   REQUIRE_THROWS_WITH(p.buildQuery(tokens),
-                      "invalid argument combination for clauses");
+                      "invalid argument type for clauses");
 }
 
 SCENARIO("no QueryToken matched for one expect QueryToken") {
@@ -784,9 +950,8 @@ SCENARIO("syn-assign is not assignment synonym in pattern clause") {
   tokens.push(QueryToken(TokenType::Identifier, "_"));
   tokens.push(QueryToken(TokenType::Identifier, ")"));
   PQLParser p = PQLParser();
-  REQUIRE_THROWS_WITH(
-      p.buildQuery(tokens),
-      "syn-assign must be declared as synonym of assignment for pattern");
+  REQUIRE_THROWS_WITH(p.buildQuery(tokens),
+                      "invalid argument type for clauses");
 }
 
 SCENARIO("wrong query entity type for the fisrt parameter of pattern") {
@@ -811,7 +976,7 @@ SCENARIO("wrong query entity type for the fisrt parameter of pattern") {
   PQLParser p = PQLParser();
   REQUIRE_THROWS_WITH(
       p.buildQuery(tokens),
-      "Invalid query entity type for first parameter of pattern.");
+      "Invalid query entity type for second parameter of assign pattern.");
 }
 
 SCENARIO("Invalid pattern expresion") {
@@ -846,4 +1011,411 @@ SCENARIO("Delcare duplicated synonyms") {
   tokens.push(QueryToken(TokenType::Identifier, "a"));
   PQLParser p = PQLParser();
   REQUIRE_THROWS_WITH(p.buildQuery(tokens), "'a' has been declared.");
+}
+
+SCENARIO("Delcare invalid synonyms in with clause") {
+  queue<QueryToken> tokens;
+  tokens.push(QueryToken(TokenType::Identifier, "stmt"));
+  tokens.push(QueryToken(TokenType::Identifier, "s"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "Select"));
+  tokens.push(QueryToken(TokenType::Identifier, "s"));
+  tokens.push(QueryToken(TokenType::Identifier, "with"));
+  tokens.push(QueryToken(TokenType::Identifier, "s"));
+  tokens.push(QueryToken(TokenType::Identifier, "="));
+  tokens.push(QueryToken(TokenType::Identifier, "5"));
+  PQLParser p = PQLParser();
+  REQUIRE_THROWS_WITH(p.buildQuery(tokens),
+                      "synonym must be of type 'prog_line' in with clause");
+}
+
+SCENARIO("wrong argument type for attrref") {
+	SECTION("stmt.varName") {
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "stmt"));
+		tokens.push(QueryToken(TokenType::Identifier, "s"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "s"));
+		tokens.push(QueryToken(TokenType::Identifier, "with"));
+		tokens.push(QueryToken(TokenType::Identifier, "s"));
+		tokens.push(QueryToken(TokenType::Identifier, "."));
+		tokens.push(QueryToken(TokenType::Identifier, "varName"));
+		tokens.push(QueryToken(TokenType::Identifier, "="));
+		tokens.push(QueryToken(TokenType::Identifier, "5"));
+		PQLParser p = PQLParser();
+		REQUIRE_THROWS_WITH(p.buildQuery(tokens),
+			"invalid argument type for attrref");
+	}
+
+	SECTION("var.procName") {
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "variable"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, "with"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, "."));
+		tokens.push(QueryToken(TokenType::Identifier, "procName"));
+		tokens.push(QueryToken(TokenType::Identifier, "="));
+		tokens.push(QueryToken(TokenType::Identifier, "main"));
+		PQLParser p = PQLParser();
+		REQUIRE_THROWS_WITH(p.buildQuery(tokens),
+			"invalid argument type for attrref");
+	}
+
+	SECTION("constant.stmt#") {
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "constant"));
+		tokens.push(QueryToken(TokenType::Identifier, "c"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "c"));
+		tokens.push(QueryToken(TokenType::Identifier, "."));
+		tokens.push(QueryToken(TokenType::Identifier, "stmt#"));
+		PQLParser p = PQLParser();
+		REQUIRE_THROWS_WITH(p.buildQuery(tokens),
+			"invalid argument type for attrref");
+	}
+
+	SECTION("var.value") {
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "variable"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, "."));
+		tokens.push(QueryToken(TokenType::Identifier, "value"));
+		PQLParser p = PQLParser();
+		REQUIRE_THROWS_WITH(p.buildQuery(tokens),
+			"invalid argument type for attrref");
+	}
+	
+}
+
+//
+
+SCENARIO("test select BOOLEAN") {
+  queue<QueryToken> tokens;
+  tokens.push(QueryToken(TokenType::Identifier, "variable"));
+  tokens.push(QueryToken(TokenType::Identifier, "a"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "Select"));
+  tokens.push(QueryToken(TokenType::Identifier, "BOOLEAN"));
+  PQLParser p = PQLParser();
+  const Query q = p.buildQuery(tokens);
+  const std::vector<QueryEntity> selectors = q.selectors;
+  const vector<QueryEntity> tar = q.target;
+
+  WHEN("Successfully parsed:") {
+    SECTION("selectors: one QueryEntity is inside") {
+      REQUIRE(selectors.size() == 1);
+      const QueryEntity qe = selectors.front();
+      REQUIRE(qe.name == "a");
+      REQUIRE(qe.type == QueryEntityType::Variable);
+    }
+    SECTION("target") {
+      REQUIRE(tar.front().name == "");
+      REQUIRE(tar.front().type == QueryEntityType::Boolean);
+    }
+  }
+}
+
+SCENARIO("test select attrref") {
+  queue<QueryToken> tokens;
+  tokens.push(QueryToken(TokenType::Identifier, "procedure"));
+  tokens.push(QueryToken(TokenType::Identifier, "p"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "Select"));
+  tokens.push(QueryToken(TokenType::Identifier, "p"));
+  tokens.push(QueryToken(TokenType::Identifier, "."));
+  tokens.push(QueryToken(TokenType::Identifier, "procName"));
+  PQLParser p = PQLParser();
+  const Query q = p.buildQuery(tokens);
+  const std::vector<QueryEntity> selectors = q.selectors;
+  const vector<QueryEntity> tar = q.target;
+
+  WHEN("Successfully parsed:") {
+    SECTION("selectors: one QueryEntity is inside") {
+      REQUIRE(selectors.size() == 1);
+      const QueryEntity qe = selectors.front();
+      REQUIRE(qe.name == "p");
+      REQUIRE(qe.type == QueryEntityType::Procedure);
+    }
+    SECTION("target") {
+      REQUIRE(tar.front().name == "p.procName");
+      REQUIRE(tar.front().type == QueryEntityType::Attrref);
+      REQUIRE(tar.front().attrRefSynonymType == QueryEntityType::Procedure);
+    }
+  }
+}
+
+SCENARIO("test select tuple with one target") {
+	queue<QueryToken> tokens;
+	tokens.push(QueryToken(TokenType::Identifier, "assign"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ","));
+	tokens.push(QueryToken(TokenType::Identifier, "a1"));
+	tokens.push(QueryToken(TokenType::Identifier, ";"));
+	tokens.push(QueryToken(TokenType::Identifier, "Select"));
+	tokens.push(QueryToken(TokenType::Identifier, "<"));
+	tokens.push(QueryToken(TokenType::Identifier, "a"));
+	tokens.push(QueryToken(TokenType::Identifier, ">"));
+	PQLParser p = PQLParser();
+	const Query q = p.buildQuery(tokens);
+	const std::vector<QueryEntity> selectors = q.selectors;
+	const vector<QueryEntity> tar = q.target;
+
+	WHEN("Successfully parsed:") {
+		SECTION("selectors: two QueryEntity is inside") {
+			REQUIRE(selectors.size() == 2);
+		}
+		SECTION("1 in the tuple targets") {
+			REQUIRE(tar.size() == 1);
+			REQUIRE(tar[0].name == "a");
+			REQUIRE(tar[0].type == QueryEntityType::Assign);
+		}
+	}
+}
+
+SCENARIO("test select tuple") {
+  queue<QueryToken> tokens;
+  tokens.push(QueryToken(TokenType::Identifier, "assign"));
+  tokens.push(QueryToken(TokenType::Identifier, "a"));
+  tokens.push(QueryToken(TokenType::Identifier, ","));
+  tokens.push(QueryToken(TokenType::Identifier, "a1"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "Select"));
+  tokens.push(QueryToken(TokenType::Identifier, "<"));
+  tokens.push(QueryToken(TokenType::Identifier, "a"));
+  tokens.push(QueryToken(TokenType::Identifier, ","));
+  tokens.push(QueryToken(TokenType::Identifier, "a1"));
+  tokens.push(QueryToken(TokenType::Identifier, ">"));
+  PQLParser p = PQLParser();
+  const Query q = p.buildQuery(tokens);
+  const std::vector<QueryEntity> selectors = q.selectors;
+  const vector<QueryEntity> tar = q.target;
+
+  WHEN("Successfully parsed:") {
+    SECTION("selectors: two QueryEntity is inside") {
+      REQUIRE(selectors.size() == 2);
+    }
+    SECTION("2 in the tuple targets") {
+      REQUIRE(tar.size() == 2);
+      REQUIRE(tar[0].name == "a");
+      REQUIRE(tar[0].type == QueryEntityType::Assign);
+      REQUIRE(tar[1].name == "a1");
+      REQUIRE(tar[1].type == QueryEntityType::Assign);
+    }
+  }
+}
+
+SCENARIO("test select tuple with attrref") {
+  queue<QueryToken> tokens;
+  tokens.push(QueryToken(TokenType::Identifier, "assign"));
+  tokens.push(QueryToken(TokenType::Identifier, "a"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "call"));
+  tokens.push(QueryToken(TokenType::Identifier, "c"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "constant"));
+  tokens.push(QueryToken(TokenType::Identifier, "con"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "Select"));
+  tokens.push(QueryToken(TokenType::Identifier, "<"));
+  tokens.push(QueryToken(TokenType::Identifier, "a"));
+  tokens.push(QueryToken(TokenType::Identifier, ","));
+  tokens.push(QueryToken(TokenType::Identifier, "c"));
+  tokens.push(QueryToken(TokenType::Identifier, "."));
+  tokens.push(QueryToken(TokenType::Identifier, "procName"));
+  tokens.push(QueryToken(TokenType::Identifier, ","));
+  tokens.push(QueryToken(TokenType::Identifier, "con"));
+  tokens.push(QueryToken(TokenType::Identifier, "."));
+  tokens.push(QueryToken(TokenType::Identifier, "value"));
+  tokens.push(QueryToken(TokenType::Identifier, ">"));
+  PQLParser p = PQLParser();
+  const Query q = p.buildQuery(tokens);
+  const std::vector<QueryEntity> selectors = q.selectors;
+  const vector<QueryEntity> tar = q.target;
+
+  WHEN("Successfully parsed:") {
+    SECTION("selectors: 3 QueryEntity is inside") {
+      REQUIRE(selectors.size() == 3);
+    }
+    SECTION("2 in the tuple targets") {
+      REQUIRE(tar.size() == 3);
+      REQUIRE(tar[0].name == "a");
+      REQUIRE(tar[0].type == QueryEntityType::Assign);
+      REQUIRE(tar[1].name == "c.procName");
+      REQUIRE(tar[1].type == QueryEntityType::Attrref);
+      REQUIRE(tar[1].attrRefSynonymType == QueryEntityType::Call);
+      REQUIRE(tar[2].name == "con.value");
+      REQUIRE(tar[2].type == QueryEntityType::Attrref);
+      REQUIRE(tar[2].attrRefSynonymType == QueryEntityType::Constant);
+    }
+  }
+}
+
+SCENARIO("test with clause") {
+  queue<QueryToken> tokens;
+  tokens.push(QueryToken(TokenType::Identifier, "assign"));
+  tokens.push(QueryToken(TokenType::Identifier, "a"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "variable"));
+  tokens.push(QueryToken(TokenType::Identifier, "v"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "Select"));
+  tokens.push(QueryToken(TokenType::Identifier, "a"));
+  tokens.push(QueryToken(TokenType::Identifier, "with"));
+  tokens.push(QueryToken(TokenType::Identifier, "a"));
+  tokens.push(QueryToken(TokenType::Identifier, "."));
+  tokens.push(QueryToken(TokenType::Identifier, "stmt#"));
+  tokens.push(QueryToken(TokenType::Identifier, "="));
+  tokens.push(QueryToken(TokenType::Identifier, "5"));
+  tokens.push(QueryToken(TokenType::Identifier, "and"));
+  tokens.push(QueryToken(TokenType::Identifier, "v"));
+  tokens.push(QueryToken(TokenType::Identifier, "."));
+  tokens.push(QueryToken(TokenType::Identifier, "varName"));
+  tokens.push(QueryToken(TokenType::Identifier, "="));
+  tokens.push(QueryToken(TokenType::Identifier, "\""));
+  tokens.push(QueryToken(TokenType::Identifier, "b"));
+  tokens.push(QueryToken(TokenType::Identifier, "\""));
+
+  PQLParser p = PQLParser();
+  const Query q = p.buildQuery(tokens);
+  const std::vector<QueryEntity> selectors = q.selectors;
+  const std::vector<Clause> clauses = q.clauses;
+  const vector<QueryEntity> tar = q.target;
+
+  WHEN("Successfully parsed:") {
+    SECTION("selectors: two QueryEntity is inside") {
+      REQUIRE(selectors.size() == 2);
+    }
+    SECTION("1 target") {
+      REQUIRE(tar.size() == 1);
+      REQUIRE(tar[0].name == "a");
+      REQUIRE(tar[0].type == QueryEntityType::Assign);
+    }
+    SECTION("clauses: two with clauses are inside") {
+      REQUIRE(clauses.size() == 2);
+      Clause c1 = clauses.front();
+      Clause c2 = clauses[1];
+      std::vector<QueryEntity> parameters1 = c1.parameters;
+      std::vector<QueryEntity> parameters2 = c2.parameters;
+      REQUIRE(c1.clauseType == ClauseType::With);
+      REQUIRE(parameters1[0].name == "a.stmt#");
+      REQUIRE(parameters1[0].type == QueryEntityType::Attrref);
+      REQUIRE(parameters1[0].attrRefSynonymType == QueryEntityType::Assign);
+      REQUIRE(parameters1[1].name == "5");
+      REQUIRE(parameters1[1].type == QueryEntityType::Line);
+
+      REQUIRE(c2.clauseType == ClauseType::With);
+      REQUIRE(parameters2[0].name == "v.varName");
+      REQUIRE(parameters2[0].type == QueryEntityType::Attrref);
+      REQUIRE(parameters2[0].attrRefSynonymType == QueryEntityType::Variable);
+      REQUIRE(parameters2[1].name == "b");
+      REQUIRE(parameters2[1].type == QueryEntityType::Name);
+    }
+  }
+}
+
+SCENARIO("test with clause 2") {
+  queue<QueryToken> tokens;
+  tokens.push(QueryToken(TokenType::Identifier, "procedure"));
+  tokens.push(QueryToken(TokenType::Identifier, "p"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "read"));
+  tokens.push(QueryToken(TokenType::Identifier, "r"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "prog_line"));
+  tokens.push(QueryToken(TokenType::Identifier, "pl"));
+  tokens.push(QueryToken(TokenType::Identifier, ";"));
+  tokens.push(QueryToken(TokenType::Identifier, "Select"));
+  tokens.push(QueryToken(TokenType::Identifier, "p"));
+  tokens.push(QueryToken(TokenType::Identifier, "with"));
+  tokens.push(QueryToken(TokenType::Identifier, "\""));
+  tokens.push(QueryToken(TokenType::Identifier, "main"));
+  tokens.push(QueryToken(TokenType::Identifier, "\""));
+  tokens.push(QueryToken(TokenType::Identifier, "="));
+  tokens.push(QueryToken(TokenType::Identifier, "p"));
+  tokens.push(QueryToken(TokenType::Identifier, "."));
+  tokens.push(QueryToken(TokenType::Identifier, "procName"));
+  tokens.push(QueryToken(TokenType::Identifier, "and"));
+  tokens.push(QueryToken(TokenType::Identifier, "r"));
+  tokens.push(QueryToken(TokenType::Identifier, "."));
+  tokens.push(QueryToken(TokenType::Identifier, "varName"));
+  tokens.push(QueryToken(TokenType::Identifier, "="));
+  tokens.push(QueryToken(TokenType::Identifier, "\""));
+  tokens.push(QueryToken(TokenType::Identifier, "b"));
+  tokens.push(QueryToken(TokenType::Identifier, "\""));
+  tokens.push(QueryToken(TokenType::Identifier, "and"));
+  tokens.push(QueryToken(TokenType::Identifier, "r"));
+  tokens.push(QueryToken(TokenType::Identifier, "."));
+  tokens.push(QueryToken(TokenType::Identifier, "stmt#"));
+  tokens.push(QueryToken(TokenType::Identifier, "="));
+  tokens.push(QueryToken(TokenType::Identifier, "1"));
+  tokens.push(QueryToken(TokenType::Identifier, "with"));
+  tokens.push(QueryToken(TokenType::Identifier, "r"));
+  tokens.push(QueryToken(TokenType::Identifier, "."));
+  tokens.push(QueryToken(TokenType::Identifier, "stmt#"));
+  tokens.push(QueryToken(TokenType::Identifier, "="));
+  tokens.push(QueryToken(TokenType::Identifier, "pl"));
+
+  PQLParser p = PQLParser();
+  const Query q = p.buildQuery(tokens);
+  const std::vector<QueryEntity> selectors = q.selectors;
+  const std::vector<Clause> clauses = q.clauses;
+  const vector<QueryEntity> tar = q.target;
+
+  WHEN("Successfully parsed:") {
+    SECTION("selectors: 3 QueryEntity is inside") {
+      REQUIRE(selectors.size() == 3);
+    }
+    SECTION("1 target") {
+      REQUIRE(tar.size() == 1);
+      REQUIRE(tar[0].name == "p");
+      REQUIRE(tar[0].type == QueryEntityType::Procedure);
+    }
+    SECTION("clauses: 4 with clauses are inside") {
+      REQUIRE(clauses.size() == 4);
+      Clause c1 = clauses.front();
+      Clause c2 = clauses[1];
+      Clause c3 = clauses[2];
+      Clause c4 = clauses[3];
+      std::vector<QueryEntity> parameters1 = c1.parameters;
+      std::vector<QueryEntity> parameters2 = c2.parameters;
+      std::vector<QueryEntity> parameters3 = c3.parameters;
+      std::vector<QueryEntity> parameters4 = c4.parameters;
+      REQUIRE(c1.clauseType == ClauseType::With);
+      REQUIRE(parameters1[0].name == "main");
+      REQUIRE(parameters1[0].type == QueryEntityType::Name);
+      REQUIRE(parameters1[1].name == "p.procName");
+      REQUIRE(parameters1[1].type == QueryEntityType::Attrref);
+      REQUIRE(parameters1[1].attrRefSynonymType == QueryEntityType::Procedure);
+
+      REQUIRE(c2.clauseType == ClauseType::With);
+      REQUIRE(parameters2[0].name == "r.varName");
+      REQUIRE(parameters2[0].type == QueryEntityType::Attrref);
+      REQUIRE(parameters2[0].attrRefSynonymType == QueryEntityType::Read);
+      REQUIRE(parameters2[1].name == "b");
+      REQUIRE(parameters2[1].type == QueryEntityType::Name);
+
+      REQUIRE(c3.clauseType == ClauseType::With);
+      REQUIRE(parameters3[0].name == "r.stmt#");
+      REQUIRE(parameters3[0].type == QueryEntityType::Attrref);
+      REQUIRE(parameters3[0].attrRefSynonymType == QueryEntityType::Read);
+      REQUIRE(parameters3[1].name == "1");
+      REQUIRE(parameters3[1].type == QueryEntityType::Line);
+
+      REQUIRE(c4.clauseType == ClauseType::With);
+      REQUIRE(parameters4[0].name == "r.stmt#");
+      REQUIRE(parameters4[0].type == QueryEntityType::Attrref);
+      REQUIRE(parameters4[0].attrRefSynonymType == QueryEntityType::Read);
+      REQUIRE(parameters4[1].name == "pl");
+      REQUIRE(parameters4[1].type == QueryEntityType::Progline);
+    }
+  }
 }

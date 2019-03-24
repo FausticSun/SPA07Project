@@ -1,25 +1,22 @@
 #include "SPA.h"
 #include "DesignExtractor.h"
-#include "Lexer.h"
+#include "GeneralLexer.h"
 #include "PQLEvaluator.h"
 #include "PQLLexer.h"
 #include "PQLParser.h"
-#include "Parser.h"
+#include "SIMPLEParser.h"
 #include <fstream>
 
 SPA::SPA() : pkb(new PKB()) {}
 
 void SPA::parseSIMPLEFile(std::string filename) {
-  Parser parser;
-  Lexer lexer;
   try {
     std::ifstream file;
     file.open(filename);
     std::istream &fileStream = file;
-    auto tokens = lexer.tokenizeFile(fileStream);
-    auto ast = parser.buildAst(tokens);
-    DesignExtractor designExtractor(ast);
-    std::unique_ptr<PKB> newPKB = designExtractor.getPKB();
+    auto tokens = Lexer::tokenize(fileStream);
+    auto newPKB = Parser::parseSIMPLE(tokens);
+    DesignExtractor::populateDesigns(newPKB);
     pkb.swap(newPKB);
   } catch (std::logic_error e) {
     exit(0);
