@@ -1,0 +1,125 @@
+procedure A {
+	a = a + b; 
+	d = f / 3 + r;
+	if (w == x) then {
+		if (y != z) then {
+			read in;
+			q = a;
+		} else {
+			print out;
+			e = 1 + 2 / r;
+		}
+	} else {
+		w = x + y * z;
+	}
+	call B; 
+}
+
+procedure B {
+
+	while (a != 0) { 
+		b = a - 1;
+		while(d < 7) { 
+			if (r != d) then {
+				read a;
+			} else {
+				call C;
+				print a;
+			}
+
+			a = a + b * d % e;
+
+		}
+		i = i + 1;
+	}
+
+	while ((f > 4) || (f <= 1) {
+		print f;
+		call D; 
+		if (d <= 0) then {
+			a = a + 1 * 2;
+		}
+		else {
+			r = t + 1;
+		}
+	}
+	call E; 
+}
+
+procedure C {
+	if ( x >= 1) then { 
+		read input; 
+		a = 1;
+		b = 14;
+		c = 23;
+	} else {
+		while (y < 0) { 
+			a = y + 1; 
+			if (x == w + y) then {
+				x = x * 3 + y / z % 5; 
+				y = c + 2 - z;
+			} else {
+				read a;
+				read b;
+				print c;
+			}
+		}
+		call F;
+	}
+
+}
+
+procedure D {
+	while (f == 0) { 
+		print result; 
+		e = f + 6 % e;
+		print result;
+	}	
+
+	if (y != a) then {
+		while (w <= z) {
+			a = b - c * 2;
+			t = 5 - (x / y % 2);
+			call F;
+		}
+	} else {
+		while (a - 5 < b) {
+			b = c - w + v;
+			a = 4 / (a % b * c);
+			read in; 
+		}
+	} 
+}
+
+procedure E {
+	if (g = 0) then { 
+		while (h < 1) { 
+			if (j > 2) then { 
+				k = 1; 
+			} else { 
+				while(i != 0) { 
+					read something; 
+					while (o == O) { 
+						print p; 
+					}
+				}
+			}
+		}
+	} else {
+		l = m; 
+	}
+
+}
+
+procedure F {
+	a = 1;
+	b = 4;
+	e = 7 + 3 / a;
+	while ((s < 0) && (r > t)) { 
+		if (a != 1) then { 
+			print result; 
+		} else {
+			result = result * p; 
+		}
+	}
+}
