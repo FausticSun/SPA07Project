@@ -37,7 +37,7 @@ CFG::CFG(Table procStmtTable, Table nextTable, Table whileIfTable,
   populateCompressedToInitial();
   forwardCompressedGraph.resize(numCompressedNodes + 1);
   reverseCompressedGraph.resize(numCompressedNodes + 1);
-  populateCompressedGraph();
+  populateCompressedGraph(procStmtTable);
 }
 
 void CFG::populateInitialToCompressed(int start, Table whileIfTable,
@@ -87,24 +87,25 @@ void CFG::populateCompressedToInitial() {
   }
 }
 
-void CFG::populateCompressedGraph() {
+void CFG::populateCompressedGraph(Table procStmtTable) {
   // Traverse the initialGraph and populate forward and reverse CompressedGraph
   // using initialToCompressed
   std::vector<bool> visited(initialGraph.size() + 1, false);
   std::queue<int> queue;
-  queue.push(1);
-  visited[1] = true;
-
+  // Mark start of each procedure as visited and push into queue for traversal
+  for (auto data : procStmtTable.getData()) {
+    int start = std::stoi(data[1]);
+    queue.push(start);
+    visited[start] = true;
+  }
   while (!queue.empty()) {
     int u = queue.front();
     queue.pop();
-
     for (auto v : initialGraph[u]) {
       if (!visited[v]) {
         queue.push(v);
         visited[v] = true;
       }
-
       if (initialToCompressed[v] != initialToCompressed[u]) {
         forwardCompressedGraph[initialToCompressed[u]].push_back(
             initialToCompressed[v]);
@@ -162,11 +163,10 @@ Table CFG::getNextT() const {
   Table table{2};
 
   for (int i = 1; i < initialToCompressed.size() + 1; i++) {
-	  std::vector<int> result = traverseCFG(i, true);
-	  for (int j : result) {
-		  table.insertRow({ std::to_string(i), std::to_string(j) });
-	  }
-
+    std::vector<int> result = traverseCFG(i, true);
+    for (int j : result) {
+      table.insertRow({std::to_string(i), std::to_string(j)});
+    }
   }
   return table;
 }
