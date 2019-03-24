@@ -230,6 +230,16 @@ void PQLParser::tokenizeSelect() {
         insertClauseCallsT();
         expectToken(")");
       }
+      if (token.name == "Affects") {
+	expectToken("(");
+	insertClauseAffects();
+	expectToken(")");
+      }
+      if (token.name == "Affects*") {
+	expectToken("(");
+	insertClauseAffectsT();
+	expectToken(")");
+      }
     } else if (current == "pattern") {
       insertClausePattern();
     } else { // with
@@ -587,6 +597,20 @@ void PQLParser::checkCallsValidity(
   throw std::invalid_argument("invalid argument type for clauses");
 }
 
+void PQLParser::checkAffectsValidity(
+	QueryEntity firstEntity,
+	QueryEntity secondEntity) { // Name, Procedure, Underscore
+	QueryEntityType firstType = firstEntity.type;
+	QueryEntityType secondType = secondEntity.type;
+	if (std::find(validationTable["A12"].begin(), validationTable["A12"].end(),
+		firstType) != validationTable["A12"].end() &&
+		std::find(validationTable["A12"].begin(), validationTable["A12"].end(),
+			secondType) != validationTable["A12"].end()) {
+		return;
+	}
+	throw std::invalid_argument("invalid argument type for clauses");
+}
+
 void PQLParser::checkAttrrefValidity(
 	QueryEntityType type,
 	string attrName) {
@@ -703,6 +727,26 @@ void PQLParser::insertClauseCallsT() {
   Clause c = Clause(ClauseType::CallsT,
                     vector<QueryEntity>{firstEntity, secondEntity});
   this->clauses.push_back(c);
+}
+
+void PQLParser::insertClauseAffects() {
+	QueryEntity firstEntity = determineQueryEntity();
+	expectToken(",");
+	QueryEntity secondEntity = determineQueryEntity();
+	checkAffectsValidity(firstEntity, secondEntity);
+	Clause c =
+		Clause(ClauseType::Affects, vector<QueryEntity>{firstEntity, secondEntity});
+	this->clauses.push_back(c);
+}
+
+void PQLParser::insertClauseAffectsT() {
+	QueryEntity firstEntity = determineQueryEntity();
+	expectToken(",");
+	QueryEntity secondEntity = determineQueryEntity();
+	checkAffectsValidity(firstEntity, secondEntity);
+	Clause c =
+		Clause(ClauseType::AffectsT, vector<QueryEntity>{firstEntity, secondEntity});
+	this->clauses.push_back(c);
 }
 
 void PQLParser::insertClausePattern() {

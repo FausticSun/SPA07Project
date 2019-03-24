@@ -1,0 +1,148 @@
+procedure SpecificationTest {
+	\\ Test namings, read, print stmts
+	read ABC; \\ 1					
+	print abc; \\ 2								
+	read AbC; \\ 3
+	read A0; \\ 4
+	print Z9; \\ 5
+
+	\\ Test while stmt
+	while (x == 0) { \\ 6
+		read y; \\ 7
+	}
+
+	\\ Test if stmt
+	if (x != 0) then { \\ 8
+		read y; \\ 9
+	} else {
+		read z; \\ 10
+	}
+
+	\\ Test factor
+	x = 0; \\ 11					
+	x = a; \\ 12							
+	x = (x + 1); \\ 13 								
+
+	\\ Test term
+	x = a * b; \\ 14							
+	x = a / b; \\ 15							
+	x = a % b; \\ 16							
+	x = a * 2; \\ 17							
+	x = a / 2; \\ 18							
+	x = a % 2; \\ 19						
+	x = a * (b + c); \\ 20						
+	x = a / (b + c); \\ 21							
+	x = a % (b + c); \\ 22							
+
+	\\ Test expr
+	x = (a * b) * c; \\ 23					
+	x = (a * b) / c; \\ 24					
+	x = (a * b) % c; \\ 25						
+	x = (a * b) * 10; \\ 26						
+	x = (a * b) / 10; \\ 27					
+	x = (a * b) % 10; \\ 28					
+	x = (a * b) * (c + d); \\ 29						
+	x = (a * b) / (c + d); \\ 30				
+	x = (a * b) % (c + d); \\ 31				
+	x = (a / b) + (a % b); \\ 32				
+	x = (a / b) - (a % b); \\ 33				
+	x = (a / b) + (a % b) + (a * b); \\ 34		
+	x = (a / b) + (a % b) - (a * b); \\ 35		
+
+	\\ Test rel factor
+	while (x == 0) { \\ 36						
+		read y; \\ 37
+	}
+	while (0 == 0) { \\ 38							
+		read y; \\ 39
+	}
+	while ((a / b) == 0) { \\ 40
+		read y; \\ 41
+	}
+	while (a / b == 0) { \\ 42
+		read y; \\ 43
+	}
+
+	\\ Test rel expr
+	while (x > a / b) { \\ 44			
+		read y; \\ 45
+	}
+	while (x >= (a / b)) { \\ 46
+		read y; \\ 47
+	}
+	while (0 < x) {	\\ 48								
+		read y; \\ 49
+	}
+	while (a / b <= a % b) { \\ 50						
+		read y; \\ 51
+	}
+	while ((a / b) <= (a % b)) { \\ 52
+		read y; \\ 53
+	}
+	while ((a / b) == (a * b)) { \\ 54
+		read y; \\ 55
+	}
+	while ((a / b) != (a / b)) { \\ 56
+		read y; \\ 57
+	}
+
+	\\ Test cond expr
+	while (!(x == 0)) { \\ 58
+		read y; \\ 59
+	}
+	while ((x == 0) && (y == 0)) { \\ 60
+		read y; \\ 61
+	}
+	while ((x == 0) || (y == 0)) { \\ 62
+		read y; \\ 63
+	}
+	while (!(!(x == 0))) { \\ 64
+		read y; \\ 65
+	}
+	while (((x == 0) && (y == 0)) || (z == 0)) { \\ 66
+		read y; \\ 67
+	}
+
+	\\ Test call stmt
+	if (ABC > 0) then { \\ 68
+		call one; \\ 69
+	} else {
+		call three; \\ 70
+	}
+
+	\\ Test multiple stmt in container
+	while (x == 0) { \\ 71		
+		read a; \\ 72
+		print b; \\ 73
+		c = d + e; \\ 74
+		f = (g + h) - i; \\ 75
+		j = k + (l - m); \\ 76
+		n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\ 77
+	}
+}
+
+procedure one {
+	x=a; \\ 78
+	a = (x + a) * j /h; \\ 79
+	while(a>1) { \\ 80
+		if(x>a) then{ \\ 81
+			a= a+1; \\ 82
+			call two; \\ 83
+		} else{ 
+			x = x+1; \\ 84
+			call three; \\ 85
+		}
+		x = x+a; \\ 86
+	}
+}
+
+procedure two {
+read a; \\ 87
+print x; \\ 88
+call three; \\ 89
+}
+
+procedure three {
+j = j + x * a; \\ 90
+print j; \\ 91
+}

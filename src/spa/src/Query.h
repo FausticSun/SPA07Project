@@ -34,6 +34,8 @@ enum class ClauseType {
   NextT,
   Calls,
   CallsT,
+  Affects,
+  AffectsT,
   AssignPatt,
   IfPatt,
   WhilePatt,
