@@ -129,6 +129,8 @@ Table PKB::getCalls() const { return callsTable; }
 Table PKB::getCallsT() const { return callsTTable; }
 Table PKB::getNext() const { return nextTable; }
 
+/**
+
 Table PKB::getNextT(bool isForward, std::string n) {
 	CFG cfg = getCFG("A");
 	int numLines = procTable["A"].second - procTable["A"].first; 
@@ -179,6 +181,8 @@ Table PKB::getNextT(bool isForward, std::string n) {
 //	// else
 //	// do std::vector<std::vector<int>> g = graph.getReverse...();
 }
+
+**/
 
 Table PKB::getNextT() const { return cfg.getNextT(); }
 Table PKB::getNextT(int s, bool isLeftConstant) const {
