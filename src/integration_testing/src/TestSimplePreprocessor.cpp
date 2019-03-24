@@ -29,6 +29,7 @@ TEST_CASE("A very simple program") {
   auto followsTTable = pkb->getFollowsT();
   auto modifiesPTable = pkb->getModifiesP();
   auto modifiesSTable = pkb->getModifiesS();
+  auto nextTable = pkb->getNext();
 
   REQUIRE(procTable.contains({"A"}));
   REQUIRE(varTable.contains({"x"}));
@@ -41,6 +42,7 @@ TEST_CASE("A very simple program") {
   REQUIRE(modifiesPTable.contains({"A", "y"}));
   REQUIRE(modifiesSTable.contains({"1", "x"}));
   REQUIRE(modifiesSTable.contains({"2", "y"}));
+  REQUIRE(nextTable.contains({"1", "2"}));
 }
 
 TEST_CASE("Program with one while stmt") {
@@ -66,6 +68,7 @@ TEST_CASE("Program with one while stmt") {
   auto modifiesSTable = pkb->getModifiesS();
   auto usesPTable = pkb->getUsesP();
   auto usesSTable = pkb->getUsesS();
+  auto nextTable = pkb->getNext();
 
   REQUIRE(procTable.contains({"A"}));
   REQUIRE(varTable.contains({"x"}));
@@ -91,6 +94,7 @@ TEST_CASE("Program with one while stmt") {
   REQUIRE(usesSTable.contains({"2", "z"}));
   REQUIRE(usesSTable.contains({"2", "e"}));
   REQUIRE(usesSTable.contains({"2", "k"}));
+  REQUIRE(nextTable.contains({"1", "2"}));
 }
 
 TEST_CASE("Program with one if stmt") {
@@ -118,6 +122,7 @@ TEST_CASE("Program with one if stmt") {
   auto modifiesSTable = pkb->getModifiesS();
   auto usesPTable = pkb->getUsesP();
   auto usesSTable = pkb->getUsesS();
+  auto nextTable = pkb->getNext();
 
   REQUIRE(procTable.contains({"A"}));
   REQUIRE(varTable.contains({"y"}));
@@ -135,6 +140,8 @@ TEST_CASE("Program with one if stmt") {
   REQUIRE(modifiesSTable.contains({"2", "y"}));
   REQUIRE(usesPTable.contains({"A", "q"}));
   REQUIRE(usesSTable.contains({"3", "q"}));
+  REQUIRE(nextTable.contains({"1", "2"}));
+  REQUIRE(nextTable.contains({"1", "3"}));
 }
 
 TEST_CASE("Program with while nested in while") {
@@ -162,6 +169,7 @@ TEST_CASE("Program with while nested in while") {
   auto modifiesSTable = pkb->getModifiesS();
   auto usesPTable = pkb->getUsesP();
   auto usesSTable = pkb->getUsesS();
+  auto nextTable = pkb->getNext();
 
   REQUIRE(procTable.contains({"A"}));
   REQUIRE(varTable.contains({"x"}));
@@ -179,6 +187,10 @@ TEST_CASE("Program with while nested in while") {
   REQUIRE(usesSTable.contains({"1", "x"}));
   REQUIRE(usesSTable.contains({"2", "y"}));
   REQUIRE(usesSTable.contains({"2", "x"}));
+  REQUIRE(nextTable.contains({"1", "2"}));
+  REQUIRE(nextTable.contains({"2", "3"}));
+  REQUIRE(nextTable.contains({"3", "2"}));
+  REQUIRE(nextTable.contains({"2", "1"}));
 }
 
 TEST_CASE("Program with if nested in if") {
@@ -210,6 +222,7 @@ TEST_CASE("Program with if nested in if") {
   auto modifiesSTable = pkb->getModifiesS();
   auto usesPTable = pkb->getUsesP();
   auto usesSTable = pkb->getUsesS();
+  auto nextTable = pkb->getNext();
 
   REQUIRE(procTable.contains({"A"}));
   REQUIRE(varTable.contains({"x"}));
@@ -239,6 +252,10 @@ TEST_CASE("Program with if nested in if") {
   REQUIRE(usesSTable.contains({"1", "x"}));
   REQUIRE(usesSTable.contains({"2", "y"}));
   REQUIRE(usesSTable.contains({"5", "q"}));
+  REQUIRE(nextTable.contains({"1", "2"}));
+  REQUIRE(nextTable.contains({"2", "3"}));
+  REQUIRE(nextTable.contains({"2", "4"}));
+  REQUIRE(nextTable.contains({"1", "5"}));
 }
 
 TEST_CASE("Program with while nested in if") {
@@ -266,6 +283,7 @@ TEST_CASE("Program with while nested in if") {
   auto parentTTable = pkb->getParentT();
   auto usesPTable = pkb->getUsesP();
   auto usesSTable = pkb->getUsesS();
+  auto nextTable = pkb->getNext();
 
   REQUIRE(procTable.contains({"A"}));
   REQUIRE(varTable.contains({"x"}));
@@ -289,6 +307,10 @@ TEST_CASE("Program with while nested in if") {
   REQUIRE(usesSTable.contains({"2", "k"}));
   REQUIRE(usesSTable.contains({"3", "x"}));
   REQUIRE(usesSTable.contains({"4", "y"}));
+  REQUIRE(nextTable.contains({"1", "2"}));
+  REQUIRE(nextTable.contains({"2", "3"}));
+  REQUIRE(nextTable.contains({"3", "2"}));
+  REQUIRE(nextTable.contains({"1", "4"}));
 }
 
 TEST_CASE("Program with if nested in while") {
@@ -318,6 +340,7 @@ TEST_CASE("Program with if nested in while") {
   auto modifiesSTable = pkb->getModifiesS();
   auto usesPTable = pkb->getUsesP();
   auto usesSTable = pkb->getUsesS();
+  auto nextTable = pkb->getNext();
 
   REQUIRE(procTable.contains({"A"}));
   REQUIRE(varTable.contains({"x"}));
@@ -344,6 +367,11 @@ TEST_CASE("Program with if nested in while") {
   REQUIRE(usesSTable.contains({"1", "x"}));
   REQUIRE(usesSTable.contains({"2", "y"}));
   REQUIRE(usesSTable.contains({"2", "k"}));
+  REQUIRE(nextTable.contains({"1", "2"}));
+  REQUIRE(nextTable.contains({"2", "3"}));
+  REQUIRE(nextTable.contains({"2", "4"}));
+  REQUIRE(nextTable.contains({"3", "1"}));
+  REQUIRE(nextTable.contains({"4", "1"}));
 }
 
 TEST_CASE("Program with multiple procedures with call stmts") {
@@ -398,6 +426,7 @@ TEST_CASE("Program with multiple procedures with call stmts") {
   auto usesSTable = pkb->getUsesS();
   auto callsTable = pkb->getCalls();
   auto callsTTable = pkb->getCallsT();
+  auto nextTable = pkb->getNext();
 
   REQUIRE(procTable.contains({"A"}));
   REQUIRE(procTable.contains({"B"}));
@@ -556,4 +585,19 @@ TEST_CASE("Program with multiple procedures with call stmts") {
   REQUIRE(callsTTable.contains({"C", "B"}));
   REQUIRE(callsTTable.contains({"A", "D"}));
   REQUIRE(callsTTable.contains({"C", "D"}));
+
+  REQUIRE(nextTable.contains({"1", "2"}));
+  REQUIRE(nextTable.contains({"3", "4"}));
+  REQUIRE(nextTable.contains({"4", "5"}));
+  REQUIRE(nextTable.contains({"6", "7"}));
+  REQUIRE(nextTable.contains({"7", "8"}));
+  REQUIRE(nextTable.contains({"8", "7"}));
+  REQUIRE(nextTable.contains({"9", "10"}));
+  REQUIRE(nextTable.contains({"9", "11"}));
+  REQUIRE(nextTable.contains({"11", "12"}));
+  REQUIRE(nextTable.contains({"12", "13"}));
+  REQUIRE(nextTable.contains({"13", "12"}));
+  REQUIRE(nextTable.contains({"12", "11"}));
+  REQUIRE(nextTable.contains({"11", "14"}));
+  REQUIRE(nextTable.contains({"10", "14"}));
 }
