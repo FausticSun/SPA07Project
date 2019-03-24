@@ -6,7 +6,9 @@ using namespace PQLLexerToken;
 using namespace std;
 
 TEST_CASE("Testing constant a") {
-  const string input = "constant a; Select a";
+  //const string input = "constant a; Select a";
+  const string input = "constant a; Select a pattern a(\"v\", \"a % b * (c + d) + e * f / (g - h)\")";
+
   queue<pair<TokenType, string>> res;
   PQLLexer p(input);
 

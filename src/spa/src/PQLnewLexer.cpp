@@ -106,7 +106,8 @@ string standerize(string str) {
 }
 PQLLexer::PQLLexer(string input) {
   string standard_input = standerize(input);
-  Tokenize(standard_input);
+  //Tokenize(standard_input);
+  Tokenize(input);
   selectEnd = false;
 }
 
@@ -160,6 +161,7 @@ void PQLLexer::Tokenize(string input) {
   int index = 0;
   string iden = "";
   bool appear_such = false;
+  bool quotation_appear = false;
   while ((index == input.length() + 1) || index <= input.length()) {
 	  iden = "";
 	  if (index == input.length() + 1) {
@@ -185,13 +187,21 @@ void PQLLexer::Tokenize(string input) {
 				  tokenQueue.push(make_pair(TokenType::Keyword, iden));
 			  }
 			  else {
-				  tokenQueue.push(make_pair(TokenType::Identifier, iden));
+				  if (iden.length() == 0) {
+				  }
+				  else {
+					  tokenQueue.push(make_pair(TokenType::Identifier, iden));
+				  }
 			  }
 		  }
 		  break;
 	  }
+
 	  if (input[index] == ' ') {
-		  if (process_string.empty()) {
+		  if (quotation_appear)
+		  {
+			  process_string.push(" ");
+		  } else if (process_string.empty()) {
 
 		  }
 		  else {
@@ -207,34 +217,6 @@ void PQLLexer::Tokenize(string input) {
 				  || iden == "Modifies" || iden == "prog_line" || iden == "assign" || iden == "print"
 				  || iden == "while" || iden == "if" || iden == "variable" || iden == "constant"
 				  || iden == "procedure" || iden == "call" || iden == "Calls"
-				   || iden == "Next" || iden == "Calls*" || iden == "Next*"
-				  || iden == "Follows" || iden == "Follows*" || iden == "Uses"
-				  || iden == "and" || (iden == "such that")){
-				  tokenQueue.push(make_pair(TokenType::Keyword, iden));
-			  }
-			  else {
-				  tokenQueue.push(make_pair(TokenType::Identifier, iden));
-			  }
-		  }
-	  }
-	  else if (is_separator(input[index])) {
-		  
-		  if (process_string.empty()) {
-
-		  }
-		  else {
-			  while (!process_string.empty()) {
-				  iden.append(process_string.front());
-				  process_string.pop();
-			  }
-			  if (iden == "such") {
-				  process_string.push("such");
-			  }
-			  else if (iden == "pattern" || iden == "Select" || iden == "Parent"
-				  || iden == "with" || iden == "Parent*" || iden == "stmt" || iden == "read"
-				  || iden == "Modifies" || iden == "prog_line" || iden == "assign" || iden == "print"
-				  || iden == "while" || iden == "if" || iden == "variable" || iden == "constant"
-				  || iden == "procedure" || iden == "call" || iden == "Calls"
 				  || iden == "Next" || iden == "Calls*" || iden == "Next*"
 				  || iden == "Follows" || iden == "Follows*" || iden == "Uses"
 				  || iden == "and" || (iden == "such that")) {
@@ -244,11 +226,76 @@ void PQLLexer::Tokenize(string input) {
 				  tokenQueue.push(make_pair(TokenType::Identifier, iden));
 			  }
 		  }
-		  tokenQueue.push(make_pair(TokenType::Separator, input.substr(index, 1)));
+	  }
+	  else if (is_separator(input[index])) {
+
+		 
+		 if (input[index] == '\"')
+		  {
+			  if (quotation_appear)
+			  {
+				  while (!process_string.empty()) {
+					  iden.append(process_string.front());
+					  process_string.pop();
+				  }
+				  tokenQueue.push(make_pair(TokenType::Identifier, iden));
+				  tokenQueue.push(make_pair(TokenType::Separator, "\""));
+				  quotation_appear = false;
+			  }
+			  else
+			  {
+                            if (!process_string.empty())
+                            {
+				while (!process_string.empty()) {
+					iden.append(process_string.front());
+					process_string.pop();
+				}
+				tokenQueue.push(make_pair(TokenType::Identifier, iden));
+                            }
+				  tokenQueue.push(make_pair(TokenType::Separator, "\""));
+				  quotation_appear = true;
+				  index++;
+				  continue;
+			  }
+		 }
+		 else if (quotation_appear == false){
+			 if (process_string.empty()) {
+
+			 }
+
+			 else {
+				 while (!process_string.empty()) {
+					 iden.append(process_string.front());
+					 process_string.pop();
+				 }
+				 if (iden == "such") {
+					 process_string.push("such");
+				 }
+				 else if (iden == "pattern" || iden == "Select" || iden == "Parent"
+					 || iden == "with" || iden == "Parent*" || iden == "stmt" || iden == "read"
+					 || iden == "Modifies" || iden == "prog_line" || iden == "assign" || iden == "print"
+					 || iden == "while" || iden == "if" || iden == "variable" || iden == "constant"
+					 || iden == "procedure" || iden == "call" || iden == "Calls"
+					 || iden == "Next" || iden == "Calls*" || iden == "Next*"
+					 || iden == "Follows" || iden == "Follows*" || iden == "Uses"
+					 || iden == "and" || (iden == "such that")) {
+					 tokenQueue.push(make_pair(TokenType::Keyword, iden));
+				 }
+				 else {
+					 tokenQueue.push(make_pair(TokenType::Identifier, iden));
+				 }
+			 }
+			 tokenQueue.push(make_pair(TokenType::Separator, input.substr(index, 1)));
+		 } else
+		 {
+			 process_string.push(input.substr(index, 1));
+		 }
 	  }
 	  else {
+
 		  process_string.push(input.substr(index, 1));
 	  }
+  
 		  
 	  index++;
   }
