@@ -36,12 +36,70 @@ FALSE
 8-commment
 call c; procedure p,p1;assign a; prog_line pl;variable v;
 Select <p,v> such that Uses(p,v) with p.procName = "A"
-A a,A b,A d,A f,A r,A w,A x,A y,A z,A q,A e,A i,A t,A h,A k,A j,A g,A o,A p,A l,A m,A s,A result
+A a,A b,A d,A f,A r,A w,A x,A y,A z,A e,A i,A t,A h,A j,A g,A o,A p,A m,A s,A result,A O,A c,A out,A v
 5000
 9-comment
 call c; procedure p,p1;assign a; prog_line pl;variable v;
 Select <p,v> such that Uses(p,v) with p.procName = "E"
 E g,E h,E j,E i,E o,E p,E m,E O
 5000
-
-
+10-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select v such that Modifies("A",v)
+a,d,in,q,e,w,b,i,r,c,x,y,t,k,something,l,result,input
+5000
+11-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select v such that Modifies("D",v)
+e,a,t,b,in,result
+5000
+12-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select <p,p>
+A A,B B,C C,D D,E E,F F,G G
+5000
+13-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select <p,p.procName> with c.procName = p.procName
+A A,B B,C C,D D,E E,F F
+5000
+14-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select <c,c.procName> such that Calls("D",p) with c.procName = p.procName
+40 F,49 F
+5000
+15-comment
+call c; procedure p,p1,p2;assign a; prog_line pl;variable v;while w;
+Select <p2,w,w.stmt#> such that Calls(p,p1) and Calls(p1,p2) pattern w("w",_) 
+B 46 46, B 70 70,B 80 80,C 46 46, C 70 70,C 80 80,D 46 46, D 70 70,D 80 80,E 46 46, E 70 70,E 80 80,F 46 46, F 70 70,F 80 80,
+5000
+16-comment
+call c; procedure p,p1,p2;assign a; prog_line pl;variable v;while w;if ifs;
+Select <p,ifs.stmt#> such that Calls("A",p) and Calls*(p,p1) pattern ifs(v,_,_) with v.varName = "w"
+B 3, B 34
+5000
+17-comment
+call c; procedure p,p1,p2;assign a; prog_line pl;variable v;while w;
+Select <p,a,v> such that Calls(p,"F") pattern a(v,_) with v.varName = "k"
+C 57 k,D 57 k
+5000
+18-comment
+call c; procedure p,p1,p2;assign a; prog_line pl;variable v;while w; if ifs;stmt s;
+Select <ifs,v> such that Follows(s,30) and Parent(ifs,s) with s.stmt#=a.stmt# pattern a(v,_)
+27 a
+5000
+19-comment
+call c; procedure p,p1,p2;assign a; prog_line pl;variable v;while w; if ifs;stmt s;
+Select <w,s,v> such that Parent(w,s) and Follows(s,_) and Parent(s,_) with s.stmt# = ifs.stmt# pattern ifs(v,_,_)
+13 14 r, 13 14 d,85 86 a, 85 86 t
+5000
+20-comment
+call c; procedure p,p1,p2;assign a; prog_line pl;variable v;while w; if ifs;stmt s,s1,s2;
+Select<s1,s2> such that Parent(s,s1) and Parent(s,s2) and Modifies(s1,v) and Uses(s2,v) and Follows*(s1,s2)
+12 13,14 18,16 17,22 23,32 40,47 49,48 49,51 52,78 79,78 80,79 80,82 83,89 91
+5000
+21-comment
+call c; procedure p,p1,p2;assign a; prog_line pl;variable v;while w; if ifs;stmt s,s1,s2;
+Select <s,s1,s2> such that Follows(s,s1) pattern ifs("r",_,_) and w("d",_) such that Follows(w,s2) with ifs.stmt# = s.stmt# such that Parent*(w,ifs)
+14 18 19
+5000
