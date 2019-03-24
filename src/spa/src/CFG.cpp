@@ -165,7 +165,7 @@ std::vector<int> CFG::traverseCFG(int start, bool isForward) const {
 
 Table CFG::getNextT() const {
   Table table{2};
-  for (int i = 1; i < initialGraph.size() + 1; i++) {
+  for (int i = 1; i < initialToCompressed.size() + 1; i++) {
 	  std::vector<int> result = traverseCFG(i, true);
 	  for (int j : result) {
 		  table.insertRow({ std::to_string(i), std::to_string(j) });
