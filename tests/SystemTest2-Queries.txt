@@ -20,5 +20,28 @@ A,B,C,D,E,F
 5000
 5-comment
 call c; procedure p,p1;assign a; prog_line pl;variable v;
-Select <p,p1> such that Call("G",p) and Calls(p,p1)
+Select <p,p1> such that Calls("G",p) and Calls(p,p1)
 A B
+5000
+6-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select <p,p1> such that Calls("G",p) and Calls*(p,p1)
+A B,A C,A D,A E,A F
+5000
+7-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select BOOLEAN such that Calls(p,p1) with p.procName = "E"
+FALSE
+5000
+8-commment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select <p,v> such that Uses(p,v) with p.procName = "A"
+A a,A b,A d,A f,A r,A w,A x,A y,A z,A q,A e,A i,A t,A h,A k,A j,A g,A o,A p,A l,A m,A s,A result
+5000
+9-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select <p,v> such that Uses(p,v) with p.procName = "E"
+E g,E h,E j,E i,E o,E p,E m,E O
+5000
+
+
