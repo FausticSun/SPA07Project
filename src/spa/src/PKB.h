@@ -2,11 +2,11 @@
 #include "CFG.h"
 #include "Table.h"
 #include <map>
+#include <queue>
 #include <set>
 #include <string>
 #include <utility>
 #include <vector>
-#include <queue>
 
 enum class StatementType { Stmt, Assign, If, While, Read, Call, Print };
 
@@ -91,8 +91,6 @@ public:
   Table getCalls() const;
   Table getCallsT() const;
   Table getNext() const;
-  Table getNextT(bool, std::string);
-  //Table getNextT(Type (forward or reverse), std::string);
   Table getNextT() const;
   Table getNextT(int, bool) const;
   // Table getAffects() const;
