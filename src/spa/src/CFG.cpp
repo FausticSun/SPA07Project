@@ -127,7 +127,7 @@ std::vector<int> CFG::traverseCFG(int start, bool isForward) const {
 	else {
 		compressedCFG = reverseCompressedGraph;
 	}
-	std::vector<bool> visited(forwardCompressedGraph.size() + 1, false); 
+	std::vector<bool> visited(initialToCompressed.size() + 1, false); 
 	visited[0] = true; // no stmt line 0
 
 	int startNode = initialToCompressed.at(start);
