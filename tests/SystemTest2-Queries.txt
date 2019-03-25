@@ -103,3 +103,15 @@ call c; procedure p,p1,p2;assign a; prog_line pl;variable v;while w; if ifs;stmt
 Select <s,s1,s2> such that Follows(s,s1) pattern ifs("r",_,_) and w("d",_) such that Follows(w,s2) with ifs.stmt# = s.stmt# such that Parent*(w,ifs)
 14 18 19
 5000
+22-comment
+call c; procedure p,p1,p2;assign a; prog_line pl;variable v;while w; if ifs;stmt s,s1,s2;
+Select <p,v> such that Uses(p,v) with p.procName = p1.procName such that Calls(p1,"A")
+G a,G b,G d,G f,G r,G w,G x,G y,G z,G e,G i,G t,G h,G j,G g,G o,G p,G m,G s,G result,G O,G c,G out,G v,G q,G some, G abc, G n 
+5000
+23-comment
+call c; procedure p,p1,p2;assign a; prog_line pl;variable v;while w; if ifs;stmt s,s1,s2;
+Select <v> such that Modifies(p,v) with p.procName = "G"
+a,d,in,q,e,w,b,i,r,c,x,y,t,k,something,l,result,input,g,some
+5000
+24-comment
+call c; procedure p,p1,p2;assign a; prog_line pl;variable v;while w; if ifs;stmt s,s1,s2;
