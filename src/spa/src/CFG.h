@@ -15,7 +15,7 @@ private:
 
   void populateInitialToCompressed(int, Table, std::vector<int>);
   void populateCompressedToInitial();
-  void populateCompressedGraph();
+  void populateCompressedGraph(Table);
   std::vector<int> traverseCFG(int, bool) const;
 
 public:
