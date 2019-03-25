@@ -22,10 +22,7 @@ CFG::CFG(Table procStmtTable, Table nextTable, Table whileIfTable,
   }
   for (auto data : procStmtTable.getData()) {
     int start = std::stoi(data[1]);
-    // Not first procedure of program
-    if (start != 1) {
-      numCompressedNodes++;
-    }
+    numCompressedNodes++;
     // Procedure only has one statement
     if (initialGraph[start].empty()) {
       initialToCompressed[start] = numCompressedNodes;
