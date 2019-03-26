@@ -195,55 +195,60 @@ Select s such that Next*(72, s)
 5000
 40-comment
 stmt s;
+Select s such that Next*(s, s)
+13,14,15,16,17,18,19,20,21,22,23,5,6,62,63,64,65,66,67,68,69,71,72,73,77,78,79,8,80,9
+5000
+41-comment
+stmt s;
 Select s such that Next*(s, 13)
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14
 5000
-41-comment
+42-comment
 stmt s;
 Select s such that Next*(s, 15)
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
 5000
-42-comment
+43-comment
 while w; if ifs; assign a; variable v; stmt s; read r;
 Select BOOLEAN such that Follows(w, ifs) and Uses(ifs, v) such that Modifies(r, v) and Parent*(ifs, r)
 FALSE
 5000
-43-comment
+44-comment
 while w; if ifs; assign a; variable v; stmt s; read r;
 Select <w, ifs, v> such that Follows(w, ifs) and Uses(ifs, v) such that Modifies(r, v) with v.varName = "x"
 19 24 x, 5 7 x, 62 70 x
 5000
-44-comment
+45-comment
 while w; if ifs; assign a; variable v; stmt s; read r; print p;
 Select <r, p, v.varName> with r.varName = v.varName and p.varName = v.varName such that Parent(ifs, r) pattern ifs("x", _, _)
 21 1 x, 21 79 x, 26 39 y, 3 39 y, 30 1 x, 30 79 x, 32 39 y, 43 39 y, 48 1 x, 48 79 x, 50 39 y, 55 39 y, 59 39 y
 5000
-45-comment
+46-comment
 while w; if ifs; assign a; variable v; stmt s; read r; print p;
 Select ifs such that Next(s, 15) and Parent(ifs, s) pattern ifs(v, _, _) with v.varName = "x" such that Uses(s, v)
 11
 5000
-46-comment
+47-comment
 while w; if ifs; assign a; variable v; stmt s; read r; print p; prog_line n;
 Select n pattern w(v, _) with w.stmt# = n and v.varName = "x" such that Modifies(w, v) and Modifies(n, v)
 15, 19
 5000
-47-comment
+48-comment
 while w; if ifs; assign a; variable v; stmt s; read r; print p; prog_line n;
 Select <a, w, p.varName> such that Next(a,_) with a.stmt# = n such that Parent*(w, a) pattern w(_,_) and ifs(_,_,_) such that Uses(s, "x") with p.varName = "y"
 17 15 y, 18 15 y, 65 62 y, 66 62 y, 68 62 y, 69 62 y
 5000
-48-comment
+49-comment
 while w; if ifs; assign a; variable v; stmt s; read r; print p; prog_line n; constant c;
 Select <c, v> with s.stmt# = c.value such that Modifies(s, v) pattern ifs(v, _, _)
 10 c, 2 y, 22 d, 3 y
 5000
-49-comment
+50-comment
 while w; if ifs; assign a; variable v; stmt s; read r; print p; prog_line n; constant c;
 Select v pattern w(v, _) such that Parent(ifs, w) pattern ifs(_, _, _) with ifs.stmt# = n
 g, t, w, x
 5000
-50-comment
+51-comment
 while w; if ifs; assign a; variable v; stmt s; read r; print p; prog_line n; constant c;
 Select <w, v> such that Next(w, ifs) and Uses(w, v) and Modifies(r, v) with p.varName = v.varName
 15 x, 15 y, 19 x, 5 x, 77 x, 8 x
