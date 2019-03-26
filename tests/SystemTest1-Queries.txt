@@ -198,3 +198,104 @@ while w; if ifs; assign a; prog_line n; procedure p; variable v; constant cons; 
 Select a pattern a(_, _"(a % b) - (a * b)"_)
 none
 5000
+101-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s;
+Select s
+1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91
+5000
+102-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s;assign a,a1;
+Select <a,c> such that Follows(a,c) and Parent(ifs,c) pattern a("x","x+1")
+84 85
+5000
+103-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select <ifs,c> such that Next*(ifs,ifs) and Next*(c,c)
+81 83,81 85
+5000
+104-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select <s,s1> such that Parent(s,s1) and Next(s,s1)
+36 37,38 39,40 41,42 43,44 45,46 47,48 49,50 51,52 53,54 55,56 57,58 59,6 7,60 61,62 63,64 65,66 67,68 69,68 70,71 72,8 10,8 9,80 81,81 82,81 84
+5000
+105-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select <p,a,v> such that Modifies(a,v) pattern a(v,_"(a/b)+(a%b)"_) 
+SpecificationTest 32 x,SpecificationTest 34 x,SpecificationTest 35 x,one 32 x,one 34 x,one 35 x,three 32 x,three 34 x,three 35 x,two 32 x,two 34 x,two 35 x
+5000
+106-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select <s,s1> such that Follows(s,s1) and Parent(s1,ifs) and Next*(s1,ifs)
+79 80
+5000
+107-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select <w,ifs,a,v>  pattern a(v,_) and w(v,_) and ifs(v,_,_) such that Follows(a,w)
+36 8 35 x,36 81 35 x,80 81 79 a
+5000
+108-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c,c1;stmt s,s1;assign a,a1;
+Select <ifs,c,c1> such that Parent(w,ifs) and Parent(ifs,c1) and Parent(ifs,c)
+81 83 83,81 85 85, 81 83 85, 81 85 83
+5000
+109-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select <p,c> such that Calls(_,p) and Calls(p,_) with c.procName=p.procName  
+one 69,two 83
+5000
+110-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;read r;print pr;
+Select <w,r,pr> such that Parent(w,r) and Parent(w,pr) and Follows(r,pr) and Next(w,r)
+71 72 73
+5000
+111-comment
+while w; if ifs; prog_line n; procedure p,p1,p2; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select <p,p1,p2> such that Calls(_,p1) and Uses(p,v) and Uses(p1,v) with v.varname = "x"
+none
+5000
+112-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select <p,p.procName,c,c.procName> such that Calls*(_,p) with c.procName = p.procName 
+one one 69 one,three three 70 three,three three 85 three,three three 89 three,two two 83 two
+5000
+113-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select <v,v,a,s.stmt#> such that Uses(a,v) and  Follows(s,a) with a.stmt# = 33
+a a 33 32,b b 33 32
+5000
+114-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select BOOLEAN such that Parent(w,s) and Follows(s,w)
+FALSE
+5000
+115-commnet
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select BOOLEAN pattern ifs(v,_,_) and a(v,_"a-b"_) such that Parent(ifs,a)
+FALSE
+5000
+116-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select BOOLEAN such that Follows(s,s1) and Next*(s1,s)
+TRUE
+5000
+117-comment
+while w,w1; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1; read r;
+Select <w,w1> pattern w("x",_) and w1(v,_) such that Follows(w,w1) and Modifies(w,v) and Modifies(w1,v) and Modifies(r,v) with r.stmt# = 59
+58 60,60 62,64 66
+5000
+118-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1,s2;assign a,a1;
+Select<s,s1,s2> such that Next(s,s1) and Next(s2,s) and Next(s1,s2)
+none
+5000
+119-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select <a,a1> such that Modifies(a,v) and Uses(a,v) pattern a1(v,_"a%b"_)
+13 16,13 32,13 33,13 34,13 35,84 16,84 32,84 33,84 34,84 35,86 16,86 32,86 33,86 34,86 35
+5000
+120-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select <s,v> with s.stmt# = cons.stmt# and Modifies(s,v)
+none
+5000
+
