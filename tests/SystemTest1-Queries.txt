@@ -1,0 +1,90 @@
+1-comment
+
+Select BOOLEAN
+TRUE
+5000
+2-comment
+procedure p1, p2;
+Select <p1, p2.procName>
+SpecificationTest SpecificationTest, SpecificationTest one, SpecificationTest two, SpecificationTest three, one SpecificationTest, one one, one two, one three, two SpecificationTest, two one, two two, two three, three SpecificationTest, three one, three two, three three
+5000
+3-comment
+procedure p1, p2;
+Select <p1>
+SpecificationTest, one, two, three
+5000
+4-comment
+procedure p1, p2;
+Select p2
+SpecificationTest, one, two, three
+5000
+5-comment
+procedure p1, p2;
+Select <p1, p2> with p1.procName = p2.procName
+SpecificationTest SpecificationTest, one one, two two, three three 
+5000
+6-comment
+procedure p1, p2;
+Select p1.procName with p1.procName = "one"
+one
+5000
+6-comment
+while w; prog_line n;
+Select w.stmt# with w.stmt# = n and n = 80
+80
+5000
+7-comment
+while w; prog_line n;
+Select w with w.stmt# = 71
+71
+5000
+8-comment
+while w; prog_line n; print p; variable v;
+Select p with p.varName = v.varName and v.varName = "Z9"
+5
+5000
+9-comment
+while w; prog_line n; read r; variable v; constant cons;
+Select r.varName with r.stmt# = cons.value and 1 = cons.value
+ABC
+5000
+10-comment
+while w; prog_line n; procedure p; variable v; constant cons; call c;
+Select <c.procName, c.stmt#> with c.procName = p.procName
+one 69, three 70, two 83, three 85, three 89
+5000
+11-comment
+while w; prog_line n; procedure p; variable v; constant cons; call c;
+Select w pattern w(v,_)
+36,40,42,44,46,48,50,52,54,56,58,6,60,62,64,66,71,80
+5000
+12-comment
+while w; prog_line n; procedure p; variable v; constant cons; call c;
+Select w pattern w(_,_)
+36,40,42,44,46,48,50,52,54,56,58,6,60,62,64,66,71,80
+5000
+13-comment
+while w; prog_line n; procedure p; variable v; constant cons; call c;
+Select w 
+36,38, 40,42,44,46,48,50,52,54,56,58,6,60,62,64,66,71,80
+5000
+14-comment
+while w; prog_line n; procedure p; variable v; constant cons; call c;
+Select w pattern w("y",_)
+60,62, 66
+5000
+15-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;
+Select ifs pattern ifs(v,_, _)
+8, 68, 81
+5000
+16-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;
+Select ifs pattern ifs(_,_, _)
+8, 68, 81
+5000
+16-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;
+Select ifs 
+8, 68, 81
+5000

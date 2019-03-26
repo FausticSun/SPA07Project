@@ -849,6 +849,24 @@ string PQLParser::convertToPostfix(string expr0) {
   /*std::string::iterator end_pos = std::remove(expr.begin(), expr.end(), ' ');
   expr.erase(end_pos, expr.end());*/
   // combine multiple spaces into one a(_,"")
+  
+  std::stack<char> sta;
+  for (int i = 0; i < expr0.size(); i++) {
+	  if (expr0[i] == '(') {
+		  sta.push('(');
+	  }
+	  else if (expr0[i] == ')') {
+		  if (sta.empty()) {
+			  throw std::invalid_argument("Invalid expression");
+		  }
+		  else {
+			  sta.pop();
+		  }
+	  }
+  }
+  if (!sta.empty()) {
+	  throw std::invalid_argument("Invalid expression");
+  }
   if (expr0.empty()) {
     throw std::invalid_argument("Invalid expression");
   }
