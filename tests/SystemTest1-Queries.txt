@@ -298,4 +298,128 @@ while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stm
 Select <s,v> with s.stmt# = cons.stmt# and Modifies(s,v)
 none
 5000
-
+121-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select p such that Uses(p, v)
+none
+5000
+122-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select s such that Uses(s, v)
+none
+5000
+123-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select c such that Uses(c, v)
+none
+5000
+124-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select w such that Uses(w, v)
+none
+5000
+125-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select a such that Uses(a, v)
+none
+5000
+126-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select s such that Uses(s, "x")
+none
+5000
+127-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select v such that Modifies("SpecificationTest", v)
+none
+5000
+128-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select c such that Modifies(c, v)
+none
+5000
+129-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select p such that Modifies(p, v)
+none
+5000
+130-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select a such that Modifies(a, v)
+none
+5000
+131-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select s such that Next(s, s1)
+none
+5000
+132-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select s1 such that Next*(a, v)
+none
+5000
+133-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select a such that Follows(a, s)
+none
+5000
+134-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select a such that Follows(a, a1)
+none
+5000
+135-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select s such that Follows(s, s1)
+none
+5000
+136-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select s such that Follows(c, s)
+none
+5000
+137-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select w such that Follows(w, s1)
+none
+5000
+138-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select ifs such that Follows(ifs, s)
+none
+5000
+139-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select ifs such that Follows*(ifs, w)
+none
+5000
+140-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select s such that Follows*(s, w)
+none
+5000
+141-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select s such that Follows*(s, a)
+none
+5000
+142-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select a such that Follows*(a, w)
+none
+5000
+143-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select a such that Parent*(a, w)
+none
+5000
+144-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select a such that Follows*(a, w)
+none
+5000
+145-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select a such that Follows*(a, w)
+none
+5000
