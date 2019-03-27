@@ -301,7 +301,7 @@ none
 121-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1; print pr;
 Select pr such that Uses(pr, v)
-none
+88, 91, 73, 2, 5
 5000
 122-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
