@@ -13,10 +13,95 @@ call c; procedure p,p1;assign a; prog_line pl;variable v;
 Select p such that Calls(p,p1)
 A,B,C,D,G
 5000
+
+
+
+100-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select p such that Calls(_,p)
+A,B,C,D,E,F
+5000
+101-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select p such that Calls(p,_)
+A,B,C,D,G
+5000
+102-commment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select p such that Calls(_,_)
+A,B,C,D,E,F,G
+5000
+103-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select p such that Calls("A","E")
+none
+5000
+104-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select BOOLEAN such that Calls("A",_)
+TRUE
+5000
+105-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select BOOLEAN such that Calls(_,"E")
+TRUE
+5000
+106-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select p such that Calls*("A","C")
+A,B,C,D,E,F,G
+5000
+107-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select p such that Calls*(p,"C")
+A,B,G
+5000
+108-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select p such that Calls*(_,p)
+A,B,C,D,E,F
+5000
+109-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select p such that Calls*(p,_)
+A,B,C,D,G
+5000
+110-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select p such that Calls*(_,_)
+A,B,C,D,E,F,G
+5000
+111-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select p such that Calls*("E",_)
+none
+5000
+112-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;
+Select p such that Calls*(_,"C")
+A,B,C,D,E,F,G
+5000
 4-comment
 call c; procedure p,p1;assign a; prog_line pl;variable v;
 Select p such that Calls*(p1,p)
 A,B,C,D,E,F
+5000
+
+
+113-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;constant cons;
+Select s with s.stmt# = cons.value;
+1
+5000
+114-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;constant cons;
+Select s with s.stmt# = 1;
+1
+5000
+115-comment
+call c; procedure p,p1;assign a; prog_line pl;variable v;constant cons;
+Select s with s.stmt# = cons.value;
+1
 5000
 5-comment
 call c; procedure p,p1;assign a; prog_line pl;variable v;
