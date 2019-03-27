@@ -1037,6 +1037,39 @@ void PQLParser::insertClauseWith() {
   expectToken("=");
   QueryEntity secondEntity = determineWithClauseEntity();
   checkWithValidity(firstEntity, secondEntity);
+  string type1 = "";
+  string type2 = "";
+  if (firstEntity.type == QueryEntityType::Line || firstEntity.type == QueryEntityType::Progline) {
+	  type1 = "int";
+  }
+  else if (firstEntity.type == QueryEntityType::Name) {
+		  type1 = "str";
+  }
+  else {
+	  if (firstEntity.name.find("varName") != std::string::npos || firstEntity.name.find("procName") != std::string::npos) {
+		  type1 = "str";
+	  }
+	  else {
+		  type1 = "int";
+	  }
+  }
+  if (secondEntity.type == QueryEntityType::Line || secondEntity.type == QueryEntityType::Progline) {
+	  type2 = "int";
+  }
+  else if (secondEntity.type == QueryEntityType::Name) {
+	  type2 = "str";
+  }
+  else {
+	  if (secondEntity.name.find("varName") != std::string::npos || secondEntity.name.find("procName") != std::string::npos) {
+		  type2 = "str";
+	  }
+	  else {
+		  type2 = "int";
+	  }
+  }
+  if (type1 != type2) {
+	  throw std::invalid_argument("The two refs must be of the same type");
+  }
   Clause c =
       Clause(ClauseType::With, vector<QueryEntity>{firstEntity, secondEntity});
   this->clauses.push_back(c);
