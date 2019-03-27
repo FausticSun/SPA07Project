@@ -299,8 +299,8 @@ Select <s,v> with s.stmt# = cons.stmt# and Modifies(s,v)
 none
 5000
 121-comment
-while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select p such that Uses(p, v)
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1; print pr;
+Select pr such that Uses(pr, v)
 none
 5000
 122-comment
@@ -330,92 +330,92 @@ none
 5000
 127-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select v such that Modifies("SpecificationTest", v)
+Select p such that Uses(p, "x")
 none
 5000
 128-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select c such that Modifies(c, v)
+Select v such that Modifies("SpecificationTest", v)
 none
 5000
 129-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select p such that Modifies(p, v)
+Select c such that Modifies(c, v)
 none
 5000
 130-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select a such that Modifies(a, v)
+Select p such that Modifies(p, v)
 none
 5000
 131-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select s such that Next(s, s1)
+Select a such that Modifies(a, v)
 none
 5000
 132-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select s1 such that Next*(a, v)
+Select r such that Modifies(r, v)
 none
 5000
 133-comment
-while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select a such that Follows(a, s)
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1; read r;
+Select s such that Modifies(s, v)
 none
 5000
 134-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select a such that Follows(a, a1)
+Select s such that Next(s, s1)
 none
 5000
 135-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select s such that Follows(s, s1)
+Select s1 such that Next*(a, v)
 none
 5000
 136-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select s such that Follows(c, s)
+Select a such that Follows(a, s)
 none
 5000
 137-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select w such that Follows(w, s1)
+Select a such that Follows(a, a1)
 none
 5000
 138-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select ifs such that Follows(ifs, s)
+Select s such that Follows(s, s1)
 none
 5000
 139-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select ifs such that Follows*(ifs, w)
+Select s such that Follows(c, s)
 none
 5000
 140-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select s such that Follows*(s, w)
+Select w such that Follows(w, s1)
 none
 5000
 141-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select s such that Follows*(s, a)
+Select ifs such that Follows(ifs, s)
 none
 5000
 142-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select a such that Follows*(a, w)
+Select ifs such that Follows*(ifs, w)
 none
 5000
 143-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select a such that Parent*(a, w)
+Select s such that Follows*(s, w)
 none
 5000
 144-comment
 while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
-Select a such that Follows*(a, w)
+Select s such that Follows*(s, a)
 none
 5000
 145-comment
@@ -423,3 +423,75 @@ while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stm
 Select a such that Follows*(a, w)
 none
 5000
+146-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select a such that Parent*(a, w)
+none
+5000
+147-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select a such that Follows*(a, w)
+none
+5000
+148-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select a such that Follows*(a, w)
+none
+5000
+149-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select a such that Parent(s, a)
+none
+5000
+150-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select s such that Parent(s, s1)
+none
+5000
+151-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select w such that Parent(w, s)
+none
+5000
+152-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select c such that Parent(ifs, w)
+none
+5000
+153-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select a such that Parent*(ifs, s)
+none
+5000
+154-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select a such that Parent*(w, a)
+none
+155-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select a such that Parent*(ifs, w)
+none
+156-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select p such that Calls(p, "three")
+none
+157-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select p such that Calls("one", p)
+none
+158-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select BOOLEAN such that Calls("one", "three")
+none
+159-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select p such that Calls*(p, "two")
+none
+160-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select BOOLEAN such that Calls*("one", "three")
+none
+161-comment
+while w; if ifs; prog_line n; procedure p; variable v; constant cons; call c;stmt s,s1;assign a,a1;
+Select p such that Calls("one", p)
+none
