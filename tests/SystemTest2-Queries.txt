@@ -13,9 +13,6 @@ call c; procedure p,p1;assign a; prog_line pl;variable v;
 Select p such that Calls(p,p1)
 A,B,C,D,G
 5000
-
-
-
 100-comment
 call c; procedure p,p1;assign a; prog_line pl;variable v;
 Select p such that Calls(_,p)
@@ -86,44 +83,41 @@ call c; procedure p,p1;assign a; prog_line pl;variable v;
 Select p such that Calls*(p1,p)
 A,B,C,D,E,F
 5000
-
-
 113-comment
-call c; procedure p,p1;assign a; prog_line pl;variable v;constant cons;
-Select s with s.stmt# = cons.value;
-1
+call c; procedure p,p1;assign a; prog_line pl;variable v;constant cons;stmt s;
+Select s with s.stmt# = cons.value
+14,16,2,23,3,4,5,6,7,1
 5000
 114-comment
-call c; procedure p,p1;assign a; prog_line pl;variable v;constant cons;
-Select s with s.stmt# = 1;
+call c; procedure p,p1;assign a; prog_line pl;variable v;constant cons;stmt s;
+Select s with s.stmt# = 1
 1
 5000
 115-comment
 call c; procedure p,p1;assign a; prog_line pl;variable v;constant cons;
-Select s with 1 = cons.value;
+Select s with 1 = cons.value
 none
 5000
 116-comment
 call c; procedure p,p1;assign a; prog_line pl;variable v;constant cons;
-Select p such that  p.procName = "A"
+Select p with  p.procName = "A"
 A
 5000
 117-comment
 call c; procedure p,p1;assign a; prog_line pl;variable v;constant cons;
 Select BOOLEAN with 1 = "1"
-FALSE
+none
 5000
 118-comment
 call c; procedure p,p1;assign a; prog_line pl;variable v;constant cons;
 Select pl with 1 = pl
-pl
+1
 5000
 119-comment
 call c; procedure p,p1;assign a; prog_line pl;variable v;constant cons;
 Select p with p.procName = c.procName
 A,B,C,D,E,F
 5000
-
 5-comment
 call c; procedure p,p1;assign a; prog_line pl;variable v;
 Select <p,p1> such that Calls("G",p) and Calls(p,p1)
