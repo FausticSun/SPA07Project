@@ -253,3 +253,28 @@ while w; if ifs; assign a; variable v; stmt s; read r; print p; prog_line n; con
 Select <w, v> such that Next(w, ifs) and Uses(w, v) and Modifies(r, v) with p.varName = v.varName
 15 x, 15 y, 19 x, 5 x, 77 x, 8 x
 5000
+52-comment
+while w; if ifs; assign a; variable v; stmt s; read r; print p; prog_line n; constant c;
+Select v such that Uses(w, v) and Modifies(w, v) pattern a(_, _"b"_)
+x
+5000
+53-comment
+while w; if ifs; assign a; variable v; stmt s; read r; print p; prog_line n; constant c;
+Select v such that Uses(w, v) and Modifies(ifs, v) pattern a(_, _"b"_)
+x, y, b, d
+5000
+54-comment
+while w; if ifs; assign a; variable v; stmt s; read r; print p; prog_line n; constant c;
+Select v such that Uses(ifs, v) and Modifies(ifs, v) pattern a(_, _"b"_)
+x, y
+5000
+54-comment
+while w; if ifs; assign a; variable v; stmt s, s1; read r; print p; prog_line n; constant c;
+Select <s, s1> such that Next*(s, s1) and Next*(s1, s) 
+13 13,13 14,14 13,14 14,15 15,15 16,15 17,15 18,16 15,16 16,16 17,16 18,17 15,17 16,17 17,17 18,18 15,18 16,18 17,18 18,19 19,19 20,19 21,19 22,19 23,20 19,20 20,20 21,20 22,20 23,21 19,21 20,21 21,21 22,21 23,22 19,22 20,22 21,22 22,22 23,23 19,23 20,23 21,23 22,23 23,5 5,5 6,6 5,6 6,62 62,62 63,62 64,62 65,62 66,62 67,62 68,62 69,63 62,63 63,63 64,63 65,63 66,63 67,63 68,63 69,64 62,64 63,64 64,64 65,64 66,64 67,64 68,64 69,65 62,65 63,65 64,65 65,65 66,65 67,65 68,65 69,66 62,66 63,66 64,66 65,66 66,66 67,66 68,66 69,67 62,67 63,67 64,67 65,67 66,67 67,67 68,67 69,68 62,68 63,68 64,68 65,68 66,68 67,68 68,68 69,69 62,69 63,69 64,69 65,69 66,69 67,69 68,69 69,71 71,71 72,71 73,72 71,72 72,72 73,73 71,73 72,73 73,77 77,77 78,77 79,77 80,78 77,78 78,78 79,78 80,79 77,79 78,79 79,79 80,8 8,8 9,80 77,80 78,80 79,80 80,9 8,9 9
+5000
+55-comment
+while w; if ifs; assign a; variable v; stmt s, s1; read r; print p; prog_line n; constant c;
+Select <s, s1> such that Next*(s, s1) and Next*(s1, s) and Parent*(w, s) such that Parent*(w, s1) with w.stmt# = 19
+20 20,20 21,20 22,20 23,21 20,21 21,21 22,21 23,22 20,22 21,22 22,22 23,23 20,23 21,23 22,23 23
+5000
