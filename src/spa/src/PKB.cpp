@@ -133,6 +133,9 @@ Table PKB::getNextT() const { return cfg.getNextT(); }
 Table PKB::getNextT(int s, bool isLeftConstant) const {
   return cfg.getNextT(s, isLeftConstant);
 }
+bool PKB::getNextT(int start, int end) const {
+	return cfg.getNextT(start, end);
+}
 
 Table PKB::getCallProcNameTable() const { return callProcNameTable; }
 

@@ -113,29 +113,28 @@ void CFG::populateCompressedGraph(Table procStmtTable) {
   }
 }
 
-std::vector<int> CFG::traverseCFG(int start, bool isForward) const {
+std::vector<int> CFG::traverseForwardCFG(int start, int end=-1) const {
   std::vector<int> result;
-  std::vector<std::vector<int>> compressedCFG;
-  if (isForward) {
-    compressedCFG = forwardCompressedGraph;
-  } else {
-    compressedCFG = reverseCompressedGraph;
-  }
+  std::vector<std::vector<int>> compressedCFG = forwardCompressedGraph;
+  bool reachedEnd = false;
+
+  //initialize visited array
   std::vector<bool> visited(initialToCompressed.size() + 1, false);
   visited[0] = true; // no stmt line 0
 
+  // adding all elements in start node
   int startNode = initialToCompressed.at(start);
-  std::queue<int> q;
-
-  // add everything in node
   std::vector<int> linesInNode = compressedToInitial.at(startNode);
   int index = start - linesInNode[0] + 1;
-
   for (int i = index; i < linesInNode.size(); i++) {
-    result.push_back(linesInNode[i]);
-    visited[linesInNode[i]] = true;
+	  result.push_back(linesInNode[i]);
+	  visited[linesInNode[i]] = true;
+	  if (linesInNode[i] == end) {
+		  reachedEnd = true;
+	  }
   }
 
+  std::queue<int> q;
   q.push(startNode);
   while (!q.empty()) {
     int curr = q.front();
@@ -143,24 +142,76 @@ std::vector<int> CFG::traverseCFG(int start, bool isForward) const {
 
     for (int i : compressedCFG[curr]) {
       if (!visited[compressedToInitial.at(i)[0]]) {
-        for (int j : compressedToInitial.at(i)) {
+        for (int j : compressedToInitial.at(i)) { //adding all elements within current node
           if (!visited[j]) {
             visited[j] = true;
             result.push_back(j);
+			if (j == end) { //for nextT with 2 constants
+				reachedEnd = true;
+				break;
+			}
           }
         }
         q.push(i);
       }
     }
   }
+
+  //for nextT with two constants that did not reach end line
+  if ((end > 0) && (!reachedEnd)) {
+	  return std::vector<int>{}; // return empty vector if end not reachable from start
+  } 
+
   return result;
 }
+
+//have to be separated from traverseForwardCFG becuase of the different Node traversal methods
+std::vector<int> CFG::traverseReverseCFG(int start) const {
+	std::vector<int> result;
+	std::vector<std::vector<int>> compressedCFG = reverseCompressedGraph;
+
+	std::vector<bool> visited(initialToCompressed.size() + 1, false);
+	visited[0] = true;
+
+	//adding all elements in start node
+	int startNode = initialToCompressed.at(start);
+	std::vector<int> linesInNode = compressedCFG.at(startNode);
+	int index = start - linesInNode[0] - 1;
+
+	for (int i = index; i >= 0; i--) {
+		result.push_back(linesInNode[i]);
+		visited[linesInNode[i]] = true;
+	}
+
+	std::queue<int> q;
+	q.push(startNode);
+	while (!q.empty()) {
+		int curr = q.front();
+		q.pop();
+
+		for (int i : compressedCFG[curr]) {
+			if (!visited[compressedToInitial.at(i)[compressedToInitial.at(i).size() - 1]]) {
+				for (int j : compressedToInitial.at(i)) { //adding all elements within current node
+					if (!visited[j]) {
+						visited[j] = true;
+						result.push_back(j);
+					}
+				}
+				q.push(i);
+			}
+		}
+	}
+
+return result;
+}
+
+
 
 Table CFG::getNextT() const {
   Table table{2};
 
   for (int i = 1; i < initialToCompressed.size() + 1; i++) {
-    std::vector<int> result = traverseCFG(i, true);
+    std::vector<int> result = traverseForwardCFG(i);
     for (int j : result) {
       table.insertRow({std::to_string(i), std::to_string(j)});
     }
@@ -170,9 +221,21 @@ Table CFG::getNextT() const {
 
 Table CFG::getNextT(int start, bool isForward) const {
   Table table{1};
-  std::vector<int> result = traverseCFG(start, isForward);
+  std::vector<int> result;
+  if (isForward) {
+	  result = traverseForwardCFG(start);
+  }
+  else {
+	  result = traverseReverseCFG(start);
+
+  }
+
   for (int i : result) {
     table.insertRow({std::to_string(i)});
   }
   return table;
+}
+
+bool CFG::getNextT(int start, int end) const {
+	return traverseForwardCFG(start, end).size() > 0;
 }

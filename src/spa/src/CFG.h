@@ -3,6 +3,9 @@
 #include <map>
 
 class CFG {
+
+	enum class TraverseType{ ConstantNext, ForwardNext, ReverseNext };
+
 private:
   // Map from original line number to compressed node index
   std::map<int, int> initialToCompressed;
@@ -16,11 +19,13 @@ private:
   void populateInitialToCompressed(int, Table, std::vector<int>);
   void populateCompressedToInitial();
   void populateCompressedGraph(Table);
-  std::vector<int> traverseCFG(int, bool) const;
+  std::vector<int> traverseForwardCFG(int, int) const;
+  std::vector<int> traverseReverseCFG(int) const;
 
 public:
   CFG();
   CFG(Table, Table, Table, int);
   Table getNextT() const;
   Table getNextT(int, bool) const;
+  bool getNextT(int, int) const;
 };
