@@ -1357,6 +1357,86 @@ SCENARIO("wrong argument type for attrref") {
 	
 }
 
+SCENARIO("different argument type for with clause") {
+	SECTION("varName = int") {
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "variable"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, "with"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, "."));
+		tokens.push(QueryToken(TokenType::Identifier, "varName"));
+		tokens.push(QueryToken(TokenType::Identifier, "="));
+		tokens.push(QueryToken(TokenType::Identifier, "5"));
+		PQLParser p = PQLParser();
+		REQUIRE_THROWS_WITH(p.buildQuery(tokens),
+			"The two refs must be of the same type");
+	}
+
+	SECTION("procName = int") {
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "procedure"));
+		tokens.push(QueryToken(TokenType::Identifier, "p"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "p"));
+		tokens.push(QueryToken(TokenType::Identifier, "with"));
+		tokens.push(QueryToken(TokenType::Identifier, "p"));
+		tokens.push(QueryToken(TokenType::Identifier, "."));
+		tokens.push(QueryToken(TokenType::Identifier, "procName"));
+		tokens.push(QueryToken(TokenType::Identifier, "="));
+		tokens.push(QueryToken(TokenType::Identifier, "5"));
+		PQLParser p = PQLParser();
+		REQUIRE_THROWS_WITH(p.buildQuery(tokens),
+			"The two refs must be of the same type");
+	}
+
+	SECTION("constant.stmt#") {
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "procedure"));
+		tokens.push(QueryToken(TokenType::Identifier, "p"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "constant"));
+		tokens.push(QueryToken(TokenType::Identifier, "c"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "p"));
+		tokens.push(QueryToken(TokenType::Identifier, "with"));
+		tokens.push(QueryToken(TokenType::Identifier, "p"));
+		tokens.push(QueryToken(TokenType::Identifier, "."));
+		tokens.push(QueryToken(TokenType::Identifier, "procName"));
+		tokens.push(QueryToken(TokenType::Identifier, "="));
+		tokens.push(QueryToken(TokenType::Identifier, "c"));
+		tokens.push(QueryToken(TokenType::Identifier, "."));
+		tokens.push(QueryToken(TokenType::Identifier, "value"));
+		PQLParser p = PQLParser();
+		REQUIRE_THROWS_WITH(p.buildQuery(tokens),
+			"The two refs must be of the same type");
+	}
+
+	SECTION("var.value") {
+		queue<QueryToken> tokens;
+		tokens.push(QueryToken(TokenType::Identifier, "variable"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, ";"));
+		tokens.push(QueryToken(TokenType::Identifier, "Select"));
+		tokens.push(QueryToken(TokenType::Identifier, "v"));
+		tokens.push(QueryToken(TokenType::Identifier, "with"));
+		tokens.push(QueryToken(TokenType::Identifier, "1"));
+		tokens.push(QueryToken(TokenType::Identifier, "="));
+		tokens.push(QueryToken(TokenType::Identifier, "\""));
+		tokens.push(QueryToken(TokenType::Identifier, "1"));
+		tokens.push(QueryToken(TokenType::Identifier, "\""));
+		PQLParser p = PQLParser();
+		REQUIRE_THROWS_WITH(p.buildQuery(tokens),
+			"The two refs must be of the same type");
+	}
+
+}
+
 //
 
 SCENARIO("test select BOOLEAN") {

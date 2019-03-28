@@ -155,18 +155,18 @@ if (e != (y + 1)) then { \\74
 				call E; \\87
 			} else {
 				print some; \\88
-				while (some < n) {
-					g = h + i/ j; \\ 89
+				while (some < n) {\\89
+					g = h + i/ j; \\ 90
 				}
-				call A; \\90
+				call A; \\91
 			}
-			d = e + w - y; \\91
+			d = e + w - y; \\92
 		}
-		print abc; \\92
+		print abc; \\93
 	}
-	r = w; \\93
+	r = w; \\94
 }
 
-a = e - t; \\94
+a = e - t; \\95
 }
 
