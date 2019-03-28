@@ -175,7 +175,7 @@ std::vector<int> CFG::traverseReverseCFG(int start) const {
 
 	//adding all elements in start node
 	int startNode = initialToCompressed.at(start);
-	std::vector<int> linesInNode = compressedCFG.at(startNode);
+	std::vector<int> linesInNode = compressedToInitial.at(startNode);
 	int index = start - linesInNode[0] - 1;
 
 	for (int i = index; i >= 0; i--) {
