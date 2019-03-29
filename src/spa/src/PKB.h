@@ -93,7 +93,9 @@ public:
   Table getNext() const;
   Table getNextT() const;
   Table getNextT(int, bool) const;
-  // Table getAffects() const;
+  Table getAffects(int, int) const;
+  Table getAffects(int, bool) const;
+  Table getAffects() const;
   // Table getAffectsT() const;
   Table getCallProcNameTable() const;
   // Pattern getter

@@ -17,10 +17,14 @@ private:
   void populateCompressedToInitial();
   void populateCompressedGraph(Table);
   std::vector<int> traverseCFG(int, bool) const;
+  std::vector<int> getAffectsVector(int, bool, std::string) const;
 
 public:
   CFG();
   CFG(Table, Table, Table, int);
   Table getNextT() const;
   Table getNextT(int, bool) const;
+  Table getAffects() const;
+  Table getAffects(int, int) const;
+  Table getAffects(int, bool) const;
 };

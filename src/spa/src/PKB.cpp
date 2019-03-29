@@ -134,6 +134,14 @@ Table PKB::getNextT(int s, bool isLeftConstant) const {
   return cfg.getNextT(s, isLeftConstant);
 }
 
+Table PKB::getAffects(int a1, int a2) const {
+  return cfg.getAffects(a1, a2);
+}
+Table PKB::getAffects(int a1, bool isLeftConstant) const {
+  return cfg.getAffects(a1, isLeftConstant);
+}
+Table PKB::getAffects() const { return cfg.getAffects(); }
+
 Table PKB::getCallProcNameTable() const { return callProcNameTable; }
 
 Table PKB::getAssignMatches(std::string expr, bool partial) {
