@@ -2,6 +2,8 @@
 #include "Table.h"
 #include <map>
 
+enum class TraverseType { ConstantNext, ForwardNext, ReverseNext };
+
 class CFG {
 private:
   // Map from original line number to compressed node index
@@ -18,11 +20,14 @@ private:
   void populateCompressedGraph(Table);
   std::vector<int> traverseCFG(int, bool) const;
   std::vector<int> getAffectsVector(int, bool, std::string) const;
+  std::vector<int> traverseForwardCFG(int, int) const;
+  std::vector<int> traverseReverseCFG(int) const;
 
 public:
   CFG();
   CFG(Table, Table, Table, int);
   Table getNextT() const;
+  bool getNextT(int, int) const;
   Table getNextT(int, bool) const;
   Table getAffects() const;
   Table getAffects(int, int) const;

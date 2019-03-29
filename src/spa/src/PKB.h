@@ -96,7 +96,7 @@ public:
   Table getAffects(int, int) const;
   Table getAffects(int, bool) const;
   Table getAffects() const;
-  // Table getAffectsT() const;
+  bool getNextT(int, int) const;
   Table getCallProcNameTable() const;
   // Pattern getter
   Table getAssignMatches(std::string expr, bool partial);
