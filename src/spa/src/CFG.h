@@ -18,10 +18,11 @@ private:
   void populateInitialToCompressed(int, Table, std::vector<int>);
   void populateCompressedToInitial();
   void populateCompressedGraph(Table);
-  std::vector<int> traverseCFG(int, bool) const;
-  std::vector<int> getAffectsVector(int, bool, std::string) const;
-  std::vector<int> traverseForwardCFG(int, int) const;
-  std::vector<int> traverseReverseCFG(int) const;
+
+  std::vector<int> getNextTForward(int, int) const;
+  std::vector<int> getNextTReverse(int) const;
+  std::vector<int> getAffectsForward(int, std::string, Table, Table) const;
+  std::vector<int> getAffectsReverse(int, std::vector<std::string>) const;
 
 public:
   CFG();
@@ -30,6 +31,6 @@ public:
   bool getNextT(int, int) const;
   Table getNextT(int, bool) const;
   Table getAffects() const;
-  Table getAffects(int, int) const;
-  Table getAffects(int, bool) const;
+  bool isAffects(int, int, Table, Table) const;
+  Table getAffects(int, bool, Table, Table, std::set<int>) const;
 };
