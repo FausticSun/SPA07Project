@@ -91,12 +91,12 @@ public:
   Table getCalls() const;
   Table getCallsT() const;
   Table getNext() const;
-  Table getNextT() const;
+  bool getNextT(int, int) const;
   Table getNextT(int, bool) const;
-  Table getAffects(int, int) const;
+  Table getNextT() const;
+  bool isAffects(int, int) const;
   Table getAffects(int, bool) const;
   Table getAffects() const;
-  bool getNextT(int, int) const;
   Table getCallProcNameTable() const;
   // Pattern getter
   Table getAssignMatches(std::string expr, bool partial);

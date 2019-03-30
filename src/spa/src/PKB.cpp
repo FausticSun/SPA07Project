@@ -134,14 +134,28 @@ Table PKB::getNextT(int s, bool isLeftConstant) const {
   return cfg.getNextT(s, isLeftConstant);
 }
 bool PKB::getNextT(int start, int end) const {
-	return cfg.getNextT(start, end);
+  return cfg.getNextT(start, end);
 }
 
-Table PKB::getAffects(int a1, int a2) const {
-  return cfg.getAffects(a1, a2);
+bool PKB::isAffects(int a1, int a2) const {
+  // Only query from CFG if a1 and a2 are assign statements
+  auto assignStmts = stmtTable.at(StatementType::Assign);
+  if (assignStmts.find(a1) == assignStmts.end() ||
+      assignStmts.find(a2) == assignStmts.end()) {
+    return false;
+  } else {
+    return cfg.isAffects(a1, a2, usesSTable, modifiesSTable);
+  }
 }
 Table PKB::getAffects(int a1, bool isLeftConstant) const {
-  return cfg.getAffects(a1, isLeftConstant);
+  // Only query from CFG if a1 is assign statement
+  auto assignStmts = stmtTable.at(StatementType::Assign);
+  if (assignStmts.find(a1) == assignStmts.end()) {
+    return Table{1};
+  } else {
+    return cfg.getAffects(a1, isLeftConstant, usesSTable, modifiesSTable,
+                          assignStmts);
+  }
 }
 Table PKB::getAffects() const { return cfg.getAffects(); }
 
