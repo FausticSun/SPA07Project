@@ -2014,3 +2014,30 @@ TEST_CASE("One complex nesting in one procedure in program with two procedures")
 
 }
 
+TEST_CASE("Affects 1") {
+	std::unique_ptr<PKB> pkb{ new PKB() };
+	pkb->setProc("A", 1, 4);
+	pkb->setNext(1, 2);
+	pkb->setNext(2, 3);
+	pkb->setStmtType(1, StatementType::Assign);
+	pkb->setStmtType(3, StatementType::Assign);
+	pkb->setModifies(1, "a");
+	pkb->setUses(3, "a");
+	DesignExtractor::populateDesigns(pkb);
+	Table result = pkb->getAffects(1, true);
+
+	
+	
+	REQUIRE(result.contains("3"));
+	REQUIRE(pkb->getAffects(1, 3) == true);
+
+
+	result = pkb->getAffects(3, false);
+	REQUIRE(result.contains("1"));
+
+	result = pkb->getAffects();
+	REQUIRE(result.contains({ "1", "3" }));
+
+}
+
+
