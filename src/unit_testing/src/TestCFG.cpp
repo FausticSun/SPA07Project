@@ -2040,4 +2040,131 @@ TEST_CASE("Affects 1") {
 
 }
 
+TEST_CASE("Affects if") {
+	std::unique_ptr<PKB> pkb{ new PKB() };
+	pkb->setProc("A", 1, 5);
+	pkb->setNext(1, 2);
+	pkb->setNext(2, 3);
+	pkb->setNext(2, 4);
+	pkb->setNext(3, 5);
+	pkb->setNext(4, 5);
+
+	pkb->setStmtType(1, StatementType::Assign);
+	pkb->setStmtType(3, StatementType::Assign);
+	pkb->setModifies(1, "x");
+	pkb->setUses(3, "x");
+	pkb->setUses(5, "x");
+	pkb->setModifies(4, "x");
+	DesignExtractor::populateDesigns(pkb);
+	Table result = pkb->getAffects(1, true);
+
+	REQUIRE(result.contains("3"));
+	REQUIRE(result.contains("5"));
+	REQUIRE(pkb->getAffects(1, 3) == true);
+	REQUIRE(pkb->getAffects(1, 5) == true);
+
+	result = pkb->getAffects(4, true);
+	REQUIRE(result.contains("5"));
+	REQUIRE(pkb->getAffects(4, 5) == true);
+
+	result = pkb->getAffects(3, false);
+	REQUIRE(result.contains("1"));
+
+	result = pkb->getAffects(5, false);
+	REQUIRE(result.contains("1"));
+	REQUIRE(result.contains("4"));
+
+	result = pkb->getAffects();
+	REQUIRE(result.contains({ "1", "5" }));
+	REQUIRE(result.contains({ "1", "3" }));
+	REQUIRE(result.contains({ "4", "5" }));
+
+}
+
+TEST_CASE("Affects x=x inside while") {
+	std::unique_ptr<PKB> pkb{ new PKB() };
+	pkb->setProc("A", 1, 5);
+	pkb->setNext(1, 2);
+	pkb->setNext(2, 3);
+	pkb->setNext(3, 4);
+	pkb->setNext(4, 2);
+	pkb->setNext(2, 5);
+	pkb->setStmtType(4, StatementType::Assign);
+	pkb->setStmtType(3, StatementType::Assign);
+	pkb->setModifies(3, "x");
+	pkb->setUses(3, "x");
+	pkb->setModifies(4, "y");
+	pkb->setUses(4, "x");
+
+
+	DesignExtractor::populateDesigns(pkb);
+	Table result = pkb->getAffects(3, true);
+
+	REQUIRE(result.contains("3"));
+	REQUIRE(pkb->getAffects(3, 3) == true);
+	REQUIRE(pkb->getAffects(3, 4) == true);
+
+	result = pkb->getAffects(4, false);
+	REQUIRE(result.contains("3"));
+
+	result = pkb->getAffects(3, false);
+	REQUIRE(result.contains("3"));
+
+	result = pkb->getAffects();
+	REQUIRE(result.contains({ "3", "3" }));
+	REQUIRE(result.contains({ "3", "4" }));
+}
+
+TEST_CASE("Affects if inside while") {
+	std::unique_ptr<PKB> pkb{ new PKB() };
+	pkb->setProc("A", 1, 7);
+	pkb->setNext(1, 2);
+	pkb->setNext(2, 3);
+	pkb->setNext(3, 4);
+	pkb->setNext(3, 5);
+	pkb->setNext(4, 6);
+	pkb->setNext(5, 6);
+	pkb->setNext(6, 2);
+	pkb->setNext(2, 7);
+	pkb->setStmtType(1, StatementType::Assign);
+	pkb->setStmtType(4, StatementType::Assign);
+	pkb->setStmtType(5, StatementType::Assign);
+	pkb->setStmtType(6, StatementType::Assign);
+	pkb->setModifies(1, "x");
+	pkb->setModifies(5, "y");
+	//pkb->setModifies(4, "y");
+	pkb->setUses(5, "y");
+	pkb->setModifies(4, "y");
+	pkb->setUses(4, "x");
+
+	DesignExtractor::populateDesigns(pkb);
+	Table result = pkb->getAffects(1, true);
+
+	REQUIRE(result.contains("4"));
+	REQUIRE(pkb->getAffects(1, 4) == true);
+
+	result = pkb->getAffects(5, true);
+	REQUIRE(result.contains("6"));
+	REQUIRE(pkb->getAffects(5, 6) == true);
+
+	result = pkb->getAffects(6, true);
+	REQUIRE(result.contains("4"));
+	REQUIRE(pkb->getAffects(6, 4) == true);
+
+
+	result = pkb->getAffects(4, false);
+	REQUIRE(result.contains("1"));
+	REQUIRE(result.contains("6"));
+
+	result = pkb->getAffects(6, false);
+	REQUIRE(result.contains("4"));
+	REQUIRE(result.contains("5"));
+
+	result = pkb->getAffects();
+	REQUIRE(result.contains({ "1", "4" }));
+	REQUIRE(result.contains({ "5", "6" }));
+	REQUIRE(result.contains({ "6", "4" }));
+}
+
+
 
