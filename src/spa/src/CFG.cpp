@@ -236,7 +236,7 @@ Table CFG::getNextT(int start, bool isForward) const {
 }
 
 bool CFG::isNextT(int start, int end) const {
-	return traverseForwardCFG(start, end).size() > 0;
+	return getNextTForward(start, end).size() > 0;
 }
 
 std::vector<int> CFG::getAffectsForward(int start, std::string v,

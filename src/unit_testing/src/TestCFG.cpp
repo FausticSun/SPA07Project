@@ -2028,12 +2028,12 @@ TEST_CASE("Affects 1") {
 
 	
 	
-	REQUIRE(result.contains("3"));
-	REQUIRE(pkb->getAffects(1, 3) == true);
+	REQUIRE(result.contains({ "3" }));
+	REQUIRE(pkb->isAffects(1, 3) == true);
 
 
 	result = pkb->getAffects(3, false);
-	REQUIRE(result.contains("1"));
+	REQUIRE(result.contains({ "1" }));
 
 	result = pkb->getAffects();
 	REQUIRE(result.contains({ "1", "3" }));
@@ -2058,21 +2058,21 @@ TEST_CASE("Affects if") {
 	DesignExtractor::populateDesigns(pkb);
 	Table result = pkb->getAffects(1, true);
 
-	REQUIRE(result.contains("3"));
-	REQUIRE(result.contains("5"));
-	REQUIRE(pkb->getAffects(1, 3) == true);
-	REQUIRE(pkb->getAffects(1, 5) == true);
+	REQUIRE(result.contains({ "3" }));
+	REQUIRE(result.contains({ "5" }));
+	REQUIRE(pkb->isAffects(1, 3) == true);
+	REQUIRE(pkb->isAffects(1, 5) == true);
 
 	result = pkb->getAffects(4, true);
-	REQUIRE(result.contains("5"));
-	REQUIRE(pkb->getAffects(4, 5) == true);
+	REQUIRE(result.contains({ "5" }));
+	REQUIRE(pkb->isAffects(4, 5) == true);
 
 	result = pkb->getAffects(3, false);
-	REQUIRE(result.contains("1"));
+	REQUIRE(result.contains({ "1" }));
 
 	result = pkb->getAffects(5, false);
-	REQUIRE(result.contains("1"));
-	REQUIRE(result.contains("4"));
+	REQUIRE(result.contains({ "1" }));
+	REQUIRE(result.contains({ "4" }));
 
 	result = pkb->getAffects();
 	REQUIRE(result.contains({ "1", "5" }));
@@ -2100,15 +2100,15 @@ TEST_CASE("Affects x=x inside while") {
 	DesignExtractor::populateDesigns(pkb);
 	Table result = pkb->getAffects(3, true);
 
-	REQUIRE(result.contains("3"));
-	REQUIRE(pkb->getAffects(3, 3) == true);
-	REQUIRE(pkb->getAffects(3, 4) == true);
+	REQUIRE(result.contains({ "3" }));
+	REQUIRE(pkb->isAffects(3, 3) == true);
+	REQUIRE(pkb->isAffects(3, 4) == true);
 
 	result = pkb->getAffects(4, false);
-	REQUIRE(result.contains("3"));
+	REQUIRE(result.contains({ "3" }));
 
 	result = pkb->getAffects(3, false);
-	REQUIRE(result.contains("3"));
+	REQUIRE(result.contains({ "3" }));
 
 	result = pkb->getAffects();
 	REQUIRE(result.contains({ "3", "3" }));
@@ -2140,25 +2140,25 @@ TEST_CASE("Affects if inside while") {
 	DesignExtractor::populateDesigns(pkb);
 	Table result = pkb->getAffects(1, true);
 
-	REQUIRE(result.contains("4"));
-	REQUIRE(pkb->getAffects(1, 4) == true);
+	REQUIRE(result.contains({ "4" }));
+	REQUIRE(pkb->isAffects(1, 4) == true);
 
 	result = pkb->getAffects(5, true);
-	REQUIRE(result.contains("6"));
-	REQUIRE(pkb->getAffects(5, 6) == true);
+	REQUIRE(result.contains({ "6" }));
+	REQUIRE(pkb->isAffects(5, 6) == true);
 
 	result = pkb->getAffects(6, true);
-	REQUIRE(result.contains("4"));
-	REQUIRE(pkb->getAffects(6, 4) == true);
+	REQUIRE(result.contains({ "4" }));
+	REQUIRE(pkb->isAffects(6, 4) == true);
 
 
 	result = pkb->getAffects(4, false);
-	REQUIRE(result.contains("1"));
-	REQUIRE(result.contains("6"));
+	REQUIRE(result.contains({ "1" }));
+	REQUIRE(result.contains({ "6" }));
 
 	result = pkb->getAffects(6, false);
-	REQUIRE(result.contains("4"));
-	REQUIRE(result.contains("5"));
+	REQUIRE(result.contains({ "4" }));
+	REQUIRE(result.contains({ "5" }));
 
 	result = pkb->getAffects();
 	REQUIRE(result.contains({ "1", "4" }));
