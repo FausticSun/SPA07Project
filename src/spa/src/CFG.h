@@ -22,7 +22,7 @@ private:
   std::vector<int> getNextTForward(int, int) const;
   std::vector<int> getNextTReverse(int) const;
   std::vector<int> getAffectsForward(int, std::string, Table, Table) const;
-  std::vector<int> getAffectsReverse(int, std::vector<std::string>) const;
+  std::vector<int> getAffectsReverse(int, std::string, Table, Table) const;
 
 public:
   CFG();

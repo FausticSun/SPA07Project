@@ -249,7 +249,7 @@ std::vector<int> CFG::getAffectsForward(int start, std::string v,
   std::vector<bool> visited(initialToCompressed.size() + 1, false);
   visited[0] = true; // no stmt line 0
 
-  // Adding all elements in start node
+  // Add lines in start node to results if modified some variable
   int startNode = initialToCompressed.at(start);
   std::vector<int> linesInNode = compressedToInitial.at(startNode);
   int index = start - linesInNode[0] + 1;
@@ -258,10 +258,10 @@ std::vector<int> CFG::getAffectsForward(int start, std::string v,
     if (usesAssignTable.contains({std::to_string(node), v})) {
       results.push_back(node);
     }
-    // v is modified in a line in the start node
-    // that is not the last line of start node
     if (modifiesTable.contains({std::to_string(node), v}) &&
         i != linesInNode.size() - 1) {
+      // v is modified in a line in the start node
+      // that is not the last line of start node
       return results;
     }
     visited[node] = true;
@@ -273,6 +273,7 @@ std::vector<int> CFG::getAffectsForward(int start, std::string v,
     int curr = q.front();
     q.pop();
 
+    // Looping through neighbor nodes
     for (int i : compressedCFG[curr]) {
       if (!visited[compressedToInitial.at(i)[0]]) {
         bool isModified = false;
@@ -282,7 +283,7 @@ std::vector<int> CFG::getAffectsForward(int start, std::string v,
           }
           if (!visited[j]) {
             visited[j] = true;
-            // Add to results if Uses(j, v) is true (j is already assign stmt)
+            // Add to results if Uses(j, v) is true
             if (usesAssignTable.contains({std::to_string(j), v})) {
               results.push_back(j);
             }
@@ -301,10 +302,65 @@ std::vector<int> CFG::getAffectsForward(int start, std::string v,
   return results;
 }
 
-std::vector<int>
-CFG::getAffectsReverse(int start, std::vector<std::string> variables) const {
-  // Using reverse CFG
-  return {};
+std::vector<int> CFG::getAffectsReverse(int start, std::string v,
+                                        Table modifiesTable,
+                                        Table modifiesAssignTable) const {
+  std::vector<std::vector<int>> compressedCFG = reverseCompressedGraph;
+  std::vector<int> results;
+
+  // Initialize visited array
+  std::vector<bool> visited(initialToCompressed.size() + 1, false);
+  visited[0] = true; // no stmt line 0
+
+  // Add lines in start node to results if modified some variable
+  int startNode = initialToCompressed.at(start);
+  std::vector<int> linesInNode = compressedToInitial.at(startNode);
+  int index = start - linesInNode[0] - 1;
+  for (int i = index; i >= 0; i--) {
+    int node = linesInNode[i];
+    if (modifiesAssignTable.contains({std::to_string(node), v})) {
+      results.push_back(node);
+      return results;
+    }
+    visited[node] = true;
+  }
+
+  std::queue<int> q;
+  q.push(startNode);
+  while (!q.empty()) {
+    int curr = q.front();
+    q.pop();
+
+    // Looping through neighbor nodes
+    for (int i : compressedCFG[curr]) {
+      if (!visited[compressedToInitial.at(i)[0]]) {
+        bool isModified = false;
+        auto lines = compressedToInitial.at(i);
+        for (int j = lines.size() - 1; j >= 0; j--) {
+          int line = lines[j];
+          if (isModified) {
+            visited[line] = true;
+          }
+          if (!visited[line]) {
+            visited[line] = true;
+            // Add to results if Modifies(line, v) and line is assignment stmt
+            if (modifiesAssignTable.contains({std::to_string(line), v})) {
+              results.push_back(line);
+            }
+            if (modifiesTable.contains({std::to_string(line), v})) {
+              isModified = true;
+              break;
+            }
+          }
+        }
+        // Enqueue only if no line in compressed node modifies v
+        if (!isModified) {
+          q.push(i);
+        }
+      }
+    }
+  }
+  return results;
 }
 
 bool CFG::isAffects(int a1, int a2, Table usesTable,
@@ -340,7 +396,13 @@ Table CFG::getAffects(int start, bool isForward, Table usesTable,
                       Table modifiesTable, std::set<int> assignStmts) const {
   Table table{1};
   std::vector<int> result;
+  std::vector<std::string> assignStmtsVec;
+  for (auto i : assignStmts) {
+    assignStmtsVec.push_back(std::to_string(i));
+  }
+
   if (isForward) {
+    // Affects(k, a) utilizes forwardCompressedGraph, k here is a constant
     modifiesTable.setHeader({"a1", "v"});
     auto modifiesATable = modifiesTable.filter("a1", {std::to_string(start)});
     // modifiesATable has one variable after filter
@@ -349,21 +411,25 @@ Table CFG::getAffects(int start, bool isForward, Table usesTable,
     for (auto data : modifiesATable.getData({"v"})) {
       v = data[0];
     }
-    std::vector<std::string> assignStmtsVec;
-    for (auto a : assignStmts) {
-      assignStmtsVec.push_back(std::to_string(a));
-    }
     usesTable.setHeader({"a2", "v"});
-    result = getAffectsForward(start, v, modifiesTable,
-                               usesTable.filter("a2", assignStmtsVec));
+    auto usesAssignTable = usesTable.filter("a2", assignStmtsVec);
+    result = getAffectsForward(start, v, modifiesTable, usesAssignTable);
   } else {
-    // auto usesATable = usesTable.filter("a", {std::to_string(start)});
-    // // usesATable has one or more variables after filter
-    // std::vector<std::string> variables;
-    // for (auto data : relationATable.getData({"v"})) {
-    //   variables.push_back(data[0]);
-    // }
-    // result = getAffectsReverse(start, variables);
+    // Affects(a, k) utilizes reverseCompressedGraph, k here is a constant
+    usesTable.setHeader({"a2", "v"});
+    auto usesATable = usesTable.filter("a2", {std::to_string(start)});
+    // usesATable has one or more variables after filter
+    std::vector<std::string> variables;
+    for (auto data : usesATable.getData({"v"})) {
+      variables.push_back(data[0]);
+    }
+    modifiesTable.setHeader({"a1", "v"});
+    auto modifiesAssignTable = modifiesTable.filter("a1", assignStmtsVec);
+    for (auto v : variables) {
+      auto temp =
+          getAffectsReverse(start, v, modifiesTable, modifiesAssignTable);
+      result.insert(result.end(), temp.begin(), temp.end());
+    }
   }
   for (int i : result) {
     table.insertRow({std::to_string(i)});
