@@ -437,4 +437,23 @@ Table CFG::getAffects(int start, bool isForward, Table usesTable,
   return table;
 }
 
-Table CFG::getAffects() const { return Table{1}; }
+Table CFG::getAffects(Table usesTable, Table modifiesTable,
+                      std::set<int> assignStmts) const {
+  Table table{2};
+  std::vector<std::string> assignStmtsVec;
+  for (auto i : assignStmts) {
+    assignStmtsVec.push_back(std::to_string(i));
+  }
+  modifiesTable.setHeader({"a1", "v"});
+  usesTable.setHeader({"a2", "v"});
+  auto modifiesAssignTable = modifiesTable.filter("a1", assignStmtsVec);
+  auto usesAssignTable = usesTable.filter("a2", assignStmtsVec);
+  for (auto data : modifiesAssignTable.getData()) {
+    auto result = getAffectsForward(std::stoi(data[0]), data[1], modifiesTable,
+                                    usesAssignTable);
+    for (int i : result) {
+      table.insertRow({data[0], std::to_string(i)});
+    }
+  }
+  return table;
+}

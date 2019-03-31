@@ -129,13 +129,13 @@ Table PKB::getCalls() const { return callsTable; }
 Table PKB::getCallsT() const { return callsTTable; }
 Table PKB::getNext() const { return nextTable; }
 
-Table PKB::getNextT() const { return cfg.getNextT(); }
-Table PKB::getNextT(int s, bool isLeftConstant) const {
-  return cfg.getNextT(s, isLeftConstant);
-}
 bool PKB::getNextT(int start, int end) const {
   return cfg.getNextT(start, end);
 }
+Table PKB::getNextT(int s, bool isLeftConstant) const {
+  return cfg.getNextT(s, isLeftConstant);
+}
+Table PKB::getNextT() const { return cfg.getNextT(); }
 
 bool PKB::isAffects(int a1, int a2) const {
   // Only query from CFG if a1 and a2 are assign statements
@@ -157,7 +157,10 @@ Table PKB::getAffects(int a1, bool isLeftConstant) const {
                           assignStmts);
   }
 }
-Table PKB::getAffects() const { return cfg.getAffects(); }
+Table PKB::getAffects() const {
+  auto assignStmts = stmtTable.at(StatementType::Assign);
+  return cfg.getAffects(usesSTable, modifiesSTable, assignStmts);
+}
 
 Table PKB::getCallProcNameTable() const { return callProcNameTable; }
 
