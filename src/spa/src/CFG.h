@@ -27,5 +27,5 @@ public:
   CFG(Table, Table, Table, int);
   Table getNextT() const;
   Table getNextT(int, bool) const;
-  bool getNextT(int, int) const;
+  bool isNextT(int, int) const;
 };

@@ -236,6 +236,6 @@ Table CFG::getNextT(int start, bool isForward) const {
   return table;
 }
 
-bool CFG::getNextT(int start, int end) const {
+bool CFG::isNextT(int start, int end) const {
 	return traverseForwardCFG(start, end).size() > 0;
 }

@@ -93,7 +93,7 @@ public:
   Table getNext() const;
   Table getNextT() const;
   Table getNextT(int, bool) const;
-  bool getNextT(int, int) const;
+  bool isNextT(int, int) const;
   // Table getAffects() const;
   // Table getAffectsT() const;
   Table getCallProcNameTable() const;
