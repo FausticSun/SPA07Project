@@ -28,9 +28,10 @@ public:
   CFG();
   CFG(Table, Table, Table, int);
   Table getNextT() const;
-  bool getNextT(int, int) const;
+  bool isNextT(int, int) const;
   Table getNextT(int, bool) const;
   Table getAffects(Table, Table, std::set<int>) const;
   bool isAffects(int, int, Table, Table) const;
   Table getAffects(int, bool, Table, Table, std::set<int>) const;
+
 };

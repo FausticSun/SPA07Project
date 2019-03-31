@@ -21,12 +21,12 @@ TEST_CASE("No nesting in one procedure") {
 	REQUIRE(result.contains({ "2", "3" }));
 	REQUIRE(result.contains({ "2", "4" }));
 	REQUIRE(result.contains({ "3", "4" }));
-	REQUIRE(pkb->getNextT(1, 2) == true);
-	REQUIRE(pkb->getNextT(1, 3) == true);
-	REQUIRE(pkb->getNextT(1, 4) == true);
-	REQUIRE(pkb->getNextT(2, 3) == true);
-	REQUIRE(pkb->getNextT(2, 4) == true);
-	REQUIRE(pkb->getNextT(3, 4) == true);
+	REQUIRE(pkb->isNextT(1, 2) == true);
+	REQUIRE(pkb->isNextT(1, 3) == true);
+	REQUIRE(pkb->isNextT(1, 4) == true);
+	REQUIRE(pkb->isNextT(2, 3) == true);
+	REQUIRE(pkb->isNextT(2, 4) == true);
+	REQUIRE(pkb->isNextT(3, 4) == true);
 
 	//reverse relations
 	result = pkb->getNextT(1, false);
@@ -74,13 +74,13 @@ TEST_CASE("One if statement in one procedure") {
 	REQUIRE(result.contains({ "1", "6" }));
 	REQUIRE(result.contains({ "1", "7" }));
 	REQUIRE(result.contains({ "1", "8" }));
-	REQUIRE(pkb->getNextT(1, 2) == true);
-	REQUIRE(pkb->getNextT(1, 3) == true);
-	REQUIRE(pkb->getNextT(1, 4) == true);
-	REQUIRE(pkb->getNextT(1, 5) == true);
-	REQUIRE(pkb->getNextT(1, 6) == true);
-	REQUIRE(pkb->getNextT(1, 7) == true);
-	REQUIRE(pkb->getNextT(1, 8) == true);
+	REQUIRE(pkb->isNextT(1, 2) == true);
+	REQUIRE(pkb->isNextT(1, 3) == true);
+	REQUIRE(pkb->isNextT(1, 4) == true);
+	REQUIRE(pkb->isNextT(1, 5) == true);
+	REQUIRE(pkb->isNextT(1, 6) == true);
+	REQUIRE(pkb->isNextT(1, 7) == true);
+	REQUIRE(pkb->isNextT(1, 8) == true);
 
 	REQUIRE(result.contains({ "2", "3" }));
 	REQUIRE(result.contains({ "2", "4" }));
@@ -88,42 +88,42 @@ TEST_CASE("One if statement in one procedure") {
 	REQUIRE(result.contains({ "2", "6" }));
 	REQUIRE(result.contains({ "2", "7" }));
 	REQUIRE(result.contains({ "2", "8" }));
-	REQUIRE(pkb->getNextT(2, 3) == true);
-	REQUIRE(pkb->getNextT(2, 4) == true);
-	REQUIRE(pkb->getNextT(2, 5) == true);
-	REQUIRE(pkb->getNextT(2, 6) == true);
-	REQUIRE(pkb->getNextT(2, 7) == true);
-	REQUIRE(pkb->getNextT(2, 8) == true);
+	REQUIRE(pkb->isNextT(2, 3) == true);
+	REQUIRE(pkb->isNextT(2, 4) == true);
+	REQUIRE(pkb->isNextT(2, 5) == true);
+	REQUIRE(pkb->isNextT(2, 6) == true);
+	REQUIRE(pkb->isNextT(2, 7) == true);
+	REQUIRE(pkb->isNextT(2, 8) == true);
 
 
 	REQUIRE(result.contains({ "3", "4" }));
 	REQUIRE(result.contains({ "3", "7" }));
 	REQUIRE(result.contains({ "3", "8" }));
-	REQUIRE(pkb->getNextT(3, 4) == true);
-	REQUIRE(pkb->getNextT(3, 7) == true);
-	REQUIRE(pkb->getNextT(3, 8) == true);
+	REQUIRE(pkb->isNextT(3, 4) == true);
+	REQUIRE(pkb->isNextT(3, 7) == true);
+	REQUIRE(pkb->isNextT(3, 8) == true);
 
 	REQUIRE(result.contains({ "4", "7" }));
 	REQUIRE(result.contains({ "4", "8" }));
-	REQUIRE(pkb->getNextT(4, 7) == true);
-	REQUIRE(pkb->getNextT(4, 8) == true);
+	REQUIRE(pkb->isNextT(4, 7) == true);
+	REQUIRE(pkb->isNextT(4, 8) == true);
 
 
 	REQUIRE(result.contains({ "5", "6" }));
 	REQUIRE(result.contains({ "5", "7" }));
 	REQUIRE(result.contains({ "5", "8" }));
-	REQUIRE(pkb->getNextT(5, 6) == true);
-	REQUIRE(pkb->getNextT(5, 7) == true);
-	REQUIRE(pkb->getNextT(5, 8) == true);
+	REQUIRE(pkb->isNextT(5, 6) == true);
+	REQUIRE(pkb->isNextT(5, 7) == true);
+	REQUIRE(pkb->isNextT(5, 8) == true);
 
 
 	REQUIRE(result.contains({ "6", "7" }));
 	REQUIRE(result.contains({ "6", "8" }));
-	REQUIRE(pkb->getNextT(6, 7) == true);
-	REQUIRE(pkb->getNextT(6, 8) == true);
+	REQUIRE(pkb->isNextT(6, 7) == true);
+	REQUIRE(pkb->isNextT(6, 8) == true);
 
 	REQUIRE(result.contains({ "7", "8" }));
-	REQUIRE(pkb->getNextT(7, 8) == true);
+	REQUIRE(pkb->isNextT(7, 8) == true);
 
 	//reverse relations
 	result = pkb->getNextT(1, false);
@@ -199,47 +199,47 @@ TEST_CASE("One while loop in one procedure") {
 	REQUIRE(result.contains({ "1", "4" }));
 	REQUIRE(result.contains({ "1", "5" }));
 	REQUIRE(result.contains({ "1", "6" }));
-	REQUIRE(pkb->getNextT(1, 2) == true);
-	REQUIRE(pkb->getNextT(1, 3) == true);
-	REQUIRE(pkb->getNextT(1, 4) == true);
-	REQUIRE(pkb->getNextT(1, 5) == true);
-	REQUIRE(pkb->getNextT(1, 6) == true);
+	REQUIRE(pkb->isNextT(1, 2) == true);
+	REQUIRE(pkb->isNextT(1, 3) == true);
+	REQUIRE(pkb->isNextT(1, 4) == true);
+	REQUIRE(pkb->isNextT(1, 5) == true);
+	REQUIRE(pkb->isNextT(1, 6) == true);
 
 	REQUIRE(result.contains({ "2", "2" }));
 	REQUIRE(result.contains({ "2", "3" }));
 	REQUIRE(result.contains({ "2", "4" }));
 	REQUIRE(result.contains({ "2", "5" }));
 	REQUIRE(result.contains({ "2", "6" }));
-	REQUIRE(pkb->getNextT(2, 2) == true);
-	REQUIRE(pkb->getNextT(2, 3) == true);
-	REQUIRE(pkb->getNextT(2, 4) == true);
-	REQUIRE(pkb->getNextT(2, 5) == true);
-	REQUIRE(pkb->getNextT(2, 6) == true);
+	REQUIRE(pkb->isNextT(2, 2) == true);
+	REQUIRE(pkb->isNextT(2, 3) == true);
+	REQUIRE(pkb->isNextT(2, 4) == true);
+	REQUIRE(pkb->isNextT(2, 5) == true);
+	REQUIRE(pkb->isNextT(2, 6) == true);
 
 	REQUIRE(result.contains({ "3", "2" }));
 	REQUIRE(result.contains({ "3", "3" }));
 	REQUIRE(result.contains({ "3", "4" }));
 	REQUIRE(result.contains({ "3", "5" }));
 	REQUIRE(result.contains({ "3", "6" }));
-	REQUIRE(pkb->getNextT(3, 2) == true);
-	REQUIRE(pkb->getNextT(3, 3) == true);
-	REQUIRE(pkb->getNextT(3, 4) == true);
-	REQUIRE(pkb->getNextT(3, 5) == true);
-	REQUIRE(pkb->getNextT(3, 6) == true);
+	REQUIRE(pkb->isNextT(3, 2) == true);
+	REQUIRE(pkb->isNextT(3, 3) == true);
+	REQUIRE(pkb->isNextT(3, 4) == true);
+	REQUIRE(pkb->isNextT(3, 5) == true);
+	REQUIRE(pkb->isNextT(3, 6) == true);
 
 	REQUIRE(result.contains({ "4", "2" }));
 	REQUIRE(result.contains({ "4", "3" }));
 	REQUIRE(result.contains({ "4", "4" }));
 	REQUIRE(result.contains({ "4", "5" }));
 	REQUIRE(result.contains({ "4", "6" }));
-	REQUIRE(pkb->getNextT(4, 2) == true);
-	REQUIRE(pkb->getNextT(4, 3) == true);
-	REQUIRE(pkb->getNextT(4, 4) == true);
-	REQUIRE(pkb->getNextT(4, 5) == true);
-	REQUIRE(pkb->getNextT(4, 6) == true);
+	REQUIRE(pkb->isNextT(4, 2) == true);
+	REQUIRE(pkb->isNextT(4, 3) == true);
+	REQUIRE(pkb->isNextT(4, 4) == true);
+	REQUIRE(pkb->isNextT(4, 5) == true);
+	REQUIRE(pkb->isNextT(4, 6) == true);
 
 	REQUIRE(result.contains({ "5", "6" }));
-	REQUIRE(pkb->getNextT(5, 6) == true);
+	REQUIRE(pkb->isNextT(5, 6) == true);
 
 	//reverse reltions
 	result = pkb->getNextT(1, false);
@@ -316,16 +316,16 @@ TEST_CASE("One if and one while loop unnested in one procedure") {
 	REQUIRE(result.contains({ "1", "8" }));
 	REQUIRE(result.contains({ "1", "9" }));
 	REQUIRE(result.contains({ "1", "10" }));
-	REQUIRE(pkb->getNextT(1, 1) == true);
-	REQUIRE(pkb->getNextT(1, 2) == true);
-	REQUIRE(pkb->getNextT(1, 3) == true);
-	REQUIRE(pkb->getNextT(1, 4) == true);
-	REQUIRE(pkb->getNextT(1, 5) == true);
-	REQUIRE(pkb->getNextT(1, 6) == true);
-	REQUIRE(pkb->getNextT(1, 7) == true);
-	REQUIRE(pkb->getNextT(1, 8) == true);
-	REQUIRE(pkb->getNextT(1, 9) == true);
-	REQUIRE(pkb->getNextT(1, 10) == true);
+	REQUIRE(pkb->isNextT(1, 1) == true);
+	REQUIRE(pkb->isNextT(1, 2) == true);
+	REQUIRE(pkb->isNextT(1, 3) == true);
+	REQUIRE(pkb->isNextT(1, 4) == true);
+	REQUIRE(pkb->isNextT(1, 5) == true);
+	REQUIRE(pkb->isNextT(1, 6) == true);
+	REQUIRE(pkb->isNextT(1, 7) == true);
+	REQUIRE(pkb->isNextT(1, 8) == true);
+	REQUIRE(pkb->isNextT(1, 9) == true);
+	REQUIRE(pkb->isNextT(1, 10) == true);
 
 	REQUIRE(result.contains({ "2", "1" }));
 	REQUIRE(result.contains({ "2", "2" }));
@@ -337,16 +337,16 @@ TEST_CASE("One if and one while loop unnested in one procedure") {
 	REQUIRE(result.contains({ "2", "8" }));
 	REQUIRE(result.contains({ "2", "9" }));
 	REQUIRE(result.contains({ "2", "10" }));
-	REQUIRE(pkb->getNextT(2, 1) == true);
-	REQUIRE(pkb->getNextT(2, 2) == true);
-	REQUIRE(pkb->getNextT(2, 3) == true);
-	REQUIRE(pkb->getNextT(2, 4) == true);
-	REQUIRE(pkb->getNextT(2, 5) == true);
-	REQUIRE(pkb->getNextT(2, 6) == true);
-	REQUIRE(pkb->getNextT(2, 7) == true);
-	REQUIRE(pkb->getNextT(2, 8) == true);
-	REQUIRE(pkb->getNextT(2, 9) == true);
-	REQUIRE(pkb->getNextT(2, 10) == true);
+	REQUIRE(pkb->isNextT(2, 1) == true);
+	REQUIRE(pkb->isNextT(2, 2) == true);
+	REQUIRE(pkb->isNextT(2, 3) == true);
+	REQUIRE(pkb->isNextT(2, 4) == true);
+	REQUIRE(pkb->isNextT(2, 5) == true);
+	REQUIRE(pkb->isNextT(2, 6) == true);
+	REQUIRE(pkb->isNextT(2, 7) == true);
+	REQUIRE(pkb->isNextT(2, 8) == true);
+	REQUIRE(pkb->isNextT(2, 9) == true);
+	REQUIRE(pkb->isNextT(2, 10) == true);
 
 	REQUIRE(result.contains({ "3", "1" }));
 	REQUIRE(result.contains({ "3", "2" }));
@@ -358,16 +358,16 @@ TEST_CASE("One if and one while loop unnested in one procedure") {
 	REQUIRE(result.contains({ "3", "8" }));
 	REQUIRE(result.contains({ "3", "9" }));
 	REQUIRE(result.contains({ "3", "10" }));
-	REQUIRE(pkb->getNextT(3, 1) == true);
-	REQUIRE(pkb->getNextT(3, 2) == true);
-	REQUIRE(pkb->getNextT(3, 3) == true);
-	REQUIRE(pkb->getNextT(3, 4) == true);
-	REQUIRE(pkb->getNextT(3, 5) == true);
-	REQUIRE(pkb->getNextT(3, 6) == true);
-	REQUIRE(pkb->getNextT(3, 7) == true);
-	REQUIRE(pkb->getNextT(3, 8) == true);
-	REQUIRE(pkb->getNextT(3, 9) == true);
-	REQUIRE(pkb->getNextT(3, 10) == true);
+	REQUIRE(pkb->isNextT(3, 1) == true);
+	REQUIRE(pkb->isNextT(3, 2) == true);
+	REQUIRE(pkb->isNextT(3, 3) == true);
+	REQUIRE(pkb->isNextT(3, 4) == true);
+	REQUIRE(pkb->isNextT(3, 5) == true);
+	REQUIRE(pkb->isNextT(3, 6) == true);
+	REQUIRE(pkb->isNextT(3, 7) == true);
+	REQUIRE(pkb->isNextT(3, 8) == true);
+	REQUIRE(pkb->isNextT(3, 9) == true);
+	REQUIRE(pkb->isNextT(3, 10) == true);
 
 	REQUIRE(result.contains({ "4", "5" }));
 	REQUIRE(result.contains({ "4", "6" }));
@@ -375,39 +375,39 @@ TEST_CASE("One if and one while loop unnested in one procedure") {
 	REQUIRE(result.contains({ "4", "8" }));
 	REQUIRE(result.contains({ "4", "9" }));
 	REQUIRE(result.contains({ "4", "10" }));
-	REQUIRE(pkb->getNextT(4, 5) == true);
-	REQUIRE(pkb->getNextT(4, 6) == true);
-	REQUIRE(pkb->getNextT(4, 7) == true);
-	REQUIRE(pkb->getNextT(4, 8) == true);
-	REQUIRE(pkb->getNextT(4, 9) == true);
-	REQUIRE(pkb->getNextT(4, 10) == true);
+	REQUIRE(pkb->isNextT(4, 5) == true);
+	REQUIRE(pkb->isNextT(4, 6) == true);
+	REQUIRE(pkb->isNextT(4, 7) == true);
+	REQUIRE(pkb->isNextT(4, 8) == true);
+	REQUIRE(pkb->isNextT(4, 9) == true);
+	REQUIRE(pkb->isNextT(4, 10) == true);
 
 	REQUIRE(result.contains({ "5", "6" }));
 	REQUIRE(result.contains({ "5", "9" }));
 	REQUIRE(result.contains({ "5", "10" }));
-	REQUIRE(pkb->getNextT(5, 6) == true);
-	REQUIRE(pkb->getNextT(5, 9) == true);
-	REQUIRE(pkb->getNextT(5, 10) == true);
+	REQUIRE(pkb->isNextT(5, 6) == true);
+	REQUIRE(pkb->isNextT(5, 9) == true);
+	REQUIRE(pkb->isNextT(5, 10) == true);
 
 	REQUIRE(result.contains({ "6", "9" }));
 	REQUIRE(result.contains({ "6", "10" }));
-	REQUIRE(pkb->getNextT(6, 9) == true);
-	REQUIRE(pkb->getNextT(6, 10) == true);
+	REQUIRE(pkb->isNextT(6, 9) == true);
+	REQUIRE(pkb->isNextT(6, 10) == true);
 
 	REQUIRE(result.contains({ "7", "8" }));
 	REQUIRE(result.contains({ "7", "9" }));
 	REQUIRE(result.contains({ "7", "10" }));
-	REQUIRE(pkb->getNextT(7, 8) == true);
-	REQUIRE(pkb->getNextT(7, 9) == true);
-	REQUIRE(pkb->getNextT(7, 10) == true);
+	REQUIRE(pkb->isNextT(7, 8) == true);
+	REQUIRE(pkb->isNextT(7, 9) == true);
+	REQUIRE(pkb->isNextT(7, 10) == true);
 
 	REQUIRE(result.contains({ "8", "9" }));
 	REQUIRE(result.contains({ "8", "10" }));
-	REQUIRE(pkb->getNextT(8, 9) == true);
-	REQUIRE(pkb->getNextT(8, 10) == true);
+	REQUIRE(pkb->isNextT(8, 9) == true);
+	REQUIRE(pkb->isNextT(8, 10) == true);
 
 	REQUIRE(result.contains({ "9", "10" }));
-	REQUIRE(pkb->getNextT(9, 10) == true);
+	REQUIRE(pkb->isNextT(9, 10) == true);
 
 	//reverse relations
 	result = pkb->getNextT(1, false);
@@ -529,19 +529,19 @@ TEST_CASE("Two if statements nested in one procedure") {
 	REQUIRE(result.contains({ "1", "12" }));
 	REQUIRE(result.contains({ "1", "13" }));
 	REQUIRE(result.contains({ "1", "14" }));
-	REQUIRE(pkb->getNextT(1, 2) == true);
-	REQUIRE(pkb->getNextT(1, 3) == true);
-	REQUIRE(pkb->getNextT(1, 4) == true);
-	REQUIRE(pkb->getNextT(1, 5) == true);
-	REQUIRE(pkb->getNextT(1, 6) == true);
-	REQUIRE(pkb->getNextT(1, 7) == true);
-	REQUIRE(pkb->getNextT(1, 8) == true);
-	REQUIRE(pkb->getNextT(1, 9) == true);
-	REQUIRE(pkb->getNextT(1, 10) == true);
-	REQUIRE(pkb->getNextT(1, 11) == true);
-	REQUIRE(pkb->getNextT(1, 12)== true);
-	REQUIRE(pkb->getNextT(1, 13) == true);
-	REQUIRE(pkb->getNextT(1, 14) == true);
+	REQUIRE(pkb->isNextT(1, 2) == true);
+	REQUIRE(pkb->isNextT(1, 3) == true);
+	REQUIRE(pkb->isNextT(1, 4) == true);
+	REQUIRE(pkb->isNextT(1, 5) == true);
+	REQUIRE(pkb->isNextT(1, 6) == true);
+	REQUIRE(pkb->isNextT(1, 7) == true);
+	REQUIRE(pkb->isNextT(1, 8) == true);
+	REQUIRE(pkb->isNextT(1, 9) == true);
+	REQUIRE(pkb->isNextT(1, 10) == true);
+	REQUIRE(pkb->isNextT(1, 11) == true);
+	REQUIRE(pkb->isNextT(1, 12)== true);
+	REQUIRE(pkb->isNextT(1, 13) == true);
+	REQUIRE(pkb->isNextT(1, 14) == true);
 
 	REQUIRE(result.contains({ "2", "3" }));
 	REQUIRE(result.contains({ "2", "4" }));
@@ -555,18 +555,18 @@ TEST_CASE("Two if statements nested in one procedure") {
 	REQUIRE(result.contains({ "2", "12" }));
 	REQUIRE(result.contains({ "2", "13" }));
 	REQUIRE(result.contains({ "2", "14" }));
-	REQUIRE(pkb->getNextT(2, 3) == true);
-	REQUIRE(pkb->getNextT(2, 4) == true);
-	REQUIRE(pkb->getNextT(2, 5) == true);
-	REQUIRE(pkb->getNextT(2, 6) == true);
-	REQUIRE(pkb->getNextT(2, 7) == true);
-	REQUIRE(pkb->getNextT(2, 8) == true);
-	REQUIRE(pkb->getNextT(2, 9) == true);
-	REQUIRE(pkb->getNextT(2, 10) == true);
-	REQUIRE(pkb->getNextT(2, 11) == true);
-	REQUIRE(pkb->getNextT(2, 12) == true);
-	REQUIRE(pkb->getNextT(2, 13) == true);
-	REQUIRE(pkb->getNextT(2, 14) == true);
+	REQUIRE(pkb->isNextT(2, 3) == true);
+	REQUIRE(pkb->isNextT(2, 4) == true);
+	REQUIRE(pkb->isNextT(2, 5) == true);
+	REQUIRE(pkb->isNextT(2, 6) == true);
+	REQUIRE(pkb->isNextT(2, 7) == true);
+	REQUIRE(pkb->isNextT(2, 8) == true);
+	REQUIRE(pkb->isNextT(2, 9) == true);
+	REQUIRE(pkb->isNextT(2, 10) == true);
+	REQUIRE(pkb->isNextT(2, 11) == true);
+	REQUIRE(pkb->isNextT(2, 12) == true);
+	REQUIRE(pkb->isNextT(2, 13) == true);
+	REQUIRE(pkb->isNextT(2, 14) == true);
 
 	REQUIRE(result.contains({ "3", "4" }));
 	REQUIRE(result.contains({ "3", "5" }));
@@ -579,17 +579,17 @@ TEST_CASE("Two if statements nested in one procedure") {
 	REQUIRE(result.contains({ "3", "12" }));
 	REQUIRE(result.contains({ "3", "13" }));
 	REQUIRE(result.contains({ "3", "14" }));
-	REQUIRE(pkb->getNextT(3, 4) == true);
-	REQUIRE(pkb->getNextT(3, 5) == true);
-	REQUIRE(pkb->getNextT(3, 6) == true);
-	REQUIRE(pkb->getNextT(3, 7) == true);
-	REQUIRE(pkb->getNextT(3, 8) == true);
-	REQUIRE(pkb->getNextT(3, 9) == true);
-	REQUIRE(pkb->getNextT(3, 10) == true);
-	REQUIRE(pkb->getNextT(3, 11) == true);
-	REQUIRE(pkb->getNextT(3, 12) == true);
-	REQUIRE(pkb->getNextT(3, 13) == true);
-	REQUIRE(pkb->getNextT(3, 14) == true);
+	REQUIRE(pkb->isNextT(3, 4) == true);
+	REQUIRE(pkb->isNextT(3, 5) == true);
+	REQUIRE(pkb->isNextT(3, 6) == true);
+	REQUIRE(pkb->isNextT(3, 7) == true);
+	REQUIRE(pkb->isNextT(3, 8) == true);
+	REQUIRE(pkb->isNextT(3, 9) == true);
+	REQUIRE(pkb->isNextT(3, 10) == true);
+	REQUIRE(pkb->isNextT(3, 11) == true);
+	REQUIRE(pkb->isNextT(3, 12) == true);
+	REQUIRE(pkb->isNextT(3, 13) == true);
+	REQUIRE(pkb->isNextT(3, 14) == true);
 
 	REQUIRE(result.contains({ "4", "8" }));
 	REQUIRE(result.contains({ "4", "9" }));
@@ -598,80 +598,80 @@ TEST_CASE("Two if statements nested in one procedure") {
 	REQUIRE(result.contains({ "4", "12" }));
 	REQUIRE(result.contains({ "4", "13" }));
 	REQUIRE(result.contains({ "4", "14" }));
-	REQUIRE(pkb->getNextT(4, 8) == true);
-	REQUIRE(pkb->getNextT(4, 9) == true);
-	REQUIRE(pkb->getNextT(4, 10) == true);
-	REQUIRE(pkb->getNextT(4, 11) == true);
-	REQUIRE(pkb->getNextT(4, 12) == true);
-	REQUIRE(pkb->getNextT(4, 13) == true);
-	REQUIRE(pkb->getNextT(4, 14) == true);
+	REQUIRE(pkb->isNextT(4, 8) == true);
+	REQUIRE(pkb->isNextT(4, 9) == true);
+	REQUIRE(pkb->isNextT(4, 10) == true);
+	REQUIRE(pkb->isNextT(4, 11) == true);
+	REQUIRE(pkb->isNextT(4, 12) == true);
+	REQUIRE(pkb->isNextT(4, 13) == true);
+	REQUIRE(pkb->isNextT(4, 14) == true);
 
 	REQUIRE(result.contains({ "5", "6" }));
 	REQUIRE(result.contains({ "5", "7" }));
 	REQUIRE(result.contains({ "5", "12" }));
 	REQUIRE(result.contains({ "5", "13" }));
 	REQUIRE(result.contains({ "5", "14" }));
-	REQUIRE(pkb->getNextT(5, 6) == true);
-	REQUIRE(pkb->getNextT(5, 7) == true);
-	REQUIRE(pkb->getNextT(5, 12) == true);
-	REQUIRE(pkb->getNextT(5, 13) == true);
-	REQUIRE(pkb->getNextT(5, 14) == true);
+	REQUIRE(pkb->isNextT(5, 6) == true);
+	REQUIRE(pkb->isNextT(5, 7) == true);
+	REQUIRE(pkb->isNextT(5, 12) == true);
+	REQUIRE(pkb->isNextT(5, 13) == true);
+	REQUIRE(pkb->isNextT(5, 14) == true);
 
 	REQUIRE(result.contains({ "6", "7" }));
 	REQUIRE(result.contains({ "6", "12" }));
 	REQUIRE(result.contains({ "6", "13" }));
 	REQUIRE(result.contains({ "6", "14" }));
-	REQUIRE(pkb->getNextT(6, 7) == true);
-	REQUIRE(pkb->getNextT(6, 12) == true);
-	REQUIRE(pkb->getNextT(6, 13) == true);
-	REQUIRE(pkb->getNextT(6, 14) == true);
+	REQUIRE(pkb->isNextT(6, 7) == true);
+	REQUIRE(pkb->isNextT(6, 12) == true);
+	REQUIRE(pkb->isNextT(6, 13) == true);
+	REQUIRE(pkb->isNextT(6, 14) == true);
 
 	REQUIRE(result.contains({ "7", "12" }));
 	REQUIRE(result.contains({ "7", "13" }));
 	REQUIRE(result.contains({ "7", "14" }));
-	REQUIRE(pkb->getNextT(7, 12) == true);
-	REQUIRE(pkb->getNextT(7, 13) == true);
-	REQUIRE(pkb->getNextT(7, 14) == true);
+	REQUIRE(pkb->isNextT(7, 12) == true);
+	REQUIRE(pkb->isNextT(7, 13) == true);
+	REQUIRE(pkb->isNextT(7, 14) == true);
 
 	REQUIRE(result.contains({ "8", "9" }));
 	REQUIRE(result.contains({ "8", "12" }));
 	REQUIRE(result.contains({ "8", "13" }));
 	REQUIRE(result.contains({ "8", "14" }));
-	REQUIRE(pkb->getNextT(8, 9) == true);
-	REQUIRE(pkb->getNextT(8, 12) == true);
-	REQUIRE(pkb->getNextT(8, 13) == true);
-	REQUIRE(pkb->getNextT(8, 14) == true);
+	REQUIRE(pkb->isNextT(8, 9) == true);
+	REQUIRE(pkb->isNextT(8, 12) == true);
+	REQUIRE(pkb->isNextT(8, 13) == true);
+	REQUIRE(pkb->isNextT(8, 14) == true);
 
 	REQUIRE(result.contains({ "9", "12" }));
 	REQUIRE(result.contains({ "9", "13" }));
 	REQUIRE(result.contains({ "9", "14" }));
-	REQUIRE(pkb->getNextT(9, 12) == true);
-	REQUIRE(pkb->getNextT(9, 13) == true);
-	REQUIRE(pkb->getNextT(9, 14) == true);
+	REQUIRE(pkb->isNextT(9, 12) == true);
+	REQUIRE(pkb->isNextT(9, 13) == true);
+	REQUIRE(pkb->isNextT(9, 14) == true);
 
 	REQUIRE(result.contains({ "10", "11" }));
 	REQUIRE(result.contains({ "10", "12" }));
 	REQUIRE(result.contains({ "10", "13" }));
 	REQUIRE(result.contains({ "10", "14" }));
-	REQUIRE(pkb->getNextT(10, 11) == true);
-	REQUIRE(pkb->getNextT(10, 12) == true);
-	REQUIRE(pkb->getNextT(10, 13) == true);
-	REQUIRE(pkb->getNextT(10, 14) == true);
+	REQUIRE(pkb->isNextT(10, 11) == true);
+	REQUIRE(pkb->isNextT(10, 12) == true);
+	REQUIRE(pkb->isNextT(10, 13) == true);
+	REQUIRE(pkb->isNextT(10, 14) == true);
 
 	REQUIRE(result.contains({ "11", "12" }));
 	REQUIRE(result.contains({ "11", "13" }));
 	REQUIRE(result.contains({ "11", "14" }));
-	REQUIRE(pkb->getNextT(11, 12) == true);
-	REQUIRE(pkb->getNextT(11, 13) == true);
-	REQUIRE(pkb->getNextT(11, 14) == true);
+	REQUIRE(pkb->isNextT(11, 12) == true);
+	REQUIRE(pkb->isNextT(11, 13) == true);
+	REQUIRE(pkb->isNextT(11, 14) == true);
 
 	REQUIRE(result.contains({ "12", "13" }));
 	REQUIRE(result.contains({ "12", "14" }));
-	REQUIRE(pkb->getNextT(12, 13) == true);
-	REQUIRE(pkb->getNextT(12, 14) == true);
+	REQUIRE(pkb->isNextT(12, 13) == true);
+	REQUIRE(pkb->isNextT(12, 14) == true);
 
 	REQUIRE(result.contains({ "13", "14" }));
-	REQUIRE(pkb->getNextT(13, 14) == true);
+	REQUIRE(pkb->isNextT(13, 14) == true);
 
 	//reverse relations
 	result = pkb->getNextT(1, false);
@@ -813,36 +813,36 @@ TEST_CASE("Two while loops nested in one procedure") {
 	REQUIRE(result.contains({ "1", "3" }));
 	REQUIRE(result.contains({ "1", "4" }));
 	REQUIRE(result.contains({ "1", "5" }));
-	REQUIRE(pkb->getNextT(1, 1) == true);
-	REQUIRE(pkb->getNextT(1, 2) == true);
-	REQUIRE(pkb->getNextT(1, 3) == true);
-	REQUIRE(pkb->getNextT(1, 4) == true);
-	REQUIRE(pkb->getNextT(1, 5) == true);
+	REQUIRE(pkb->isNextT(1, 1) == true);
+	REQUIRE(pkb->isNextT(1, 2) == true);
+	REQUIRE(pkb->isNextT(1, 3) == true);
+	REQUIRE(pkb->isNextT(1, 4) == true);
+	REQUIRE(pkb->isNextT(1, 5) == true);
 
 	REQUIRE(result.contains({ "2", "1" }));
 	REQUIRE(result.contains({ "2", "2" }));
 	REQUIRE(result.contains({ "2", "3" }));
 	REQUIRE(result.contains({ "2", "4" }));
 	REQUIRE(result.contains({ "2", "5" }));
-	REQUIRE(pkb->getNextT(2, 1) == true);
-	REQUIRE(pkb->getNextT(2, 2) == true);
-	REQUIRE(pkb->getNextT(2, 3) == true);
-	REQUIRE(pkb->getNextT(2, 4) == true);
-	REQUIRE(pkb->getNextT(2, 5) == true);
+	REQUIRE(pkb->isNextT(2, 1) == true);
+	REQUIRE(pkb->isNextT(2, 2) == true);
+	REQUIRE(pkb->isNextT(2, 3) == true);
+	REQUIRE(pkb->isNextT(2, 4) == true);
+	REQUIRE(pkb->isNextT(2, 5) == true);
 
 	REQUIRE(result.contains({ "3", "1" }));
 	REQUIRE(result.contains({ "3", "2" }));
 	REQUIRE(result.contains({ "3", "3" }));
 	REQUIRE(result.contains({ "3", "4" }));
 	REQUIRE(result.contains({ "3", "5" }));
-	REQUIRE(pkb->getNextT(3, 1) == true);
-	REQUIRE(pkb->getNextT(3, 2) == true);
-	REQUIRE(pkb->getNextT(3, 3) == true);
-	REQUIRE(pkb->getNextT(3, 4) == true);
-	REQUIRE(pkb->getNextT(3, 5) == true);
+	REQUIRE(pkb->isNextT(3, 1) == true);
+	REQUIRE(pkb->isNextT(3, 2) == true);
+	REQUIRE(pkb->isNextT(3, 3) == true);
+	REQUIRE(pkb->isNextT(3, 4) == true);
+	REQUIRE(pkb->isNextT(3, 5) == true);
 
 	REQUIRE(result.contains({ "4", "5" }));
-	REQUIRE(pkb->getNextT(4, 5) == true);
+	REQUIRE(pkb->isNextT(4, 5) == true);
 
 	//reverse relations
 	result = pkb->getNextT(1, false);
@@ -901,37 +901,37 @@ TEST_CASE("One while loop nested in one if statement in one procedure") {
 	REQUIRE(result.contains({ "1", "4" }));
 	REQUIRE(result.contains({ "1", "5" }));
 	REQUIRE(result.contains({ "1", "6" }));
-	REQUIRE(pkb->getNextT(1, 2) == true);
-	REQUIRE(pkb->getNextT(1, 3) == true);
-	REQUIRE(pkb->getNextT(1, 4) == true);
-	REQUIRE(pkb->getNextT(1, 5) == true);
-	REQUIRE(pkb->getNextT(1, 6) == true);
+	REQUIRE(pkb->isNextT(1, 2) == true);
+	REQUIRE(pkb->isNextT(1, 3) == true);
+	REQUIRE(pkb->isNextT(1, 4) == true);
+	REQUIRE(pkb->isNextT(1, 5) == true);
+	REQUIRE(pkb->isNextT(1, 6) == true);
 
 	REQUIRE(result.contains({ "2", "5" }));
 	REQUIRE(result.contains({ "2", "6" }));
-	REQUIRE(pkb->getNextT(2, 5) == true);
-	REQUIRE(pkb->getNextT(2, 6) == true);
+	REQUIRE(pkb->isNextT(2, 5) == true);
+	REQUIRE(pkb->isNextT(2, 6) == true);
 
 	REQUIRE(result.contains({ "3", "3" }));
 	REQUIRE(result.contains({ "3", "4" }));
 	REQUIRE(result.contains({ "3", "5" }));
 	REQUIRE(result.contains({ "3", "6" }));
-	REQUIRE(pkb->getNextT(3, 3) == true);
-	REQUIRE(pkb->getNextT(3, 4) == true);
-	REQUIRE(pkb->getNextT(3, 5) == true);
-	REQUIRE(pkb->getNextT(3, 6) == true);
+	REQUIRE(pkb->isNextT(3, 3) == true);
+	REQUIRE(pkb->isNextT(3, 4) == true);
+	REQUIRE(pkb->isNextT(3, 5) == true);
+	REQUIRE(pkb->isNextT(3, 6) == true);
 
 	REQUIRE(result.contains({ "4", "3" }));
 	REQUIRE(result.contains({ "4", "4" }));
 	REQUIRE(result.contains({ "4", "5" }));
 	REQUIRE(result.contains({ "4", "6" }));
-	REQUIRE(pkb->getNextT(4, 3) == true);
-	REQUIRE(pkb->getNextT(4, 4) == true);
-	REQUIRE(pkb->getNextT(4, 5) == true);
-	REQUIRE(pkb->getNextT(4, 6) == true);
+	REQUIRE(pkb->isNextT(4, 3) == true);
+	REQUIRE(pkb->isNextT(4, 4) == true);
+	REQUIRE(pkb->isNextT(4, 5) == true);
+	REQUIRE(pkb->isNextT(4, 6) == true);
 
 	REQUIRE(result.contains({ "5", "6" }));
-	REQUIRE(pkb->getNextT(5, 6) == true);
+	REQUIRE(pkb->isNextT(5, 6) == true);
 
 	//reverse relations
 	result = pkb->getNextT(1, false);
@@ -1001,15 +1001,15 @@ TEST_CASE("One if statement nested in one while loop in one procedure") {
 	REQUIRE(result.contains({ "1", "8" }));
 	REQUIRE(result.contains({ "1", "9" }));
 	REQUIRE(result.contains({ "1", "10" }));
-	REQUIRE(pkb->getNextT(1, 2)== true);
-	REQUIRE(pkb->getNextT(1, 3) == true);
-	REQUIRE(pkb->getNextT(1, 4) == true);
-	REQUIRE(pkb->getNextT(1, 5) == true);
-	REQUIRE(pkb->getNextT(1, 6) == true);
-	REQUIRE(pkb->getNextT(1, 7) == true);
-	REQUIRE(pkb->getNextT(1, 8) == true);
-	REQUIRE(pkb->getNextT(1, 9) == true);
-	REQUIRE(pkb->getNextT(1, 10) == true);
+	REQUIRE(pkb->isNextT(1, 2)== true);
+	REQUIRE(pkb->isNextT(1, 3) == true);
+	REQUIRE(pkb->isNextT(1, 4) == true);
+	REQUIRE(pkb->isNextT(1, 5) == true);
+	REQUIRE(pkb->isNextT(1, 6) == true);
+	REQUIRE(pkb->isNextT(1, 7) == true);
+	REQUIRE(pkb->isNextT(1, 8) == true);
+	REQUIRE(pkb->isNextT(1, 9) == true);
+	REQUIRE(pkb->isNextT(1, 10) == true);
 
 	REQUIRE(result.contains({ "2", "3" }));
 	REQUIRE(result.contains({ "2", "4" }));
@@ -1019,14 +1019,14 @@ TEST_CASE("One if statement nested in one while loop in one procedure") {
 	REQUIRE(result.contains({ "2", "8" }));
 	REQUIRE(result.contains({ "2", "9" }));
 	REQUIRE(result.contains({ "2", "10" }));
-	REQUIRE(pkb->getNextT(2, 3) == true);
-	REQUIRE(pkb->getNextT(2, 4) == true);
-	REQUIRE(pkb->getNextT(2, 5) == true);
-	REQUIRE(pkb->getNextT(2, 6) == true);
-	REQUIRE(pkb->getNextT(2, 7) == true);
-	REQUIRE(pkb->getNextT(2, 8) == true);
-	REQUIRE(pkb->getNextT(2, 9) == true);
-	REQUIRE(pkb->getNextT(2, 10) == true);
+	REQUIRE(pkb->isNextT(2, 3) == true);
+	REQUIRE(pkb->isNextT(2, 4) == true);
+	REQUIRE(pkb->isNextT(2, 5) == true);
+	REQUIRE(pkb->isNextT(2, 6) == true);
+	REQUIRE(pkb->isNextT(2, 7) == true);
+	REQUIRE(pkb->isNextT(2, 8) == true);
+	REQUIRE(pkb->isNextT(2, 9) == true);
+	REQUIRE(pkb->isNextT(2, 10) == true);
 
 	REQUIRE(result.contains({ "3", "3" }));
 	REQUIRE(result.contains({ "3", "4" }));
@@ -1036,14 +1036,14 @@ TEST_CASE("One if statement nested in one while loop in one procedure") {
 	REQUIRE(result.contains({ "3", "8" }));
 	REQUIRE(result.contains({ "3", "9" }));
 	REQUIRE(result.contains({ "3", "10" }));
-	REQUIRE(pkb->getNextT(3, 3) == true);
-	REQUIRE(pkb->getNextT(3, 4) == true);
-	REQUIRE(pkb->getNextT(3, 5) == true);
-	REQUIRE(pkb->getNextT(3, 6) == true);
-	REQUIRE(pkb->getNextT(3, 7) == true);
-	REQUIRE(pkb->getNextT(3, 8) == true);
-	REQUIRE(pkb->getNextT(3, 9) == true);
-	REQUIRE(pkb->getNextT(3, 10) == true);
+	REQUIRE(pkb->isNextT(3, 3) == true);
+	REQUIRE(pkb->isNextT(3, 4) == true);
+	REQUIRE(pkb->isNextT(3, 5) == true);
+	REQUIRE(pkb->isNextT(3, 6) == true);
+	REQUIRE(pkb->isNextT(3, 7) == true);
+	REQUIRE(pkb->isNextT(3, 8) == true);
+	REQUIRE(pkb->isNextT(3, 9) == true);
+	REQUIRE(pkb->isNextT(3, 10) == true);
 
 	REQUIRE(result.contains({ "4", "3" }));
 	REQUIRE(result.contains({ "4", "4" }));
@@ -1053,14 +1053,14 @@ TEST_CASE("One if statement nested in one while loop in one procedure") {
 	REQUIRE(result.contains({ "4", "8" }));
 	REQUIRE(result.contains({ "4", "9" }));
 	REQUIRE(result.contains({ "4", "10" }));
-	REQUIRE(pkb->getNextT(4, 3) == true);
-	REQUIRE(pkb->getNextT(4, 4) == true);
-	REQUIRE(pkb->getNextT(4, 5) == true);
-	REQUIRE(pkb->getNextT(4, 6) == true);
-	REQUIRE(pkb->getNextT(4, 7) == true);
-	REQUIRE(pkb->getNextT(4, 8) == true);
-	REQUIRE(pkb->getNextT(4, 9) == true);
-	REQUIRE(pkb->getNextT(4, 10) == true);
+	REQUIRE(pkb->isNextT(4, 3) == true);
+	REQUIRE(pkb->isNextT(4, 4) == true);
+	REQUIRE(pkb->isNextT(4, 5) == true);
+	REQUIRE(pkb->isNextT(4, 6) == true);
+	REQUIRE(pkb->isNextT(4, 7) == true);
+	REQUIRE(pkb->isNextT(4, 8) == true);
+	REQUIRE(pkb->isNextT(4, 9) == true);
+	REQUIRE(pkb->isNextT(4, 10) == true);
 
 	REQUIRE(result.contains({ "5", "3" }));
 	REQUIRE(result.contains({ "5", "4" }));
@@ -1070,14 +1070,14 @@ TEST_CASE("One if statement nested in one while loop in one procedure") {
 	REQUIRE(result.contains({ "5", "8" }));
 	REQUIRE(result.contains({ "5", "9" }));
 	REQUIRE(result.contains({ "5", "10" }));
-	REQUIRE(pkb->getNextT(5, 3) == true);
-	REQUIRE(pkb->getNextT(5, 4) == true);
-	REQUIRE(pkb->getNextT(5, 5) == true);
-	REQUIRE(pkb->getNextT(5, 6) == true);
-	REQUIRE(pkb->getNextT(5, 7) == true);
-	REQUIRE(pkb->getNextT(5, 8) == true);
-	REQUIRE(pkb->getNextT(5, 9) == true);
-	REQUIRE(pkb->getNextT(5, 10) == true);
+	REQUIRE(pkb->isNextT(5, 3) == true);
+	REQUIRE(pkb->isNextT(5, 4) == true);
+	REQUIRE(pkb->isNextT(5, 5) == true);
+	REQUIRE(pkb->isNextT(5, 6) == true);
+	REQUIRE(pkb->isNextT(5, 7) == true);
+	REQUIRE(pkb->isNextT(5, 8) == true);
+	REQUIRE(pkb->isNextT(5, 9) == true);
+	REQUIRE(pkb->isNextT(5, 10) == true);
 
 	REQUIRE(result.contains({ "6", "3" }));
 	REQUIRE(result.contains({ "6", "4" }));
@@ -1087,14 +1087,14 @@ TEST_CASE("One if statement nested in one while loop in one procedure") {
 	REQUIRE(result.contains({ "6", "8" }));
 	REQUIRE(result.contains({ "6", "9" }));
 	REQUIRE(result.contains({ "6", "10" }));
-	REQUIRE(pkb->getNextT(6, 3) == true);
-	REQUIRE(pkb->getNextT(6, 4) == true);
-	REQUIRE(pkb->getNextT(6, 5) == true);
-	REQUIRE(pkb->getNextT(6, 6) == true);
-	REQUIRE(pkb->getNextT(6, 7) == true);
-	REQUIRE(pkb->getNextT(6, 8) == true);
-	REQUIRE(pkb->getNextT(6, 9) == true);
-	REQUIRE(pkb->getNextT(6, 10) == true);
+	REQUIRE(pkb->isNextT(6, 3) == true);
+	REQUIRE(pkb->isNextT(6, 4) == true);
+	REQUIRE(pkb->isNextT(6, 5) == true);
+	REQUIRE(pkb->isNextT(6, 6) == true);
+	REQUIRE(pkb->isNextT(6, 7) == true);
+	REQUIRE(pkb->isNextT(6, 8) == true);
+	REQUIRE(pkb->isNextT(6, 9) == true);
+	REQUIRE(pkb->isNextT(6, 10) == true);
 
 	REQUIRE(result.contains({ "7", "3" }));
 	REQUIRE(result.contains({ "7", "4" }));
@@ -1104,14 +1104,14 @@ TEST_CASE("One if statement nested in one while loop in one procedure") {
 	REQUIRE(result.contains({ "7", "8" }));
 	REQUIRE(result.contains({ "7", "9" }));
 	REQUIRE(result.contains({ "7", "10" }));
-	REQUIRE(pkb->getNextT(7, 3) == true);
-	REQUIRE(pkb->getNextT(7, 4) == true);
-	REQUIRE(pkb->getNextT(7, 5) == true);
-	REQUIRE(pkb->getNextT(7, 6) == true);
-	REQUIRE(pkb->getNextT(7, 7) == true);
-	REQUIRE(pkb->getNextT(7, 8) == true);
-	REQUIRE(pkb->getNextT(7, 9) == true);
-	REQUIRE(pkb->getNextT(7, 10) == true);
+	REQUIRE(pkb->isNextT(7, 3) == true);
+	REQUIRE(pkb->isNextT(7, 4) == true);
+	REQUIRE(pkb->isNextT(7, 5) == true);
+	REQUIRE(pkb->isNextT(7, 6) == true);
+	REQUIRE(pkb->isNextT(7, 7) == true);
+	REQUIRE(pkb->isNextT(7, 8) == true);
+	REQUIRE(pkb->isNextT(7, 9) == true);
+	REQUIRE(pkb->isNextT(7, 10) == true);
 
 	REQUIRE(result.contains({ "8", "3" }));
 	REQUIRE(result.contains({ "8", "4" }));
@@ -1121,17 +1121,17 @@ TEST_CASE("One if statement nested in one while loop in one procedure") {
 	REQUIRE(result.contains({ "8", "8" }));
 	REQUIRE(result.contains({ "8", "9" }));
 	REQUIRE(result.contains({ "8", "10" }));
-	REQUIRE(pkb->getNextT(8, 3) == true);
-	REQUIRE(pkb->getNextT(8, 4) == true);
-	REQUIRE(pkb->getNextT(8, 5) == true);
-	REQUIRE(pkb->getNextT(8, 6) == true);
-	REQUIRE(pkb->getNextT(8, 7) == true);
-	REQUIRE(pkb->getNextT(8, 8) == true);
-	REQUIRE(pkb->getNextT(8, 9) == true);
-	REQUIRE(pkb->getNextT(8, 10) == true);
+	REQUIRE(pkb->isNextT(8, 3) == true);
+	REQUIRE(pkb->isNextT(8, 4) == true);
+	REQUIRE(pkb->isNextT(8, 5) == true);
+	REQUIRE(pkb->isNextT(8, 6) == true);
+	REQUIRE(pkb->isNextT(8, 7) == true);
+	REQUIRE(pkb->isNextT(8, 8) == true);
+	REQUIRE(pkb->isNextT(8, 9) == true);
+	REQUIRE(pkb->isNextT(8, 10) == true);
 
 	REQUIRE(result.contains({ "9", "10" }));
-	REQUIRE(pkb->getNextT(9, 10) == true);
+	REQUIRE(pkb->isNextT(9, 10) == true);
 
 	//reverse relations
 	result = pkb->getNextT(1, false);
@@ -1250,30 +1250,30 @@ TEST_CASE("No nesting in program with two procedures") {
 	//procedure A
 	REQUIRE(result.contains({ "1", "2" }));
 	REQUIRE(result.contains({ "1", "3" }));
-	REQUIRE(pkb->getNextT(1, 2) == true);
-	REQUIRE(pkb->getNextT(1, 3) == true);
+	REQUIRE(pkb->isNextT(1, 2) == true);
+	REQUIRE(pkb->isNextT(1, 3) == true);
 
 	REQUIRE(result.contains({ "2", "3" }));
-	REQUIRE(pkb->getNextT(2, 3) == true);
+	REQUIRE(pkb->isNextT(2, 3) == true);
 
 	//check no nextT between procedures
-	REQUIRE(pkb->getNextT(3, 4) == false);
+	REQUIRE(pkb->isNextT(3, 4) == false);
 
 	//procedure B
 	REQUIRE(result.contains({ "4", "5" }));
 	REQUIRE(result.contains({ "4", "6" }));
 	REQUIRE(result.contains({ "4", "7" }));
-	REQUIRE(pkb->getNextT(4, 5) == true);
-	REQUIRE(pkb->getNextT(4, 6) == true);
-	REQUIRE(pkb->getNextT(4, 7) == true);
+	REQUIRE(pkb->isNextT(4, 5) == true);
+	REQUIRE(pkb->isNextT(4, 6) == true);
+	REQUIRE(pkb->isNextT(4, 7) == true);
 
 	REQUIRE(result.contains({ "5", "6" }));
 	REQUIRE(result.contains({ "5", "7" }));
-	REQUIRE(pkb->getNextT(5, 6) == true);
-	REQUIRE(pkb->getNextT(5, 7) == true);
+	REQUIRE(pkb->isNextT(5, 6) == true);
+	REQUIRE(pkb->isNextT(5, 7) == true);
 
 	REQUIRE(result.contains({ "6", "7" }));
-	REQUIRE(pkb->getNextT(6, 7) == true);
+	REQUIRE(pkb->isNextT(6, 7) == true);
 
 	//reverse relations
 	result = pkb->getNextT(1, false);
@@ -1358,14 +1358,14 @@ TEST_CASE("One complex nesting in one procedure in program with two procedures")
 	//procedure A
 	REQUIRE(result.contains({ "1", "2" }));
 	REQUIRE(result.contains({ "1", "3" }));
-	REQUIRE(pkb->getNextT(1, 2) == true);
-	REQUIRE(pkb->getNextT(1, 3) == true);
+	REQUIRE(pkb->isNextT(1, 2) == true);
+	REQUIRE(pkb->isNextT(1, 3) == true);
 
 	REQUIRE(result.contains({ "2", "3" }));
-	REQUIRE(pkb->getNextT(2, 3) == true);
+	REQUIRE(pkb->isNextT(2, 3) == true);
 
 	//check that NextT does not cross procedures
-	REQUIRE(pkb->getNextT(3, 4) == false);
+	REQUIRE(pkb->isNextT(3, 4) == false);
 
 	//procedure B
 	REQUIRE(result.contains({ "4", "5" }));
@@ -1386,24 +1386,24 @@ TEST_CASE("One complex nesting in one procedure in program with two procedures")
 	REQUIRE(result.contains({ "4", "20" }));
 	REQUIRE(result.contains({ "4", "21" }));
 	REQUIRE(result.contains({ "4", "22" }));
-	REQUIRE(pkb->getNextT(4, 5) == true);
-	REQUIRE(pkb->getNextT(4, 6) == true);
-	REQUIRE(pkb->getNextT(4, 7) == true);
-	REQUIRE(pkb->getNextT(4, 8) == true);
-	REQUIRE(pkb->getNextT(4, 9) == true);
-	REQUIRE(pkb->getNextT(4, 10) == true);
-	REQUIRE(pkb->getNextT(4, 11) == true);
-	REQUIRE(pkb->getNextT(4, 12) == true);
-	REQUIRE(pkb->getNextT(4, 13) == true);
-	REQUIRE(pkb->getNextT(4, 14) == true);
-	REQUIRE(pkb->getNextT(4, 15) == true);
-	REQUIRE(pkb->getNextT(4, 16) == true);
-	REQUIRE(pkb->getNextT(4, 17) == true);
-	REQUIRE(pkb->getNextT(4, 18) == true);
-	REQUIRE(pkb->getNextT(4, 19) == true);
-	REQUIRE(pkb->getNextT(4, 20) == true);
-	REQUIRE(pkb->getNextT(4, 21) == true);
-	REQUIRE(pkb->getNextT(4, 22) == true);
+	REQUIRE(pkb->isNextT(4, 5) == true);
+	REQUIRE(pkb->isNextT(4, 6) == true);
+	REQUIRE(pkb->isNextT(4, 7) == true);
+	REQUIRE(pkb->isNextT(4, 8) == true);
+	REQUIRE(pkb->isNextT(4, 9) == true);
+	REQUIRE(pkb->isNextT(4, 10) == true);
+	REQUIRE(pkb->isNextT(4, 11) == true);
+	REQUIRE(pkb->isNextT(4, 12) == true);
+	REQUIRE(pkb->isNextT(4, 13) == true);
+	REQUIRE(pkb->isNextT(4, 14) == true);
+	REQUIRE(pkb->isNextT(4, 15) == true);
+	REQUIRE(pkb->isNextT(4, 16) == true);
+	REQUIRE(pkb->isNextT(4, 17) == true);
+	REQUIRE(pkb->isNextT(4, 18) == true);
+	REQUIRE(pkb->isNextT(4, 19) == true);
+	REQUIRE(pkb->isNextT(4, 20) == true);
+	REQUIRE(pkb->isNextT(4, 21) == true);
+	REQUIRE(pkb->isNextT(4, 22) == true);
 
 	REQUIRE(result.contains({ "5", "6" }));
 	REQUIRE(result.contains({ "5", "7" }));
@@ -1422,23 +1422,23 @@ TEST_CASE("One complex nesting in one procedure in program with two procedures")
 	REQUIRE(result.contains({ "5", "20" }));
 	REQUIRE(result.contains({ "5", "21" }));
 	REQUIRE(result.contains({ "5", "22" }));
-	REQUIRE(pkb->getNextT(5, 6) == true);
-	REQUIRE(pkb->getNextT(5, 7) == true);
-	REQUIRE(pkb->getNextT(5, 8) == true);
-	REQUIRE(pkb->getNextT(5, 9) == true);
-	REQUIRE(pkb->getNextT(5, 10) == true);
-	REQUIRE(pkb->getNextT(5, 11) == true);
-	REQUIRE(pkb->getNextT(5, 12) == true);
-	REQUIRE(pkb->getNextT(5, 13) == true);
-	REQUIRE(pkb->getNextT(5, 14) == true);
-	REQUIRE(pkb->getNextT(5, 15) == true);
-	REQUIRE(pkb->getNextT(5, 16) == true);
-	REQUIRE(pkb->getNextT(5, 17) == true);
-	REQUIRE(pkb->getNextT(5, 18) == true);
-	REQUIRE(pkb->getNextT(5, 19) == true);
-	REQUIRE(pkb->getNextT(5, 20) == true);
-	REQUIRE(pkb->getNextT(5, 21) == true);
-	REQUIRE(pkb->getNextT(5, 22) == true);
+	REQUIRE(pkb->isNextT(5, 6) == true);
+	REQUIRE(pkb->isNextT(5, 7) == true);
+	REQUIRE(pkb->isNextT(5, 8) == true);
+	REQUIRE(pkb->isNextT(5, 9) == true);
+	REQUIRE(pkb->isNextT(5, 10) == true);
+	REQUIRE(pkb->isNextT(5, 11) == true);
+	REQUIRE(pkb->isNextT(5, 12) == true);
+	REQUIRE(pkb->isNextT(5, 13) == true);
+	REQUIRE(pkb->isNextT(5, 14) == true);
+	REQUIRE(pkb->isNextT(5, 15) == true);
+	REQUIRE(pkb->isNextT(5, 16) == true);
+	REQUIRE(pkb->isNextT(5, 17) == true);
+	REQUIRE(pkb->isNextT(5, 18) == true);
+	REQUIRE(pkb->isNextT(5, 19) == true);
+	REQUIRE(pkb->isNextT(5, 20) == true);
+	REQUIRE(pkb->isNextT(5, 21) == true);
+	REQUIRE(pkb->isNextT(5, 22) == true);
 
 	REQUIRE(result.contains({ "6", "8" }));
 	REQUIRE(result.contains({ "6", "9" }));
@@ -1455,21 +1455,21 @@ TEST_CASE("One complex nesting in one procedure in program with two procedures")
 	REQUIRE(result.contains({ "6", "20" }));
 	REQUIRE(result.contains({ "6", "21" }));
 	REQUIRE(result.contains({ "6", "22" }));
-	REQUIRE(pkb->getNextT(6, 8) == true);
-	REQUIRE(pkb->getNextT(6, 9) == true);
-	REQUIRE(pkb->getNextT(6, 10) == true);
-	REQUIRE(pkb->getNextT(6, 11) == true);
-	REQUIRE(pkb->getNextT(6, 12) == true);
-	REQUIRE(pkb->getNextT(6, 13) == true);
-	REQUIRE(pkb->getNextT(6, 14) == true);
-	REQUIRE(pkb->getNextT(6, 15) == true);
-	REQUIRE(pkb->getNextT(6, 16) == true);
-	REQUIRE(pkb->getNextT(6, 17) == true);
-	REQUIRE(pkb->getNextT(6, 18) == true);
-	REQUIRE(pkb->getNextT(6, 19) == true);
-	REQUIRE(pkb->getNextT(6, 10) == true);
-	REQUIRE(pkb->getNextT(6, 21) == true);
-	REQUIRE(pkb->getNextT(6, 22) == true);
+	REQUIRE(pkb->isNextT(6, 8) == true);
+	REQUIRE(pkb->isNextT(6, 9) == true);
+	REQUIRE(pkb->isNextT(6, 10) == true);
+	REQUIRE(pkb->isNextT(6, 11) == true);
+	REQUIRE(pkb->isNextT(6, 12) == true);
+	REQUIRE(pkb->isNextT(6, 13) == true);
+	REQUIRE(pkb->isNextT(6, 14) == true);
+	REQUIRE(pkb->isNextT(6, 15) == true);
+	REQUIRE(pkb->isNextT(6, 16) == true);
+	REQUIRE(pkb->isNextT(6, 17) == true);
+	REQUIRE(pkb->isNextT(6, 18) == true);
+	REQUIRE(pkb->isNextT(6, 19) == true);
+	REQUIRE(pkb->isNextT(6, 10) == true);
+	REQUIRE(pkb->isNextT(6, 21) == true);
+	REQUIRE(pkb->isNextT(6, 22) == true);
 
 	REQUIRE(result.contains({ "7", "8" }));
 	REQUIRE(result.contains({ "7", "9" }));
@@ -1486,21 +1486,21 @@ TEST_CASE("One complex nesting in one procedure in program with two procedures")
 	REQUIRE(result.contains({ "7", "20" }));
 	REQUIRE(result.contains({ "7", "21" }));
 	REQUIRE(result.contains({ "7", "22" }));
-	REQUIRE(pkb->getNextT(7, 8) == true);
-	REQUIRE(pkb->getNextT(7, 9) == true);
-	REQUIRE(pkb->getNextT(7, 10) == true);
-	REQUIRE(pkb->getNextT(7, 11) == true);
-	REQUIRE(pkb->getNextT(7, 12) == true);
-	REQUIRE(pkb->getNextT(7, 13) == true);
-	REQUIRE(pkb->getNextT(7, 14) == true);
-	REQUIRE(pkb->getNextT(7, 15) == true);
-	REQUIRE(pkb->getNextT(7, 16) == true);
-	REQUIRE(pkb->getNextT(7, 17) == true);
-	REQUIRE(pkb->getNextT(7, 18) == true);
-	REQUIRE(pkb->getNextT(7, 19) == true);
-	REQUIRE(pkb->getNextT(7, 20) == true);
-	REQUIRE(pkb->getNextT(7, 21) == true);
-	REQUIRE(pkb->getNextT(7, 22) == true);
+	REQUIRE(pkb->isNextT(7, 8) == true);
+	REQUIRE(pkb->isNextT(7, 9) == true);
+	REQUIRE(pkb->isNextT(7, 10) == true);
+	REQUIRE(pkb->isNextT(7, 11) == true);
+	REQUIRE(pkb->isNextT(7, 12) == true);
+	REQUIRE(pkb->isNextT(7, 13) == true);
+	REQUIRE(pkb->isNextT(7, 14) == true);
+	REQUIRE(pkb->isNextT(7, 15) == true);
+	REQUIRE(pkb->isNextT(7, 16) == true);
+	REQUIRE(pkb->isNextT(7, 17) == true);
+	REQUIRE(pkb->isNextT(7, 18) == true);
+	REQUIRE(pkb->isNextT(7, 19) == true);
+	REQUIRE(pkb->isNextT(7, 20) == true);
+	REQUIRE(pkb->isNextT(7, 21) == true);
+	REQUIRE(pkb->isNextT(7, 22) == true);
 
 	REQUIRE(result.contains({ "8", "8" }));
 	REQUIRE(result.contains({ "8", "9" }));
@@ -1517,21 +1517,21 @@ TEST_CASE("One complex nesting in one procedure in program with two procedures")
 	REQUIRE(result.contains({ "8", "20" }));
 	REQUIRE(result.contains({ "8", "21" }));
 	REQUIRE(result.contains({ "8", "22" }));
-	REQUIRE(pkb->getNextT(8, 8) == true);
-	REQUIRE(pkb->getNextT(8, 9) == true);
-	REQUIRE(pkb->getNextT(8, 10) == true);
-	REQUIRE(pkb->getNextT(8, 11) == true);
-	REQUIRE(pkb->getNextT(8, 12) == true);
-	REQUIRE(pkb->getNextT(8, 13) == true);
-	REQUIRE(pkb->getNextT(8, 14) == true);
-	REQUIRE(pkb->getNextT(8, 15) == true);
-	REQUIRE(pkb->getNextT(8, 16) == true);
-	REQUIRE(pkb->getNextT(8, 17) == true);
-	REQUIRE(pkb->getNextT(8, 18) == true);
-	REQUIRE(pkb->getNextT(8, 19) == true);
-	REQUIRE(pkb->getNextT(8, 20) == true);
-	REQUIRE(pkb->getNextT(8, 21) == true);
-	REQUIRE(pkb->getNextT(8, 22) == true);
+	REQUIRE(pkb->isNextT(8, 8) == true);
+	REQUIRE(pkb->isNextT(8, 9) == true);
+	REQUIRE(pkb->isNextT(8, 10) == true);
+	REQUIRE(pkb->isNextT(8, 11) == true);
+	REQUIRE(pkb->isNextT(8, 12) == true);
+	REQUIRE(pkb->isNextT(8, 13) == true);
+	REQUIRE(pkb->isNextT(8, 14) == true);
+	REQUIRE(pkb->isNextT(8, 15) == true);
+	REQUIRE(pkb->isNextT(8, 16) == true);
+	REQUIRE(pkb->isNextT(8, 17) == true);
+	REQUIRE(pkb->isNextT(8, 18) == true);
+	REQUIRE(pkb->isNextT(8, 19) == true);
+	REQUIRE(pkb->isNextT(8, 20) == true);
+	REQUIRE(pkb->isNextT(8, 21) == true);
+	REQUIRE(pkb->isNextT(8, 22) == true);
 
 	REQUIRE(result.contains({ "9", "8" }));
 	REQUIRE(result.contains({ "9", "9" }));
@@ -1548,21 +1548,21 @@ TEST_CASE("One complex nesting in one procedure in program with two procedures")
 	REQUIRE(result.contains({ "9", "20" }));
 	REQUIRE(result.contains({ "9", "21" }));
 	REQUIRE(result.contains({ "9", "22" }));
-	REQUIRE(pkb->getNextT(9, 8) == true);
-	REQUIRE(pkb->getNextT(9, 9) == true);
-	REQUIRE(pkb->getNextT(9, 10) == true);
-	REQUIRE(pkb->getNextT(9, 11) == true);
-	REQUIRE(pkb->getNextT(9, 12) == true);
-	REQUIRE(pkb->getNextT(9, 13) == true);
-	REQUIRE(pkb->getNextT(9, 14) == true);
-	REQUIRE(pkb->getNextT(9, 15) == true);
-	REQUIRE(pkb->getNextT(9, 16) == true);
-	REQUIRE(pkb->getNextT(9, 17) == true);
-	REQUIRE(pkb->getNextT(9, 18) == true);
-	REQUIRE(pkb->getNextT(9, 19) == true);
-	REQUIRE(pkb->getNextT(9, 20) == true);
-	REQUIRE(pkb->getNextT(9, 21) == true);
-	REQUIRE(pkb->getNextT(9, 22) == true);
+	REQUIRE(pkb->isNextT(9, 8) == true);
+	REQUIRE(pkb->isNextT(9, 9) == true);
+	REQUIRE(pkb->isNextT(9, 10) == true);
+	REQUIRE(pkb->isNextT(9, 11) == true);
+	REQUIRE(pkb->isNextT(9, 12) == true);
+	REQUIRE(pkb->isNextT(9, 13) == true);
+	REQUIRE(pkb->isNextT(9, 14) == true);
+	REQUIRE(pkb->isNextT(9, 15) == true);
+	REQUIRE(pkb->isNextT(9, 16) == true);
+	REQUIRE(pkb->isNextT(9, 17) == true);
+	REQUIRE(pkb->isNextT(9, 18) == true);
+	REQUIRE(pkb->isNextT(9, 19) == true);
+	REQUIRE(pkb->isNextT(9, 20) == true);
+	REQUIRE(pkb->isNextT(9, 21) == true);
+	REQUIRE(pkb->isNextT(9, 22) == true);
 
 	REQUIRE(result.contains({ "10", "11" }));
 	REQUIRE(result.contains({ "10", "12" }));
@@ -1576,18 +1576,18 @@ TEST_CASE("One complex nesting in one procedure in program with two procedures")
 	REQUIRE(result.contains({ "10", "20" }));
 	REQUIRE(result.contains({ "10", "21" }));
 	REQUIRE(result.contains({ "10", "22" }));
-	REQUIRE(pkb->getNextT(10, 11) == true);
-	REQUIRE(pkb->getNextT(10, 12) == true);
-	REQUIRE(pkb->getNextT(10, 13) == true);
-	REQUIRE(pkb->getNextT(10, 14) == true);
-	REQUIRE(pkb->getNextT(10, 15) == true);
-	REQUIRE(pkb->getNextT(10, 16) == true);
-	REQUIRE(pkb->getNextT(10, 17) == true);
-	REQUIRE(pkb->getNextT(10, 18) == true);
-	REQUIRE(pkb->getNextT(10, 19) == true);
-	REQUIRE(pkb->getNextT(10, 20) == true);
-	REQUIRE(pkb->getNextT(10, 21) == true);
-	REQUIRE(pkb->getNextT(10, 22) == true);
+	REQUIRE(pkb->isNextT(10, 11) == true);
+	REQUIRE(pkb->isNextT(10, 12) == true);
+	REQUIRE(pkb->isNextT(10, 13) == true);
+	REQUIRE(pkb->isNextT(10, 14) == true);
+	REQUIRE(pkb->isNextT(10, 15) == true);
+	REQUIRE(pkb->isNextT(10, 16) == true);
+	REQUIRE(pkb->isNextT(10, 17) == true);
+	REQUIRE(pkb->isNextT(10, 18) == true);
+	REQUIRE(pkb->isNextT(10, 19) == true);
+	REQUIRE(pkb->isNextT(10, 20) == true);
+	REQUIRE(pkb->isNextT(10, 21) == true);
+	REQUIRE(pkb->isNextT(10, 22) == true);
 
 	REQUIRE(result.contains({ "11", "11" }));
 	REQUIRE(result.contains({ "11", "12" }));
@@ -1600,17 +1600,17 @@ TEST_CASE("One complex nesting in one procedure in program with two procedures")
 	REQUIRE(result.contains({ "11", "20" }));
 	REQUIRE(result.contains({ "11", "21" }));
 	REQUIRE(result.contains({ "11", "22" }));
-	REQUIRE(pkb->getNextT(11, 11) == true);
-	REQUIRE(pkb->getNextT(11, 12) == true);
-	REQUIRE(pkb->getNextT(11, 14) == true);
-	REQUIRE(pkb->getNextT(11, 15) == true);
-	REQUIRE(pkb->getNextT(11, 16) == true);
-	REQUIRE(pkb->getNextT(11, 17) == true);
-	REQUIRE(pkb->getNextT(11, 18) == true);
-	REQUIRE(pkb->getNextT(11, 19) == true);
-	REQUIRE(pkb->getNextT(11, 20) == true);
-	REQUIRE(pkb->getNextT(11, 21) == true);
-	REQUIRE(pkb->getNextT(11, 22) == true);
+	REQUIRE(pkb->isNextT(11, 11) == true);
+	REQUIRE(pkb->isNextT(11, 12) == true);
+	REQUIRE(pkb->isNextT(11, 14) == true);
+	REQUIRE(pkb->isNextT(11, 15) == true);
+	REQUIRE(pkb->isNextT(11, 16) == true);
+	REQUIRE(pkb->isNextT(11, 17) == true);
+	REQUIRE(pkb->isNextT(11, 18) == true);
+	REQUIRE(pkb->isNextT(11, 19) == true);
+	REQUIRE(pkb->isNextT(11, 20) == true);
+	REQUIRE(pkb->isNextT(11, 21) == true);
+	REQUIRE(pkb->isNextT(11, 22) == true);
 
 	REQUIRE(result.contains({ "12", "11" }));
 	REQUIRE(result.contains({ "12", "12" }));
@@ -1623,17 +1623,17 @@ TEST_CASE("One complex nesting in one procedure in program with two procedures")
 	REQUIRE(result.contains({ "12", "20" }));
 	REQUIRE(result.contains({ "12", "21" }));
 	REQUIRE(result.contains({ "12", "22" }));
-	REQUIRE(pkb->getNextT(12, 11) == true);
-	REQUIRE(pkb->getNextT(12, 12) == true);
-	REQUIRE(pkb->getNextT(12, 14) == true);
-	REQUIRE(pkb->getNextT(12, 15) == true);
-	REQUIRE(pkb->getNextT(12, 16) == true);
-	REQUIRE(pkb->getNextT(12, 17) == true);
-	REQUIRE(pkb->getNextT(12, 18) == true);
-	REQUIRE(pkb->getNextT(12, 19) == true);
-	REQUIRE(pkb->getNextT(12, 20) == true);
-	REQUIRE(pkb->getNextT(12, 21) == true);
-	REQUIRE(pkb->getNextT(12, 22) == true);
+	REQUIRE(pkb->isNextT(12, 11) == true);
+	REQUIRE(pkb->isNextT(12, 12) == true);
+	REQUIRE(pkb->isNextT(12, 14) == true);
+	REQUIRE(pkb->isNextT(12, 15) == true);
+	REQUIRE(pkb->isNextT(12, 16) == true);
+	REQUIRE(pkb->isNextT(12, 17) == true);
+	REQUIRE(pkb->isNextT(12, 18) == true);
+	REQUIRE(pkb->isNextT(12, 19) == true);
+	REQUIRE(pkb->isNextT(12, 20) == true);
+	REQUIRE(pkb->isNextT(12, 21) == true);
+	REQUIRE(pkb->isNextT(12, 22) == true);
 
 	REQUIRE(result.contains({ "13", "14" }));
 	REQUIRE(result.contains({ "13", "15" }));
@@ -1644,15 +1644,15 @@ TEST_CASE("One complex nesting in one procedure in program with two procedures")
 	REQUIRE(result.contains({ "13", "20" }));
 	REQUIRE(result.contains({ "13", "21" }));
 	REQUIRE(result.contains({ "13", "22" }));
-	REQUIRE(pkb->getNextT(13, 14) == true);
-	REQUIRE(pkb->getNextT(13, 15) == true);
-	REQUIRE(pkb->getNextT(13, 16) == true);
-	REQUIRE(pkb->getNextT(13, 17) == true);
-	REQUIRE(pkb->getNextT(13, 18) == true);
-	REQUIRE(pkb->getNextT(13, 19) == true);
-	REQUIRE(pkb->getNextT(13, 20) == true);
-	REQUIRE(pkb->getNextT(13, 21) == true);
-	REQUIRE(pkb->getNextT(13, 22) == true);
+	REQUIRE(pkb->isNextT(13, 14) == true);
+	REQUIRE(pkb->isNextT(13, 15) == true);
+	REQUIRE(pkb->isNextT(13, 16) == true);
+	REQUIRE(pkb->isNextT(13, 17) == true);
+	REQUIRE(pkb->isNextT(13, 18) == true);
+	REQUIRE(pkb->isNextT(13, 19) == true);
+	REQUIRE(pkb->isNextT(13, 20) == true);
+	REQUIRE(pkb->isNextT(13, 21) == true);
+	REQUIRE(pkb->isNextT(13, 22) == true);
 
 	REQUIRE(result.contains({ "14", "15" }));
 	REQUIRE(result.contains({ "14", "16" }));
@@ -1662,25 +1662,25 @@ TEST_CASE("One complex nesting in one procedure in program with two procedures")
 	REQUIRE(result.contains({ "14", "20" }));
 	REQUIRE(result.contains({ "14", "21" }));
 	REQUIRE(result.contains({ "14", "22" }));
-	REQUIRE(pkb->getNextT(14, 15) == true);
-	REQUIRE(pkb->getNextT(14, 16) == true);
-	REQUIRE(pkb->getNextT(14, 17) == true);
-	REQUIRE(pkb->getNextT(14, 18) == true);
-	REQUIRE(pkb->getNextT(14, 19) == true);
-	REQUIRE(pkb->getNextT(14, 20) == true);
-	REQUIRE(pkb->getNextT(14, 21) == true);
-	REQUIRE(pkb->getNextT(14, 22) == true);
+	REQUIRE(pkb->isNextT(14, 15) == true);
+	REQUIRE(pkb->isNextT(14, 16) == true);
+	REQUIRE(pkb->isNextT(14, 17) == true);
+	REQUIRE(pkb->isNextT(14, 18) == true);
+	REQUIRE(pkb->isNextT(14, 19) == true);
+	REQUIRE(pkb->isNextT(14, 20) == true);
+	REQUIRE(pkb->isNextT(14, 21) == true);
+	REQUIRE(pkb->isNextT(14, 22) == true);
 
 	REQUIRE(result.contains({ "15", "18" }));
 	REQUIRE(result.contains({ "15", "19" }));
 	REQUIRE(result.contains({ "15", "20" }));
 	REQUIRE(result.contains({ "15", "21" }));
 	REQUIRE(result.contains({ "15", "22" }));
-	REQUIRE(pkb->getNextT(15, 18) == true);
-	REQUIRE(pkb->getNextT(15, 19) == true);
-	REQUIRE(pkb->getNextT(15, 20) == true);
-	REQUIRE(pkb->getNextT(15, 21) == true);
-	REQUIRE(pkb->getNextT(15, 22) == true);
+	REQUIRE(pkb->isNextT(15, 18) == true);
+	REQUIRE(pkb->isNextT(15, 19) == true);
+	REQUIRE(pkb->isNextT(15, 20) == true);
+	REQUIRE(pkb->isNextT(15, 21) == true);
+	REQUIRE(pkb->isNextT(15, 22) == true);
 
 	REQUIRE(result.contains({ "16", "16" }));
 	REQUIRE(result.contains({ "16", "17" }));
@@ -1689,13 +1689,13 @@ TEST_CASE("One complex nesting in one procedure in program with two procedures")
 	REQUIRE(result.contains({ "16", "20" }));
 	REQUIRE(result.contains({ "16", "21" }));
 	REQUIRE(result.contains({ "16", "22" }));
-	REQUIRE(pkb->getNextT(16, 16) == true);
-	REQUIRE(pkb->getNextT(16, 17) == true);
-	REQUIRE(pkb->getNextT(16, 18) == true);
-	REQUIRE(pkb->getNextT(16, 19) == true);
-	REQUIRE(pkb->getNextT(16, 20) == true);
-	REQUIRE(pkb->getNextT(16, 21) == true);
-	REQUIRE(pkb->getNextT(16, 22) == true);
+	REQUIRE(pkb->isNextT(16, 16) == true);
+	REQUIRE(pkb->isNextT(16, 17) == true);
+	REQUIRE(pkb->isNextT(16, 18) == true);
+	REQUIRE(pkb->isNextT(16, 19) == true);
+	REQUIRE(pkb->isNextT(16, 20) == true);
+	REQUIRE(pkb->isNextT(16, 21) == true);
+	REQUIRE(pkb->isNextT(16, 22) == true);
 
 	REQUIRE(result.contains({ "17", "16" }));
 	REQUIRE(result.contains({ "17", "17" }));
@@ -1704,57 +1704,57 @@ TEST_CASE("One complex nesting in one procedure in program with two procedures")
 	REQUIRE(result.contains({ "17", "20" }));
 	REQUIRE(result.contains({ "17", "21" }));
 	REQUIRE(result.contains({ "17", "22" }));
-	REQUIRE(pkb->getNextT(17, 16) == true);
-	REQUIRE(pkb->getNextT(17, 17) == true);
-	REQUIRE(pkb->getNextT(17, 18) == true);
-	REQUIRE(pkb->getNextT(17, 19) == true);
-	REQUIRE(pkb->getNextT(17, 20) == true);
-	REQUIRE(pkb->getNextT(17, 21) == true);
-	REQUIRE(pkb->getNextT(17, 22) == true);
+	REQUIRE(pkb->isNextT(17, 16) == true);
+	REQUIRE(pkb->isNextT(17, 17) == true);
+	REQUIRE(pkb->isNextT(17, 18) == true);
+	REQUIRE(pkb->isNextT(17, 19) == true);
+	REQUIRE(pkb->isNextT(17, 20) == true);
+	REQUIRE(pkb->isNextT(17, 21) == true);
+	REQUIRE(pkb->isNextT(17, 22) == true);
 
 	REQUIRE(result.contains({ "18", "18" }));
 	REQUIRE(result.contains({ "18", "19" }));
 	REQUIRE(result.contains({ "18", "20" }));
 	REQUIRE(result.contains({ "18", "21" }));
 	REQUIRE(result.contains({ "18", "22" }));
-	REQUIRE(pkb->getNextT(18, 18) == true);
-	REQUIRE(pkb->getNextT(18, 19) == true);
-	REQUIRE(pkb->getNextT(18, 20) == true);
-	REQUIRE(pkb->getNextT(18, 21) == true);
-	REQUIRE(pkb->getNextT(18, 22) == true);
+	REQUIRE(pkb->isNextT(18, 18) == true);
+	REQUIRE(pkb->isNextT(18, 19) == true);
+	REQUIRE(pkb->isNextT(18, 20) == true);
+	REQUIRE(pkb->isNextT(18, 21) == true);
+	REQUIRE(pkb->isNextT(18, 22) == true);
 
 	REQUIRE(result.contains({ "19", "18" }));
 	REQUIRE(result.contains({ "19", "19" }));
 	REQUIRE(result.contains({ "19", "20" }));
 	REQUIRE(result.contains({ "19", "21" }));
 	REQUIRE(result.contains({ "19", "22" }));
-	REQUIRE(pkb->getNextT(19, 18) == true);
-	REQUIRE(pkb->getNextT(19, 19) == true);
-	REQUIRE(pkb->getNextT(19, 20) == true);
-	REQUIRE(pkb->getNextT(19, 21) == true);
-	REQUIRE(pkb->getNextT(19, 22) == true);
+	REQUIRE(pkb->isNextT(19, 18) == true);
+	REQUIRE(pkb->isNextT(19, 19) == true);
+	REQUIRE(pkb->isNextT(19, 20) == true);
+	REQUIRE(pkb->isNextT(19, 21) == true);
+	REQUIRE(pkb->isNextT(19, 22) == true);
 
 	REQUIRE(result.contains({ "20", "18" }));
 	REQUIRE(result.contains({ "20", "19" }));
 	REQUIRE(result.contains({ "20", "20" }));
 	REQUIRE(result.contains({ "20", "21" }));
 	REQUIRE(result.contains({ "20", "22" }));
-	REQUIRE(pkb->getNextT(20, 18) == true);
-	REQUIRE(pkb->getNextT(20, 19) == true);
-	REQUIRE(pkb->getNextT(20, 20) == true);
-	REQUIRE(pkb->getNextT(20, 21) == true);
-	REQUIRE(pkb->getNextT(20, 22) == true);
+	REQUIRE(pkb->isNextT(20, 18) == true);
+	REQUIRE(pkb->isNextT(20, 19) == true);
+	REQUIRE(pkb->isNextT(20, 20) == true);
+	REQUIRE(pkb->isNextT(20, 21) == true);
+	REQUIRE(pkb->isNextT(20, 22) == true);
 
 	REQUIRE(result.contains({ "21", "18" }));
 	REQUIRE(result.contains({ "21", "19" }));
 	REQUIRE(result.contains({ "21", "20" }));
 	REQUIRE(result.contains({ "21", "21" }));
 	REQUIRE(result.contains({ "21", "22" }));
-	REQUIRE(pkb->getNextT(21, 18) == true);
-	REQUIRE(pkb->getNextT(21, 19) == true);
-	REQUIRE(pkb->getNextT(21, 20) == true);
-	REQUIRE(pkb->getNextT(21, 21) == true);
-	REQUIRE(pkb->getNextT(21, 22) == true);
+	REQUIRE(pkb->isNextT(21, 18) == true);
+	REQUIRE(pkb->isNextT(21, 19) == true);
+	REQUIRE(pkb->isNextT(21, 20) == true);
+	REQUIRE(pkb->isNextT(21, 21) == true);
+	REQUIRE(pkb->isNextT(21, 22) == true);
 
 	//reverse relations
 	result = pkb->getNextT(1, false);
@@ -2028,12 +2028,12 @@ TEST_CASE("Affects 1") {
 
 	
 	
-	REQUIRE(result.contains("3"));
-	REQUIRE(pkb->getAffects(1, 3) == true);
+	REQUIRE(result.contains({ "3" }));
+	REQUIRE(pkb->isAffects(1, 3) == true);
 
 
 	result = pkb->getAffects(3, false);
-	REQUIRE(result.contains("1"));
+	REQUIRE(result.contains({ "1" }));
 
 	result = pkb->getAffects();
 	REQUIRE(result.contains({ "1", "3" }));
@@ -2058,21 +2058,21 @@ TEST_CASE("Affects if") {
 	DesignExtractor::populateDesigns(pkb);
 	Table result = pkb->getAffects(1, true);
 
-	REQUIRE(result.contains("3"));
-	REQUIRE(result.contains("5"));
-	REQUIRE(pkb->getAffects(1, 3) == true);
-	REQUIRE(pkb->getAffects(1, 5) == true);
+	REQUIRE(result.contains({ "3" }));
+	REQUIRE(result.contains({ "5" }));
+	REQUIRE(pkb->isAffects(1, 3) == true);
+	REQUIRE(pkb->isAffects(1, 5) == true);
 
 	result = pkb->getAffects(4, true);
-	REQUIRE(result.contains("5"));
-	REQUIRE(pkb->getAffects(4, 5) == true);
+	REQUIRE(result.contains({ "5" }));
+	REQUIRE(pkb->isAffects(4, 5) == true);
 
 	result = pkb->getAffects(3, false);
-	REQUIRE(result.contains("1"));
+	REQUIRE(result.contains({ "1" }));
 
 	result = pkb->getAffects(5, false);
-	REQUIRE(result.contains("1"));
-	REQUIRE(result.contains("4"));
+	REQUIRE(result.contains({ "1" }));
+	REQUIRE(result.contains({ "4" }));
 
 	result = pkb->getAffects();
 	REQUIRE(result.contains({ "1", "5" }));
@@ -2100,15 +2100,15 @@ TEST_CASE("Affects x=x inside while") {
 	DesignExtractor::populateDesigns(pkb);
 	Table result = pkb->getAffects(3, true);
 
-	REQUIRE(result.contains("3"));
-	REQUIRE(pkb->getAffects(3, 3) == true);
-	REQUIRE(pkb->getAffects(3, 4) == true);
+	REQUIRE(result.contains({ "3" }));
+	REQUIRE(pkb->isAffects(3, 3) == true);
+	REQUIRE(pkb->isAffects(3, 4) == true);
 
 	result = pkb->getAffects(4, false);
-	REQUIRE(result.contains("3"));
+	REQUIRE(result.contains({ "3" }));
 
 	result = pkb->getAffects(3, false);
-	REQUIRE(result.contains("3"));
+	REQUIRE(result.contains({ "3" }));
 
 	result = pkb->getAffects();
 	REQUIRE(result.contains({ "3", "3" }));
@@ -2140,25 +2140,25 @@ TEST_CASE("Affects if inside while") {
 	DesignExtractor::populateDesigns(pkb);
 	Table result = pkb->getAffects(1, true);
 
-	REQUIRE(result.contains("4"));
-	REQUIRE(pkb->getAffects(1, 4) == true);
+	REQUIRE(result.contains({ "4" }));
+	REQUIRE(pkb->isAffects(1, 4) == true);
 
 	result = pkb->getAffects(5, true);
-	REQUIRE(result.contains("6"));
-	REQUIRE(pkb->getAffects(5, 6) == true);
+	REQUIRE(result.contains({ "6" }));
+	REQUIRE(pkb->isAffects(5, 6) == true);
 
 	result = pkb->getAffects(6, true);
-	REQUIRE(result.contains("4"));
-	REQUIRE(pkb->getAffects(6, 4) == true);
+	REQUIRE(result.contains({ "4" }));
+	REQUIRE(pkb->isAffects(6, 4) == true);
 
 
 	result = pkb->getAffects(4, false);
-	REQUIRE(result.contains("1"));
-	REQUIRE(result.contains("6"));
+	REQUIRE(result.contains({ "1" }));
+	REQUIRE(result.contains({ "6" }));
 
 	result = pkb->getAffects(6, false);
-	REQUIRE(result.contains("4"));
-	REQUIRE(result.contains("5"));
+	REQUIRE(result.contains({ "4" }));
+	REQUIRE(result.contains({ "5" }));
 
 	result = pkb->getAffects();
 	REQUIRE(result.contains({ "1", "4" }));
