@@ -2,8 +2,6 @@
 #include "Table.h"
 #include <map>
 
-enum class TraverseType { ConstantNext, ForwardNext, ReverseNext };
-
 class CFG {
 private:
   // Map from original line number to compressed node index
@@ -33,5 +31,4 @@ public:
   Table getAffects(Table, Table, std::set<int>) const;
   bool isAffects(int, int, Table, Table) const;
   Table getAffects(int, bool, Table, Table, std::set<int>) const;
-
 };
