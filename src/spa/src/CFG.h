@@ -12,6 +12,7 @@ private:
   std::vector<std::vector<int>> forwardCompressedGraph;
   std::vector<std::vector<int>> reverseCompressedGraph;
   int numCompressedNodes = 0;
+  Table whileIfTable{1};
 
   void populateInitialToCompressed(int, Table, std::vector<int>);
   void populateCompressedToInitial();

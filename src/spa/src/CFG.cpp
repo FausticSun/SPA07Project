@@ -6,7 +6,8 @@
 CFG::CFG() {}
 
 CFG::CFG(Table procStmtTable, Table nextTable, Table whileIfTable,
-         int stmtCount) {
+         int stmtCount)
+    : whileIfTable(whileIfTable) {
   // Populate initialGraph from nextTable (1-based indexing)
   initialGraph.resize(stmtCount + 1);
   for (auto data : nextTable.getData()) {
@@ -287,7 +288,8 @@ std::vector<int> CFG::getAffectsForward(int start, std::string v,
             if (usesAssignTable.contains({std::to_string(j), v})) {
               results.push_back(j);
             }
-            if (modifiesTable.contains({std::to_string(j), v})) {
+            if (modifiesTable.contains({std::to_string(j), v}) &&
+                !whileIfTable.contains({std::to_string(j)})) {
               isModified = true;
             }
           }
@@ -347,7 +349,8 @@ std::vector<int> CFG::getAffectsReverse(int start, std::string v,
             if (modifiesAssignTable.contains({std::to_string(line), v})) {
               results.push_back(line);
             }
-            if (modifiesTable.contains({std::to_string(line), v})) {
+            if (modifiesTable.contains({std::to_string(line), v}) &&
+                !whileIfTable.contains({std::to_string(line)})) {
               isModified = true;
               break;
             }
@@ -382,13 +385,14 @@ bool CFG::isAffects(int a1, int a2, Table usesTable,
     for (auto data : modifiesA1Table.getData({"v"})) {
       v = data[0];
     }
-    // Checking if there exist any s that modifies v in the interval (a1, a2)
-    for (int i = a1 + 1; i < a2; i++) {
-      if (modifiesTable.contains({std::to_string(i), v})) {
-        return false;
-      }
-    }
-    return true;
+    auto result = getAffectsForward(a1, v, modifiesTable, usesA2Table);
+    // // Checking if there exist any s that modifies v in the interval (a1, a2)
+    // for (int i = a1 + 1; i < a2; i++) {
+    //   if (modifiesTable.contains({std::to_string(i), v})) {
+    //     return false;
+    //   }
+    // }
+    return std::find(result.begin(), result.end(), a2) != result.end();
   }
 }
 
