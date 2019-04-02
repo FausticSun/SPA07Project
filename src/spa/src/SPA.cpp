@@ -2,8 +2,6 @@
 #include "DesignExtractor.h"
 #include "GeneralLexer.h"
 #include "PQLEvaluator.h"
-#include "PQLLexer.h"
-#include "PQLParser.h"
 #include "SIMPLEParser.h"
 #include <fstream>
 
@@ -24,6 +22,7 @@ void SPA::parseSIMPLEFile(std::string filename) {
 }
 const std::list<std::string> SPA::evaluateQuery(std::string queryString) const {
   list<string> results;
+  /*
   try {
     PQLParser pqlParser;
     auto tokens = pqlParser.parse(queryString);
@@ -36,4 +35,6 @@ const std::list<std::string> SPA::evaluateQuery(std::string queryString) const {
   } catch (invalid_argument ia) {
     return results;
   }
+  */
+  return results;
 }
