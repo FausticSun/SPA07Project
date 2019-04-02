@@ -386,12 +386,6 @@ bool CFG::isAffects(int a1, int a2, Table usesTable,
       v = data[0];
     }
     auto result = getAffectsForward(a1, v, modifiesTable, usesA2Table);
-    // // Checking if there exist any s that modifies v in the interval (a1, a2)
-    // for (int i = a1 + 1; i < a2; i++) {
-    //   if (modifiesTable.contains({std::to_string(i), v})) {
-    //     return false;
-    //   }
-    // }
     return std::find(result.begin(), result.end(), a2) != result.end();
   }
 }
