@@ -40,6 +40,7 @@ private:
   ClauseResult dataFilter(Table data, Clause c);
   ClauseResult withEvaluate(Clause c);
 	ClauseResult NextTEvaluate(Clause clause);
+	ClauseResult AffectEvaluate(Clause clause);
   StatementType convertQType(QueryEntityType q);
   bool isSynonym(QueryEntityType q);
   bool isUnderscore(QueryEntityType q);
