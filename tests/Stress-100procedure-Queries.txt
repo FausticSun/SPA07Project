@@ -1,0 +1,10 @@
+1-comment
+procedure p;
+Select p such that Calls("P1", p)
+P92, P41
+5000
+2-comment
+procedure p;
+Select p such that Calls(p, "P2")
+P4, P16, P17, P24, P35, P42, P53, P61, P72
+5000
