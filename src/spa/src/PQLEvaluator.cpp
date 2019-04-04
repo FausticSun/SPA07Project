@@ -300,9 +300,9 @@ set<vector<string>> PqlEvaluator::executeComplexQuery(Query q) {
 		else if (iter->clauseType == ClauseType::NextT) {
 			result = NextTEvaluate(*iter);
 		}
-		/*else if (iter->clauseType == ClauseType::Affects) {
-			result = Affect
-		}else if (iter->clauseType == ClauseType::AffectsT) {
+		else if (iter->clauseType == ClauseType::Affects) {
+			result = AffectEvaluate(*iter);
+		}/*else if (iter->clauseType == ClauseType::AffectsT) {
 		}*/
     if (result.isBool && !result.boolValue) {
 
