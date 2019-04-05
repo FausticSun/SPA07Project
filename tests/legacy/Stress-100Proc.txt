@@ -1,0 +1,594 @@
+procedure P1 {
+    print a; \\1001
+    call P4; \\1002
+    call P2; \\1003
+    call P43; \\1004
+    call P7; \\1005
+}
+
+procedure P2 {
+    print a; \\1006
+    call P38; \\1007
+    call P24; \\1008
+}
+
+procedure P3 {
+    print a; \\1009
+    call P8; \\1010
+    call P17; \\1011
+    call P79; \\1012
+    call P97; \\1013
+}
+
+procedure P4 {
+    print a; \\1014
+    call P14; \\1015
+}
+
+procedure P5 {
+    print a; \\1016
+}
+
+procedure P6 {
+    print a; \\1017
+    call P40; \\1018
+    call P70; \\1019
+}
+
+procedure P7 {
+    print a; \\1020
+    call P44; \\1021
+}
+
+procedure P8 {
+    print a; \\1022
+    call P76; \\1023
+    call P91; \\1024
+}
+
+procedure P9 {
+    print a; \\1025
+    call P20; \\1026
+    call P94; \\1027
+    call P60; \\1028
+}
+
+procedure P10 {
+    print a; \\1029
+    call P60; \\1030
+    call P8; \\1031
+    call P6; \\1032
+}
+
+procedure P11 {
+    print a; \\1033
+    call P49; \\1034
+    call P19; \\1035
+    call P25; \\1036
+}
+
+procedure P12 {
+    print a; \\1037
+    call P29; \\1038
+    call P32; \\1039
+    call P99; \\1040
+    call P26; \\1041
+    call P3; \\1042
+}
+
+procedure P13 {
+    print a; \\1043
+    call P20; \\1044
+    call P21; \\1045
+    call P28; \\1046
+    call P52; \\1047
+}
+
+procedure P14 {
+    print a; \\1048
+    call P72; \\1049
+}
+
+procedure P15 {
+    print a; \\1050
+    call P28; \\1051
+}
+
+procedure P16 {
+    print a; \\1052
+    call P9; \\1053
+}
+
+procedure P17 {
+    print a; \\1054
+    call P77; \\1055
+}
+
+procedure P18 {
+    print a; \\1056
+    call P98; \\1057
+    call P7; \\1058
+}
+
+procedure P19 {
+    print a; \\1059
+    call P47; \\1060
+    call P41; \\1061
+    call P76; \\1062
+}
+
+procedure P20 {
+    print a; \\1063
+    call P54; \\1064
+    call P49; \\1065
+}
+
+procedure P21 {
+    print a; \\1066
+}
+
+procedure P22 {
+    print a; \\1067
+    call P96; \\1068
+}
+
+procedure P23 {
+    print a; \\1069
+    call P85; \\1070
+    call P45; \\1071
+}
+
+procedure P24 {
+    print a; \\1072
+    call P97; \\1073
+    call P96; \\1074
+}
+
+procedure P25 {
+    print a; \\1075
+    call P10; \\1076
+    call P45; \\1077
+    call P18; \\1078
+}
+
+procedure P26 {
+    print a; \\1079
+}
+
+procedure P27 {
+    print a; \\1080
+    call P32; \\1081
+}
+
+procedure P28 {
+    print a; \\1082
+}
+
+procedure P29 {
+    print a; \\1083
+    call P49; \\1084
+    call P9; \\1085
+    call P100; \\1086
+}
+
+procedure P30 {
+    print a; \\1087
+}
+
+procedure P31 {
+    print a; \\1088
+    call P20; \\1089
+}
+
+procedure P32 {
+    print a; \\1090
+    call P3; \\1091
+}
+
+procedure P33 {
+    print a; \\1092
+}
+
+procedure P34 {
+    print a; \\1093
+    call P44; \\1094
+}
+
+procedure P35 {
+    print a; \\1095
+    call P6; \\1096
+    call P68; \\1097
+}
+
+procedure P36 {
+    print a; \\1098
+    call P78; \\1099
+    call P7; \\1100
+    call P11; \\1101
+}
+
+procedure P37 {
+    print a; \\1102
+    call P70; \\1103
+    call P24; \\1104
+}
+
+procedure P38 {
+    print a; \\1105
+    call P46; \\1106
+}
+
+procedure P39 {
+    print a; \\1107
+}
+
+procedure P40 {
+    print a; \\1108
+    call P22; \\1109
+    call P28; \\1110
+    call P20; \\1111
+    call P41; \\1112
+}
+
+procedure P41 {
+    print a; \\1113
+    call P14; \\1114
+    call P98; \\1115
+}
+
+procedure P42 {
+    print a; \\1116
+    call P95; \\1117
+    call P68; \\1118
+    call P63; \\1119
+    call P65; \\1120
+}
+
+procedure P43 {
+    print a; \\1121
+    call P74; \\1122
+}
+
+procedure P44 {
+    print a; \\1123
+    call P39; \\1124
+    call P30; \\1125
+}
+
+procedure P45 {
+    print a; \\1126
+    call P10; \\1127
+    call P35; \\1128
+}
+
+procedure P46 {
+    print a; \\1129
+    call P82; \\1130
+    call P76; \\1131
+}
+
+procedure P47 {
+    print a; \\1132
+}
+
+procedure P48 {
+    print a; \\1133
+    call P42; \\1134
+    call P49; \\1135
+}
+
+procedure P49 {
+    print a; \\1136
+    call P44; \\1137
+    call P80; \\1138
+    call P60; \\1139
+}
+
+procedure P50 {
+    print a; \\1140
+    call P15; \\1141
+    call P29; \\1142
+}
+
+procedure P51 {
+    print a; \\1143
+    call P93; \\1144
+    call P42; \\1145
+    call P29; \\1146
+}
+
+procedure P52 {
+    print a; \\1147
+    call P22; \\1148
+    call P9; \\1149
+}
+
+procedure P53 {
+    print a; \\1150
+    call P78; \\1151
+    call P6; \\1152
+}
+
+procedure P54 {
+    print a; \\1153
+}
+
+procedure P55 {
+    print a; \\1154
+    call P39; \\1155
+    call P78; \\1156
+    call P42; \\1157
+}
+
+procedure P56 {
+    print a; \\1158
+    call P80; \\1159
+    call P55; \\1160
+}
+
+procedure P57 {
+    print a; \\1161
+    call P82; \\1162
+    call P53; \\1163
+}
+
+procedure P58 {
+    print a; \\1164
+    call P18; \\1165
+}
+
+procedure P59 {
+    print a; \\1166
+    call P93; \\1167
+    call P36; \\1168
+    call P3; \\1169
+    call P54; \\1170
+    call P68; \\1171
+}
+
+procedure P60 {
+    print a; \\1172
+    call P44; \\1173
+    call P76; \\1174
+}
+
+procedure P61 {
+    print a; \\1175
+    call P35; \\1176
+    call P59; \\1177
+}
+
+procedure P62 {
+    print a; \\1178
+    call P50; \\1179
+    call P40; \\1180
+    call P37; \\1181
+    call P55; \\1182
+}
+
+procedure P63 {
+    print a; \\1183
+    call P31; \\1184
+    call P92; \\1185
+    call P24; \\1186
+    call P65; \\1187
+}
+
+procedure P64 {
+    print a; \\1188
+    call P77; \\1189
+    call P79; \\1190
+}
+
+procedure P65 {
+    print a; \\1191
+    call P38; \\1192
+}
+
+procedure P66 {
+    print a; \\1193
+    call P60; \\1194
+    call P63; \\1195
+}
+
+procedure P67 {
+    print a; \\1196
+    call P38; \\1197
+    call P37; \\1198
+}
+
+procedure P68 {
+    print a; \\1199
+}
+
+procedure P69 {
+    print a; \\1200
+    call P1; \\1201
+    call P4; \\1202
+    call P16; \\1203
+    call P33; \\1204
+}
+
+procedure P70 {
+    print a; \\1205
+    call P17; \\1206
+}
+
+procedure P71 {
+    print a; \\1207
+    call P34; \\1208
+    call P19; \\1209
+    call P62; \\1210
+    call P38; \\1211
+}
+
+procedure P72 {
+    print a; \\1212
+    call P27; \\1213
+}
+
+procedure P73 {
+    print a; \\1214
+    call P59; \\1215
+    call P94; \\1216
+}
+
+procedure P74 {
+    print a; \\1217
+    call P33; \\1218
+}
+
+procedure P75 {
+    print a; \\1219
+    call P22; \\1220
+    call P4; \\1221
+    call P53; \\1222
+}
+
+procedure P76 {
+    print a; \\1223
+}
+
+procedure P77 {
+    print a; \\1224
+    call P21; \\1225
+    call P89; \\1226
+    call P5; \\1227
+}
+
+procedure P78 {
+    print a; \\1228
+    call P47; \\1229
+    call P7; \\1230
+}
+
+procedure P79 {
+    print a; \\1231
+    call P70; \\1232
+}
+
+procedure P80 {
+    print a; \\1233
+}
+
+procedure P81 {
+    print a; \\1234
+    call P20; \\1235
+    call P14; \\1236
+}
+
+procedure P82 {
+    print a; \\1237
+    call P5; \\1238
+    call P23; \\1239
+    call P83; \\1240
+    call P81; \\1241
+    call P68; \\1242
+}
+
+procedure P83 {
+    print a; \\1243
+    call P20; \\1244
+    call P22; \\1245
+    call P61; \\1246
+}
+
+procedure P84 {
+    print a; \\1247
+    call P9; \\1248
+}
+
+procedure P85 {
+    print a; \\1249
+    call P14; \\1250
+    call P76; \\1251
+    call P89; \\1252
+    call P27; \\1253
+}
+
+procedure P86 {
+    print a; \\1254
+    call P88; \\1255
+    call P59; \\1256
+    call P66; \\1257
+}
+
+procedure P87 {
+    print a; \\1258
+    call P44; \\1259
+    call P82; \\1260
+    call P85; \\1261
+}
+
+procedure P88 {
+    print a; \\1262
+    call P66; \\1263
+}
+
+procedure P89 {
+    print a; \\1264
+    call P18; \\1265
+    call P39; \\1266
+}
+
+procedure P90 {
+    print a; \\1267
+    call P44; \\1268
+    call P63; \\1269
+}
+
+procedure P91 {
+    print a; \\1270
+    call P9; \\1271
+    call P16; \\1272
+}
+
+procedure P92 {
+    print a; \\1273
+    call P59; \\1274
+}
+
+procedure P93 {
+    print a; \\1275
+    call P53; \\1276
+    call P58; \\1277
+    call P64; \\1278
+}
+
+procedure P94 {
+    print a; \\1279
+    call P15; \\1280
+}
+
+procedure P95 {
+    print a; \\1281
+    call P70; \\1282
+}
+
+procedure P96 {
+    print a; \\1283
+    call P81; \\1284
+    call P30; \\1285
+}
+
+procedure P97 {
+    print a; \\1286
+    call P99; \\1287
+}
+
+procedure P98 {
+    print a; \\1288
+    call P16; \\1289
+}
+
+procedure P99 {
+    print a; \\1290
+    call P78; \\1291
+}
+
+procedure P100 {
+    print a; \\1292
+    call P63; \\1293
+    call P81; \\1294
+    call P93; \\1295
+}
