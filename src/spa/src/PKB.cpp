@@ -16,6 +16,11 @@ void PKB::setStmtType(int stmt, StatementType type) {
 
 void PKB::setConst(int cons) { constTable.insertRow({std::to_string(cons)}); }
 
+void PKB::setProcExitStmt(std::string proc, std::vector<int> exitStmts) {
+	for (auto i : exitStmts) {
+		procExitStmtTable.insertRow({ proc, std::to_string(i) });
+	}
+}
 void PKB::setFollows(int s1, int s2) {
   followsTable.insertRow({std::to_string(s1), std::to_string(s2)});
 }
@@ -62,6 +67,10 @@ void PKB::setCallsT(std::string p1, std::string p2) {
 
 void PKB::setNext(int s1, int s2) {
   nextTable.insertRow({std::to_string(s1), std::to_string(s2)});
+}
+
+void PKB::setNextBip(int s1, int s2) {
+	nextBipTable.insertRow({std::to_string(s1), std::to_string(s2)});
 }
 
 void PKB::setAssign(int a, std::string &v, std::string &expr) {
@@ -117,6 +126,10 @@ Table PKB::getProcStmt() {
   return table;
 }
 
+Table PKB::getProcExitStmt() const {
+	return procExitStmtTable;
+}
+
 Table PKB::getFollows() const { return followsTable; }
 Table PKB::getFollowsT() const { return followsTTable; }
 Table PKB::getParent() const { return parentTable; }
@@ -128,6 +141,7 @@ Table PKB::getModifiesP() const { return modifiesPTable; }
 Table PKB::getCalls() const { return callsTable; }
 Table PKB::getCallsT() const { return callsTTable; }
 Table PKB::getNext() const { return nextTable; }
+Table PKB::getNextBip() const { return nextBipTable; }
 
 bool PKB::isNextT(int start, int end) const { return cfg.isNextT(start, end); }
 Table PKB::getNextT(int s, bool isLeftConstant) const {

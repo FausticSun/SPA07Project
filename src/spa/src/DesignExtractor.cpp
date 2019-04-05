@@ -210,6 +210,41 @@ void populateCFG(std::unique_ptr<PKB> &pkb) {
   pkb->setCFG(graph);
 }
 
+void populateNextBip(std::unique_ptr<PKB> &pkb) {
+	auto callTable = pkb->getStmtType(StatementType::Call); //1-col call stmt numbers
+	auto nextTable = pkb->getNext(); //2-col next Table
+	auto procTable = pkb->getProcStmt(); //3-col procName, start, end
+	auto callProcNameTable = pkb->getCallProcName(); //2-col stmt, proc
+	auto procExitStmtTable = pkb->getProcExitStmt(); //2-col proc exit-i
+
+	for (auto data : nextTable.getData()) {
+		if (!callTable.contains({ data[0] })) {
+			pkb->setNextBip(std::stoi(data[0]), std::stoi(data[1]));
+		}
+		else {
+			//getting procedure that is called
+			std::string procedure;
+			for (auto data1 : callProcNameTable.getData()) {
+				if (data1[0] == data[0]) {
+					procedure = data1[1];
+				}
+			}
+			//setting call statement to start of procedure
+			for (auto data2 : procTable.getData()) {
+				if (procedure == data2[0]) {
+					pkb->setNextBip(std::stoi(data[0]), std::stoi(data2[1]));
+				}
+			}
+			//setting end of procedure to next of call statement
+			for (auto data3 : procExitStmtTable.getData()) {
+				if (procedure == data3[0]) {
+					pkb->setNextBip(std::stoi(data3[1]), std::stoi(data[1]));
+				}
+			}
+		}
+	}
+}
+
 void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {
   validateProcs(pkb);
   validateCyclicCalls(pkb);
@@ -220,4 +255,5 @@ void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {
   populateModifiesS(pkb);
   populateUsesAndModifiesC(pkb);
   populateCFG(pkb);
+  populateNextBip(pkb);
 }
