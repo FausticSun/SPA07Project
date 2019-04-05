@@ -13,7 +13,10 @@ struct ClauseResult {
   bool isBool;
   bool boolValue;
   Table data = Table(0);
-  ClauseResult();
+  ClauseResult() {
+		isBool = false;
+		boolValue = false;
+	};
 
   ClauseResult(bool iB, bool bValue) {
     isBool = iB;
@@ -28,14 +31,16 @@ public:
 
 private:
   PKB mypkb;
-  Table resultExtractor(Table result, Query q);
-  list<string> resultFormater(Table t);
-  Table executeSimpleQuery(vector<QueryEntity> t);
-  Table executeComplexQuery(Query q);
+	set<vector<string>> resultExtractor(Table result, Query q);
+  list<string> resultFormater(set<vector<string>> t);
+	set<vector<string>> executeSimpleQuery(vector<QueryEntity> t);
+	set<vector<string>> executeComplexQuery(Query q);
   Table getdataByTtype(QueryEntity q);
   Table getdataWith(QueryEntity q);
   ClauseResult dataFilter(Table data, Clause c);
   ClauseResult withEvaluate(Clause c);
+	ClauseResult NextTEvaluate(Clause clause);
+	ClauseResult AffectEvaluate(Clause clause);
   StatementType convertQType(QueryEntityType q);
   bool isSynonym(QueryEntityType q);
   bool isUnderscore(QueryEntityType q);

@@ -8,6 +8,7 @@
 #include <string>
 
 using namespace std;
+using namespace PQLLexerToken;
 
 /*
 enum class DeclarationType
@@ -44,42 +45,53 @@ private:
   std::vector<string> expectedEntityTokens = {
       "variable", "procedure", "if",     "while",    "read",     "print",
       "call",     "stmt",      "assign", "constant", "prog_line"};
-  std::vector<string> expectedIndicatorTokens = {"such that", "pattern", "with"};
+  std::vector<string> expectedIndicatorTokens = {"such that", "pattern", "with",
+                                                 "and"};
   std::vector<string> expectedClauseTokens = {
-      "Follows", "Follows*", "Parent", "Parent*", "Uses", "Modifies", "Call", "Call*", "Next", "Next*"};
+      "Follows",  "Follows*", "Parent", "Parent*", "Uses",
+      "Modifies", "Calls",     "Calls*",  "Next",    "Next*", "Affects", "Affects*"};
   std::map<std::string, std::vector<QueryEntityType>> validationTable = {
-	  {"FPN12", {
-	  QueryEntityType::Assign,    QueryEntityType::If,
-	  QueryEntityType::While,     QueryEntityType::Call,
-	  QueryEntityType::Print,     QueryEntityType::Read,
-	  QueryEntityType::Stmt,      QueryEntityType::Line,
-	  QueryEntityType::Underscore}},
-	  {"U1", {
-	  QueryEntityType::Assign, QueryEntityType::If,
-	  QueryEntityType::While,  QueryEntityType::Call,
-	  QueryEntityType::Print,  QueryEntityType::Stmt,
-	  QueryEntityType::Line,   QueryEntityType::Procedure,
-	  QueryEntityType::Name}},
-	  {"M1", {
-	  QueryEntityType::Assign, QueryEntityType::If,
-	  QueryEntityType::While,  QueryEntityType::Call,
-	  QueryEntityType::Read,  QueryEntityType::Stmt,
-	  QueryEntityType::Line,   QueryEntityType::Procedure,
-	  QueryEntityType::Name}},
-	  {"UMPAT2", {
-	  QueryEntityType::Variable, QueryEntityType::Name,
-	  QueryEntityType::Underscore}},
-	  {"PAT1", {
-	  QueryEntityType::Assign, QueryEntityType::If,
-	  QueryEntityType::While}},
-	  {"PAT3", {
-	  QueryEntityType::Expression, QueryEntityType::Underscore}},
-	  {"C12", {
-	  QueryEntityType::Procedure, QueryEntityType::Name,
-	  QueryEntityType::Underscore}},
-	  {"W12", {
-	  QueryEntityType::Name, QueryEntityType::Line,
-	  QueryEntityType::Attrref, QueryEntityType::Progline}}
+      {"FPN12",
+       {QueryEntityType::Assign, QueryEntityType::If, QueryEntityType::While,
+        QueryEntityType::Call, QueryEntityType::Print, QueryEntityType::Read,
+        QueryEntityType::Stmt, QueryEntityType::Line, QueryEntityType::Progline,
+        QueryEntityType::Underscore}},
+      {"U1",
+       {QueryEntityType::Assign, QueryEntityType::If, QueryEntityType::While,
+        QueryEntityType::Call, QueryEntityType::Print, QueryEntityType::Stmt,
+        QueryEntityType::Line, QueryEntityType::Procedure, QueryEntityType::Progline,
+        QueryEntityType::Name}},
+      {"M1",
+       {QueryEntityType::Assign, QueryEntityType::If, QueryEntityType::While,
+        QueryEntityType::Call, QueryEntityType::Read, QueryEntityType::Stmt,
+        QueryEntityType::Line, QueryEntityType::Procedure, QueryEntityType::Progline,
+        QueryEntityType::Name}},
+      {"UMPAT2",
+       {QueryEntityType::Variable, QueryEntityType::Name,
+        QueryEntityType::Underscore}},
+      {"PAT1",
+       {QueryEntityType::Assign, QueryEntityType::If, QueryEntityType::While}},
+      {"PAT3", {QueryEntityType::Expression, QueryEntityType::Underscore}},
+      {"C12",
+       {QueryEntityType::Procedure, QueryEntityType::Name,
+        QueryEntityType::Underscore}},
+      {"A12",
+       {QueryEntityType::Assign, QueryEntityType::Line,
+	QueryEntityType::Underscore}},
+      {"W12",
+       {QueryEntityType::Name, QueryEntityType::Line, QueryEntityType::Attrref,
+        QueryEntityType::Progline}},
+	  {"procName",
+	   {QueryEntityType::Procedure, QueryEntityType::Call}},
+	  {"varName",
+	   {QueryEntityType::Variable, QueryEntityType::Print, 
+		QueryEntityType::Read}},
+	  {"value",
+	   {QueryEntityType::Constant}},
+	  {"stmt#",
+	   {QueryEntityType::Assign, QueryEntityType::If, QueryEntityType::While,
+		QueryEntityType::Call, QueryEntityType::Read, QueryEntityType::Stmt,
+        QueryEntityType::Print}}
   };
   Query query;
   std::queue<QueryToken> tokenQueue;
@@ -114,7 +126,9 @@ private:
   void checkUsesValidity(QueryEntity, QueryEntity);
   void checkWithValidity(QueryEntity, QueryEntity);
   void checkCallsValidity(QueryEntity, QueryEntity);
+  void checkAffectsValidity(QueryEntity, QueryEntity);
   void checkPatValidity(QueryEntityType);
+  void checkAttrrefValidity(QueryEntityType, string);
   void insertClauseFollows();
   void insertClauseFollowsT();
   void insertClauseParent();
@@ -125,6 +139,8 @@ private:
   void insertClauseNextT();
   void insertClauseCalls();
   void insertClauseCallsT();
+  void insertClauseAffects();
+  void insertClauseAffectsT();
 
   string convertToPostfix(string s);
   void insertClausePattern();

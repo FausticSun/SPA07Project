@@ -80,6 +80,8 @@ void PKB::setCallProcName(int stmtNo, const std::string &procName) {
   callProcNameTable.insertRow({std::to_string(stmtNo), procName});
 }
 
+void PKB::setCFG(CFG &graph) { cfg = graph; }
+
 Table PKB::getVarTable() const { return varTable; }
 
 Table PKB::getProcTable() const {
@@ -106,6 +108,15 @@ Table PKB::getStmtType(StatementType type) {
   return table;
 }
 
+Table PKB::getProcStmt() {
+  Table table{3};
+  for (auto p : procTable) {
+    table.insertRow({p.first, std::to_string(p.second.first),
+                     std::to_string(p.second.second)});
+  }
+  return table;
+}
+
 Table PKB::getFollows() const { return followsTable; }
 Table PKB::getFollowsT() const { return followsTTable; }
 Table PKB::getParent() const { return parentTable; }
@@ -117,6 +128,40 @@ Table PKB::getModifiesP() const { return modifiesPTable; }
 Table PKB::getCalls() const { return callsTable; }
 Table PKB::getCallsT() const { return callsTTable; }
 Table PKB::getNext() const { return nextTable; }
+
+bool PKB::isNextT(int start, int end) const { return cfg.isNextT(start, end); }
+Table PKB::getNextT(int s, bool isLeftConstant) const {
+  return cfg.getNextT(s, isLeftConstant);
+}
+Table PKB::getNextT() const { return cfg.getNextT(); }
+
+bool PKB::isAffects(int a1, int a2) const {
+  // Only query from CFG if a1 and a2 are assign statements (check to be
+  // removed)
+  auto assignStmts = stmtTable.at(StatementType::Assign);
+  if (assignStmts.find(a1) == assignStmts.end() ||
+      assignStmts.find(a2) == assignStmts.end()) {
+    return false;
+  } else {
+    return cfg.isAffects(a1, a2, usesSTable, modifiesSTable);
+  }
+}
+Table PKB::getAffects(int a1, bool isLeftConstant) const {
+  // Only query from CFG if a1 is assign statement (check to be removed)
+  auto assignStmts = stmtTable.at(StatementType::Assign);
+  if (assignStmts.find(a1) == assignStmts.end()) {
+    return Table{1};
+  } else {
+    return cfg.getAffects(a1, isLeftConstant, usesSTable, modifiesSTable,
+                          assignStmts);
+  }
+}
+Table PKB::getAffects() const {
+  auto assignStmts = stmtTable.at(StatementType::Assign);
+  return cfg.getAffects(usesSTable, modifiesSTable, assignStmts);
+}
+
+Table PKB::getCallProcNameTable() const { return callProcNameTable; }
 
 Table PKB::getAssignMatches(std::string expr, bool partial) {
   Table table{2};
@@ -132,3 +177,5 @@ Table PKB::getAssignMatches(std::string expr, bool partial) {
 Table PKB::getWhileMatches() { return whileTable; }
 Table PKB::getIfMatches() { return ifTable; }
 Table PKB::getCallProcName() { return callProcNameTable; }
+CFG PKB::getCFG() { return cfg; }
+int PKB::getStmtCount() { return stmtCount; }

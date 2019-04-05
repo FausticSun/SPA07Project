@@ -2,6 +2,7 @@
 
 #include "PQLParser.h"
 #include <string>
+using namespace PQLLexerToken;
 
 struct QueryToken {
   TokenType type;
