@@ -37,10 +37,11 @@ void SIMPLEParser::parseProcedure() {
   expect(SIMPLETokens::Procedure);
   currentProc = expect(SIMPLETokens::Identifier).value;
   expect(SIMPLETokens::LeftBrace);
-  parseStmtLst(PROCEDURE);
+  ExitStmtLst procExitStmts = parseStmtLst(PROCEDURE);
   expect(SIMPLETokens::RightBrace);
   int lastStmtNo = stmtCounter + 1;
   pkb->setProc(currentProc, firstStmtNo, lastStmtNo);
+  pkb->setProcExitStmt(currentProc, procExitStmts);
 }
 
 SIMPLEParser::ExitStmtLst SIMPLEParser::parseStmtLst(int parent) {
