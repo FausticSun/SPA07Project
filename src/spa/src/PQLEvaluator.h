@@ -2,12 +2,15 @@
 
 #include "Query.h"
 #include <PKB.h>
+#include <Optimizer.h>
 #include <list>
 #include <string>
 #include <vector>
 #include <Table.h>
 
 using namespace std;
+
+typedef set<vector<string>> dataRows;
 
 struct ClauseResult {
   bool isBool;
@@ -31,10 +34,11 @@ public:
 
 private:
   PKB mypkb;
-	set<vector<string>> resultExtractor(Table result, Query q);
-  list<string> resultFormater(set<vector<string>> t);
-	set<vector<string>> executeSimpleQuery(vector<QueryEntity> t);
-	set<vector<string>> executeComplexQuery(Query q);
+	dataRows resultExtractor(Table result, Query q);
+  list<string> resultFormater(dataRows t);
+	dataRows executeSimpleQuery(vector<QueryEntity> t);
+	dataRows executeComplexQuery(Query q);
+	ClauseResult executeOneClause(Clause c);
   Table getdataByTtype(QueryEntity q);
   Table getdataWith(QueryEntity q);
   ClauseResult dataFilter(Table data, Clause c);

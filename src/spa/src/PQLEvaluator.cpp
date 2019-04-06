@@ -30,7 +30,7 @@ Table getCols(vector<string> s,Table t) {
   if(s.empty()) {
 		return Table(0);
   }else {
-		set<vector<string>> rows = t.getData(s);
+		dataRows rows = t.getData(s);
 		Table result(s.size());
 		result.setHeader(s);
     for (vector<string> row : rows) {
@@ -43,7 +43,7 @@ Table getCols(vector<string> s,Table t) {
 }
 Table duplicateCols(string s,Table t) {
 	if (t.getHeader().size() == 1) {
-		set<vector<string>> rows = t.getData();
+		dataRows rows = t.getData();
 		Table result(2);
 		result.setHeader({ t.getHeader()[0], s });
 		for (vector<string> row : rows) {
@@ -56,7 +56,7 @@ Table duplicateCols(string s,Table t) {
 		return Table(0);
 	}
 }
-Table rowsToTable(set<vector<string>> rows, vector<string> header) {
+Table rowsToTable(dataRows rows, vector<string> header) {
 	Table result(header.size());
 	result.setHeader(header);
 	for (vector<string> row : rows) {
@@ -85,23 +85,45 @@ Table selfJoin(Table t) {
 	}
 }
 
+vector<string> merge(vector<string> s1,vector<string> s2) {
+	vector<pair<int, int>> commonIndices;
+	set<int> otherDiffIndices;
+	for (int j = 0; j < s2.size(); ++j) {
+		otherDiffIndices.insert(j);
+	}
+	for (int i = 0; i < s1.size(); ++i) {
+		for (int j = 0; j < s2.size(); ++j) {
+			if (s1[i] == s2[j]) {
+				commonIndices.emplace_back(i, j);
+				otherDiffIndices.erase(j);
+				break;
+			}
+		}
+	}
+	for (int i : otherDiffIndices) {
+		s1.push_back(s2[i]);
+	}
+	return s1;
+}
+
+
 PqlEvaluator::PqlEvaluator(const PKB &pkb) { this->mypkb = pkb; }
 
 list<string> PqlEvaluator::executeQuery(Query &q) {
   list<string> results;
   if (q.clauses.empty()) {
-		set<vector<string>> resultTable = executeSimpleQuery(q.target);
+		dataRows resultTable = executeSimpleQuery(q.target);
     results = resultFormater(resultTable);
     return results;
   }
-	set<vector<string>> resultTable = executeComplexQuery(q);
+	dataRows resultTable = executeComplexQuery(q);
   results = resultFormater(resultTable);
   return results;
 
   return results;
 }
 
-set<vector<string>> PqlEvaluator::resultExtractor(Table result, Query q) {
+dataRows PqlEvaluator::resultExtractor(Table result, Query q) {
 	vector<string> s;
 	vector<QueryEntity> attr;
 	vector<Table> tables;
@@ -117,7 +139,7 @@ set<vector<string>> PqlEvaluator::resultExtractor(Table result, Query q) {
     return t.getData();
   }
   if (result.empty()) {
-		set<vector<string>> t;
+		dataRows t;
     return t;
   }else {
 		vector<string> header = result.getHeader();
@@ -153,13 +175,13 @@ set<vector<string>> PqlEvaluator::resultExtractor(Table result, Query q) {
 			result.mergeWith(t);
 		}*/
   }
-	set<vector<string>> resultTable = result.getData(s);
+	dataRows resultTable = result.getData(s);
   
   return resultTable;
 
 }
 
-list<string> PqlEvaluator::resultFormater(set<vector<string>> t) {
+list<string> PqlEvaluator::resultFormater(dataRows t) {
 	set<vector<string>> tempData = t;
   set<vector<string>>::iterator iterRow ;
   list<string> result;
@@ -221,89 +243,7 @@ set<vector<string>> PqlEvaluator::executeComplexQuery(Query q) {
   Table data(0);
   ClauseResult result;
 	for (iter; iter != clauses.end(); ++iter) {
-
-		if (iter->clauseType == ClauseType::ModifiesS) {
-			if ((iter->parameters.front().type == QueryEntityType::Procedure ||
-				iter->parameters.front().type == QueryEntityType::Name)) {
-				data = mypkb.getModifiesP();
-			}
-			else {
-				data = mypkb.getModifiesS();
-			}
-			result = dataFilter(data, *iter);
-		}
-		else if (iter->clauseType == ClauseType::UsesS) {
-			if ((iter->parameters.front().type == QueryEntityType::Procedure ||
-				iter->parameters.front().type == QueryEntityType::Name)) {
-				data = mypkb.getUsesP();
-			}
-			else {
-				data = mypkb.getUsesS();
-			}
-			result = dataFilter(data, *iter);
-
-		}
-		else if (iter->clauseType == ClauseType::Parent) {
-			data = mypkb.getParent();
-			result = dataFilter(data, *iter);
-		}
-		else if (iter->clauseType == ClauseType::ParentT) {
-			data = mypkb.getParentT();
-			result = dataFilter(data, *iter);
-		}
-		else if (iter->clauseType == ClauseType::Follows) {
-			data = mypkb.getFollows();
-			result = dataFilter(data, *iter);
-		}
-		else if (iter->clauseType == ClauseType::FollowsT) {
-			data = mypkb.getFollowsT();
-			result = dataFilter(data, *iter);
-		}
-		else if (iter->clauseType == ClauseType::AssignPatt) {
-			if (isConstant(iter->parameters[2].type)) {
-				if (isPartial(iter->parameters[2].name)) {
-					data = mypkb.
-						getAssignMatches(removeUnderscore(iter->parameters[2].name),
-							true);
-				}
-				else {
-					data = mypkb.getAssignMatches((iter->parameters[2].name), false);
-				}
-			}
-			else {
-				data = mypkb.getAssignMatches("", true);
-			}
-			result = dataFilter(data, *iter);
-		}
-		else if (iter->clauseType == ClauseType::WhilePatt) {
-			data = mypkb.getWhileMatches();
-			result = dataFilter(data, *iter);
-		}
-		else if (iter->clauseType == ClauseType::IfPatt) {
-			data = mypkb.getIfMatches();
-			result = dataFilter(data, *iter);
-		}
-
-		else if (iter->clauseType == ClauseType::With) {
-			result = withEvaluate(*iter);
-		}
-		else if (iter->clauseType == ClauseType::Next) {
-			data = mypkb.getNext();
-			result = dataFilter(data, *iter);
-		}else if(iter->clauseType == ClauseType::Calls) {
-			data = mypkb.getCalls();
-			result = dataFilter(data, *iter);
-		}else if(iter->clauseType == ClauseType::CallsT) {
-			data = mypkb.getCallsT();
-			result = dataFilter(data, *iter);
-		}
-		else if (iter->clauseType == ClauseType::NextT) {
-			result = NextTEvaluate(*iter);
-		}
-		else if (iter->clauseType == ClauseType::Affects) {
-			result = AffectEvaluate(*iter);
-		}/*else if (iter->clauseType == ClauseType::AffectsT) {
-		}*/
+		result = executeOneClause(*iter);
     if (result.isBool && !result.boolValue) {
 
       if (q.target.front().type == QueryEntityType::Boolean) {
@@ -321,15 +261,109 @@ set<vector<string>> PqlEvaluator::executeComplexQuery(Query q) {
     }
   }
   if (!tables.empty()) {
-    for (int i = 1; i < tables.size(); i++) {
-      tables[0].mergeWith(tables[i]);
-    }
-    set<vector<string>> complexResult = resultExtractor(tables[0], q);
-    return complexResult;
+		Optimizer optimizer(tables);
+		Table complexResultTable = optimizer.getResult();
+		//optimization
+
+	/*	for (int i = 1; i < tables.size(); i++) {
+      tables[0].mergewith(tables[i]);
+    }*/
+    dataRows complexresult = resultExtractor(complexResultTable, q);
+    return complexresult;
   }
-	set<vector<string>> simpleResult = executeSimpleQuery(q.target);
+	dataRows simpleResult = executeSimpleQuery(q.target);
   return simpleResult;
 
+}
+
+ClauseResult PqlEvaluator::executeOneClause(Clause c) {
+	Table data(0);
+	ClauseResult result;
+	if (c.clauseType == ClauseType::ModifiesS) {
+		if ((c.parameters.front().type == QueryEntityType::Procedure ||
+			c.parameters.front().type == QueryEntityType::Name)) {
+			data = mypkb.getModifiesP();
+		}
+		else {
+			data = mypkb.getModifiesS();
+		}
+		result = dataFilter(data, c);
+	}
+	else if (c.clauseType == ClauseType::UsesS) {
+		if ((c.parameters.front().type == QueryEntityType::Procedure ||
+			c.parameters.front().type == QueryEntityType::Name)) {
+			data = mypkb.getUsesP();
+		}
+		else {
+			data = mypkb.getUsesS();
+		}
+		result = dataFilter(data, c);
+
+	}
+	else if (c.clauseType == ClauseType::Parent) {
+		data = mypkb.getParent();
+		result = dataFilter(data, c);
+	}
+	else if (c.clauseType == ClauseType::ParentT) {
+		data = mypkb.getParentT();
+		result = dataFilter(data, c);
+	}
+	else if (c.clauseType == ClauseType::Follows) {
+		data = mypkb.getFollows();
+		result = dataFilter(data, c);
+	}
+	else if (c.clauseType == ClauseType::FollowsT) {
+		data = mypkb.getFollowsT();
+		result = dataFilter(data, c);
+	}
+	else if (c.clauseType == ClauseType::AssignPatt) {
+		if (isConstant(c.parameters[2].type)) {
+			if (isPartial(c.parameters[2].name)) {
+				data = mypkb.
+					getAssignMatches(removeUnderscore(c.parameters[2].name),
+						true);
+			}
+			else {
+				data = mypkb.getAssignMatches((c.parameters[2].name), false);
+			}
+		}
+		else {
+			data = mypkb.getAssignMatches("", true);
+		}
+		result = dataFilter(data, c);
+	}
+	else if (c.clauseType == ClauseType::WhilePatt) {
+		data = mypkb.getWhileMatches();
+		result = dataFilter(data, c);
+	}
+	else if (c.clauseType == ClauseType::IfPatt) {
+		data = mypkb.getIfMatches();
+		result = dataFilter(data, c);
+	}
+
+	else if (c.clauseType == ClauseType::With) {
+		result = withEvaluate(c);
+	}
+	else if (c.clauseType == ClauseType::Next) {
+		data = mypkb.getNext();
+		result = dataFilter(data, c);
+	}
+	else if (c.clauseType == ClauseType::Calls) {
+		data = mypkb.getCalls();
+		result = dataFilter(data, c);
+	}
+	else if (c.clauseType == ClauseType::CallsT) {
+		data = mypkb.getCallsT();
+		result = dataFilter(data, c);
+	}
+	else if (c.clauseType == ClauseType::NextT) {
+		result = NextTEvaluate(c);
+	}
+	else if (c.clauseType == ClauseType::Affects) {
+		result = AffectEvaluate(c);
+	}/*else if (c.clauseType == ClauseType::AffectsT) {
+	}*/
+	return result;
 }
 
 ClauseResult PqlEvaluator::dataFilter(Table data, Clause c) {
@@ -413,7 +447,7 @@ ClauseResult PqlEvaluator::withEvaluate(Clause c) {
   if (expectation.empty()) {
     return ClauseResult(true, true);
   }
-  set<vector<string>> data;
+  dataRows data;
   Table t(expectation.size());
   if (expectation.size() == 1) {
     data = tables[0].getData({expectation[0].first});
@@ -479,7 +513,7 @@ ClauseResult PqlEvaluator::NextTEvaluate(Clause c) {
 		result = pkbData;
 	}
 	else if (isSynonym(qe1.type)) {
-		set<vector<string>> col1 = getdataByTtype(qe1).getData();
+		dataRows col1 = getdataByTtype(qe1).getData();
 		Table pkbData(2);
 		pkbData.setHeader({ "1","2" });
 		for (vector<string> row : col1) {
@@ -499,7 +533,7 @@ ClauseResult PqlEvaluator::NextTEvaluate(Clause c) {
 		result = pkbData;
 	}
 	else if (isSynonym(qe2.type)) {
-		set<vector<string>> col2 = getdataByTtype(qe2).getData();
+		dataRows col2 = getdataByTtype(qe2).getData();
 		Table pkbData(2);
 		pkbData.setHeader({ "1","2" });
 		for (vector<string> row : col2) {
@@ -601,7 +635,7 @@ ClauseResult PqlEvaluator::AffectEvaluate(Clause c) {
 		result = pkbData;
 	}
 	else if (isSynonym(qe1.type)) {
-		set<vector<string>> col1 = getdataByTtype(qe1).getData();
+		dataRows col1 = getdataByTtype(qe1).getData();
 		Table pkbData(2);
 		pkbData.setHeader({ "1","2" });
 		for (vector<string> row : col1) {
@@ -621,7 +655,7 @@ ClauseResult PqlEvaluator::AffectEvaluate(Clause c) {
 		result = pkbData;
 	}
 	else if (isSynonym(qe2.type)) {
-		set<vector<string>> col2 = getdataByTtype(qe2).getData();
+		dataRows col2 = getdataByTtype(qe2).getData();
 		Table pkbData(2);
 		pkbData.setHeader({ "1","2" });
 		for (vector<string> row : col2) {
