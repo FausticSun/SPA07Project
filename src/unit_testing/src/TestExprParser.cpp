@@ -83,3 +83,11 @@ TEST_CASE("Single relational operator") {
   auto postfixString = Parser::tokensToString(postfix);
   REQUIRE(postfixString == " a b == ");
 }
+
+TEST_CASE("Assignment should fail") {
+  std::string expr = R"(a = b)";
+  std::stringstream ss;
+  ss << expr;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  REQUIRE_THROWS(Parser::parseExpr(tokens));
+}

@@ -92,7 +92,7 @@ procedure D {
 }
 
 procedure E {
-	if (g = 0) then { \\54
+	if (g == 0) then { \\54
 		while (h < 1) { \\55
 			if (j > 2) then { \\56 
 				k = 1; \\57
