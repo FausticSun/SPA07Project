@@ -85,25 +85,26 @@ Table selfJoin(Table t) {
 	}
 }
 
-vector<string> merge(vector<string> s1,vector<string> s2) {
-	vector<pair<int, int>> commonIndices;
-	set<int> otherDiffIndices;
-	for (int j = 0; j < s2.size(); ++j) {
-		otherDiffIndices.insert(j);
-	}
-	for (int i = 0; i < s1.size(); ++i) {
-		for (int j = 0; j < s2.size(); ++j) {
-			if (s1[i] == s2[j]) {
-				commonIndices.emplace_back(i, j);
-				otherDiffIndices.erase(j);
-				break;
+bool isJoined(Table s1,Table s2) {
+	vector<string> header1 = s1.getHeader();
+	vector<string> header2 = s2.getHeader();
+	for (int i = 0; i < header1.size(); ++i) {
+		for (int j = 0; j < header2.size(); ++j) {
+			if (header1[i] == header2[j]) {
+				return true;
 			}
 		}
 	}
-	for (int i : otherDiffIndices) {
-		s1.push_back(s2[i]);
+	return false;
+}
+
+bool isJoined(vector<Table> s1, Table s2) {
+	for (Table t : s1) {
+		if (isJoined(t, s2)) {
+			return true;
+		}
 	}
-	return s1;
+	return false;
 }
 
 
@@ -260,15 +261,35 @@ set<vector<string>> PqlEvaluator::executeComplexQuery(Query q) {
       tables.push_back(result.data);
     }
   }
-  if (!tables.empty()) {
-		Optimizer optimizer(tables);
-		Table complexResultTable = optimizer.getResult();
-		//optimization
 
+	divideGroups(tables, q.target);
+	vector<Table> relevantResults;
+	for (vector<Table> t : relevantGroups) {
+		Optimizer optimizer(t);
+		Table groupResult = optimizer.getResult();
+		if (groupResult.empty()) {
+			return validateResult(groupResult, q.target).getData();
+		}
+		relevantResults.push_back(groupResult);
+	}
+	vector<Table> inrelevantResults;
+	for (vector<Table> t : inrelevantGroups) {
+		Optimizer optimizer(t);
+		Table groupResult = optimizer.getResult();
+		if (groupResult.empty()) {
+			return validateResult(groupResult, q.target).getData();
+		}
+	}
+
+  if (!relevantResults.empty()) {
+		//optimization
+		for (int i = 1; i < tables.size(); i++) {
+			relevantResults[0].mergeWith(tables[i]);
+		}
 	/*	for (int i = 1; i < tables.size(); i++) {
       tables[0].mergewith(tables[i]);
     }*/
-    dataRows complexresult = resultExtractor(complexResultTable, q);
+    dataRows complexresult = resultExtractor(relevantResults[0],q);
     return complexresult;
   }
 	dataRows simpleResult = executeSimpleQuery(q.target);
@@ -364,6 +385,38 @@ ClauseResult PqlEvaluator::executeOneClause(Clause c) {
 	}/*else if (c.clauseType == ClauseType::AffectsT) {
 	}*/
 	return result;
+}
+
+void PqlEvaluator::divideGroups(vector<Table> tables,vector<QueryEntity> targets) {
+	bool hasJoin = false;
+	Table target = targetsToTable(targets);
+	vector<Table> copies(tables.begin(), tables.end());
+	while (!copies.empty()) {
+		vector<Table> present;
+		vector<Table>::iterator iter = copies.begin();
+		while (iter != copies.end()) {
+			if (present.empty()) {
+				hasJoin = isJoined(*iter, target)|| targets.front().type == QueryEntityType::Boolean;
+				present.push_back(*iter);
+				iter = copies.erase(iter);
+			}
+			else if (isJoined(present, *iter)) {
+				hasJoin = isJoined(*iter,target) || isJoined(present,target)|| targets.front().type == QueryEntityType::Boolean;
+				present.push_back(*iter);
+				iter = copies.erase(iter);
+			}
+			else {
+				iter++;
+			}
+		}
+		if (hasJoin) {
+			relevantGroups.push_back(present);
+		}
+		else {
+			inrelevantGroups.push_back(present);
+		}
+		hasJoin = false;
+	}
 }
 
 ClauseResult PqlEvaluator::dataFilter(Table data, Clause c) {
@@ -779,6 +832,18 @@ Table PqlEvaluator::getdataWith(QueryEntity q) {
   return result;
 }
 
+Table PqlEvaluator::validateResult(Table t,vector<QueryEntity> target) {
+	if (t.empty()) {
+		if (target.front().type == QueryEntityType::Boolean) {
+			Table resultTable(1);
+			resultTable.insertRow({ "FALSE" });
+			return resultTable;
+		}
+		Table resultTable(0);
+		return resultTable;
+	}
+}
+
 StatementType PqlEvaluator::convertQType(QueryEntityType q) {
   if (q == QueryEntityType::While)
     return StatementType::While;
@@ -794,6 +859,45 @@ StatementType PqlEvaluator::convertQType(QueryEntityType q) {
     return StatementType::Assign;
   if (q == QueryEntityType::Stmt || q == QueryEntityType::Progline)
     return StatementType::Stmt;
+}
+
+string PqlEvaluator::convertClauseTypeToString(ClauseType ct) {
+	switch (ct)
+	{
+	case ClauseType::Affects:
+		return "affects";
+		break;
+	case ClauseType::AffectsT:
+		return "affectsT";
+		break;
+	case ClauseType::NextT:
+		return "nextT";
+		break;
+	default:
+		return "";
+		break;
+	}
+}
+
+Table PqlEvaluator::targetsToTable (vector<QueryEntity> t) {
+	set<string> result;
+	for (QueryEntity qe : t) {
+		if (isAttr(qe.type)) {
+			vector<string> names = split(qe.name);
+			result.insert(names[0]);
+		}
+		else if (t.front().type == QueryEntityType::Boolean) {
+		
+		}
+		else {
+			string name = qe.name;
+			result.insert(name);
+		}
+	}
+	vector<string> newTargets(result.begin(), result.end());
+	Table table(newTargets.size());
+	table.setHeader(newTargets);
+	return table;
 }
 
 bool PqlEvaluator::isSynonym(QueryEntityType q) {
