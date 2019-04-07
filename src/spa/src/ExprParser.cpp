@@ -49,8 +49,8 @@ std::list<Token> parseExpr(std::list<Token> &tokens) {
     else if (t == ExprTokens::Not) {
       stack.push_back(t);
     }
-    // Handle operator token
-    else if (t.type == TokenType::Operator) {
+    // Handle operator token that is mapped
+    else if (precedenceMap.count(t)) {
       // While (operator at the top of the stack is not a parenthesis)
       // and ((function is at the top of the stack)
       // or (operator at the top of the stack has greater or equal
