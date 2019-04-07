@@ -129,9 +129,36 @@ Table PKB::getCalls() const { return callsTable; }
 Table PKB::getCallsT() const { return callsTTable; }
 Table PKB::getNext() const { return nextTable; }
 
-Table PKB::getNextT() const { return cfg.getNextT(); }
+bool PKB::isNextT(int start, int end) const { return cfg.isNextT(start, end); }
 Table PKB::getNextT(int s, bool isLeftConstant) const {
   return cfg.getNextT(s, isLeftConstant);
+}
+Table PKB::getNextT() const { return cfg.getNextT(); }
+
+bool PKB::isAffects(int a1, int a2) const {
+  // Only query from CFG if a1 and a2 are assign statements (check to be
+  // removed)
+  auto assignStmts = stmtTable.at(StatementType::Assign);
+  if (assignStmts.find(a1) == assignStmts.end() ||
+      assignStmts.find(a2) == assignStmts.end()) {
+    return false;
+  } else {
+    return cfg.isAffects(a1, a2, usesSTable, modifiesSTable);
+  }
+}
+Table PKB::getAffects(int a1, bool isLeftConstant) const {
+  // Only query from CFG if a1 is assign statement (check to be removed)
+  auto assignStmts = stmtTable.at(StatementType::Assign);
+  if (assignStmts.find(a1) == assignStmts.end()) {
+    return Table{1};
+  } else {
+    return cfg.getAffects(a1, isLeftConstant, usesSTable, modifiesSTable,
+                          assignStmts);
+  }
+}
+Table PKB::getAffects() const {
+  auto assignStmts = stmtTable.at(StatementType::Assign);
+  return cfg.getAffects(usesSTable, modifiesSTable, assignStmts);
 }
 
 Table PKB::getCallProcNameTable() const { return callProcNameTable; }
