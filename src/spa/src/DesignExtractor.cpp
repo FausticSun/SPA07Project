@@ -210,6 +210,44 @@ void populateCFG(std::unique_ptr<PKB> &pkb) {
   pkb->setCFG(graph);
 }
 
+void populateAssignMap(std::unique_ptr<PKB> &pkb) {
+  auto assignStmtTable = pkb->getStmtType(StatementType::Assign);
+  assignStmtTable.setHeader({"a"});
+  auto modifiesTable = pkb->getModifiesS();
+  modifiesTable.setHeader({"a", "v"});
+  modifiesTable.mergeWith(assignStmtTable);
+  for (auto data : modifiesTable.getData()) {
+    pkb->setAssignMap(std::stoi(data[0]), data[1]);
+  }
+  auto usesTable = pkb->getUsesS();
+  usesTable.setHeader({"a", "v"});
+  usesTable.mergeWith(assignStmtTable);
+  for (auto data : usesTable.getData()) {
+    pkb->setAssignMap(std::stoi(data[0]), data[1]);
+  }
+}
+
+void populateStmtMap(std::unique_ptr<PKB> &pkb) {
+  for (auto stmtNo : pkb->getStmtType(StatementType::Assign).getData()) {
+    pkb->setStmtMap(std::stoi(stmtNo[0]), StatementType::Assign);
+  }
+  for (auto stmtNo : pkb->getStmtType(StatementType::Call).getData()) {
+    pkb->setStmtMap(std::stoi(stmtNo[0]), StatementType::Call);
+  }
+  for (auto stmtNo : pkb->getStmtType(StatementType::If).getData()) {
+    pkb->setStmtMap(std::stoi(stmtNo[0]), StatementType::If);
+  }
+  for (auto stmtNo : pkb->getStmtType(StatementType::Print).getData()) {
+    pkb->setStmtMap(std::stoi(stmtNo[0]), StatementType::Print);
+  }
+  for (auto stmtNo : pkb->getStmtType(StatementType::Read).getData()) {
+    pkb->setStmtMap(std::stoi(stmtNo[0]), StatementType::Read);
+  }
+  for (auto stmtNo : pkb->getStmtType(StatementType::While).getData()) {
+    pkb->setStmtMap(std::stoi(stmtNo[0]), StatementType::While);
+  }
+}
+
 void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {
   validateProcs(pkb);
   validateCyclicCalls(pkb);
@@ -220,4 +258,6 @@ void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {
   populateModifiesS(pkb);
   populateUsesAndModifiesC(pkb);
   populateCFG(pkb);
+  populateAssignMap(pkb);
+  populateStmtMap(pkb);
 }
