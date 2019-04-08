@@ -6,6 +6,8 @@
 #include <memory>
 
 namespace Parser {
+enum class RefType { EntRef, StmtRef, LineRef };
+
 namespace PQLTokens {
 // Design Entities
 const static Lexer::Token Stmt{Lexer::TokenType::Identifier, "stmt"};
@@ -28,6 +30,18 @@ const static Lexer::Token That{Lexer::TokenType::Identifier, "that"};
 const static Lexer::Token Pattern{Lexer::TokenType::Identifier, "pattern"};
 const static Lexer::Token With{Lexer::TokenType::Identifier, "with"};
 
+// Relations
+const static Lexer::Token Modifies{Lexer::TokenType::Identifier, "Modifies"};
+const static Lexer::Token Uses{Lexer::TokenType::Identifier, "Uses"};
+const static Lexer::Token Calls{Lexer::TokenType::Identifier, "Calls"};
+const static Lexer::Token Parent{Lexer::TokenType::Identifier, "Parent"};
+const static Lexer::Token Follows{Lexer::TokenType::Identifier, "Follows"};
+const static Lexer::Token Next{Lexer::TokenType::Identifier, "Next"};
+const static Lexer::Token Affects{Lexer::TokenType::Identifier, "Affects"};
+const static Lexer::Token NextBip{Lexer::TokenType::Identifier, "NextBip"};
+const static Lexer::Token AffectsBip{Lexer::TokenType::Identifier,
+                                     "AffectsBip"};
+
 // Other keywords
 const static Lexer::Token Boolean{Lexer::TokenType::Identifier, "BOOLEAN"};
 const static Lexer::Token And{Lexer::TokenType::Identifier, "and"};
@@ -43,9 +57,11 @@ const static Lexer::Token Comma{Lexer::TokenType::Delimiter, ","};
 const static Lexer::Token Period{Lexer::TokenType::Delimiter, "."};
 const static Lexer::Token Equals{Lexer::TokenType::Operator, "="};
 const static Lexer::Token Star{Lexer::TokenType::Operator, "*"};
+const static Lexer::Token Quote{Lexer::TokenType::Delimiter, "\""};
 
-// Identifier
+// General
 const static Lexer::Token Identifier{Lexer::TokenType::Identifier, ""};
+const static Lexer::Token Number{Lexer::TokenType::Number, ""};
 
 static std::map<Lexer::Token, QueryEntityType> tokenEntityMap = {
     std::make_pair(PQLTokens::Stmt, QueryEntityType::Stmt),
@@ -60,6 +76,10 @@ static std::map<Lexer::Token, QueryEntityType> tokenEntityMap = {
     std::make_pair(PQLTokens::Prog, QueryEntityType::Progline),
     std::make_pair(PQLTokens::Procedure, QueryEntityType::Procedure)};
 
+static std::set<Lexer::Token> transitiveRel = {
+    PQLTokens::Calls,     PQLTokens::Parent,  PQLTokens::Follows,
+    PQLTokens::Next,      PQLTokens::Affects, PQLTokens::NextBip,
+    PQLTokens::AffectsBip};
 }; // namespace PQLTokens
 
 class PQLParser {
@@ -75,30 +95,34 @@ private:
   void parseClauses();
 
   // Such that
-  void parseResultCL();
+  void parseResultCl();
   void parseTuple();
 
   // With
-  void parseWithCL();
+  void parseWithCl();
   void parseAttrCond();
   void parseAttrCompare();
   void parseAttrRef();
 
   // Such That
-  void parseSuchThatCL();
+  void parseSuchThatCl();
   void parseRelCond();
   void parseRelRef();
 
   // Pattern
-  void parsePatternCL();
+  void parsePatternCl();
   void parsePatternCond();
+  void parsePattern();
   void parseAssign();
   void parseWhile();
   void parseIf();
+  void parseExprSpec();
+  std::string parseQuotedExpr();
 
   // General
   void parseRef();
-  void praseEntRef();
+  void parseGenRef();
+  void parseEntRef();
   void parseStmtRef();
   void parseLineRef();
   void parseElem();
