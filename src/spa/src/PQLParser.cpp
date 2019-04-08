@@ -108,12 +108,6 @@ void PQLParser::parseAttrCompare() {
   parseRef();
 }
 
-void PQLParser::parseAttrRef() {
-  expect(PQLTokens::Identifier);
-  expect(PQLTokens::Period);
-  expect(PQLTokens::Identifier);
-}
-
 void PQLParser::parseSuchThatCl() {
   expect(PQLTokens::Such);
   expect(PQLTokens::That);
@@ -190,17 +184,25 @@ void PQLParser::parseIf() {
   expect(PQLTokens::RightParentheses);
 }
 
-void PQLParser::parseExprSpec() {
+QueryEntity PQLParser::parseExprSpec() {
+  QueryEntity ent;
+  std::string expr = "";
   std::list<Token> exprTokens;
   if (tokens.front() == PQLTokens::Underscore) {
     expect(PQLTokens::Underscore);
     if (tokens.front() == PQLTokens::Quote) {
-      parseQuotedExpr;
+      expr = parseQuotedExpr();
       expect(PQLTokens::Underscore);
+      expr = "_" + expr + "_";
+    } else {
+      ent.type = QueryEntityType::Underscore;
+      ent.name = "_";
     }
   } else {
-    parseQuotedExpr();
+    expr = parseQuotedExpr();
   }
+  ent.type = QueryEntityType::Expression;
+  ent.name = expr;
 }
 
 std::string PQLParser::parseQuotedExpr() {
@@ -219,75 +221,122 @@ std::string PQLParser::parseQuotedExpr() {
   return expr;
 }
 
-void PQLParser::parseRef() {
+QueryEntity PQLParser::parseAttrRef() {
+  auto ent = parseSynonym();
+  expect(PQLTokens::Period);
+  auto attrToken = expect(PQLTokens::Identifier);
+  if (attrToken.value != "varName" && attrToken.value != "procName" &&
+      attrToken.value != "stmt") {
+    throw std::logic_error("Unexpected attribute");
+  }
+  ent.name += "." + attrToken.value;
+  if (attrToken == PQLTokens::Stmt) {
+    expect(PQLTokens::Hash);
+    ent.name += "#";
+  }
+  ent.attrRefSynonymType = ent.type;
+  ent.type = QueryEntityType::Attrref;
+  return ent;
+}
+
+QueryEntity PQLParser::parseRef() {
   if (tokens.front() == PQLTokens::Quote) {
-    expect(PQLTokens::Quote);
-    expect(PQLTokens::Identifier);
-    expect(PQLTokens::Quote);
+    return parseName();
   } else if (tokens.front().type == TokenType::Number) {
-    expect(PQLTokens::Number);
+    return parseLineNo();
   } else if (*std::next(tokens.begin()) == PQLTokens::Period) {
-    parseAttrRef();
+    return parseAttrRef();
   } else {
-    parseSynonym();
+    return parseSynonym();
   }
 }
 
-void PQLParser::parseGenRef() {
+QueryEntity PQLParser::parseGenRef() {
   if (tokens.front() == PQLTokens::Underscore) {
-    expect(PQLTokens::Underscore);
+    return parseUnderscore();
   } else if (tokens.front() == PQLTokens::Quote) {
-    expect(PQLTokens::Quote);
-    expect(PQLTokens::Identifier);
-    expect(PQLTokens::Quote);
+    return parseName();
   } else if (tokens.front() == PQLTokens::Number) {
-    expect(PQLTokens::Number);
+    return parseLineNo();
   } else {
-    parseSynonym();
+    return parseSynonym();
   }
 }
 
-void PQLParser::parseEntRef() {
+QueryEntity PQLParser::parseEntRef() {
   if (tokens.front() == PQLTokens::Underscore) {
-    expect(PQLTokens::Underscore);
+    return parseUnderscore();
   } else if (tokens.front() == PQLTokens::Quote) {
-    expect(PQLTokens::Quote);
-    expect(PQLTokens::Identifier);
-    expect(PQLTokens::Quote);
+    return parseName();
   } else {
-    parseSynonym();
+    return parseSynonym();
   }
 }
 
-void PQLParser::parseStmtRef() {
+QueryEntity PQLParser::parseStmtRef() {
   if (tokens.front() == PQLTokens::Underscore) {
-    expect(PQLTokens::Underscore);
+    return parseUnderscore();
   } else if (tokens.front() == PQLTokens::Number) {
-    expect(PQLTokens::Number);
+    return parseLineNo();
   } else {
-    parseSynonym();
+    return parseSynonym();
   }
 }
 
-void PQLParser::parseLineRef() {
+QueryEntity PQLParser::parseLineRef() {
   if (tokens.front() == PQLTokens::Underscore) {
-    expect(PQLTokens::Underscore);
+    return parseUnderscore();
   } else if (tokens.front() == PQLTokens::Number) {
-    expect(PQLTokens::Number);
+    return parseLineNo();
   } else {
-    parseSynonym();
+    return parseSynonym();
   }
 }
 
-void PQLParser::parseElem() {
+QueryEntity PQLParser::parseElem() {
   if (*std::next(tokens.begin()) == PQLTokens::Period) {
-    parseAttrRef();
+    return parseAttrRef();
   } else {
-    parseSynonym();
+    return parseSynonym();
   }
 }
 
-void PQLParser::parseSynonym() { expect(PQLTokens::Identifier); }
+QueryEntity PQLParser::parseSynonym() {
+  auto synToken = expect(PQLTokens::Identifier);
+  if (!(declarations.count(synToken.value))) {
+    throw std::logic_error("Synonym " + synToken.value + " not declared");
+  }
+  QueryEntity ent;
+  ent.name = synToken.value;
+  ent.type = declarations.at(synToken.value);
+  return ent;
+}
+
+QueryEntity PQLParser::parseUnderscore() {
+  expect(PQLTokens::Underscore);
+  QueryEntity ent;
+  ent.name = "_";
+  ent.type = QueryEntityType::Underscore;
+  return ent;
+}
+
+QueryEntity PQLParser::parseLineNo() {
+  auto noToken = expect(PQLTokens::Number);
+  QueryEntity ent;
+  ent.name = noToken.value;
+  ent.type = QueryEntityType::Line;
+  return ent;
+}
+
+QueryEntity PQLParser::parseName() {
+  expect(PQLTokens::Quote);
+  auto nameToken = expect(PQLTokens::Identifier);
+  expect(PQLTokens::Quote);
+  QueryEntity ent;
+  ent.name = nameToken.value;
+  ent.type = QueryEntityType::Name;
+  return ent;
+}
 
 PQLParser::PQLParser(std::list<Lexer::Token> tokens) : tokens(tokens) {
   parseQuery();

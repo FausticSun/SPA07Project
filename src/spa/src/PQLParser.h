@@ -58,6 +58,7 @@ const static Lexer::Token Period{Lexer::TokenType::Delimiter, "."};
 const static Lexer::Token Equals{Lexer::TokenType::Operator, "="};
 const static Lexer::Token Star{Lexer::TokenType::Operator, "*"};
 const static Lexer::Token Quote{Lexer::TokenType::Delimiter, "\""};
+const static Lexer::Token Hash{Lexer::TokenType::Delimiter, "#"};
 
 // General
 const static Lexer::Token Identifier{Lexer::TokenType::Identifier, ""};
@@ -102,7 +103,6 @@ private:
   void parseWithCl();
   void parseAttrCond();
   void parseAttrCompare();
-  void parseAttrRef();
 
   // Such That
   void parseSuchThatCl();
@@ -116,17 +116,21 @@ private:
   void parseAssign();
   void parseWhile();
   void parseIf();
-  void parseExprSpec();
+  QueryEntity parseExprSpec();
   std::string parseQuotedExpr();
 
   // General
-  void parseRef();
-  void parseGenRef();
-  void parseEntRef();
-  void parseStmtRef();
-  void parseLineRef();
-  void parseElem();
-  void parseSynonym();
+  QueryEntity parseAttrRef();
+  QueryEntity parseRef();
+  QueryEntity parseGenRef();
+  QueryEntity parseEntRef();
+  QueryEntity parseStmtRef();
+  QueryEntity parseLineRef();
+  QueryEntity parseElem();
+  QueryEntity parseSynonym();
+  QueryEntity parseUnderscore();
+  QueryEntity parseLineNo();
+  QueryEntity parseName();
 
 public:
   PQLParser(std::list<Lexer::Token>);
