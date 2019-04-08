@@ -164,7 +164,7 @@ static std::map<std::pair<QueryEntityType, std::string>, AttrRefType>
         std::make_pair(std::make_pair(QueryEntityType::Print, "varName"),
                        AttrRefType::Name),
         std::make_pair(std::make_pair(QueryEntityType::Constant, "value"),
-                       AttrRefType::Name),
+                       AttrRefType::Integer),
         std::make_pair(std::make_pair(QueryEntityType::Stmt, "stmt#"),
                        AttrRefType::Integer),
         std::make_pair(std::make_pair(QueryEntityType::Read, "stmt#"),

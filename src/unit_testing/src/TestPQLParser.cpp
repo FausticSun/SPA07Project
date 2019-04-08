@@ -119,6 +119,32 @@ TEST_CASE("Invalid selector") {
   REQUIRE_THROWS(Parser::parsePQL(tokens));
 }
 
+TEST_CASE("Attribute select") {
+  std::string pql = R"(
+  stmt s;
+  Select s.stmt#
+  )";
+  std::stringstream ss;
+  ss << pql;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  auto query = Parser::parsePQL(tokens);
+  auto selectors = query.selectors;
+  REQUIRE(std::find(selectors.begin(), selectors.end(),
+                    QueryEntity(QueryEntityType::Attrref, "s.stmt#",
+                                QueryEntityType::Stmt)) != selectors.end());
+}
+
+TEST_CASE("Invalid attribute select") {
+  std::string pql = R"(
+  stmt s;
+  Select s.value
+  )";
+  std::stringstream ss;
+  ss << pql;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  REQUIRE_THROWS(Parser::parsePQL(tokens));
+}
+
 TEST_CASE("All delcarations while selecting all") {
   std::string pql = R"(
   stmt s; read r; print p; call cl;
@@ -407,5 +433,88 @@ TEST_CASE("Various patterns") {
       Clause(ClauseType::IfPatt,
              {QueryEntity(QueryEntityType::If, "ifs"),
               QueryEntity(QueryEntityType::Variable, "v")})};
+  REQUIRE(clauses == toVerify);
+}
+
+TEST_CASE("Single with clause") {
+  std::string pql = R"(
+  assign a1, a2;
+  Select a1
+  with a1.stmt# = a2.stmt#
+  )";
+  std::stringstream ss;
+  ss << pql;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  auto query = Parser::parsePQL(tokens);
+  auto clauses = query.clauses;
+  std::vector<Clause> toVerify = {
+      Clause(ClauseType::With,
+             {QueryEntity(QueryEntityType::Attrref, "a1.stmt#",
+                          QueryEntityType::Assign),
+              QueryEntity(QueryEntityType::Attrref, "a2.stmt#",
+                          QueryEntityType::Assign)}),
+  };
+  REQUIRE(clauses == toVerify);
+}
+
+TEST_CASE("Various with clause") {
+  std::string pql = R"(
+  procedure proc; call c; variable v;
+  read r; print p; constant const; stmt s;
+  while w; if ifs; assign a;
+  prog_line pl;
+  Select p
+  with proc.procName = c.procName
+  and v.varName = r.varName
+  and p.varName = "abc"
+  and const.value = s.stmt#
+  and r.stmt# = p.stmt#
+  and c.stmt# = w.stmt#
+  and ifs.stmt# = a.stmt#
+  and pl = 5
+  )";
+  std::stringstream ss;
+  ss << pql;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  auto query = Parser::parsePQL(tokens);
+  auto clauses = query.clauses;
+  std::vector<Clause> toVerify = {
+      Clause(ClauseType::With,
+             {QueryEntity(QueryEntityType::Attrref, "proc.procName",
+                          QueryEntityType::Procedure),
+              QueryEntity(QueryEntityType::Attrref, "c.procName",
+                          QueryEntityType::Call)}),
+      Clause(ClauseType::With,
+             {QueryEntity(QueryEntityType::Attrref, "v.varName",
+                          QueryEntityType::Variable),
+              QueryEntity(QueryEntityType::Attrref, "r.varName",
+                          QueryEntityType::Read)}),
+      Clause(ClauseType::With,
+             {QueryEntity(QueryEntityType::Attrref, "p.varName",
+                          QueryEntityType::Print),
+              QueryEntity(QueryEntityType::Name, "abc")}),
+      Clause(ClauseType::With,
+             {QueryEntity(QueryEntityType::Attrref, "const.value",
+                          QueryEntityType::Constant),
+              QueryEntity(QueryEntityType::Attrref, "s.stmt#",
+                          QueryEntityType::Stmt)}),
+      Clause(ClauseType::With,
+             {QueryEntity(QueryEntityType::Attrref, "r.stmt#",
+                          QueryEntityType::Read),
+              QueryEntity(QueryEntityType::Attrref, "p.stmt#",
+                          QueryEntityType::Print)}),
+      Clause(ClauseType::With,
+             {QueryEntity(QueryEntityType::Attrref, "c.stmt#",
+                          QueryEntityType::Call),
+              QueryEntity(QueryEntityType::Attrref, "w.stmt#",
+                          QueryEntityType::While)}),
+      Clause(ClauseType::With,
+             {QueryEntity(QueryEntityType::Attrref, "ifs.stmt#",
+                          QueryEntityType::If),
+              QueryEntity(QueryEntityType::Attrref, "a.stmt#",
+                          QueryEntityType::Assign)}),
+      Clause(ClauseType::With,
+             {QueryEntity(QueryEntityType::Progline, "pl"),
+              QueryEntity(QueryEntityType::Line, "5")})};
   REQUIRE(clauses == toVerify);
 }

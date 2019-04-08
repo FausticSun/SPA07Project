@@ -311,7 +311,7 @@ QueryEntity PQLParser::parseAttrRef() {
   expect(PQLTokens::Period);
   auto attrToken = expect(PQLTokens::Identifier);
   if (attrToken.value != "varName" && attrToken.value != "procName" &&
-      attrToken.value != "stmt") {
+      attrToken.value != "stmt" && attrToken.value != "value") {
     throw std::logic_error("Unexpected attribute");
   }
   ent.name += "." + attrToken.value;
