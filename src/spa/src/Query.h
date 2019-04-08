@@ -56,8 +56,8 @@ struct QueryEntity {
   QueryEntity(QueryEntityType type, std::string name, QueryEntityType type2)
       : type(type), name(name), attrRefSynonymType(type2){};
 
-  bool operator==(QueryEntity other) {
-    return this->type == other.type && this->name == other.name;
+  friend bool operator==(const QueryEntity &lhs, const QueryEntity &rhs) {
+	  return lhs.type == rhs.type && lhs.name == rhs.name;
   }
 
   QueryEntityType type;
@@ -71,6 +71,10 @@ public:
       : clauseType(clauseType), parameters(parameters){};
   ClauseType clauseType;
   std::vector<QueryEntity> parameters;
+
+  friend bool operator==(const Clause &lhs, const Clause &rhs) {
+	  return lhs.clauseType == rhs.clauseType && lhs.parameters == rhs.parameters;
+  }
 
   bool isValid();
 };

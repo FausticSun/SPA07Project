@@ -50,8 +50,8 @@ const static Lexer::Token And{Lexer::TokenType::Identifier, "and"};
 const static Lexer::Token Underscore{Lexer::TokenType::Delimiter, "_"};
 const static Lexer::Token LeftParentheses{Lexer::TokenType::Delimiter, "("};
 const static Lexer::Token RightParentheses{Lexer::TokenType::Delimiter, ")"};
-const static Lexer::Token LeftChevron{Lexer::TokenType::Delimiter, "<"};
-const static Lexer::Token RightChevron{Lexer::TokenType::Delimiter, ">"};
+const static Lexer::Token LeftChevron{Lexer::TokenType::Operator, "<"};
+const static Lexer::Token RightChevron{Lexer::TokenType::Operator, ">"};
 const static Lexer::Token Semicolon{Lexer::TokenType::Delimiter, ";"};
 const static Lexer::Token Comma{Lexer::TokenType::Delimiter, ","};
 const static Lexer::Token Period{Lexer::TokenType::Delimiter, "."};
@@ -126,9 +126,9 @@ static std::map<ClauseType, std::pair<RefType, RefType>> allowedRefTypesMap = {
     std::make_pair(ClauseType::CallsT,
                    std::make_pair(RefType::Ent, RefType::Ent)),
     std::make_pair(ClauseType::UsesS,
-                   std::make_pair(RefType::Both, RefType::Stmt)),
+                   std::make_pair(RefType::Both, RefType::Ent)),
     std::make_pair(ClauseType::ModifiesS,
-                   std::make_pair(RefType::Both, RefType::Stmt)),
+                   std::make_pair(RefType::Both, RefType::Ent)),
 
 };
 static std::map<RefType, std::set<QueryEntityType>> refTypeSpecificTypesMap = {
@@ -183,9 +183,9 @@ private:
   void parsePatternCl();
   void parsePatternCond();
   void parsePattern();
-  void parseAssign();
-  void parseWhile();
-  void parseIf();
+  void parseAssign(QueryEntity);
+  void parseWhile(QueryEntity);
+  void parseIf(QueryEntity);
   QueryEntity parseExprSpec();
   std::string parseQuotedExpr();
 

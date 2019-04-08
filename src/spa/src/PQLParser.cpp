@@ -24,7 +24,7 @@ Lexer::Token PQLParser::expect(Lexer::Token token) {
 }
 
 void PQLParser::parseQuery() {
-  while (tokens.front().value != "Select") {
+  while (!tokens.empty() && tokens.front().value != "Select") {
     parseDeclaration();
   }
   expect(PQLTokens::Select);
@@ -44,6 +44,9 @@ void PQLParser::parseDeclaration() {
     throw std::logic_error("Invalid declaration");
   }
   auto synonymToken = expect(PQLTokens::Identifier);
+  if (declarations.count(synonymToken.value)) {
+    throw std::logic_error("Synonym already declared");
+  }
   declarations.emplace(std::make_pair(
       synonymToken.value, PQLTokens::tokenEntityMap.at(designEntityToken)));
   while (tokens.front() != PQLTokens::Semicolon) {
@@ -97,7 +100,7 @@ void PQLParser::parseWithCl() {
 
 void PQLParser::parseAttrCond() {
   parseAttrCompare();
-  while (tokens.front() == PQLTokens::And) {
+  while (!tokens.empty() && tokens.front() == PQLTokens::And) {
     expect(PQLTokens::And);
     parseAttrCompare();
   }
@@ -120,7 +123,7 @@ void PQLParser::parseSuchThatCl() {
 
 void PQLParser::parseRelCond() {
   parseRelRef();
-  while (tokens.front() == PQLTokens::And) {
+  while (!tokens.empty() && tokens.front() == PQLTokens::And) {
     expect(PQLTokens::And);
     parseRelRef();
   }
@@ -146,7 +149,7 @@ void PQLParser::parseRelRef() {
   auto ref2 = parseGenRef();
   expect(PQLTokens::RightParentheses);
 
-  if (PQLTokens::relClauseMap.count(std::make_pair(relWord, altType))) {
+  if (!PQLTokens::relClauseMap.count(std::make_pair(relWord, altType))) {
     throw std::logic_error("Invalid relation specified");
   }
 
@@ -182,7 +185,7 @@ void PQLParser::parsePatternCl() {
 
 void PQLParser::parsePatternCond() {
   parsePattern();
-  while (tokens.front() == PQLTokens::And) {
+  while (!tokens.empty() && tokens.front() == PQLTokens::And) {
     expect(PQLTokens::And);
     parsePattern();
   }
@@ -192,42 +195,42 @@ void PQLParser::parsePattern() {
   auto syn = parseSynonym();
   switch (syn.type) {
   case QueryEntityType::Assign:
-    parseAssign();
+    parseAssign(syn);
     break;
   case QueryEntityType::While:
-    parseWhile();
+    parseWhile(syn);
     break;
   case QueryEntityType::If:
-    parseIf();
+    parseIf(syn);
     break;
   default:
     throw std::logic_error("Invalid pattern synonym");
   }
 }
 
-void PQLParser::parseAssign() {
+void PQLParser::parseAssign(QueryEntity syn) {
   expect(PQLTokens::LeftParentheses);
   auto entRef = parseEntRef();
   expect(PQLTokens::Comma);
   auto exprRef = parseExprSpec();
   expect(PQLTokens::RightParentheses);
 
-  Clause patternCl(ClauseType::AssignPatt, {entRef, exprRef});
+  Clause patternCl(ClauseType::AssignPatt, {syn, entRef, exprRef});
   query.clauses.push_back(patternCl);
 }
 
-void PQLParser::parseWhile() {
+void PQLParser::parseWhile(QueryEntity syn) {
   expect(PQLTokens::LeftParentheses);
   auto entRef = parseEntRef();
   expect(PQLTokens::Comma);
   expect(PQLTokens::Underscore);
   expect(PQLTokens::RightParentheses);
 
-  Clause patternCl(ClauseType::WhilePatt, {entRef});
+  Clause patternCl(ClauseType::WhilePatt, {syn, entRef});
   query.clauses.push_back(patternCl);
 }
 
-void PQLParser::parseIf() {
+void PQLParser::parseIf(QueryEntity syn) {
   expect(PQLTokens::LeftParentheses);
   auto entRef = parseEntRef();
   expect(PQLTokens::Comma);
@@ -236,7 +239,7 @@ void PQLParser::parseIf() {
   expect(PQLTokens::Underscore);
   expect(PQLTokens::RightParentheses);
 
-  Clause patternCl(ClauseType::IfPatt, {entRef});
+  Clause patternCl(ClauseType::IfPatt, {syn, entRef});
   query.clauses.push_back(patternCl);
 }
 
@@ -253,12 +256,14 @@ QueryEntity PQLParser::parseExprSpec() {
     } else {
       ent.type = QueryEntityType::Underscore;
       ent.name = "_";
+      return ent;
     }
   } else {
     expr = parseQuotedExpr();
   }
   ent.type = QueryEntityType::Expression;
   ent.name = expr;
+  return ent;
 }
 
 std::string PQLParser::parseQuotedExpr() {
@@ -272,6 +277,7 @@ std::string PQLParser::parseQuotedExpr() {
       exprTokens.push_back(tokens.front());
       tokens.pop_front();
     }
+    expect(PQLTokens::Quote);
     expr = Parser::tokensToString(Parser::parseExpr(exprTokens));
   }
   return expr;
@@ -316,7 +322,7 @@ QueryEntity PQLParser::parseGenRef() {
     return parseUnderscore();
   } else if (tokens.front() == PQLTokens::Quote) {
     return parseName();
-  } else if (tokens.front() == PQLTokens::Number) {
+  } else if (tokens.front().type == TokenType::Number) {
     return parseLineNo();
   } else {
     return parseSynonym();
@@ -336,7 +342,7 @@ QueryEntity PQLParser::parseEntRef() {
 QueryEntity PQLParser::parseStmtRef() {
   if (tokens.front() == PQLTokens::Underscore) {
     return parseUnderscore();
-  } else if (tokens.front() == PQLTokens::Number) {
+  } else if (tokens.front().type == TokenType::Number) {
     return parseLineNo();
   } else {
     return parseSynonym();
@@ -346,7 +352,7 @@ QueryEntity PQLParser::parseStmtRef() {
 QueryEntity PQLParser::parseLineRef() {
   if (tokens.front() == PQLTokens::Underscore) {
     return parseUnderscore();
-  } else if (tokens.front() == PQLTokens::Number) {
+  } else if (tokens.front().type == TokenType::Number) {
     return parseLineNo();
   } else {
     return parseSynonym();
@@ -354,10 +360,10 @@ QueryEntity PQLParser::parseLineRef() {
 }
 
 QueryEntity PQLParser::parseElem() {
-  if (*std::next(tokens.begin()) == PQLTokens::Period) {
-    return parseAttrRef();
-  } else {
+  if (tokens.size() < 2 || !(*std::next(tokens.begin()) == PQLTokens::Period)) {
     return parseSynonym();
+  } else {
+    return parseAttrRef();
   }
 }
 
