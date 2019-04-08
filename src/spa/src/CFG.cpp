@@ -324,6 +324,9 @@ std::vector<int> CFG::getAffectsReverse(int start, std::string v,
     int node = linesInNode[i];
     if (modifiesAssignTable.contains({std::to_string(node), v})) {
       results.push_back(node);
+    }
+    if (modifiesTable.contains({std::to_string(node), v})) {
+      // v is modified in any line in the start node
       return results;
     }
     visited[node] = true;

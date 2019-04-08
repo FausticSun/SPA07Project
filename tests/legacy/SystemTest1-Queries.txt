@@ -173,6 +173,11 @@ while w; if ifs; assign a; prog_line n; procedure p; variable v; constant cons; 
 Select a pattern a("n", _" ((o + p - (q + r)) / s - t % (u * v - w) % (x * y / z)"_)
 none
 5000
+35-comment
+while w; if ifs; assign a; prog_line n; procedure p; variable v; constant cons; call c;
+Select a pattern a("n", _" t %(u *v- w)"_)
+77
+5000
 36-comment
 while w; if ifs; assign a; prog_line n; procedure p; variable v; constant cons; call c;
 Select BOOLEAN pattern a("n", _"o+P"_)
