@@ -81,6 +81,74 @@ static std::set<Lexer::Token> transitiveRel = {
     PQLTokens::Calls,     PQLTokens::Parent,  PQLTokens::Follows,
     PQLTokens::Next,      PQLTokens::Affects, PQLTokens::NextBip,
     PQLTokens::AffectsBip};
+
+static std::map<std::pair<Lexer::Token, bool>, ClauseType> relClauseMap = {
+    std::make_pair(std::make_pair(PQLTokens::Follows, false),
+                   ClauseType::Follows),
+    std::make_pair(std::make_pair(PQLTokens::Follows, true),
+                   ClauseType::FollowsT),
+    std::make_pair(std::make_pair(PQLTokens::Parent, false),
+                   ClauseType::Parent),
+    std::make_pair(std::make_pair(PQLTokens::Parent, true),
+                   ClauseType::ParentT),
+    std::make_pair(std::make_pair(PQLTokens::Calls, false), ClauseType::Calls),
+    std::make_pair(std::make_pair(PQLTokens::Calls, true), ClauseType::CallsT),
+    std::make_pair(std::make_pair(PQLTokens::Next, false), ClauseType::Next),
+    std::make_pair(std::make_pair(PQLTokens::Next, true), ClauseType::NextT),
+    std::make_pair(std::make_pair(PQLTokens::Affects, false),
+                   ClauseType::Affects),
+    std::make_pair(std::make_pair(PQLTokens::Affects, true),
+                   ClauseType::AffectsT),
+    std::make_pair(std::make_pair(PQLTokens::Uses, false), ClauseType::UsesS),
+    std::make_pair(std::make_pair(PQLTokens::Modifies, false),
+                   ClauseType::ModifiesS)};
+
+enum class RefType { Ent, Stmt, Both };
+static std::map<ClauseType, std::pair<RefType, RefType>> allowedRefTypesMap = {
+    std::make_pair(ClauseType::Follows,
+                   std::make_pair(RefType::Stmt, RefType::Stmt)),
+    std::make_pair(ClauseType::FollowsT,
+                   std::make_pair(RefType::Stmt, RefType::Stmt)),
+    std::make_pair(ClauseType::Parent,
+                   std::make_pair(RefType::Stmt, RefType::Stmt)),
+    std::make_pair(ClauseType::ParentT,
+                   std::make_pair(RefType::Stmt, RefType::Stmt)),
+    std::make_pair(ClauseType::Next,
+                   std::make_pair(RefType::Stmt, RefType::Stmt)),
+    std::make_pair(ClauseType::NextT,
+                   std::make_pair(RefType::Stmt, RefType::Stmt)),
+    std::make_pair(ClauseType::Affects,
+                   std::make_pair(RefType::Stmt, RefType::Stmt)),
+    std::make_pair(ClauseType::AffectsT,
+                   std::make_pair(RefType::Stmt, RefType::Stmt)),
+    std::make_pair(ClauseType::Calls,
+                   std::make_pair(RefType::Ent, RefType::Ent)),
+    std::make_pair(ClauseType::CallsT,
+                   std::make_pair(RefType::Ent, RefType::Ent)),
+    std::make_pair(ClauseType::UsesS,
+                   std::make_pair(RefType::Both, RefType::Stmt)),
+    std::make_pair(ClauseType::ModifiesS,
+                   std::make_pair(RefType::Both, RefType::Stmt)),
+
+};
+static std::map<RefType, std::set<QueryEntityType>> refTypeSpecificTypesMap = {
+    std::make_pair<RefType, std::set<QueryEntityType>>(
+        RefType::Ent, {QueryEntityType::Procedure, QueryEntityType::Variable,
+                       QueryEntityType::Name, QueryEntityType::Underscore}),
+    std::make_pair<RefType, std::set<QueryEntityType>>(
+        RefType::Stmt,
+        {QueryEntityType::Stmt, QueryEntityType::Read, QueryEntityType::Print,
+         QueryEntityType::Call, QueryEntityType::While, QueryEntityType::If,
+         QueryEntityType::Assign, QueryEntityType::Progline,
+         QueryEntityType::Line, QueryEntityType::Underscore}),
+    std::make_pair<RefType, std::set<QueryEntityType>>(
+        RefType::Both,
+        {QueryEntityType::Stmt, QueryEntityType::Read, QueryEntityType::Print,
+         QueryEntityType::Call, QueryEntityType::While, QueryEntityType::If,
+         QueryEntityType::Assign, QueryEntityType::Progline,
+         QueryEntityType::Procedure, QueryEntityType::Variable,
+         QueryEntityType::Line, QueryEntityType::Name,
+         QueryEntityType::Underscore})};
 }; // namespace PQLTokens
 
 class PQLParser {
@@ -108,6 +176,8 @@ private:
   void parseSuchThatCl();
   void parseRelCond();
   void parseRelRef();
+  void validateSuchThatCl(Clause);
+  void validateRef(QueryEntity, PQLTokens::RefType);
 
   // Pattern
   void parsePatternCl();
