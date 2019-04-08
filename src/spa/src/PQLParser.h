@@ -149,6 +149,36 @@ static std::map<RefType, std::set<QueryEntityType>> refTypeSpecificTypesMap = {
          QueryEntityType::Procedure, QueryEntityType::Variable,
          QueryEntityType::Line, QueryEntityType::Name,
          QueryEntityType::Underscore})};
+
+enum class AttrRefType { Integer, Name };
+static std::map<std::pair<QueryEntityType, std::string>, AttrRefType>
+    attrTypeMap = {
+        std::make_pair(std::make_pair(QueryEntityType::Procedure, "procName"),
+                       AttrRefType::Name),
+        std::make_pair(std::make_pair(QueryEntityType::Call, "procName"),
+                       AttrRefType::Name),
+        std::make_pair(std::make_pair(QueryEntityType::Variable, "varName"),
+                       AttrRefType::Name),
+        std::make_pair(std::make_pair(QueryEntityType::Read, "varName"),
+                       AttrRefType::Name),
+        std::make_pair(std::make_pair(QueryEntityType::Print, "varName"),
+                       AttrRefType::Name),
+        std::make_pair(std::make_pair(QueryEntityType::Constant, "value"),
+                       AttrRefType::Name),
+        std::make_pair(std::make_pair(QueryEntityType::Stmt, "stmt#"),
+                       AttrRefType::Integer),
+        std::make_pair(std::make_pair(QueryEntityType::Read, "stmt#"),
+                       AttrRefType::Integer),
+        std::make_pair(std::make_pair(QueryEntityType::Print, "stmt#"),
+                       AttrRefType::Integer),
+        std::make_pair(std::make_pair(QueryEntityType::Call, "stmt#"),
+                       AttrRefType::Integer),
+        std::make_pair(std::make_pair(QueryEntityType::While, "stmt#"),
+                       AttrRefType::Integer),
+        std::make_pair(std::make_pair(QueryEntityType::If, "stmt#"),
+                       AttrRefType::Integer),
+        std::make_pair(std::make_pair(QueryEntityType::Assign, "stmt#"),
+                       AttrRefType::Integer)};
 }; // namespace PQLTokens
 
 class PQLParser {
@@ -171,6 +201,8 @@ private:
   void parseWithCl();
   void parseAttrCond();
   void parseAttrCompare();
+  PQLTokens::AttrRefType getAttRefType(QueryEntity);
+  std::string getAttrValue(std::string);
 
   // Such That
   void parseSuchThatCl();

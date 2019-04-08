@@ -109,6 +109,16 @@ TEST_CASE("Boolean select") {
                     QueryEntity(QueryEntityType::Boolean)) != selectors.end());
 }
 
+TEST_CASE("Invalid selector") {
+  std::string pql = R"(
+  Select a
+  )";
+  std::stringstream ss;
+  ss << pql;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  REQUIRE_THROWS(Parser::parsePQL(tokens));
+}
+
 TEST_CASE("All delcarations while selecting all") {
   std::string pql = R"(
   stmt s; read r; print p; call cl;
@@ -370,5 +380,32 @@ TEST_CASE("Various assign pattern") {
              {QueryEntity(QueryEntityType::Assign, "a"),
               QueryEntity(QueryEntityType::Underscore, "_"),
               QueryEntity(QueryEntityType::Underscore, "_")})};
+  REQUIRE(clauses == toVerify);
+}
+
+TEST_CASE("Various patterns") {
+  std::string pql = R"(
+  assign a; variable v; while w; if ifs;
+  Select <a, w, ifs>
+  pattern a(v,_)
+  and w(v,_)
+  and ifs(v,_,_)
+  )";
+  std::stringstream ss;
+  ss << pql;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  auto query = Parser::parsePQL(tokens);
+  auto clauses = query.clauses;
+  std::vector<Clause> toVerify = {
+      Clause(ClauseType::AssignPatt,
+             {QueryEntity(QueryEntityType::Assign, "a"),
+              QueryEntity(QueryEntityType::Variable, "v"),
+              QueryEntity(QueryEntityType::Underscore, "_")}),
+      Clause(ClauseType::WhilePatt,
+             {QueryEntity(QueryEntityType::While, "w"),
+              QueryEntity(QueryEntityType::Variable, "v")}),
+      Clause(ClauseType::IfPatt,
+             {QueryEntity(QueryEntityType::If, "ifs"),
+              QueryEntity(QueryEntityType::Variable, "v")})};
   REQUIRE(clauses == toVerify);
 }

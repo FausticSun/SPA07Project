@@ -111,8 +111,31 @@ void PQLParser::parseAttrCompare() {
   expect(PQLTokens::Equals);
   auto attrRef2 = parseRef();
 
+  if (getAttRefType(attrRef1) != getAttRefType(attrRef2)) {
+    throw std::logic_error("Attr refs must be of same type");
+  }
+
   Clause withCl(ClauseType::With, {attrRef1, attrRef2});
   query.clauses.push_back(withCl);
+}
+
+PQLTokens::AttrRefType PQLParser::getAttRefType(QueryEntity attrRef) {
+  switch (attrRef.type) {
+  case QueryEntityType::Name:
+    return PQLTokens::AttrRefType::Name;
+  case QueryEntityType::Line:
+  case QueryEntityType::Progline:
+    return PQLTokens::AttrRefType::Integer;
+  case QueryEntityType::Attrref:
+    return PQLTokens::attrTypeMap.at(
+        std::make_pair(attrRef.attrRefSynonymType, getAttrValue(attrRef.name)));
+  default:
+    throw std::logic_error("Invalid attr");
+  }
+}
+
+std::string PQLParser::getAttrValue(std::string attr) {
+  return attr.substr(attr.find(".") + 1);
 }
 
 void PQLParser::parseSuchThatCl() {
@@ -298,6 +321,7 @@ QueryEntity PQLParser::parseAttrRef() {
   }
   ent.attrRefSynonymType = ent.type;
   ent.type = QueryEntityType::Attrref;
+  getAttRefType(ent);
   return ent;
 }
 
