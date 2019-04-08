@@ -3,7 +3,9 @@
 #include "GeneralLexer.h"
 #include "PQLEvaluator.h"
 #include "SIMPLEParser.h"
+#include "PQLParser.h"
 #include <fstream>
+#include <sstream>
 
 SPA::SPA() : pkb(new PKB()) {}
 
@@ -22,11 +24,11 @@ void SPA::parseSIMPLEFile(std::string filename) {
 }
 const std::list<std::string> SPA::evaluateQuery(std::string queryString) const {
   list<string> results;
-  /*
   try {
-    PQLParser pqlParser;
-    auto tokens = pqlParser.parse(queryString);
-    auto query = pqlParser.buildQuery(tokens);
+    std::stringstream ss;
+    ss << queryString;
+    auto tokens = Lexer::tokenize(ss);
+    auto query = Parser::parsePQL(tokens);
     PqlEvaluator pe(*pkb);
     auto results = pe.executeQuery(query);
     return results;
@@ -35,6 +37,5 @@ const std::list<std::string> SPA::evaluateQuery(std::string queryString) const {
   } catch (invalid_argument ia) {
     return results;
   }
-  */
   return results;
 }
