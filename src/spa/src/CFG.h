@@ -27,9 +27,8 @@ private:
   std::vector<int> getAffectsReverse(int, std::string, Table, Table) const;
 
   std::map<int, std::set<int>> getAffectsTResults(
-      int, Table, std::map<int, StatementType>,
+      int, Table, Table, std::map<int, StatementType>,
       std::map<int, std::pair<std::string, std::vector<std::string>>>) const;
-  std::vector<int> getAffectsTReverse(int, std::string, Table, Table) const;
 
 public:
   CFG();
@@ -41,12 +40,12 @@ public:
   Table getAffects(Table, Table, std::set<int>) const;
   Table getAffects(int, bool, Table, Table, std::set<int>) const;
   bool isAffectsT(
-      int, int, Table, std::map<int, StatementType>,
+      int, int, Table, Table, std::map<int, StatementType>,
       std::map<int, std::pair<std::string, std::vector<std::string>>>) const;
   Table getAffectsT(
-      Table, std::map<int, StatementType>,
+      Table, Table, std::map<int, StatementType>,
       std::map<int, std::pair<std::string, std::vector<std::string>>>) const;
   Table getAffectsT(
-      int, bool, Table, std::map<int, StatementType>,
+      int, bool, Table, Table, std::map<int, StatementType>,
       std::map<int, std::pair<std::string, std::vector<std::string>>>) const;
 };

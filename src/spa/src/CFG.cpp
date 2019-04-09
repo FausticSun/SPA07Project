@@ -462,21 +462,22 @@ Table CFG::getAffects(Table usesTable, Table modifiesTable,
 }
 
 std::map<int, std::set<int>> CFG::getAffectsTResults(
-    int start, Table modifiesTable, std::map<int, StatementType> stmtMap,
+    int start, Table modifiesTable, Table parentTable,
+    std::map<int, StatementType> stmtMap,
     std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap)
     const {
   std::map<int, std::set<int>> results;
   std::vector<int> visited(initialGraph.size(), 0);
+  std::vector<int> inDegreeCopy = inDegree;
   visited[start]++;
   if (stmtMap[start] == StatementType::While) {
     visited[start]--;
   }
-  // flag: 0 for non-while, 1 for while but never enqueue before,
-  // 2 for while but enqueued once
-  std::vector<int> inWhileBlockFlags(initialGraph.size(), 0);
+  std::vector<int> numTimesWhileEnqueued(initialGraph.size(), -1);
   for (auto stmt : stmtMap) {
     if (stmt.second == StatementType::While) {
-      inWhileBlockFlags[stmt.first] = 1;
+      numTimesWhileEnqueued[stmt.first]++;
+      inDegreeCopy[stmt.first]++; // each while node must be visited +1 times
     }
   }
   std::map<int, std::vector<std::pair<std::string, int>>> basketsToMerge;
@@ -493,11 +494,10 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
     std::vector<std::pair<std::string, int>> newBasket = basket;
 
     switch (nodeType) {
-    case StatementType::While:
-      if (inWhileBlockFlags[node] == 1) {
-        inWhileBlockFlags[node] = 2;
-      }
+    case StatementType::While: {
+      numTimesWhileEnqueued[node]++;
       break;
+    }
     case StatementType::Assign: {
       // add to results if used variable is in basket
       auto usedVars = assignMap[node].second;
@@ -567,10 +567,15 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
 
     // go through neighbours
     for (int v : initialGraph[node]) {
-      if (visited[v] < inDegree[v]) {
+      // complete while block in degree times before going into other neighbours
+      bool canVisit =
+          (parentTable.contains({std::to_string(node), std::to_string(v)})) ||
+          (numTimesWhileEnqueued[node] == inDegreeCopy[node]) ||
+          (numTimesWhileEnqueued[node] == -1);
+      if ((visited[v] < inDegreeCopy[v]) && canVisit) {
         visited[v]++;
         // merge if neighbour has inDegree > 1
-        if (inDegree[v] > 1) {
+        if (inDegreeCopy[v] > 1) {
           if (basketsToMerge[v].empty()) {
             basketsToMerge[v] = newBasket;
           } else {
@@ -588,19 +593,19 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
           }
         }
         // enqueue neighbour with new basket if enough visits or
-        // is a while node that has never been enqueued
-        if (visited[v] >= inDegree[v] || inWhileBlockFlags[v] == 1) {
-          if (inDegree[v] > 1) {
+        // is a while node that has been enqueued less than indegree times
+        if (visited[v] >= inDegreeCopy[v] ||
+            numTimesWhileEnqueued[v] < inDegreeCopy[v]) {
+          if (inDegreeCopy[v] > 1) {
             queue.push(std::make_pair(v, basketsToMerge[v]));
           } else {
             queue.push(std::make_pair(v, newBasket));
           }
-          // unflag when go back to while node
-          if (inWhileBlockFlags[v] == 2) {
-            inWhileBlockFlags[v] = 1;
-          } else if (inWhileBlockFlags[node] == 2 || visited[node] == 0) {
-            // reset to visit once more if in while block
-            visited[v] -= inDegree[v];
+          // while node's first enqueue:
+          // dont mark any node in while block as visited
+          if ((numTimesWhileEnqueued[node] == 1 || visited[node] == 0) &&
+              (numTimesWhileEnqueued[v] != 1)) {
+            visited[v] -= inDegreeCopy[v];
           }
         }
       }
@@ -610,20 +615,20 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
 }
 
 bool CFG::isAffectsT(
-    int start, int end, Table modifiesTable,
+    int start, int end, Table modifiesTable, Table parentTable,
     std::map<int, StatementType> stmtMap,
     std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap)
     const {
-  auto results = getAffectsT(modifiesTable, stmtMap, assignMap);
+  auto results = getAffectsT(modifiesTable, parentTable, stmtMap, assignMap);
   return results.contains({std::to_string(start), std::to_string(end)});
 }
 
 Table CFG::getAffectsT(
-    int start, bool isForward, Table modifiesTable,
+    int start, bool isForward, Table modifiesTable, Table parentTable,
     std::map<int, StatementType> stmtMap,
     std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap)
     const {
-  auto results = getAffectsT(modifiesTable, stmtMap, assignMap);
+  auto results = getAffectsT(modifiesTable, parentTable, stmtMap, assignMap);
   results.setHeader({"a1", "a2"});
   Table table{1};
   if (isForward) {
@@ -643,13 +648,14 @@ Table CFG::getAffectsT(
 }
 
 Table CFG::getAffectsT(
-    Table modifiesTable, std::map<int, StatementType> stmtMap,
+    Table modifiesTable, Table parentTable,
+    std::map<int, StatementType> stmtMap,
     std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap)
     const {
   Table table{2};
   for (auto data : procStmtTable.getData()) {
     std::map<int, std::set<int>> results = getAffectsTResults(
-        std::stoi(data[1]), modifiesTable, stmtMap, assignMap);
+        std::stoi(data[1]), modifiesTable, parentTable, stmtMap, assignMap);
     for (auto to : results) {
       for (auto from : to.second) {
         table.insertRow({std::to_string(from), std::to_string(to.first)});

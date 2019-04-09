@@ -173,14 +173,15 @@ Table PKB::getAffects() const {
 }
 
 bool PKB::isAffectsT(int a1, int a2) const {
-  return cfg.isAffectsT(a1, a2, modifiesSTable, stmtMap, assignMap);
+  return cfg.isAffectsT(a1, a2, modifiesSTable, parentTable, stmtMap,
+                        assignMap);
 }
 Table PKB::getAffectsT(int a1, bool isLeftConstant) const {
-  return cfg.getAffectsT(a1, isLeftConstant, modifiesSTable, stmtMap,
-                         assignMap);
+  return cfg.getAffectsT(a1, isLeftConstant, modifiesSTable, parentTable,
+                         stmtMap, assignMap);
 }
 Table PKB::getAffectsT() const {
-  return cfg.getAffectsT(modifiesSTable, stmtMap, assignMap);
+  return cfg.getAffectsT(modifiesSTable, parentTable, stmtMap, assignMap);
 }
 
 Table PKB::getCallProcNameTable() const { return callProcNameTable; }
