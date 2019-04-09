@@ -8,7 +8,7 @@ CFG::CFG() {}
 
 CFG::CFG(Table procStmtTable, Table nextTable, Table whileIfTable,
          int stmtCount)
-    : whileIfTable(whileIfTable) {
+    : whileIfTable(whileIfTable), procStmtTable(procStmtTable) {
   // Populate initialGraph from nextTable (1-based indexing)
   initialGraph.resize(stmtCount + 1);
   for (auto data : nextTable.getData()) {
@@ -467,12 +467,22 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
     const {
   std::map<int, std::set<int>> results;
   std::vector<int> visited(initialGraph.size(), 0);
-  // visited[start]++; // may have to remove later for while loop
+  visited[start]++;
+  if (stmtMap[start] == StatementType::While) {
+    visited[start]--;
+  }
+  // flag: 0 for non-while, 1 for while but never enqueue before,
+  // 2 for while but enqueued once
+  std::vector<int> inWhileBlockFlags(initialGraph.size(), 0);
+  for (auto stmt : stmtMap) {
+    if (stmt.second == StatementType::While) {
+      inWhileBlockFlags[stmt.first] = 1;
+    }
+  }
   std::map<int, std::vector<std::pair<std::string, int>>> basketsToMerge;
   std::queue<std::pair<int, std::vector<std::pair<std::string, int>>>> queue;
   std::vector<std::pair<std::string, int>> emptyBasket;
   queue.push(std::make_pair(start, emptyBasket));
-  std::pair<bool, int> inWhileBlockFlag = std::make_pair(false, -1);
 
   while (!queue.empty()) {
     auto curr = queue.front();
@@ -484,8 +494,8 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
 
     switch (nodeType) {
     case StatementType::While:
-      if (!inWhileBlockFlag.first) {
-        inWhileBlockFlag = std::make_pair(true, node);
+      if (inWhileBlockFlags[node] == 1) {
+        inWhileBlockFlags[node] = 2;
       }
       break;
     case StatementType::Assign: {
@@ -498,7 +508,7 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
             usedVars.end()) {
           results[node].insert(line);
           // backtrack to retrieve more results if any
-          std::vector<bool> innerVisited(initialGraph.size() + 1, false);
+          std::vector<bool> innerVisited(initialGraph.size(), false);
           std::queue<int> innerQueue;
           innerQueue.push(node);
           while (!innerQueue.empty()) {
@@ -508,18 +518,7 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
               if (!innerVisited[j]) {
                 innerVisited[j] = true;
                 innerQueue.push(j);
-                if (node == j) {
-                  auto var = assignMap[j];
-                  // Affects(a,a) holds if left and right same var
-                  if (std::find(assignMap[j].second.begin(),
-                                assignMap[j].second.end(),
-                                assignMap[j].first) !=
-                      assignMap[j].second.end()) {
-                    results[node].insert(j);
-                  }
-                } else {
-                  results[node].insert(j);
-                }
+                results[node].insert(j);
               }
             }
           }
@@ -588,19 +587,19 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
             }
           }
         }
-        // enqueue neighbour with new basket
-        if (visited[v] >= inDegree[v] || stmtMap[v] == StatementType::While) {
+        // enqueue neighbour with new basket if enough visits or
+        // is a while node that has never been enqueued
+        if (visited[v] >= inDegree[v] || inWhileBlockFlags[v] == 1) {
           if (inDegree[v] > 1) {
             queue.push(std::make_pair(v, basketsToMerge[v]));
           } else {
             queue.push(std::make_pair(v, newBasket));
           }
           // unflag when go back to while node
-          if (inWhileBlockFlag.second == v) {
-            inWhileBlockFlag = std::make_pair(false, -1);
-          }
-          // reset to visit once more if in while block
-          if (inWhileBlockFlag.first) {
+          if (inWhileBlockFlags[v] == 2) {
+            inWhileBlockFlags[v] = 1;
+          } else if (inWhileBlockFlags[node] == 2 || visited[node] == 0) {
+            // reset to visit once more if in while block
             visited[v] -= inDegree[v];
           }
         }
@@ -648,11 +647,13 @@ Table CFG::getAffectsT(
     std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap)
     const {
   Table table{2};
-  std::map<int, std::set<int>> results = getAffectsTResults(
-      assignMap.begin()->first, modifiesTable, stmtMap, assignMap);
-  for (auto to : results) {
-    for (auto from : to.second) {
-      table.insertRow({std::to_string(from), std::to_string(to.first)});
+  for (auto data : procStmtTable.getData()) {
+    std::map<int, std::set<int>> results = getAffectsTResults(
+        std::stoi(data[1]), modifiesTable, stmtMap, assignMap);
+    for (auto to : results) {
+      for (auto from : to.second) {
+        table.insertRow({std::to_string(from), std::to_string(to.first)});
+      }
     }
   }
   return table;
