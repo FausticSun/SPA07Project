@@ -50,6 +50,7 @@ private:
   ClauseResult withEvaluate(Clause c);
 	ClauseResult NextTEvaluate(Clause clause);
 	ClauseResult AffectEvaluate(Clause clause);
+	ClauseResult AffectsTEvaluate(Clause clause);
   StatementType convertQType(QueryEntityType q);
 	string convertClauseTypeToString(ClauseType);
 	Table targetsToTable(vector<QueryEntity> qe);
