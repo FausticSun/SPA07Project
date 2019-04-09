@@ -73,7 +73,7 @@ void PQLParser::parseClauses() {
 void PQLParser::parseResultCl() {
   if (tokens.front() == PQLTokens::Boolean) {
     expect(PQLTokens::Boolean);
-    query.selectors.push_back(QueryEntity(QueryEntityType::Boolean));
+    query.target.push_back(QueryEntity(QueryEntityType::Boolean));
   } else {
     parseTuple();
   }
@@ -81,13 +81,13 @@ void PQLParser::parseResultCl() {
 
 void PQLParser::parseTuple() {
   if (tokens.front().type == TokenType::Identifier) {
-    query.selectors.push_back(parseElem());
+    query.target.push_back(parseElem());
   } else {
     expect(PQLTokens::LeftChevron);
-    query.selectors.push_back(parseElem());
+    query.target.push_back(parseElem());
     while (tokens.front() != PQLTokens::RightChevron) {
       expect(PQLTokens::Comma);
-      query.selectors.push_back(parseElem());
+      query.target.push_back(parseElem());
     }
     expect(PQLTokens::RightChevron);
   }

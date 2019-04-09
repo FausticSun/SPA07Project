@@ -69,10 +69,10 @@ TEST_CASE("Single select") {
   ss << pql;
   std::list<Token> tokens = Lexer::tokenize(ss);
   auto query = Parser::parsePQL(tokens);
-  auto selectors = query.selectors;
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+  auto target = query.target;
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::Stmt, "s")) !=
-          selectors.end());
+          target.end());
 }
 
 TEST_CASE("Tuple select") {
@@ -84,16 +84,16 @@ TEST_CASE("Tuple select") {
   ss << pql;
   std::list<Token> tokens = Lexer::tokenize(ss);
   auto query = Parser::parsePQL(tokens);
-  auto selectors = query.selectors;
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+  auto target = query.target;
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::Stmt, "s1")) !=
-          selectors.end());
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+          target.end());
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::Stmt, "s2")) !=
-          selectors.end());
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+          target.end());
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::Stmt, "s3")) !=
-          selectors.end());
+          target.end());
 }
 
 TEST_CASE("Boolean select") {
@@ -104,9 +104,9 @@ TEST_CASE("Boolean select") {
   ss << pql;
   std::list<Token> tokens = Lexer::tokenize(ss);
   auto query = Parser::parsePQL(tokens);
-  auto selectors = query.selectors;
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
-                    QueryEntity(QueryEntityType::Boolean)) != selectors.end());
+  auto target = query.target;
+  REQUIRE(std::find(target.begin(), target.end(),
+                    QueryEntity(QueryEntityType::Boolean)) != target.end());
 }
 
 TEST_CASE("Invalid selector") {
@@ -128,10 +128,10 @@ TEST_CASE("Attribute select") {
   ss << pql;
   std::list<Token> tokens = Lexer::tokenize(ss);
   auto query = Parser::parsePQL(tokens);
-  auto selectors = query.selectors;
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+  auto target = query.target;
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::Attrref, "s.stmt#",
-                                QueryEntityType::Stmt)) != selectors.end());
+                                QueryEntityType::Stmt)) != target.end());
 }
 
 TEST_CASE("Invalid attribute select") {
@@ -156,40 +156,40 @@ TEST_CASE("All delcarations while selecting all") {
   ss << pql;
   std::list<Token> tokens = Lexer::tokenize(ss);
   auto query = Parser::parsePQL(tokens);
-  auto selectors = query.selectors;
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+  auto target = query.target;
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::Stmt, "s")) !=
-          selectors.end());
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+          target.end());
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::Read, "r")) !=
-          selectors.end());
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+          target.end());
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::Print, "p")) !=
-          selectors.end());
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+          target.end());
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::Call, "cl")) !=
-          selectors.end());
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+          target.end());
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::While, "w")) !=
-          selectors.end());
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+          target.end());
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::If, "ifs")) !=
-          selectors.end());
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+          target.end());
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::Assign, "a")) !=
-          selectors.end());
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+          target.end());
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::Variable, "v")) !=
-          selectors.end());
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+          target.end());
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::Constant, "c")) !=
-          selectors.end());
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+          target.end());
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::Progline, "pl")) !=
-          selectors.end());
-  REQUIRE(std::find(selectors.begin(), selectors.end(),
+          target.end());
+  REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::Procedure, "pr")) !=
-          selectors.end());
+          target.end());
 }
 
 TEST_CASE("Single such that relation") {
