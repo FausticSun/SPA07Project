@@ -39,6 +39,10 @@ enum class ClauseType {
   IfPatt,
   WhilePatt,
   With,
+  NextBip,
+  NextBipT,
+  AffectsBip,
+  AffectsBipT
 };
 
 struct QueryEntity {
