@@ -373,3 +373,33 @@ while w; if ifs; assign a; variable v; stmt s, s1; read r; print p; prog_line n;
 Select <s, s1> such that Next*(s, s1) and Next*(s1, s) and Parent*(w, s) such that Parent*(w, s1) with w.stmt# = 19
 20 20,20 21,20 22,20 23,21 20,21 21,21 22,21 23,22 20,22 21,22 22,22 23,23 20,23 21,23 22,23 23
 5000
+76-comment
+while w; if ifs; assign a; variable v; stmt s, s1; read r; print p; prog_line n; constant c;
+Select <s, s1> such that Next*(s, s1) and Next*(s1, s) and Affects(s, s1) and Affects(s1,s)
+none
+5000
+77-comment
+while w; if ifs; assign a; variable v; stmt s, s1; read r; print p; prog_line n; constant c;
+Select <s, s1> such that Affects(s, s1)
+18 17
+5000
+78-comment
+while w; if ifs; assign a; variable v; stmt s, s1; read r; print p; prog_line n; constant c;
+Select <s1> such that Affects(18, s1)
+17
+5000
+79-comment
+while w; if ifs; assign a; variable v; stmt s, s1; read r; print p; prog_line n; constant c;
+Select <s> such that Affects(s, 17)
+18
+5000
+80-comment
+while w; if ifs; assign a; variable v; stmt s, s1; read r; print p; prog_line n; constant c;
+Select <s> such that Affects(s, _)
+18
+5000
+81-comment
+while w; if ifs; assign a; variable v; stmt s, s1; read r; print p; prog_line n; constant c;
+Select BOOLEAN such that Affects(_, 17)
+TRUE
+5000
