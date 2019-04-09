@@ -13,8 +13,10 @@ private:
   std::vector<std::vector<int>> forwardCompressedGraph;
   std::vector<std::vector<int>> reverseCompressedGraph;
   int numCompressedNodes = 0;
+
   Table whileIfTable{1};
   Table procStmtTable{1};
+  std::map<int, std::set<int>> whileParentMap;
   std::vector<int> inDegree;
 
   void populateInitialToCompressed(int, Table, std::vector<int>);
@@ -32,7 +34,7 @@ private:
 
 public:
   CFG();
-  CFG(Table, Table, Table, int);
+  CFG(Table, Table, Table, Table, int);
   bool isNextT(int, int) const;
   Table getNextT() const;
   Table getNextT(int, bool) const;

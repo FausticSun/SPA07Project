@@ -7,7 +7,7 @@
 CFG::CFG() {}
 
 CFG::CFG(Table procStmtTable, Table nextTable, Table whileIfTable,
-         int stmtCount)
+         Table whileParentTable, int stmtCount)
     : whileIfTable(whileIfTable), procStmtTable(procStmtTable) {
   // Populate initialGraph from nextTable (1-based indexing)
   initialGraph.resize(stmtCount + 1);
@@ -16,6 +16,7 @@ CFG::CFG(Table procStmtTable, Table nextTable, Table whileIfTable,
     int v = std::stoi(data[1]);
     initialGraph[u].push_back(v);
   }
+
   // Populate inDegree
   inDegree.resize(stmtCount + 1);
   for (int i = 1; i < initialGraph.size(); ++i) {
@@ -24,6 +25,12 @@ CFG::CFG(Table procStmtTable, Table nextTable, Table whileIfTable,
     }
   }
 
+  // Populate whileParentMap
+  for (auto data : whileParentTable.getData()) {
+    whileParentMap[std::stoi(data[0])].insert(std::stoi(data[1]));
+  }
+
+  // Populate initial to compressed map
   for (auto data : procStmtTable.getData()) {
     int start = std::stoi(data[1]);
     numCompressedNodes++;
@@ -470,15 +477,13 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
   std::vector<int> visited(initialGraph.size(), 0);
   std::vector<int> inDegreeCopy = inDegree;
   visited[start]++;
-  if (stmtMap[start] == StatementType::While) {
-    visited[start]--;
-  }
-  std::vector<int> numTimesWhileEnqueued(initialGraph.size(), -1);
   for (auto stmt : stmtMap) {
     if (stmt.second == StatementType::While) {
-      numTimesWhileEnqueued[stmt.first]++;
       inDegreeCopy[stmt.first]++; // each while node must be visited +1 times
     }
+  }
+  if (stmtMap[start] == StatementType::While) {
+    visited[start]--;
   }
   std::map<int, std::vector<std::pair<std::string, int>>> basketsToMerge;
   std::queue<std::pair<int, std::vector<std::pair<std::string, int>>>> queue;
@@ -494,10 +499,6 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
     std::vector<std::pair<std::string, int>> newBasket = basket;
 
     switch (nodeType) {
-    case StatementType::While: {
-      numTimesWhileEnqueued[node]++;
-      break;
-    }
     case StatementType::Assign: {
       // add to results if used variable is in basket
       auto usedVars = assignMap[node].second;
@@ -567,11 +568,12 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
 
     // go through neighbours
     for (int v : initialGraph[node]) {
-      // complete while block in degree times before going into other neighbours
+      // ensure while block is done before enqueue other neighbours
+      // (for while node)
       bool canVisit =
-          (parentTable.contains({std::to_string(node), std::to_string(v)})) ||
-          (numTimesWhileEnqueued[node] == inDegreeCopy[node]) ||
-          (numTimesWhileEnqueued[node] == -1);
+          stmtMap[node] != StatementType::While ||
+          (parentTable.contains({std::to_string(node), std::to_string(v)}) ||
+           visited[node] == inDegreeCopy[node]);
       if ((visited[v] < inDegreeCopy[v]) && canVisit) {
         visited[v]++;
         // merge if neighbour has inDegree > 1
@@ -595,17 +597,45 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
         // enqueue neighbour with new basket if enough visits or
         // is a while node that has been enqueued less than indegree times
         if (visited[v] >= inDegreeCopy[v] ||
-            numTimesWhileEnqueued[v] < inDegreeCopy[v]) {
-          if (inDegreeCopy[v] > 1) {
-            queue.push(std::make_pair(v, basketsToMerge[v]));
+            stmtMap[v] == StatementType::While) {
+          // indirect parent
+          if (stmtMap[v] == StatementType::While &&
+              !parentTable.contains(
+                  {std::to_string(v), std::to_string(node)}) &&
+              whileParentMap.at(v).find(node) != whileParentMap.at(v).end()) {
+            // enqueue when visited >= indegree - 1
+            if (visited[v] >= inDegreeCopy[v] - 1) {
+              // take basket from basketsToMerge if indegree > 1
+              if (inDegreeCopy[v] > 1) {
+                queue.push(std::make_pair(v, basketsToMerge[v]));
+              } else {
+                queue.push(std::make_pair(v, newBasket));
+              }
+              // reset visited[s] to original indegree of s for all s
+              // such that Parent(w, s)
+              for (int s : whileParentMap.at(v)) {
+                visited[s] = 0;
+              }
+            }
+            break;
           } else {
-            queue.push(std::make_pair(v, newBasket));
-          }
-          // while node's first enqueue:
-          // dont mark any node in while block as visited
-          if ((numTimesWhileEnqueued[node] == 1 || visited[node] == 0) &&
-              (numTimesWhileEnqueued[v] != 1)) {
-            visited[v] -= inDegreeCopy[v];
+            // direct parent
+            // take basket from basketsToMerge if indegree > 1
+            if (inDegreeCopy[v] > 1) {
+              queue.push(std::make_pair(v, basketsToMerge[v]));
+            } else {
+              queue.push(std::make_pair(v, newBasket));
+            }
+            // reset visited[s] to original indegree of s for all s
+            // such that Parent(w, s)
+            if (stmtMap[v] == StatementType::While &&
+                visited[v] < inDegreeCopy[v] &&
+                parentTable.contains(
+                    {std::to_string(v), std::to_string(node)})) {
+              for (int s : whileParentMap.at(v)) {
+                visited[s] = 0;
+              }
+            }
           }
         }
       }

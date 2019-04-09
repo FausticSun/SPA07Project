@@ -205,8 +205,13 @@ void populateCFG(std::unique_ptr<PKB> &pkb) {
   auto whileIfTable = pkb->getStmtType(StatementType::While);
   auto ifTable = pkb->getStmtType(StatementType::If);
   whileIfTable.concatenate(ifTable);
+  auto whileParentTable = pkb->getStmtType(StatementType::While);
+  whileParentTable.setHeader({"w"});
+  auto parentTTable = pkb->getParentT();
+  parentTTable.setHeader({"w", "s"});
+  whileParentTable.mergeWith(parentTTable);
   CFG graph = CFG{pkb->getProcStmt(), pkb->getNext(), whileIfTable,
-                  pkb->getStmtCount()};
+                  whileParentTable, pkb->getStmtCount()};
   pkb->setCFG(graph);
 }
 
