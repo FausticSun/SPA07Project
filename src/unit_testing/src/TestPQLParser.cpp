@@ -619,7 +619,7 @@ SCENARIO("Including one such that clause") {
 	  tokens.push(QueryToken(TokenType::Identifier, "("));
 	  tokens.push(QueryToken(TokenType::Identifier, "s"));
 	  tokens.push(QueryToken(TokenType::Identifier, ","));
-	  tokens.push(QueryToken(TokenType::Identifier, "12"));
+	  tokens.push(QueryToken(TokenType::Identifier, "s"));
 	  tokens.push(QueryToken(TokenType::Identifier, ")"));
 	  PQLParser p = PQLParser();
 	  Query q = p.buildQuery(tokens);
@@ -644,8 +644,8 @@ SCENARIO("Including one such that clause") {
 			  REQUIRE(c.clauseType == ClauseType::Affects);
 			  REQUIRE(parameters[0].name == "s");
 			  REQUIRE(parameters[0].type == QueryEntityType::Assign);
-			  REQUIRE(parameters[1].name == "12");
-			  REQUIRE(parameters[1].type == QueryEntityType::Line);
+			  REQUIRE(parameters[1].name == "s");
+			  REQUIRE(parameters[1].type == QueryEntityType::Assign);
 		  }
 	  }
   }

@@ -740,7 +740,7 @@ void PQLParser::insertClauseAffects() {
         }
         if (secondEntity.type == QueryEntityType::Stmt)
         {
-	  secondEntity.type == QueryEntityType::Assign;
+	  secondEntity.type = QueryEntityType::Assign;
         }
 	Clause c =
 		Clause(ClauseType::Affects, vector<QueryEntity>{firstEntity, secondEntity});
@@ -758,7 +758,7 @@ void PQLParser::insertClauseAffectsT() {
 	}
 	if (secondEntity.type == QueryEntityType::Stmt)
 	{
-	  secondEntity.type == QueryEntityType::Assign;
+	  secondEntity.type = QueryEntityType::Assign;
 	}
 	Clause c =
 		Clause(ClauseType::AffectsT, vector<QueryEntity>{firstEntity, secondEntity});
