@@ -82,6 +82,17 @@ void PKB::setCallProcName(int stmtNo, const std::string &procName) {
 
 void PKB::setCFG(CFG &graph) { cfg = graph; }
 
+void PKB::setAssignMap(int stmtNo, std::string var) {
+  if (assignMap.find(stmtNo) != assignMap.end()) {
+    assignMap[stmtNo].second.push_back(var);
+  } else {
+    std::vector<std::string> emptyVec;
+    assignMap[stmtNo] = std::make_pair(var, emptyVec);
+  }
+}
+
+void PKB::setStmtMap(int stmtNo, StatementType type) { stmtMap[stmtNo] = type; }
+
 Table PKB::getVarTable() const { return varTable; }
 
 Table PKB::getProcTable() const {
@@ -159,6 +170,17 @@ Table PKB::getAffects(int a1, bool isLeftConstant) const {
 Table PKB::getAffects() const {
   auto assignStmts = stmtTable.at(StatementType::Assign);
   return cfg.getAffects(usesSTable, modifiesSTable, assignStmts);
+}
+
+bool PKB::isAffectsT(int a1, int a2) const {
+  return cfg.isAffectsT(a1, a2, modifiesSTable, stmtMap, assignMap);
+}
+Table PKB::getAffectsT(int a1, bool isLeftConstant) const {
+  return cfg.getAffectsT(a1, isLeftConstant, modifiesSTable, stmtMap,
+                         assignMap);
+}
+Table PKB::getAffectsT() const {
+  return cfg.getAffectsT(modifiesSTable, stmtMap, assignMap);
 }
 
 Table PKB::getCallProcNameTable() const { return callProcNameTable; }

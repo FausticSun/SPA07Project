@@ -1,5 +1,6 @@
 #include "CFG.h"
 #include "assert.h"
+#include <map>
 #include <queue>
 #include <stack>
 
@@ -7,7 +8,7 @@ CFG::CFG() {}
 
 CFG::CFG(Table procStmtTable, Table nextTable, Table whileIfTable,
          int stmtCount)
-    : whileIfTable(whileIfTable) {
+    : whileIfTable(whileIfTable), procStmtTable(procStmtTable) {
   // Populate initialGraph from nextTable (1-based indexing)
   initialGraph.resize(stmtCount + 1);
   for (auto data : nextTable.getData()) {
@@ -16,12 +17,13 @@ CFG::CFG(Table procStmtTable, Table nextTable, Table whileIfTable,
     initialGraph[u].push_back(v);
   }
   // Populate inDegree
-  std::vector<int> inDegree(stmtCount + 1, 0);
+  inDegree.resize(stmtCount + 1);
   for (int i = 1; i < initialGraph.size(); ++i) {
     for (auto j : initialGraph[i]) {
       inDegree[j]++;
     }
   }
+
   for (auto data : procStmtTable.getData()) {
     int start = std::stoi(data[1]);
     numCompressedNodes++;
@@ -454,6 +456,204 @@ Table CFG::getAffects(Table usesTable, Table modifiesTable,
                                     usesAssignTable);
     for (int i : result) {
       table.insertRow({data[0], std::to_string(i)});
+    }
+  }
+  return table;
+}
+
+std::map<int, std::set<int>> CFG::getAffectsTResults(
+    int start, Table modifiesTable, std::map<int, StatementType> stmtMap,
+    std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap)
+    const {
+  std::map<int, std::set<int>> results;
+  std::vector<int> visited(initialGraph.size(), 0);
+  visited[start]++;
+  if (stmtMap[start] == StatementType::While) {
+    visited[start]--;
+  }
+  // flag: 0 for non-while, 1 for while but never enqueue before,
+  // 2 for while but enqueued once
+  std::vector<int> inWhileBlockFlags(initialGraph.size(), 0);
+  for (auto stmt : stmtMap) {
+    if (stmt.second == StatementType::While) {
+      inWhileBlockFlags[stmt.first] = 1;
+    }
+  }
+  std::map<int, std::vector<std::pair<std::string, int>>> basketsToMerge;
+  std::queue<std::pair<int, std::vector<std::pair<std::string, int>>>> queue;
+  std::vector<std::pair<std::string, int>> emptyBasket;
+  queue.push(std::make_pair(start, emptyBasket));
+
+  while (!queue.empty()) {
+    auto curr = queue.front();
+    queue.pop();
+    auto node = curr.first;
+    auto basket = curr.second;
+    auto nodeType = stmtMap.at(node);
+    std::vector<std::pair<std::string, int>> newBasket = basket;
+
+    switch (nodeType) {
+    case StatementType::While:
+      if (inWhileBlockFlags[node] == 1) {
+        inWhileBlockFlags[node] = 2;
+      }
+      break;
+    case StatementType::Assign: {
+      // add to results if used variable is in basket
+      auto usedVars = assignMap[node].second;
+      for (auto it = newBasket.begin(); it != newBasket.end(); ++it) {
+        auto var = (*it).first;
+        auto line = (*it).second;
+        if (std::find(usedVars.begin(), usedVars.end(), var) !=
+            usedVars.end()) {
+          results[node].insert(line);
+          // backtrack to retrieve more results if any
+          std::vector<bool> innerVisited(initialGraph.size(), false);
+          std::queue<int> innerQueue;
+          innerQueue.push(node);
+          while (!innerQueue.empty()) {
+            auto i = innerQueue.front();
+            innerQueue.pop();
+            for (auto j : results[i]) {
+              if (!innerVisited[j]) {
+                innerVisited[j] = true;
+                innerQueue.push(j);
+                results[node].insert(j);
+              }
+            }
+          }
+        }
+      }
+      // remove if modified variable is in basket
+      auto modifiedVar = assignMap[node].first;
+      auto it = newBasket.begin();
+      while (it != newBasket.end()) {
+        if (modifiesTable.contains(
+                {std::to_string((*it).second), modifiedVar})) {
+          it = newBasket.erase(it);
+        } else {
+          ++it;
+        }
+      }
+      newBasket.push_back(std::make_pair(modifiedVar, node));
+      break;
+    }
+    case StatementType::Read: {
+      // only need to remove only one variable
+      auto it = newBasket.begin();
+      while (it != newBasket.end()) {
+        if (modifiesTable.contains({std::to_string(node), (*it).first})) {
+          it = newBasket.erase(it);
+          break;
+        } else {
+          ++it;
+        }
+      }
+      break;
+    }
+    case StatementType::Call: {
+      // can remove more than one variable
+      auto it = newBasket.begin();
+      while (it != newBasket.end()) {
+        if (modifiesTable.contains({std::to_string(node), (*it).first})) {
+          it = newBasket.erase(it);
+        } else {
+          ++it;
+        }
+      }
+      break;
+    }
+    }
+
+    // go through neighbours
+    for (int v : initialGraph[node]) {
+      if (visited[v] < inDegree[v]) {
+        visited[v]++;
+        // merge if neighbour has inDegree > 1
+        if (inDegree[v] > 1) {
+          if (basketsToMerge[v].empty()) {
+            basketsToMerge[v] = newBasket;
+          } else {
+            std::set<std::pair<std::string, int>> basketSet;
+            for (auto pair : basketsToMerge[v]) {
+              basketSet.insert(pair);
+            }
+            for (auto pair : newBasket) {
+              basketSet.insert(pair);
+            }
+            basketsToMerge[v].clear();
+            for (auto pair : basketSet) {
+              basketsToMerge[v].push_back(pair);
+            }
+          }
+        }
+        // enqueue neighbour with new basket if enough visits or
+        // is a while node that has never been enqueued
+        if (visited[v] >= inDegree[v] || inWhileBlockFlags[v] == 1) {
+          if (inDegree[v] > 1) {
+            queue.push(std::make_pair(v, basketsToMerge[v]));
+          } else {
+            queue.push(std::make_pair(v, newBasket));
+          }
+          // unflag when go back to while node
+          if (inWhileBlockFlags[v] == 2) {
+            inWhileBlockFlags[v] = 1;
+          } else if (inWhileBlockFlags[node] == 2 || visited[node] == 0) {
+            // reset to visit once more if in while block
+            visited[v] -= inDegree[v];
+          }
+        }
+      }
+    }
+  }
+  return results;
+}
+
+bool CFG::isAffectsT(
+    int start, int end, Table modifiesTable,
+    std::map<int, StatementType> stmtMap,
+    std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap)
+    const {
+  auto results = getAffectsT(modifiesTable, stmtMap, assignMap);
+  return results.contains({std::to_string(start), std::to_string(end)});
+}
+
+Table CFG::getAffectsT(
+    int start, bool isForward, Table modifiesTable,
+    std::map<int, StatementType> stmtMap,
+    std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap)
+    const {
+  auto results = getAffectsT(modifiesTable, stmtMap, assignMap);
+  results.setHeader({"a1", "a2"});
+  Table table{1};
+  if (isForward) {
+    for (auto data : results.getData()) {
+      if (std::stoi(data[0]) == start) {
+        table.insertRow({data[1]});
+      }
+    }
+  } else {
+    for (auto data : results.getData()) {
+      if (std::stoi(data[1]) == start) {
+        table.insertRow({data[0]});
+      }
+    }
+  }
+  return table;
+}
+
+Table CFG::getAffectsT(
+    Table modifiesTable, std::map<int, StatementType> stmtMap,
+    std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap)
+    const {
+  Table table{2};
+  for (auto data : procStmtTable.getData()) {
+    std::map<int, std::set<int>> results = getAffectsTResults(
+        std::stoi(data[1]), modifiesTable, stmtMap, assignMap);
+    for (auto to : results) {
+      for (auto from : to.second) {
+        table.insertRow({std::to_string(from), std::to_string(to.first)});
+      }
     }
   }
   return table;

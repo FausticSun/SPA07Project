@@ -1,14 +1,13 @@
 #pragma once
 #include "CFG.h"
 #include "Table.h"
+#include "Util.h"
 #include <map>
 #include <queue>
 #include <set>
 #include <string>
 #include <utility>
 #include <vector>
-
-enum class StatementType { Stmt, Assign, If, While, Read, Call, Print };
 
 class PKB {
 private:
@@ -22,6 +21,8 @@ private:
   Table constTable{1};
   std::map<StatementType, std::set<int>> stmtTable;
   CFG cfg;
+  std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap;
+  std::map<int, StatementType> stmtMap;
 
   // PQL Relation Tables
   Table followsTable{2};
@@ -71,6 +72,8 @@ public:
   // Other setters
   void setCallProcName(int, const std::string &);
   void setCFG(CFG &);
+  void setAssignMap(int, std::string);
+  void setStmtMap(int, StatementType);
 
   // Getters
   // Entity getter
@@ -98,6 +101,9 @@ public:
   bool isAffects(int, int) const;
   Table getAffects(int, bool) const;
   Table getAffects() const;
+  bool isAffectsT(int, int) const;
+  Table getAffectsT(int, bool) const;
+  Table getAffectsT() const;
 
   Table getCallProcNameTable() const;
   // Pattern getter
