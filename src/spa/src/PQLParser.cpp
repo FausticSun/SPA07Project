@@ -734,14 +734,6 @@ void PQLParser::insertClauseAffects() {
 	expectToken(",");
 	QueryEntity secondEntity = determineQueryEntity();
 	checkAffectsValidity(firstEntity, secondEntity);
-        if (firstEntity.type == QueryEntityType::Stmt)
-        {
-	  firstEntity.type = QueryEntityType::Assign;
-        }
-        if (secondEntity.type == QueryEntityType::Stmt)
-        {
-	  secondEntity.type == QueryEntityType::Assign;
-        }
 	Clause c =
 		Clause(ClauseType::Affects, vector<QueryEntity>{firstEntity, secondEntity});
 	this->clauses.push_back(c);
@@ -752,14 +744,6 @@ void PQLParser::insertClauseAffectsT() {
 	expectToken(",");
 	QueryEntity secondEntity = determineQueryEntity();
 	checkAffectsValidity(firstEntity, secondEntity);
-	if (firstEntity.type == QueryEntityType::Stmt)
-	{
-	  firstEntity.type = QueryEntityType::Assign;
-	}
-	if (secondEntity.type == QueryEntityType::Stmt)
-	{
-	  secondEntity.type == QueryEntityType::Assign;
-	}
 	Clause c =
 		Clause(ClauseType::AffectsT, vector<QueryEntity>{firstEntity, secondEntity});
 	this->clauses.push_back(c);

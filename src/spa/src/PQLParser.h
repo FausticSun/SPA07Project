@@ -77,7 +77,7 @@ private:
         QueryEntityType::Underscore}},
       {"A12",
        {QueryEntityType::Assign, QueryEntityType::Line,
-	QueryEntityType::Underscore, QueryEntityType::Stmt}},
+	QueryEntityType::Underscore}},
       {"W12",
        {QueryEntityType::Name, QueryEntityType::Line, QueryEntityType::Attrref,
         QueryEntityType::Progline}},
