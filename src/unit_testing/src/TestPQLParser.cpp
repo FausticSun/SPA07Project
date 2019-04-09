@@ -609,12 +609,15 @@ SCENARIO("Including one such that clause") {
 	  tokens.push(QueryToken(TokenType::Identifier, "assign"));
 	  tokens.push(QueryToken(TokenType::Identifier, "a"));
 	  tokens.push(QueryToken(TokenType::Identifier, ";"));
+	  tokens.push(QueryToken(TokenType::Identifier, "assign"));
+	  tokens.push(QueryToken(TokenType::Identifier, "s"));
+	  tokens.push(QueryToken(TokenType::Identifier, ";"));
 	  tokens.push(QueryToken(TokenType::Identifier, "Select"));
 	  tokens.push(QueryToken(TokenType::Identifier, "a"));
 	  tokens.push(QueryToken(TokenType::Identifier, "such that"));
 	  tokens.push(QueryToken(TokenType::Identifier, "Affects"));
 	  tokens.push(QueryToken(TokenType::Identifier, "("));
-	  tokens.push(QueryToken(TokenType::Identifier, "a"));
+	  tokens.push(QueryToken(TokenType::Identifier, "s"));
 	  tokens.push(QueryToken(TokenType::Identifier, ","));
 	  tokens.push(QueryToken(TokenType::Identifier, "12"));
 	  tokens.push(QueryToken(TokenType::Identifier, ")"));
@@ -625,7 +628,7 @@ SCENARIO("Including one such that clause") {
 	  std::vector<QueryEntity> tar = q.target;
 	  WHEN("Successfully parsed:") {
 		  SECTION("selectors: one QueryEntity is inside") {
-			  REQUIRE(selectors.size() == 1);
+			  REQUIRE(selectors.size() == 2);
 			  QueryEntity qe = selectors.front();
 			  REQUIRE(qe.name == "a");
 			  REQUIRE(qe.type == QueryEntityType::Assign);
@@ -639,7 +642,7 @@ SCENARIO("Including one such that clause") {
 			  Clause c = clauses.front();
 			  std::vector<QueryEntity> parameters = c.parameters;
 			  REQUIRE(c.clauseType == ClauseType::Affects);
-			  REQUIRE(parameters[0].name == "a");
+			  REQUIRE(parameters[0].name == "s");
 			  REQUIRE(parameters[0].type == QueryEntityType::Assign);
 			  REQUIRE(parameters[1].name == "12");
 			  REQUIRE(parameters[1].type == QueryEntityType::Line);
