@@ -14,6 +14,7 @@ private:
   std::vector<std::vector<int>> reverseCompressedGraph;
   int numCompressedNodes = 0;
   Table whileIfTable{1};
+  Table procStmtTable{1};
   std::vector<int> inDegree;
 
   void populateInitialToCompressed(int, Table, std::vector<int>);
