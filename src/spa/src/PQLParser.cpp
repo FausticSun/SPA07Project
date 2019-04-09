@@ -1,1099 +1,438 @@
 #include "PQLParser.h"
-#include <algorithm>
-#include <queue>
-#include <regex>
-#include <stack>
-#include <string.h>
-#include <string>
-#include <vector>
+#include <iterator>
 
-using namespace std;
-using namespace PQLLexerToken;
+using Lexer::Token;
+using Lexer::TokenType;
 
-PQLParser::PQLParser() {}
-
-std::queue<QueryToken> PQLParser::parse(std::string query) {
-  PQLLexer pqlLexer = PQLLexer(query);
-  queue<pair<TokenType, string>> allTokens = pqlLexer.getTokenQueue();
-  if (allTokens.size() == 0) {
-    throw std::logic_error("Invalid query!");
+namespace Parser {
+Lexer::Token PQLParser::expect(Lexer::Token token) {
+  if (tokens.empty()) {
+    throw std::logic_error("Expected more tokens but ran out");
   }
-  std::queue<QueryToken> tokens;
-  while (!allTokens.empty()) {
-    pair<TokenType, string> pair = allTokens.front();
-    tokens.push(QueryToken(pair.first, pair.second));
-    allTokens.pop();
+  if ((token.type == TokenType::Identifier && token.value.empty() &&
+       tokens.front().type == TokenType::Identifier) ||
+      (token.type == TokenType::Number && token.value.empty() &&
+       tokens.front().type == TokenType::Number) ||
+      tokens.front() == token) {
+    auto t = tokens.front();
+    tokens.pop_front();
+    return t;
   }
-  return tokens;
+  throw std::logic_error("Expected " + token.value +
+                         " but got: " + tokens.front().value);
+  return token;
+}
+
+void PQLParser::parseQuery() {
+  while (!tokens.empty() && tokens.front().value != "Select") {
+    parseDeclaration();
+  }
+  expect(PQLTokens::Select);
+  parseResultCl();
+  while (!tokens.empty()) {
+    parseClauses();
+  }
+}
+
+void PQLParser::parseDeclaration() {
+  auto designEntityToken = expect(PQLTokens::Identifier);
+  if (designEntityToken.value == "prog") {
+    expect(PQLTokens::Underscore);
+    expect(PQLTokens::Line);
+  }
+  if (PQLTokens::tokenEntityMap.count(designEntityToken) == 0) {
+    throw std::logic_error("Invalid declaration");
+  }
+  auto synonymToken = expect(PQLTokens::Identifier);
+  if (declarations.count(synonymToken.value)) {
+    throw std::logic_error("Synonym already declared");
+  }
+  declarations.emplace(std::make_pair(
+      synonymToken.value, PQLTokens::tokenEntityMap.at(designEntityToken)));
+  while (tokens.front() != PQLTokens::Semicolon) {
+    expect(PQLTokens::Comma);
+    auto synonymToken = expect(PQLTokens::Identifier);
+    declarations.emplace(std::make_pair(
+        synonymToken.value, PQLTokens::tokenEntityMap.at(designEntityToken)));
+  }
+  expect(PQLTokens::Semicolon);
+}
+
+void PQLParser::parseClauses() {
+  if (tokens.front() == PQLTokens::With) {
+    parseWithCl();
+  } else if (tokens.front() == PQLTokens::Pattern) {
+    parsePatternCl();
+  } else if (tokens.front() == PQLTokens::Such) {
+    parseSuchThatCl();
+  } else {
+    throw std::logic_error("Unexpected clause: " + tokens.front().value);
+  }
+}
+
+void PQLParser::parseResultCl() {
+  if (tokens.front() == PQLTokens::Boolean) {
+    expect(PQLTokens::Boolean);
+    query.target.push_back(QueryEntity(QueryEntityType::Boolean));
+  } else {
+    parseTuple();
+  }
+}
+
+void PQLParser::parseTuple() {
+  if (tokens.front().type == TokenType::Identifier) {
+    query.target.push_back(parseElem());
+  } else {
+    expect(PQLTokens::LeftChevron);
+    query.target.push_back(parseElem());
+    while (tokens.front() != PQLTokens::RightChevron) {
+      expect(PQLTokens::Comma);
+      query.target.push_back(parseElem());
+    }
+    expect(PQLTokens::RightChevron);
+  }
+}
+
+void PQLParser::parseWithCl() {
+  expect(PQLTokens::With);
+  parseAttrCond();
+}
+
+void PQLParser::parseAttrCond() {
+  parseAttrCompare();
+  while (!tokens.empty() && tokens.front() == PQLTokens::And) {
+    expect(PQLTokens::And);
+    parseAttrCompare();
+  }
+}
+
+void PQLParser::parseAttrCompare() {
+  auto attrRef1 = parseRef();
+  expect(PQLTokens::Equals);
+  auto attrRef2 = parseRef();
+
+  if (getAttRefType(attrRef1) != getAttRefType(attrRef2)) {
+    throw std::logic_error("Attr refs must be of same type");
+  }
+
+  Clause withCl(ClauseType::With, {attrRef1, attrRef2});
+  query.clauses.push_back(withCl);
+}
+
+PQLTokens::AttrRefType PQLParser::getAttRefType(QueryEntity attrRef) {
+  switch (attrRef.type) {
+  case QueryEntityType::Name:
+    return PQLTokens::AttrRefType::Name;
+  case QueryEntityType::Line:
+  case QueryEntityType::Progline:
+    return PQLTokens::AttrRefType::Integer;
+  case QueryEntityType::Attrref:
+    return PQLTokens::attrTypeMap.at(
+        std::make_pair(attrRef.attrRefSynonymType, getAttrValue(attrRef.name)));
+  default:
+    throw std::logic_error("Invalid attr");
+  }
+}
+
+std::string PQLParser::getAttrValue(std::string attr) {
+  return attr.substr(attr.find(".") + 1);
+}
+
+void PQLParser::parseSuchThatCl() {
+  expect(PQLTokens::Such);
+  expect(PQLTokens::That);
+  parseRelCond();
+}
+
+void PQLParser::parseRelCond() {
+  parseRelRef();
+  while (!tokens.empty() && tokens.front() == PQLTokens::And) {
+    expect(PQLTokens::And);
+    parseRelRef();
+  }
+}
+
+void PQLParser::parseRelRef() {
+  // Alt type determines if the clause is of an "alternate type"
+  // For Parent, Follows, Call, Next, Affects, the alt type is transitive
+  // closure
+  // Irrelevant for Uses and Modifies
+  bool altType = false;
+
+  auto relWord = expect(PQLTokens::Identifier);
+  // Determine relation and alt type for transitive closure
+  if (PQLTokens::transitiveRel.count(relWord) &&
+      tokens.front() == PQLTokens::Star) {
+    expect(PQLTokens::Star);
+    altType = true;
+  }
+  expect(PQLTokens::LeftParentheses);
+  auto ref1 = parseGenRef();
+  expect(PQLTokens::Comma);
+  auto ref2 = parseGenRef();
+  expect(PQLTokens::RightParentheses);
+
+  if (!PQLTokens::relClauseMap.count(std::make_pair(relWord, altType))) {
+    throw std::logic_error("Invalid relation specified");
+  }
+
+  ClauseType clType =
+      PQLTokens::relClauseMap.at(std::make_pair(relWord, altType));
+  Clause suchThatCl(clType, {ref1, ref2});
+  validateSuchThatCl(suchThatCl);
+  query.clauses.push_back(suchThatCl);
+}
+
+void PQLParser::validateSuchThatCl(Clause suchThatCl) {
+  auto allowedRefTypes =
+      PQLTokens::allowedRefTypesMap.at(suchThatCl.clauseType);
+  validateRef(suchThatCl.parameters[0], allowedRefTypes.first);
+  validateRef(suchThatCl.parameters[1], allowedRefTypes.second);
+  if ((suchThatCl.clauseType == ClauseType::UsesS ||
+       suchThatCl.clauseType == ClauseType::ModifiesS) &&
+      (suchThatCl.parameters[0].type == QueryEntityType::Underscore)) {
+    throw std::logic_error("First param of uses/modifies cannot be _");
+  }
+}
+
+void PQLParser::validateRef(QueryEntity ref, PQLTokens::RefType refType) {
+  if (!PQLTokens::refTypeSpecificTypesMap.at(refType).count(ref.type)) {
+    throw std::logic_error("Invalid ref");
+  }
+}
+
+void PQLParser::parsePatternCl() {
+  expect(PQLTokens::Pattern);
+  parsePatternCond();
+}
+
+void PQLParser::parsePatternCond() {
+  parsePattern();
+  while (!tokens.empty() && tokens.front() == PQLTokens::And) {
+    expect(PQLTokens::And);
+    parsePattern();
+  }
+}
+
+void PQLParser::parsePattern() {
+  auto syn = parseSynonym();
+  switch (syn.type) {
+  case QueryEntityType::Assign:
+    parseAssign(syn);
+    break;
+  case QueryEntityType::While:
+    parseWhile(syn);
+    break;
+  case QueryEntityType::If:
+    parseIf(syn);
+    break;
+  default:
+    throw std::logic_error("Invalid pattern synonym");
+  }
+}
+
+void PQLParser::parseAssign(QueryEntity syn) {
+  expect(PQLTokens::LeftParentheses);
+  auto entRef = parseEntRef();
+  expect(PQLTokens::Comma);
+  auto exprRef = parseExprSpec();
+  expect(PQLTokens::RightParentheses);
+
+  Clause patternCl(ClauseType::AssignPatt, {syn, entRef, exprRef});
+  query.clauses.push_back(patternCl);
+}
+
+void PQLParser::parseWhile(QueryEntity syn) {
+  expect(PQLTokens::LeftParentheses);
+  auto entRef = parseEntRef();
+  expect(PQLTokens::Comma);
+  expect(PQLTokens::Underscore);
+  expect(PQLTokens::RightParentheses);
+
+  Clause patternCl(ClauseType::WhilePatt, {syn, entRef});
+  query.clauses.push_back(patternCl);
+}
+
+void PQLParser::parseIf(QueryEntity syn) {
+  expect(PQLTokens::LeftParentheses);
+  auto entRef = parseEntRef();
+  expect(PQLTokens::Comma);
+  expect(PQLTokens::Underscore);
+  expect(PQLTokens::Comma);
+  expect(PQLTokens::Underscore);
+  expect(PQLTokens::RightParentheses);
+
+  Clause patternCl(ClauseType::IfPatt, {syn, entRef});
+  query.clauses.push_back(patternCl);
+}
+
+QueryEntity PQLParser::parseExprSpec() {
+  QueryEntity ent;
+  std::string expr = "";
+  std::list<Token> exprTokens;
+  if (tokens.front() == PQLTokens::Underscore) {
+    expect(PQLTokens::Underscore);
+    if (tokens.front() == PQLTokens::Quote) {
+      expr = parseQuotedExpr();
+      expect(PQLTokens::Underscore);
+      expr = "_" + expr + "_";
+    } else {
+      ent.type = QueryEntityType::Underscore;
+      ent.name = "_";
+      return ent;
+    }
+  } else {
+    expr = parseQuotedExpr();
+  }
+  ent.type = QueryEntityType::Expression;
+  ent.name = expr;
+  return ent;
+}
+
+std::string PQLParser::parseQuotedExpr() {
+  std::list<Token> exprTokens;
+  std::string expr = "";
+  expect(PQLTokens::Quote);
+  if (tokens.front() == PQLTokens::Quote) {
+    return expr;
+  } else {
+    while (tokens.front() != PQLTokens::Quote) {
+      exprTokens.push_back(tokens.front());
+      tokens.pop_front();
+    }
+    expect(PQLTokens::Quote);
+    expr = Parser::tokensToString(Parser::parseExpr(exprTokens));
+  }
+  return expr;
+}
+
+QueryEntity PQLParser::parseAttrRef() {
+  auto ent = parseSynonym();
+  expect(PQLTokens::Period);
+  auto attrToken = expect(PQLTokens::Identifier);
+  if (attrToken.value != "varName" && attrToken.value != "procName" &&
+      attrToken.value != "stmt" && attrToken.value != "value") {
+    throw std::logic_error("Unexpected attribute");
+  }
+  ent.name += "." + attrToken.value;
+  if (attrToken == PQLTokens::Stmt) {
+    expect(PQLTokens::Hash);
+    ent.name += "#";
+  }
+  ent.attrRefSynonymType = ent.type;
+  ent.type = QueryEntityType::Attrref;
+  getAttRefType(ent);
+  return ent;
+}
+
+QueryEntity PQLParser::parseRef() {
+  if (tokens.front() == PQLTokens::Quote) {
+    return parseName();
+  } else if (tokens.front().type == TokenType::Number) {
+    return parseLineNo();
+  } else if (tokens.size() > 1 && *std::next(tokens.begin()) == PQLTokens::Period) {
+    return parseAttrRef();
+  } else {
+    auto syn = parseSynonym();
+    if (syn.type != QueryEntityType::Progline) {
+      throw std::logic_error("Synonym must be of type prog_line");
+    }
+    return syn;
+  }
+}
+
+QueryEntity PQLParser::parseGenRef() {
+  if (tokens.front() == PQLTokens::Underscore) {
+    return parseUnderscore();
+  } else if (tokens.front() == PQLTokens::Quote) {
+    return parseName();
+  } else if (tokens.front().type == TokenType::Number) {
+    return parseLineNo();
+  } else {
+    return parseSynonym();
+  }
+}
+
+QueryEntity PQLParser::parseEntRef() {
+  if (tokens.front() == PQLTokens::Underscore) {
+    return parseUnderscore();
+  } else if (tokens.front() == PQLTokens::Quote) {
+    return parseName();
+  } else {
+    return parseSynonym();
+  }
+}
+
+QueryEntity PQLParser::parseStmtRef() {
+  if (tokens.front() == PQLTokens::Underscore) {
+    return parseUnderscore();
+  } else if (tokens.front().type == TokenType::Number) {
+    return parseLineNo();
+  } else {
+    return parseSynonym();
+  }
+}
+
+QueryEntity PQLParser::parseLineRef() {
+  if (tokens.front() == PQLTokens::Underscore) {
+    return parseUnderscore();
+  } else if (tokens.front().type == TokenType::Number) {
+    return parseLineNo();
+  } else {
+    return parseSynonym();
+  }
+}
+
+QueryEntity PQLParser::parseElem() {
+  if (tokens.size() < 2 || !(*std::next(tokens.begin()) == PQLTokens::Period)) {
+    return parseSynonym();
+  } else {
+    return parseAttrRef();
+  }
+}
+
+QueryEntity PQLParser::parseSynonym() {
+  auto synToken = expect(PQLTokens::Identifier);
+  if (!(declarations.count(synToken.value))) {
+    throw std::logic_error("Synonym " + synToken.value + " not declared");
+  }
+  QueryEntity ent;
+  ent.name = synToken.value;
+  ent.type = declarations.at(synToken.value);
+  return ent;
+}
+
+QueryEntity PQLParser::parseUnderscore() {
+  expect(PQLTokens::Underscore);
+  QueryEntity ent;
+  ent.name = "_";
+  ent.type = QueryEntityType::Underscore;
+  return ent;
+}
+
+QueryEntity PQLParser::parseLineNo() {
+  auto noToken = expect(PQLTokens::Number);
+  QueryEntity ent;
+  ent.name = noToken.value;
+  ent.type = QueryEntityType::Line;
+  return ent;
+}
+
+QueryEntity PQLParser::parseName() {
+  expect(PQLTokens::Quote);
+  auto nameToken = expect(PQLTokens::Identifier);
+  expect(PQLTokens::Quote);
+  QueryEntity ent;
+  ent.name = nameToken.value;
+  ent.type = QueryEntityType::Name;
+  return ent;
+}
+
+PQLParser::PQLParser(std::list<Lexer::Token> tokens) : tokens(tokens) {
+  parseQuery();
 }
 
 Query PQLParser::getQuery() { return query; }
 
-Query PQLParser::buildQuery(std::queue<QueryToken> &tokenQueue) {
-  this->tokenQueue = tokenQueue;
-  bool hasSelect = false;
-  while (!this->tokenQueue.empty()) {
-    getNextToken();
-    if (token.name == "Select") {
-      setQueryTarget();
-      tokenizeSelect();
-      hasSelect = true;
-      break;
-    }
-    expectTokenIn(this->expectedEntityTokens);
-    if (token.name == "variable") {
-      insertQueryEntityVariable();
-    } else if (token.name == "procedure") {
-      insertQueryEntityProcedure();
-    } else if (token.name == "read") {
-      insertQueryEntityRead();
-    } else if (token.name == "print") {
-      insertQueryEntityPrint();
-    } else if (token.name == "stmt") {
-      insertQueryEntityStmt();
-    } else if (token.name == "call") {
-      insertQueryEntityCall();
-    } else if (token.name == "assign") {
-      insertQueryEntityAssign();
-    } else if (token.name == "constant") {
-      insertQueryEntityConstant();
-    } else if (token.name == "if") {
-      insertQueryEntityIf();
-    } else if (token.name == "while") {
-      insertQueryEntityWhile();
-    } else {
-      insertQueryEntityProgline();
-    }
-  }
-  if (!hasSelect) {
-    throw std::logic_error("Must has 'Select' keyword.");
-  }
-  return constructQuery();
-}
-
-void PQLParser::getNextToken() {
-  if (tokenQueue.empty()) {
-    throw std::logic_error("Token Queue is empty!");
-  }
-  QueryToken nextToken = tokenQueue.front();
-  tokenQueue.pop();
-  token = nextToken;
-}
-
-void PQLParser::expectToken(std::string expectedToken) {
-  getNextToken();
-  if (token.name != expectedToken) {
-    throw std::logic_error("Expected '" + expectedToken + "' but got '" +
-                           token.name + "'");
-  }
-}
-
-void PQLParser::expectTokenIn(std::vector<string> expectedTokens) {
-  bool isIn = false;
-  for (int i = 0; i < expectedTokens.size(); i++) {
-    if (token.name == expectedTokens[i]) {
-      isIn = true;
-      break;
-    }
-  }
-  if (!isIn) {
-    throw std::logic_error("Expected query entity type but got '" + token.name +
-                           "'");
-  }
-}
-
-void PQLParser::setQueryTarget() {
-  getNextToken();
-  if (token.name == "BOOLEAN") {
-    this->target.push_back(QueryEntity(QueryEntityType::Boolean, ""));
-    return;
-  } else if (token.name == "<") {
-    insertTarget();
-  } else {
-    std::map<std::string, QueryEntityType>::iterator it =
-        entityMaps.find(token.name);
-    if (it != entityMaps.end()) {
-      string next = "";
-      if (!tokenQueue.empty()) {
-        next = tokenQueue.front().name;
-      }
-      if (next == ".") {
-        getNextToken();
-        getNextToken();
-		checkAttrrefValidity(it->second, token.name);
-        this->target.push_back(QueryEntity(QueryEntityType::Attrref,
-                                           it->first + "." + token.name,
-                                           it->second));
-      } else {
-        this->target.push_back(QueryEntity(it->second, token.name));
-      }
-    } else {
-      throw std::logic_error("No matched synonym have been declared.");
-    }
-  }
-}
-
-void PQLParser::insertTarget() {
-  getNextToken();
-  std::map<std::string, QueryEntityType>::iterator it =
-      entityMaps.find(token.name);
-  if (it != entityMaps.end()) {
-    string next = "";
-    if (!tokenQueue.empty()) {
-      next = tokenQueue.front().name;
-    }
-    if (next == ".") {
-      getNextToken();
-      getNextToken();
-	  checkAttrrefValidity(it->second, token.name);
-      this->target.push_back(QueryEntity(
-          QueryEntityType::Attrref, it->first + "." + token.name, it->second));
-    } else {
-      this->target.push_back(QueryEntity(it->second, token.name));
-    }
-  } else {
-    throw std::logic_error("No matched synonym have been declared.");
-  }
-  getNextToken();
-  if (token.name == ",") {
-    insertTarget();
-  } else {
-    if (token.name != ">") {
-      throw std::logic_error("Expected '>' but got '" + token.name + "'");
-    }
-  }
-}
-
-void PQLParser::tokenizeSelect() {
-  string previous = "";
-  string current = "";
-  while (!this->tokenQueue.empty()) {
-    getNextToken();
-    expectTokenIn(this->expectedIndicatorTokens);
-    current = token.name;
-    if (token.name == "and") {
-      if (previous == "") {
-        throw std::logic_error("Cannot have 'and' as the first clause");
-      }
-      current = previous;
-    }
-    if (current == "such that") {
-      getNextToken();
-      expectTokenIn(expectedClauseTokens);
-      if (token.name == "Follows") {
-        expectToken("(");
-        insertClauseFollows();
-        expectToken(")");
-      }
-      if (token.name == "Follows*") {
-        expectToken("(");
-        insertClauseFollowsT();
-        expectToken(")");
-      }
-      if (token.name == "Parent") {
-        expectToken("(");
-        insertClauseParent();
-        expectToken(")");
-      }
-      if (token.name == "Parent*") {
-        expectToken("(");
-        insertClauseParentT();
-        expectToken(")");
-      }
-      if (token.name == "Modifies") {
-        expectToken("(");
-        insertClauseModifiesS();
-        expectToken(")");
-      }
-      if (token.name == "Uses") {
-        expectToken("(");
-        insertClauseUseS();
-        expectToken(")");
-      }
-      if (token.name == "Next") {
-        expectToken("(");
-        insertClauseNext();
-        expectToken(")");
-      }
-      if (token.name == "Next*") {
-        expectToken("(");
-        insertClauseNextT();
-        expectToken(")");
-      }
-      if (token.name == "Calls") {
-        expectToken("(");
-        insertClauseCalls();
-        expectToken(")");
-      }
-      if (token.name == "Calls*") {
-        expectToken("(");
-        insertClauseCallsT();
-        expectToken(")");
-      }
-      if (token.name == "Affects") {
-	expectToken("(");
-	insertClauseAffects();
-	expectToken(")");
-      }
-      if (token.name == "Affects*") {
-	expectToken("(");
-	insertClauseAffectsT();
-	expectToken(")");
-      }
-    } else if (current == "pattern") {
-      insertClausePattern();
-    } else { // with
-      insertClauseWith();
-    }
-    previous = current;
-  }
-}
-
-void PQLParser::insertQueryEntityVariable() {
-  getNextToken();
-  if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
-  }
-  QueryEntity qe =
-      QueryEntity(QueryEntityType::Variable, checkNameValidity(token.name));
-  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Variable));
-  this->selectors.push_back(qe);
-  getNextToken();
-  if (token.name == ",") {
-    insertQueryEntityVariable();
-  } else {
-    if (token.name != ";") {
-      throw std::logic_error("Expected ';' but got '" + token.name + "'");
-    }
-  }
-}
-
-void PQLParser::insertQueryEntityProcedure() {
-  getNextToken();
-  if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
-  }
-  QueryEntity qe =
-      QueryEntity(QueryEntityType::Procedure, checkNameValidity(token.name));
-  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Procedure));
-  this->selectors.push_back(qe);
-  getNextToken();
-  if (token.name == ",") {
-    insertQueryEntityProcedure();
-  } else {
-    if (token.name != ";") {
-      throw std::logic_error("Expected ';' but got '" + token.name + "'");
-    }
-  }
-}
-
-void PQLParser::insertQueryEntityRead() {
-  getNextToken();
-  if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
-  }
-  QueryEntity qe =
-      QueryEntity(QueryEntityType::Read, checkNameValidity(token.name));
-  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Read));
-  this->selectors.push_back(qe);
-  getNextToken();
-  if (token.name == ",") {
-    insertQueryEntityRead();
-  } else {
-    if (token.name != ";") {
-      throw std::logic_error("Expected ';' but got '" + token.name + "'");
-    }
-  }
-}
-
-void PQLParser::insertQueryEntityPrint() {
-  getNextToken();
-  if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
-  }
-  QueryEntity qe =
-      QueryEntity(QueryEntityType::Print, checkNameValidity(token.name));
-  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Print));
-  this->selectors.push_back(qe);
-  getNextToken();
-  if (token.name == ",") {
-    insertQueryEntityPrint();
-  } else {
-    if (token.name != ";") {
-      throw std::logic_error("Expected ';' but got '" + token.name + "'");
-    }
-  }
-}
-
-void PQLParser::insertQueryEntityIf() {
-  getNextToken();
-  if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
-  }
-  QueryEntity qe =
-      QueryEntity(QueryEntityType::If, checkNameValidity(token.name));
-  this->entityMaps.insert(make_pair(token.name, QueryEntityType::If));
-  this->selectors.push_back(qe);
-  getNextToken();
-  if (token.name == ",") {
-    insertQueryEntityIf();
-  } else {
-    if (token.name != ";") {
-      throw std::logic_error("Expected ';' but got '" + token.name + "'");
-    }
-  }
-}
-
-void PQLParser::insertQueryEntityWhile() {
-  getNextToken();
-  if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
-  }
-  QueryEntity qe =
-      QueryEntity(QueryEntityType::While, checkNameValidity(token.name));
-  this->entityMaps.insert(make_pair(token.name, QueryEntityType::While));
-  this->selectors.push_back(qe);
-  getNextToken();
-  if (token.name == ",") {
-    insertQueryEntityWhile();
-  } else {
-    if (token.name != ";") {
-      throw std::logic_error("Expected ';' but got '" + token.name + "'");
-    }
-  }
-}
-
-void PQLParser::insertQueryEntityAssign() {
-  getNextToken();
-  if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
-  }
-  QueryEntity qe =
-      QueryEntity(QueryEntityType::Assign, checkNameValidity(token.name));
-  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Assign));
-  this->selectors.push_back(qe);
-  getNextToken();
-  if (token.name == ",") {
-    insertQueryEntityAssign();
-  } else {
-    if (token.name != ";") {
-      throw std::logic_error("Expected ';' but got '" + token.name + "'");
-    }
-  }
-}
-
-void PQLParser::insertQueryEntityCall() {
-  getNextToken();
-  if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
-  }
-  QueryEntity qe =
-      QueryEntity(QueryEntityType::Call, checkNameValidity(token.name));
-  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Call));
-  this->selectors.push_back(qe);
-  getNextToken();
-  if (token.name == ",") {
-    insertQueryEntityCall();
-  } else {
-    if (token.name != ";") {
-      throw std::logic_error("Expected ';' but got '" + token.name + "'");
-    }
-  }
-}
-
-void PQLParser::insertQueryEntityStmt() {
-  getNextToken();
-  if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
-  }
-  QueryEntity qe =
-      QueryEntity(QueryEntityType::Stmt, checkNameValidity(token.name));
-  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Stmt));
-  this->selectors.push_back(qe);
-  getNextToken();
-  if (token.name == ",") {
-    insertQueryEntityStmt();
-  } else {
-    if (token.name != ";") {
-      throw std::logic_error("Expected ';' but got '" + token.name + "'");
-    }
-  }
-}
-
-void PQLParser::insertQueryEntityConstant() {
-  getNextToken();
-  if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
-  }
-  QueryEntity qe =
-      QueryEntity(QueryEntityType::Constant, checkNameValidity(token.name));
-  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Constant));
-  this->selectors.push_back(qe);
-  getNextToken();
-  if (token.name == ",") {
-    insertQueryEntityConstant();
-  } else {
-    if (token.name != ";") {
-      throw std::logic_error("Expected ';' but got '" + token.name + "'");
-    }
-  }
-}
-
-void PQLParser::insertQueryEntityProgline() {
-  getNextToken();
-  if (isDefined(token.name)) {
-    throw std::logic_error("'" + token.name + "'" + " has been declared.");
-  }
-  QueryEntity qe =
-      QueryEntity(QueryEntityType::Progline, checkNameValidity(token.name));
-  this->entityMaps.insert(make_pair(token.name, QueryEntityType::Progline));
-  this->selectors.push_back(qe);
-  getNextToken();
-  if (token.name == ",") {
-    insertQueryEntityProgline();
-  } else {
-    if (token.name != ";") {
-      throw std::logic_error("Expected ';' but got '" + token.name + "'");
-    }
-  }
-}
-
-bool PQLParser::isDefined(string name) {
-  std::map<std::string, QueryEntityType>::iterator it = entityMaps.find(name);
-  if (it != entityMaps.end()) {
-    return true;
-  }
-  return false;
-}
-
-bool PQLParser::isInt(string s) {
-  if (s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+')))
-    return false;
-
-  char *p;
-  strtol(s.c_str(), &p, 10);
-
-  return (*p == 0);
-}
-
-string PQLParser::checkNameValidity(string s) {
-  if (regex_match(s, regex("[a-zA-Z][a-zA-Z0-9]*"))) {
-    return s;
-  } else {
-    throw std::invalid_argument("Invalid naming style for names");
-  }
-}
-
-QueryEntity PQLParser::determineQueryEntity() {
-  getNextToken();
-  if (isInt(token.name)) {
-    return QueryEntity(QueryEntityType::Line, token.name);
-  } else if (token.name == "_") {
-    return QueryEntity(QueryEntityType::Underscore, token.name);
-  } else if (token.name == "\"") {
-    getNextToken();
-    QueryEntity qe = QueryEntity(QueryEntityType::Name, token.name);
-    expectToken("\"");
-    return qe;
-  } else {
-    std::map<std::string, QueryEntityType>::iterator it =
-        entityMaps.find(token.name);
-    if (it != entityMaps.end()) {
-      QueryEntityType qet = it->second;
-      if (qet == QueryEntityType::Constant) {
-        throw std::invalid_argument(
-            "invalid to have constant synonym as the argument for clauses");
-      }
-      return QueryEntity(qet, token.name);
-    }
-    throw std::logic_error("No matched synonym have been declared.");
-  }
-}
-
-void PQLParser::checkFPNValidity(
-    QueryEntity firstEntity,
-    QueryEntity secondEntity) { // Stmt,Read,Print,Call,While,If,Assign,Line,
-                                // Underscore are allowed
-  QueryEntityType firstType = firstEntity.type;
-  QueryEntityType secondType = secondEntity.type;
-  if (std::find(validationTable["FPN12"].begin(),
-                validationTable["FPN12"].end(),
-                firstType) != validationTable["FPN12"].end() &&
-      std::find(validationTable["FPN12"].begin(),
-                validationTable["FPN12"].end(),
-                secondType) != validationTable["FPN12"].end()) {
-    return;
-  }
-  throw std::invalid_argument("invalid argument type for clauses");
-}
-
-void PQLParser::checkModifiesValidity(
-    QueryEntity firstEntity,
-    QueryEntity secondEntity) { // first: Stmt,Read,Call,While,If,Assign,
-                                // Procedure, Line, Name are allowed second:
-                                // Variable, Name, Underscore are allowed
-  QueryEntityType firstType = firstEntity.type;
-  QueryEntityType secondType = secondEntity.type;
-  if (std::find(validationTable["M1"].begin(), validationTable["M1"].end(),
-                firstType) != validationTable["M1"].end() &&
-      std::find(validationTable["UMPAT2"].begin(),
-                validationTable["UMPAT2"].end(),
-                secondType) != validationTable["UMPAT2"].end()) {
-    return;
-  }
-  throw std::invalid_argument("invalid argument type for clauses");
-}
-
-void PQLParser::checkUsesValidity(
-    QueryEntity firstEntity,
-    QueryEntity secondEntity) { // first: Stmt,Print,Call,While,If,Assign,
-                                // Procedure, Line, Name are allowed second:
-                                // Variable, Name, Underscore are allowed
-  QueryEntityType firstType = firstEntity.type;
-  QueryEntityType secondType = secondEntity.type;
-  if (std::find(validationTable["U1"].begin(), validationTable["U1"].end(),
-                firstType) != validationTable["U1"].end() &&
-      std::find(validationTable["UMPAT2"].begin(),
-                validationTable["UMPAT2"].end(),
-                secondType) != validationTable["UMPAT2"].end()) {
-    return;
-  }
-  throw std::invalid_argument("invalid argument type for clauses");
-}
-
-void PQLParser::checkPatValidity(QueryEntityType qet) {
-  if (std::find(validationTable["PAT1"].begin(), validationTable["PAT1"].end(),
-                qet) != validationTable["PAT1"].end()) {
-    return;
-  }
-  throw std::invalid_argument("invalid argument type for clauses");
-}
-
-void PQLParser::checkWithValidity(
-    QueryEntity firstEntity,
-    QueryEntity secondEntity) { // Name, Line, Attrref, Progline
-  QueryEntityType firstType = firstEntity.type;
-  QueryEntityType secondType = secondEntity.type;
-  if (std::find(validationTable["W12"].begin(), validationTable["W12"].end(),
-                firstType) != validationTable["W12"].end() &&
-      std::find(validationTable["W12"].begin(), validationTable["W12"].end(),
-                secondType) != validationTable["W12"].end()) {
-    return;
-  }
-  throw std::invalid_argument("invalid argument type for clauses");
-}
-
-void PQLParser::checkCallsValidity(
-    QueryEntity firstEntity,
-    QueryEntity secondEntity) { // Name, Procedure, Underscore
-  QueryEntityType firstType = firstEntity.type;
-  QueryEntityType secondType = secondEntity.type;
-  if (std::find(validationTable["C12"].begin(), validationTable["C12"].end(),
-                firstType) != validationTable["C12"].end() &&
-      std::find(validationTable["C12"].begin(), validationTable["C12"].end(),
-                secondType) != validationTable["C12"].end()) {
-    return;
-  }
-  throw std::invalid_argument("invalid argument type for clauses");
-}
-
-void PQLParser::checkAffectsValidity(
-	QueryEntity firstEntity,
-	QueryEntity secondEntity) { // Name, Procedure, Underscore
-	QueryEntityType firstType = firstEntity.type;
-	QueryEntityType secondType = secondEntity.type;
-	if (std::find(validationTable["A12"].begin(), validationTable["A12"].end(),
-		firstType) != validationTable["A12"].end() &&
-		std::find(validationTable["A12"].begin(), validationTable["A12"].end(),
-			secondType) != validationTable["A12"].end()) {
-		return;
-	}
-	throw std::invalid_argument("invalid argument type for clauses");
-}
-
-void PQLParser::checkAttrrefValidity(
-	QueryEntityType type,
-	string attrName) {
-	if (std::find(validationTable[attrName].begin(), validationTable[attrName].end(),
-		type) != validationTable[attrName].end()) {
-		return;
-	}
-	throw std::invalid_argument("invalid argument type for attrref");
-}
-
-void PQLParser::insertClauseFollows() {
-  QueryEntity firstEntity = determineQueryEntity();
-  expectToken(",");
-  QueryEntity secondEntity = determineQueryEntity();
-  checkFPNValidity(firstEntity, secondEntity);
-  Clause c = Clause(ClauseType::Follows,
-                    vector<QueryEntity>{firstEntity, secondEntity});
-  this->clauses.push_back(c);
-}
-
-void PQLParser::insertClauseFollowsT() {
-  QueryEntity firstEntity = determineQueryEntity();
-  expectToken(",");
-  QueryEntity secondEntity = determineQueryEntity();
-  checkFPNValidity(firstEntity, secondEntity);
-  Clause c = Clause(ClauseType::FollowsT,
-                    vector<QueryEntity>{firstEntity, secondEntity});
-  this->clauses.push_back(c);
-}
-
-void PQLParser::insertClauseParent() {
-  QueryEntity firstEntity = determineQueryEntity();
-  expectToken(",");
-  QueryEntity secondEntity = determineQueryEntity();
-  checkFPNValidity(firstEntity, secondEntity);
-  Clause c = Clause(ClauseType::Parent,
-                    vector<QueryEntity>{firstEntity, secondEntity});
-  this->clauses.push_back(c);
-}
-
-void PQLParser::insertClauseParentT() {
-  QueryEntity firstEntity = determineQueryEntity();
-  expectToken(",");
-  QueryEntity secondEntity = determineQueryEntity();
-  checkFPNValidity(firstEntity, secondEntity);
-  Clause c = Clause(ClauseType::ParentT,
-                    vector<QueryEntity>{firstEntity, secondEntity});
-  this->clauses.push_back(c);
-}
-
-void PQLParser::insertClauseNext() {
-  QueryEntity firstEntity = determineQueryEntity();
-  expectToken(",");
-  QueryEntity secondEntity = determineQueryEntity();
-  checkFPNValidity(firstEntity, secondEntity);
-  Clause c =
-      Clause(ClauseType::Next, vector<QueryEntity>{firstEntity, secondEntity});
-  this->clauses.push_back(c);
-}
-
-void PQLParser::insertClauseNextT() {
-  QueryEntity firstEntity = determineQueryEntity();
-  expectToken(",");
-  QueryEntity secondEntity = determineQueryEntity();
-  checkFPNValidity(firstEntity, secondEntity);
-  Clause c =
-      Clause(ClauseType::NextT, vector<QueryEntity>{firstEntity, secondEntity});
-  this->clauses.push_back(c);
-}
-
-void PQLParser::insertClauseModifiesS() {
-  QueryEntity firstEntity = determineQueryEntity();
-  if (firstEntity.type == QueryEntityType::Underscore) {
-    throw std::invalid_argument("semantically invalid to have underscore as "
-                                "the first argument for Modifies");
-  }
-  expectToken(",");
-  QueryEntity secondEntity = determineQueryEntity();
-  checkModifiesValidity(firstEntity, secondEntity);
-  Clause c = Clause(ClauseType::ModifiesS,
-                    vector<QueryEntity>{firstEntity, secondEntity});
-  this->clauses.push_back(c);
-}
-
-void PQLParser::insertClauseUseS() {
-  QueryEntity firstEntity = determineQueryEntity();
-  if (firstEntity.type == QueryEntityType::Underscore) {
-    throw std::invalid_argument("semantically invalid to have underscore as "
-                                "the first argument for Uses");
-  }
-  expectToken(",");
-  QueryEntity secondEntity = determineQueryEntity();
-  checkUsesValidity(firstEntity, secondEntity);
-  Clause c =
-      Clause(ClauseType::UsesS, vector<QueryEntity>{firstEntity, secondEntity});
-  this->clauses.push_back(c);
-}
-
-void PQLParser::insertClauseCalls() {
-  QueryEntity firstEntity = determineQueryEntity();
-  expectToken(",");
-  QueryEntity secondEntity = determineQueryEntity();
-  checkCallsValidity(firstEntity, secondEntity);
-  Clause c =
-      Clause(ClauseType::Calls, vector<QueryEntity>{firstEntity, secondEntity});
-  this->clauses.push_back(c);
-}
-
-void PQLParser::insertClauseCallsT() {
-  QueryEntity firstEntity = determineQueryEntity();
-  expectToken(",");
-  QueryEntity secondEntity = determineQueryEntity();
-  checkCallsValidity(firstEntity, secondEntity);
-  Clause c = Clause(ClauseType::CallsT,
-                    vector<QueryEntity>{firstEntity, secondEntity});
-  this->clauses.push_back(c);
-}
-
-void PQLParser::insertClauseAffects() {
-	QueryEntity firstEntity = determineQueryEntity();
-	expectToken(",");
-	QueryEntity secondEntity = determineQueryEntity();
-	checkAffectsValidity(firstEntity, secondEntity);
-        if (firstEntity.type == QueryEntityType::Stmt)
-        {
-	  firstEntity.type = QueryEntityType::Assign;
-        }
-        if (secondEntity.type == QueryEntityType::Stmt)
-        {
-	  secondEntity.type = QueryEntityType::Assign;
-        }
-	Clause c =
-		Clause(ClauseType::Affects, vector<QueryEntity>{firstEntity, secondEntity});
-	this->clauses.push_back(c);
-}
-
-void PQLParser::insertClauseAffectsT() {
-	QueryEntity firstEntity = determineQueryEntity();
-	expectToken(",");
-	QueryEntity secondEntity = determineQueryEntity();
-	checkAffectsValidity(firstEntity, secondEntity);
-	if (firstEntity.type == QueryEntityType::Stmt)
-	{
-	  firstEntity.type = QueryEntityType::Assign;
-	}
-	if (secondEntity.type == QueryEntityType::Stmt)
-	{
-	  secondEntity.type = QueryEntityType::Assign;
-	}
-	Clause c =
-		Clause(ClauseType::AffectsT, vector<QueryEntity>{firstEntity, secondEntity});
-	this->clauses.push_back(c);
-}
-
-void PQLParser::insertClausePattern() {
-  getNextToken();
-  std::map<std::string, QueryEntityType>::iterator it =
-      entityMaps.find(token.name);
-  if (it != entityMaps.end()) {
-    QueryEntityType qet = it->second;
-    checkPatValidity(qet);
-    if (qet == QueryEntityType::Assign) {
-      insertAssignPattern(token.name);
-    } else if (qet == QueryEntityType::If) {
-      insertIfPattern(token.name);
-    } else // while
-    {
-      insertWhilePattern(token.name);
-    }
-  } else {
-    throw std::logic_error("No matched synonym have been declared.");
-  }
-}
-
-void PQLParser::insertAssignPattern(string name) {
-  QueryEntity firstPara = QueryEntity(QueryEntityType::Assign, name);
-  expectToken("(");
-  QueryEntity qe = determineQueryEntity();
-  if (std::find(validationTable["UMPAT2"].begin(),
-                validationTable["UMPAT2"].end(),
-                qe.type) != validationTable["UMPAT2"].end()) {
-    QueryEntity secondPara = QueryEntity(qe.type, qe.name);
-    expectToken(",");
-    QueryEntity thirdPara = parseExpression();
-    Clause c = Clause(ClauseType::AssignPatt,
-                      vector<QueryEntity>{firstPara, secondPara, thirdPara});
-    this->clauses.push_back(c);
-  } else {
-    throw std::invalid_argument(
-        "Invalid query entity type for second parameter of assign pattern.");
-  }
-}
-
-void PQLParser::insertIfPattern(string name) {
-  QueryEntity firstPara = QueryEntity(QueryEntityType::If, name);
-  expectToken("(");
-  QueryEntity qe = determineQueryEntity();
-  if (std::find(validationTable["UMPAT2"].begin(),
-                validationTable["UMPAT2"].end(),
-                qe.type) != validationTable["UMPAT2"].end()) {
-    QueryEntity secondPara = QueryEntity(qe.type, qe.name);
-    expectToken(",");
-    expectToken("_");
-    expectToken(",");
-    expectToken("_");
-    expectToken(")");
-    Clause c =
-        Clause(ClauseType::IfPatt, vector<QueryEntity>{firstPara, secondPara});
-    this->clauses.push_back(c);
-  } else {
-    throw std::invalid_argument(
-        "Invalid query entity type for second parameter of if pattern.");
-  }
-}
-
-void PQLParser::insertWhilePattern(string name) {
-  QueryEntity firstPara = QueryEntity(QueryEntityType::While, name);
-  expectToken("(");
-  QueryEntity qe = determineQueryEntity();
-  if (std::find(validationTable["UMPAT2"].begin(),
-                validationTable["UMPAT2"].end(),
-                qe.type) != validationTable["UMPAT2"].end()) {
-    QueryEntity secondPara = QueryEntity(qe.type, qe.name);
-    expectToken(",");
-    expectToken("_");
-    expectToken(")");
-    Clause c = Clause(ClauseType::WhilePatt,
-                      vector<QueryEntity>{firstPara, secondPara});
-    this->clauses.push_back(c);
-  } else {
-    throw std::invalid_argument(
-        "Invalid query entity type for second parameter of while pattern.");
-  }
-}
-
-int precedence(char c) {
-  if (c == '^')
-    return 3;
-  else if (c == '*' || c == '/' || c == '%')
-    return 2;
-  else if (c == '+' || c == '-')
-    return 1;
-  else
-    return -1;
-}
-
-bool isOp(char s) {
-  return (s == '+' || s == '-' || s == '*' || s == '?' || s == '%');
-}
-
-string PQLParser::convertToPostfix(string expr0) {
-  /*std::string::iterator end_pos = std::remove(expr.begin(), expr.end(), ' ');
-  expr.erase(end_pos, expr.end());*/
-  // combine multiple spaces into one a(_,"")
-  
-  std::stack<char> sta;
-  for (int i = 0; i < expr0.size(); i++) {
-	  if (expr0[i] == '(') {
-		  sta.push('(');
-	  }
-	  else if (expr0[i] == ')') {
-		  if (sta.empty()) {
-			  throw std::invalid_argument("Invalid expression");
-		  }
-		  else {
-			  sta.pop();
-		  }
-	  }
-  }
-  if (!sta.empty()) {
-	  throw std::invalid_argument("Invalid expression");
-  }
-  if (expr0.empty()) {
-    throw std::invalid_argument("Invalid expression");
-  }
-  std::string::iterator new_end =
-      std::unique(expr0.begin(), expr0.end(), [=](char lhs, char rhs) {
-        return (lhs == rhs) && (lhs == ' ');
-      });
-  expr0.erase(new_end, expr0.end());
-  // remove unnecessary spaces
-  string expr;
-  for (int i = 0; i < expr0.size(); i++) {
-    char c = expr0[i];
-    if (c == ' ' && i != 0 && i != expr0.size() - 1 &&
-        ((expr0[i - 1] >= 'a' && expr0[i - 1] <= 'z') ||
-         (expr0[i - 1] >= 'A' && expr0[i - 1] <= 'Z') ||
-         isdigit(expr0[i - 1])) &&
-        ((expr0[i + 1] >= 'a' && expr0[i + 1] <= 'z') ||
-         (expr0[i + 1] >= 'A' && expr0[i + 1] <= 'Z') ||
-         isdigit(expr0[i + 1]))) {
-      expr += ' ';
-    }
-    if (c != ' ') {
-      expr += c;
-    }
-  }
-  // check validation
-  if (isOp(expr[0]) || isOp(expr[expr.size() - 1])) {
-    throw std::invalid_argument("Invalid expression");
-  }
-  for (int j = 0; j < expr.size() - 1; j++) {
-    if (isOp(expr[j]) && isOp(expr[j + 1])) {
-      throw std::invalid_argument("Invalid expression");
-    }
-  }
-
-  std::stack<char> st;
-  st.push('N');
-  string res;
-  for (int i = 0; i < expr.size(); i++) {
-    if ((expr[i] >= 'a' && expr[i] <= 'z') ||
-        (expr[i] >= 'A' && expr[i] <= 'Z') || isdigit(expr[i]) ||
-        expr[i] == ' ') {
-      res += expr[i];
-      if (i == expr.size() - 1 ||
-          (!(expr[i + 1] >= 'a' && expr[i + 1] <= 'z') &&
-           !(expr[i + 1] >= 'A' && expr[i + 1] <= 'Z') &&
-           !isdigit(expr[i + 1]) && expr[i + 1] != ' ')) {
-        res += ' ';
-      }
-    } else if (expr[i] == '(') {
-      st.push('(');
-    } else if (expr[i] == ')') {
-      while (st.top() != 'N' && st.top() != '(') {
-        char c = st.top();
-        st.pop();
-        res += c;
-        res += ' ';
-      }
-      if (st.top() == '(') {
-        char c = st.top();
-        st.pop();
-      }
-    } else {
-      while (st.top() != 'N' && precedence(expr[i]) <= precedence(st.top())) {
-        char c = st.top();
-        st.pop();
-        res += c;
-        res += ' ';
-      }
-      st.push(expr[i]);
-    }
-  }
-  while (st.top() != 'N') {
-    char c = st.top();
-    st.pop();
-    res += c;
-    res += ' ';
-  }
-  /*for (int i = 0; i < res.length(); i++)
-  {
-          res.insert(++i, " ");
-  }*/
-
-  std::regex ws_re("\\s+");
-  std::vector<std::string> result{
-      std::sregex_token_iterator(res.begin(), res.end(), ws_re, -1), {}};
-  string out = " ";
-  for (vector<string>::const_iterator i = result.begin(); i != result.end();
-       ++i) {
-    string s = *i;
-    if (isInt(s)) {
-      s = std::to_string(stoi(s));
-    }
-    out += s + ' ';
-  }
-  return out;
-}
-
-QueryEntity PQLParser::parseExpression() {
-  getNextToken();
-  if (token.name == "_" && tokenQueue.front().name == ")") // underscore
-  {
-    expectToken(")");
-    return QueryEntity(QueryEntityType::Underscore, "_");
-  } else if (token.name == "_" &&
-             tokenQueue.front().name == "\"") // partial match
-  {
-    getNextToken();
-    getNextToken();
-    string expression = token.name;
-    string postfixExpr = convertToPostfix(expression);
-    expectToken("\"");
-    expectToken("_");
-    expectToken(")");
-    return QueryEntity(QueryEntityType::Expression, "_" + postfixExpr + "_");
-  } else if (token.name == "\"") // exact match
-  {
-    getNextToken();
-    string expression = token.name;
-    string postfixExpr = convertToPostfix(expression);
-    expectToken("\"");
-    expectToken(")");
-    return QueryEntity(QueryEntityType::Expression, postfixExpr);
-  } else // invalid token
-  {
-    throw std::logic_error("Invalid Expression");
-  }
-}
-
-QueryEntity PQLParser::determineWithClauseEntity() {
-  getNextToken();
-  if (isInt(token.name)) {
-    return QueryEntity(QueryEntityType::Line, token.name);
-  } else if (token.name == "\"") {
-    getNextToken();
-    QueryEntity qe = QueryEntity(QueryEntityType::Name, token.name);
-    expectToken("\"");
-    return qe;
-  } else {
-    std::map<std::string, QueryEntityType>::iterator it =
-        entityMaps.find(token.name);
-    if (it != entityMaps.end()) {
-      QueryEntityType qet = it->second;
-      string next = "";
-      if (!tokenQueue.empty()) {
-        next = tokenQueue.front().name;
-      }
-      if (next == ".") {
-        getNextToken();
-        getNextToken();
-		checkAttrrefValidity(qet, token.name);
-        return QueryEntity(QueryEntityType::Attrref,
-                           it->first + "." + token.name, qet);
-      } else {
-        if (qet != QueryEntityType::Progline) {
-          throw std::invalid_argument(
-              "synonym must be of type 'prog_line' in with clause");
-        }
-        return QueryEntity(qet, token.name);
-      }
-    }
-    throw std::logic_error("No matched synonym have been declared.");
-  }
-}
-
-void PQLParser::insertClauseWith() {
-  QueryEntity firstEntity = determineWithClauseEntity();
-  expectToken("=");
-  QueryEntity secondEntity = determineWithClauseEntity();
-  checkWithValidity(firstEntity, secondEntity);
-  string type1 = "";
-  string type2 = "";
-  if (firstEntity.type == QueryEntityType::Line || firstEntity.type == QueryEntityType::Progline) {
-	  type1 = "int";
-  }
-  else if (firstEntity.type == QueryEntityType::Name) {
-		  type1 = "str";
-  }
-  else {
-	  if (firstEntity.name.find("varName") != std::string::npos || firstEntity.name.find("procName") != std::string::npos) {
-		  type1 = "str";
-	  }
-	  else {
-		  type1 = "int";
-	  }
-  }
-  if (secondEntity.type == QueryEntityType::Line || secondEntity.type == QueryEntityType::Progline) {
-	  type2 = "int";
-  }
-  else if (secondEntity.type == QueryEntityType::Name) {
-	  type2 = "str";
-  }
-  else {
-	  if (secondEntity.name.find("varName") != std::string::npos || secondEntity.name.find("procName") != std::string::npos) {
-		  type2 = "str";
-	  }
-	  else {
-		  type2 = "int";
-	  }
-  }
-  if (type1 != type2) {
-	  throw std::invalid_argument("The two refs must be of the same type");
-  }
-  Clause c =
-      Clause(ClauseType::With, vector<QueryEntity>{firstEntity, secondEntity});
-  this->clauses.push_back(c);
-}
-
-Query PQLParser::constructQuery() {
-  Query q = Query();
-  q.setQuery(target, selectors, clauses);
-  this->query = q;
-  return q;
-}
+Query parsePQL(std::list<Token> tokens) { return PQLParser(tokens).getQuery(); }
+} // namespace Parser
