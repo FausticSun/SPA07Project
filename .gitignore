@@ -9,5 +9,6 @@ desktop.ini
 /.vs
 /.vscode
 
-# Autotester xml
+# Autotester stuff
 /tests/*.xml
+/tests/*.exe
