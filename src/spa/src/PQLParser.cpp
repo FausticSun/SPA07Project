@@ -29,7 +29,7 @@ void PQLParser::parseQuery() {
   }
   expect(PQLTokens::Select);
   parseResultCl();
-  if (!tokens.empty()) {
+  while (!tokens.empty()) {
     parseClauses();
   }
 }

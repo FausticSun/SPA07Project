@@ -71,8 +71,7 @@ TEST_CASE("Single select") {
   auto query = Parser::parsePQL(tokens);
   auto target = query.target;
   REQUIRE(std::find(target.begin(), target.end(),
-                    QueryEntity(QueryEntityType::Stmt, "s")) !=
-          target.end());
+                    QueryEntity(QueryEntityType::Stmt, "s")) != target.end());
 }
 
 TEST_CASE("Tuple select") {
@@ -86,14 +85,11 @@ TEST_CASE("Tuple select") {
   auto query = Parser::parsePQL(tokens);
   auto target = query.target;
   REQUIRE(std::find(target.begin(), target.end(),
-                    QueryEntity(QueryEntityType::Stmt, "s1")) !=
-          target.end());
+                    QueryEntity(QueryEntityType::Stmt, "s1")) != target.end());
   REQUIRE(std::find(target.begin(), target.end(),
-                    QueryEntity(QueryEntityType::Stmt, "s2")) !=
-          target.end());
+                    QueryEntity(QueryEntityType::Stmt, "s2")) != target.end());
   REQUIRE(std::find(target.begin(), target.end(),
-                    QueryEntity(QueryEntityType::Stmt, "s3")) !=
-          target.end());
+                    QueryEntity(QueryEntityType::Stmt, "s3")) != target.end());
 }
 
 TEST_CASE("Boolean select") {
@@ -158,26 +154,19 @@ TEST_CASE("All delcarations while selecting all") {
   auto query = Parser::parsePQL(tokens);
   auto target = query.target;
   REQUIRE(std::find(target.begin(), target.end(),
-                    QueryEntity(QueryEntityType::Stmt, "s")) !=
-          target.end());
+                    QueryEntity(QueryEntityType::Stmt, "s")) != target.end());
   REQUIRE(std::find(target.begin(), target.end(),
-                    QueryEntity(QueryEntityType::Read, "r")) !=
-          target.end());
+                    QueryEntity(QueryEntityType::Read, "r")) != target.end());
   REQUIRE(std::find(target.begin(), target.end(),
-                    QueryEntity(QueryEntityType::Print, "p")) !=
-          target.end());
+                    QueryEntity(QueryEntityType::Print, "p")) != target.end());
   REQUIRE(std::find(target.begin(), target.end(),
-                    QueryEntity(QueryEntityType::Call, "cl")) !=
-          target.end());
+                    QueryEntity(QueryEntityType::Call, "cl")) != target.end());
   REQUIRE(std::find(target.begin(), target.end(),
-                    QueryEntity(QueryEntityType::While, "w")) !=
-          target.end());
+                    QueryEntity(QueryEntityType::While, "w")) != target.end());
   REQUIRE(std::find(target.begin(), target.end(),
-                    QueryEntity(QueryEntityType::If, "ifs")) !=
-          target.end());
+                    QueryEntity(QueryEntityType::If, "ifs")) != target.end());
   REQUIRE(std::find(target.begin(), target.end(),
-                    QueryEntity(QueryEntityType::Assign, "a")) !=
-          target.end());
+                    QueryEntity(QueryEntityType::Assign, "a")) != target.end());
   REQUIRE(std::find(target.begin(), target.end(),
                     QueryEntity(QueryEntityType::Variable, "v")) !=
           target.end());
@@ -498,23 +487,48 @@ TEST_CASE("Various with clause") {
                           QueryEntityType::Constant),
               QueryEntity(QueryEntityType::Attrref, "s.stmt#",
                           QueryEntityType::Stmt)}),
+      Clause(ClauseType::With, {QueryEntity(QueryEntityType::Attrref, "r.stmt#",
+                                            QueryEntityType::Read),
+                                QueryEntity(QueryEntityType::Attrref, "p.stmt#",
+                                            QueryEntityType::Print)}),
+      Clause(ClauseType::With, {QueryEntity(QueryEntityType::Attrref, "c.stmt#",
+                                            QueryEntityType::Call),
+                                QueryEntity(QueryEntityType::Attrref, "w.stmt#",
+                                            QueryEntityType::While)}),
+      Clause(ClauseType::With, {QueryEntity(QueryEntityType::Attrref,
+                                            "ifs.stmt#", QueryEntityType::If),
+                                QueryEntity(QueryEntityType::Attrref, "a.stmt#",
+                                            QueryEntityType::Assign)}),
+      Clause(ClauseType::With, {QueryEntity(QueryEntityType::Progline, "pl"),
+                                QueryEntity(QueryEntityType::Line, "5")})};
+  REQUIRE(clauses == toVerify);
+}
+
+TEST_CASE("Multiple varied clauses") {
+  std::string pql = R"(
+  assign a1, a2;
+  Select a1
+  such that Follows(a1, a2)
+  with a1.stmt# = a2.stmt#
+  pattern a1(_,_)
+  )";
+  std::stringstream ss;
+  ss << pql;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  auto query = Parser::parsePQL(tokens);
+  auto clauses = query.clauses;
+  std::vector<Clause> toVerify = {
+      Clause(ClauseType::Follows, {QueryEntity(QueryEntityType::Assign, "a1"),
+                                   QueryEntity(QueryEntityType::Assign, "a2")}),
       Clause(ClauseType::With,
-             {QueryEntity(QueryEntityType::Attrref, "r.stmt#",
-                          QueryEntityType::Read),
-              QueryEntity(QueryEntityType::Attrref, "p.stmt#",
-                          QueryEntityType::Print)}),
-      Clause(ClauseType::With,
-             {QueryEntity(QueryEntityType::Attrref, "c.stmt#",
-                          QueryEntityType::Call),
-              QueryEntity(QueryEntityType::Attrref, "w.stmt#",
-                          QueryEntityType::While)}),
-      Clause(ClauseType::With,
-             {QueryEntity(QueryEntityType::Attrref, "ifs.stmt#",
-                          QueryEntityType::If),
-              QueryEntity(QueryEntityType::Attrref, "a.stmt#",
+             {QueryEntity(QueryEntityType::Attrref, "a1.stmt#",
+                          QueryEntityType::Assign),
+              QueryEntity(QueryEntityType::Attrref, "a2.stmt#",
                           QueryEntityType::Assign)}),
-      Clause(ClauseType::With,
-             {QueryEntity(QueryEntityType::Progline, "pl"),
-              QueryEntity(QueryEntityType::Line, "5")})};
+      Clause(ClauseType::AssignPatt,
+             {QueryEntity(QueryEntityType::Assign, "a1"),
+              QueryEntity(QueryEntityType::Underscore, "_"),
+              QueryEntity(QueryEntityType::Underscore, "_")}),
+  };
   REQUIRE(clauses == toVerify);
 }
