@@ -330,7 +330,7 @@ QueryEntity PQLParser::parseRef() {
     return parseName();
   } else if (tokens.front().type == TokenType::Number) {
     return parseLineNo();
-  } else if (*std::next(tokens.begin()) == PQLTokens::Period) {
+  } else if (tokens.size() > 1 && *std::next(tokens.begin()) == PQLTokens::Period) {
     return parseAttrRef();
   } else {
     auto syn = parseSynonym();
