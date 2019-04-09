@@ -201,7 +201,7 @@ Select <w,s,v> such that Parent(w,s) and Follows(s,_) and Parent(s,_) with s.stm
 41-comment
 call c; procedure p,p1,p2;assign a; prog_line pl;variable v;while w; if ifs;stmt s,s1,s2;
 Select<s1,s2> such that Parent(s,s1) and Parent(s,s2) and Modifies(s1,v) and Uses(s2,v) and Follows*(s1,s2)
-12 13,14 18,16 17,22 23,32 40,47 49,48 49,51 52,78 79,78 80,79 80,82 83,89 91
+12 13,14 18,16 17,22 23,32 40,47 49,48 49,51 52,78 79,78 80,79 80,82 83,89 91,83 94,86 92
 5000
 42-comment
 call c; procedure p,p1,p2;assign a; prog_line pl;variable v;while w; if ifs;stmt s,s1,s2;

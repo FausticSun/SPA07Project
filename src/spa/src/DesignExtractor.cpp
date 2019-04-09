@@ -254,9 +254,9 @@ void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {
   populateFollowsT(pkb);
   populateParentT(pkb);
   populateCallsT(pkb);
+  populateUsesAndModifiesC(pkb);
   populateUsesS(pkb);
   populateModifiesS(pkb);
-  populateUsesAndModifiesC(pkb);
   populateCFG(pkb);
   populateAssignMap(pkb);
   populateStmtMap(pkb);
