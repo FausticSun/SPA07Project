@@ -8,3 +8,6 @@ desktop.ini
 # Visual Studio folders
 /.vs
 /.vscode
+
+# Autotester xml
+/tests/*.xml
