@@ -73,7 +73,7 @@ void PQLParser::parseClauses() {
 void PQLParser::parseResultCl() {
   if (tokens.front() == PQLTokens::Boolean) {
     expect(PQLTokens::Boolean);
-    query.target.push_back(QueryEntity(QueryEntityType::Boolean));
+    query.target.emplace_back(QueryEntity(QueryEntityType::Boolean));
   } else {
     parseTuple();
   }
@@ -81,13 +81,13 @@ void PQLParser::parseResultCl() {
 
 void PQLParser::parseTuple() {
   if (tokens.front().type == TokenType::Identifier) {
-    query.target.push_back(parseElem());
+    query.target.emplace_back(parseElem());
   } else {
     expect(PQLTokens::LeftChevron);
-    query.target.push_back(parseElem());
+    query.target.emplace_back(parseElem());
     while (tokens.front() != PQLTokens::RightChevron) {
       expect(PQLTokens::Comma);
-      query.target.push_back(parseElem());
+      query.target.emplace_back(parseElem());
     }
     expect(PQLTokens::RightChevron);
   }
@@ -116,7 +116,7 @@ void PQLParser::parseAttrCompare() {
   }
 
   Clause withCl(ClauseType::With, {attrRef1, attrRef2});
-  query.clauses.push_back(withCl);
+  query.clauses.emplace_back(withCl);
 }
 
 PQLTokens::AttrRefType PQLParser::getAttRefType(QueryEntity attrRef) {
@@ -180,7 +180,7 @@ void PQLParser::parseRelRef() {
       PQLTokens::relClauseMap.at(std::make_pair(relWord, altType));
   Clause suchThatCl(clType, {ref1, ref2});
   validateSuchThatCl(suchThatCl);
-  query.clauses.push_back(suchThatCl);
+  query.clauses.emplace_back(suchThatCl);
 }
 
 void PQLParser::validateSuchThatCl(Clause suchThatCl) {
@@ -239,7 +239,7 @@ void PQLParser::parseAssign(QueryEntity syn) {
   expect(PQLTokens::RightParentheses);
 
   Clause patternCl(ClauseType::AssignPatt, {syn, entRef, exprRef});
-  query.clauses.push_back(patternCl);
+  query.clauses.emplace_back(patternCl);
 }
 
 void PQLParser::parseWhile(QueryEntity syn) {
@@ -250,7 +250,7 @@ void PQLParser::parseWhile(QueryEntity syn) {
   expect(PQLTokens::RightParentheses);
 
   Clause patternCl(ClauseType::WhilePatt, {syn, entRef});
-  query.clauses.push_back(patternCl);
+  query.clauses.emplace_back(patternCl);
 }
 
 void PQLParser::parseIf(QueryEntity syn) {
@@ -263,7 +263,7 @@ void PQLParser::parseIf(QueryEntity syn) {
   expect(PQLTokens::RightParentheses);
 
   Clause patternCl(ClauseType::IfPatt, {syn, entRef});
-  query.clauses.push_back(patternCl);
+  query.clauses.emplace_back(patternCl);
 }
 
 QueryEntity PQLParser::parseExprSpec() {
@@ -297,7 +297,7 @@ std::string PQLParser::parseQuotedExpr() {
     return expr;
   } else {
     while (tokens.front() != PQLTokens::Quote) {
-      exprTokens.push_back(tokens.front());
+      exprTokens.emplace_back(tokens.front());
       tokens.pop_front();
     }
     expect(PQLTokens::Quote);
