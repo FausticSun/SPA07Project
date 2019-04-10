@@ -1,6 +1,7 @@
 #pragma once
 #include "Table.h"
 #include "Util.h"
+#include <list>
 #include <map>
 
 class CFG {
@@ -24,9 +25,11 @@ private:
   void populateCompressedToInitial();
   void populateCompressedGraph(Table);
 
-  // Methods for traversal to retrieve Next* and Affects relations
+  // Methods for traversal to retrieve Next* relations
   std::vector<int> getNextTForward(int, int) const;
   std::vector<int> getNextTReverse(int) const;
+
+  // Methods for traversal to retrieve Affects relations
   std::vector<int> getAffectsForward(int, std::string, Table, Table) const;
   std::vector<int> getAffectsReverse(int, std::string, Table, Table) const;
 
@@ -38,14 +41,17 @@ private:
 public:
   CFG();
   CFG(Table, Table, Table, Table, int);
+
   // Getters for Next*
   bool isNextT(int, int) const;
   Table getNextT() const;
   Table getNextT(int, bool) const;
+
   // Getters for Affects
   bool isAffects(int, int, Table, Table) const;
   Table getAffects(Table, Table, std::set<int>) const;
   Table getAffects(int, bool, Table, Table, std::set<int>) const;
+
   // Getter for Affects*
   Table getAffectsT(
       Table, Table, std::map<int, StatementType>,
