@@ -32,5 +32,11 @@ public:
   void naturalJoin(const Table &other,
                    std::vector<std::pair<int, int>> &commonIndices,
                    std::set<int> &otherDiffIndices);
+  void hashJoin(const Table &other,
+	  std::vector<std::pair<int, int>> &commonIndices,
+	  std::set<int> &otherDiffIndices);
+  void loopJoin(const Table &other,
+	  std::vector<std::pair<int, int>> &commonIndices,
+	  std::set<int> &otherDiffIndices);
   void crossProduct(const Table &other);
 };
