@@ -2,10 +2,15 @@
 #include "ExprParser.h"
 #include "GeneralLexer.h"
 #include "Query.h"
+#include <exception>
 #include <map>
 #include <memory>
 
 namespace Parser {
+struct SemanticError : public std::exception {
+  SemanticError(const char* msg) : std::exception(msg) {}
+};
+
 enum class RefType { EntRef, StmtRef, LineRef };
 
 namespace PQLTokens {
@@ -183,6 +188,8 @@ static std::map<std::pair<QueryEntityType, std::string>, AttrRefType>
 
 class PQLParser {
 private:
+  bool hasSemanticError = false;
+  std::string errorMsg;
   std::list<Lexer::Token> tokens;
   Query query;
   std::map<std::string, QueryEntityType> declarations;
@@ -233,6 +240,9 @@ private:
   QueryEntity parseUnderscore();
   QueryEntity parseLineNo();
   QueryEntity parseName();
+
+  // Error
+  void throwSemanticError(std::string msg);
 
 public:
   PQLParser(std::list<Lexer::Token>);
