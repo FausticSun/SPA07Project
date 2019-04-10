@@ -1,0 +1,55 @@
+procedure testWhile {
+
+    a = x + 1;                                  
+
+    if (a > b) then {                           
+
+        while ( b == (c + 2)){                  
+            print a;                            
+            c = (b - c) * 2;                    
+            b = b + 3; 				
+	}                                       
+
+        while((d % 2) != 0) {                   
+            d = 4;                              
+            print d;                            
+	    read x;				
+
+            while(d > (e / 5)){                 
+                d = d + d / d - d * d; 		
+	    }   
+     
+            e = e * 2 / 3; 			
+	}                    
+
+        a = a + 1;                              
+
+    } else {
+
+        while ((e <= f) && (f == 6)) {          
+
+            while (f < 7) {                  	
+                print f;                     	
+                
+		while ( g >= 8) {            	
+                    read g; 			
+		} 
+	    } 
+	} 
+    }             
+
+    while (!(i != i)) {                         
+        read j;                                 
+        j = i + 7;                              
+        read i; 				
+    }  
+
+    while ((x != y) || (y > z)) {               
+        print m;                                
+        m = n + 7;                              
+        print n; 				
+    }                             
+
+    read y;                                     
+    print z;                                    
+}

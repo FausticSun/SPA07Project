@@ -1,0 +1,281 @@
+procedure main {
+    read x;             \\ 1
+    count = 0;          \\ 2
+    call miss;   	\\ 3
+}
+
+procedure mr{
+    if ((x > 1) && (x <9)) then {  \\ 4
+        x = x % 1;                  \\ 5
+    } else {                        
+        x = 5;                       \\ 6
+    }
+    print sum;                       \\ 7
+}
+
+procedure miss{
+    read y;                         \\ 8
+    x = y;                          \\ 9
+    sum = sum * sum + f + x;        \\ 10
+    z = 1;                          \\ 11
+    f = 0;                          \\ 12
+    y = 1;                          \\ 13
+    count = count + 1;              \\ 14
+    sum = 0;                        \\ 15
+    call mr;                  	    \\ 16
+    while (count <= x) {            \\ 17
+        sum = sum + y;              \\ 18
+        m = y + z;                  \\ 19
+        y = z;                      \\ 20
+        z = m;                      \\ 21
+        if (sum > 10) then {        \\ 22
+            f = 1;                  \\ 23
+        } else {                    
+            f = 0;                  \\ 24
+        }   
+        count = count + 1;          \\ 25 
+    }
+    print sum;                      \\ 26
+    a = f + y + z + sum * sum / f + x;  \\ 27
+    print a;                            \\ 28
+}
+
+procedure sir {
+    read x;                 \\ 29
+    y = 2 *z;               \\ 30
+    call mr;          	    \\ 31
+    z = p - y;              \\ 32
+    if (q!=1) then {        \\ 33
+        z = x + 24;         \\ 34
+        call main;          \\ 35
+    } else {
+        while (z > 0) {     \\ 36
+            y = x * q - 5;  \\ 37
+            z = z - 1;      \\ 38
+        }
+        y = x + y * z + p*q;    \\ 39
+        call mr;          	\\ 40
+    }
+    i = x + j + z;              \\ 41
+    print z;                    \\ 42
+}
+
+procedure colour {
+    white = a + 2310 % blue;    \\ 43
+    call animals;               \\ 44
+    pink = white + blue / 124;  \\ 45
+    while (a < 13) {            \\ 46
+        red = 4;                \\ 47
+        print pink;             \\ 48
+        read a;                 \\ 49
+        if ((x + pink != white) || (yellow >= 1)) then {     \\ 50
+            c = (1 - white) + b;                 \\ 51
+            if (black >= 21) then {              \\ 52       
+                print white;                     \\ 53
+                read pink;                       \\ 54
+                if (3 != purple) then {          \\ 55
+                    green = blue * c;            \\ 56
+                    grey = white % black;       \\ 57
+                    while ((c == 8) && (x < orange)) { \\ 58
+                        yellow = yellow + jekki;        \\ 59
+                        read yellow;                    \\ 60
+                        print yellow;                   \\ 61
+                    }
+                } else {
+                    print blue;                 \\ 62
+                    pink = green + pink - 10;   \\ 63
+                    if (velvet == green) then { \\ 64
+                        print red;              \\ 65
+                        purple = (pink - grey) / b + 10;    \\ 66
+                    } else {        
+                        black = blue - 82 / 10; \\ 67
+                        blue = grey;            \\ 68
+                    }
+                }
+            } else {
+                read blue;              \\ 69
+                while (c != 25) {       \\ 70
+                    read red;           \\ 71
+                    call clauses;           \\ 72
+                    white = blue - a % 7; \\ 73
+                }
+                blue = 1 - purple / 77;  \\ 74
+                if ((grey < 1) || (121 < blue - 1)) then { \\ 75
+                   white = red / velvet - 5;                \\ 76
+                   a = 0;           \\ 77
+                   print c;         \\ 78
+                } else {
+                    print orange;   \\ 79
+                    read pink;      \\ 80
+                    black = blue - red + pink;  \\ 81
+                }
+            }
+        } else {
+            while(c + a - 173 <= jekki) { \\ 82
+               orange = red / 50;         \\ 83
+               red = red + 2;             \\ 84
+               blue = 1 + white - yellow; \\ 85
+            }
+            blue = 5 * yellow - c;        \\ 86
+            read white;                   \\ 87
+            if (white != 134) then {      \\ 88
+                orange = 2- grey;         \\ 89
+                read c;                   \\ 90
+            } else {
+                print pink;               \\ 91
+                a = c * purple / 3;       \\ 92
+            }
+        }
+    }
+}
+
+procedure fruits {
+    if (apple <= sweet) then {      \\ 93
+        banana = 21 + x;            \\ 94
+        read pear;                  \\ 95
+        while((x <= 0) && ((y > 67) || (z % y + 45 != banana) )) { \\ 96
+            b = a;  \\ 97
+            c = b;  \\ 98
+            d = c;  \\ 99
+            a = d;  \\ 100
+        }
+        pineapple = 0;  \\ 101
+        call food;      \\ 102
+        print apple;    \\ 103
+        apple = a - 41 * z; \\ 104
+    } else {
+        while (strawberry <= pear) {    \\ 105
+            pear = papaya - 3;          \\ 106
+            blueberry = 1;              \\ 107
+            papaya = pear - blueberry + papaya; \\ 108
+        }
+        read sweet;         \\ 109
+        grape = 10;         \\ 110
+        soju = pear * apple;    \\ 111
+        print grape;            \\ 112
+        while (soju != cider + 2) { \\ 113
+            apple = cider * soju;   \\ 114
+            blueberry = apple + soju;   \\ 115
+            call animals;           \\ 116
+        }
+    }
+    strawberry = sweet * sweet - pineapple; \\ 117
+    read sweet;         \\ 118
+    print strawberry;   \\ 119
+    strawberry = 1;     \\ 120
+    papaya = strawberry - blueberry * 33 / pear; \\ 121
+}
+
+procedure animals {
+    while (lion == king) {  \\ 122
+        while(bear > bare) { \\ 123
+            grizz = brown + cony;   \\ 124
+            read icebear;           \\ 125
+            cat = meow + wolf - 1900;   \\ 126
+            print tiger;            \\ 127
+        }
+        panda = sichuan / fat - cat - dog;  \\ 128
+        while (brown <= icebear - 1) {      \\ 129
+            icebear = russia + love;        \\ 130
+            print lion;                     \\ 131
+            read cat;                       \\ 132
+            panda = panda + 1;              \\ 133
+        }
+        animals = grizz - icebear * dog % sichuan + tiger; \\ 134
+        tiger = 9;      \\ 135
+        while (meow < 21) { \\ 136
+            print brown;    \\ 137
+            cony = brown + love; \\ 138
+        }
+    }
+    if (dog + 18 > meow * meow) then {  \\ 139
+        read icebear;   \\ 140
+        russia = 1;     \\ 141
+        if (tiger == fierce * tiger) then { \\ 142
+            love = cat + rat - meow;        \\ 143
+            lion = panda * dog;             \\ 144
+        } else {
+            read meow;                  \\ 145
+            lion = icebear - brown;     \\ 146
+        }
+        print cat;              \\ 147
+    } else {
+        while (cat - (dog + 614) % 1 != animals) {  \\ 148
+            dog = dog + cat / 14;       \\ 149
+            meow = 2;                   \\ 150
+            rat = animals % brown;      \\ 151
+        }
+        tiger = king - lion;            \\ 152
+        blue = 99;                      \\ 153
+        fish = animals;                 \\ 154
+    }
+}
+
+procedure food {
+    noodles = flour * noodles;          \\ 155
+    print butter;                       \\ 156  
+    if (6 > rice + 1 - 22) then {       \\ 157
+        while(bread != flour) {         \\ 158
+            bread = butter * noodles;   \\ 159
+            read butter;                \\ 160
+            print noodles;              \\ 161
+            noodles = 1;                \\ 162
+        }
+        if (ramen == noodles) then {    \\ 163
+            chocolate = candy;          \\ 164
+            sugar = rice + sugar;       \\ 165
+            read kaya;                  \\ 166
+        } else {
+            flour = fresh - rice * biscuit; \\ 167
+            butter = 7;             \\ 168
+            print chocolate;        \\ 169
+            print candy;            \\ 170
+        }
+    } else {
+        if (flour - flour * 1 % (rice + 12) > flour) then {  \\ 171
+            print sugar;        \\ 172
+            noodles = 1;        \\ 173
+            read flour;         \\ 174
+        } else {
+            rice = chocolate * 2;   \\ 175
+            flour = 0;              \\ 176
+        }
+        read chocolate;             \\ 177
+        call animals;               \\ 178
+        while(tart - 6 < cake % 1) {        \\ 179
+            candy = candy / 2;              \\ 180
+            rice = candy / (candy - sugar + rice % butter); \\ 181
+            butter = sugar - 5;             \\ 182
+        }
+    }
+    print bread;        \\ 183
+    kaya = bread + 7 - flour;   \\ 184
+}
+
+procedure clauses {
+    while (and == 3203) {   \\ 185
+        suchthat = parent + (modifies % pattern) * 11 - affects / stmt; \\ 186
+        stmt = stmt - 10;   \\ 187
+        print pattern;      \\ 188
+        read affects;       \\ 189
+        uses = pattern + suchthat;  \\ 190
+        if (procedure + uses >= uses - 230) then { \\ 191
+            read orange;        \\ 192
+            progline = print;   \\ 193
+            call animals;       \\ 194
+            assign = print * modifies;  \\ 195
+        } else {
+            stmtLst = ast * (contains - cfg) - procedure / suchthat % 101; \\ 196
+            print pattern;      \\ 197
+            assign = 2;         \\ 198
+            and = and - 7;      \\ 199
+            read cfg;           \\ 200
+        }
+        while (call == procedure - suchthat) {      \\ 201
+            pink = pink - uses;         \\ 202
+            progline = 1 + procedure;   \\ 203
+            read suchthat;      \\ 204
+            parent = 33;        \\ 205
+        }
+    }
+}

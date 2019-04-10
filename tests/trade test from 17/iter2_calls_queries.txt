@@ -1,0 +1,305 @@
+1 - valid query 
+stmt Calls;
+Select Calls such that Calls*(_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+5000
+2 - valid query 
+assign a; procedure p;
+Select a such that Calls*(_, p)
+9
+5000
+3 - valid query 
+
+Select BOOLEAN such that Calls*(_, "procedure")
+TRUE
+5000
+4 - invalid query 
+read r;
+Select r such that Calls*(_, "e")
+none
+5000
+5 - invalid query 
+prog_line p;
+Select p such that Calls*(_, "B")
+none
+5000
+6 - valid query 
+procedure p;
+Select BOOLEAN such that Calls*(p, _)
+TRUE
+5000
+7 - valid query 
+while w; procedure p1, p2;
+Select w such that Calls*(p1, p2)
+5
+5000
+8 - valid query 
+if ifs; procedure p;
+Select ifs.stmt# such that Calls*(p, "b")
+1
+5000
+9 - invalid query 
+stmt s; procedure p;
+Select s such that Calls*(p, p)
+none
+5000
+10 - invalid query 
+if ifs; procedure p;
+Select ifs such that Calls*(p, "#")
+none
+5000
+11 - invalid query 
+procedure p;
+Select BOOLEAN such that Calls*(p, "a")
+FALSE
+5000
+12 - valid query 
+call c;
+Select c such that Calls*("b", _)
+2, 3, 4, 6, 7, 12, 13
+5000
+13 - valid query
+call c; constant C; procedure p;
+Select <c, C> such that Calls*("procName", p)
+2 3, 3 3, 4 3, 6 3, 7 3, 12 3, 13 3
+5000
+14 - valid query 
+procedure p;
+Select p such that Calls*("a", "procedure")
+a, b, B, c, d, procedure, procName
+5000
+15 - invalid query 
+call c;
+Select c such that Calls*("C", _)
+none
+5000
+16 - invalid query 
+call c;
+Select c such that Calls*("procedure", _)
+none
+5000
+17 - invalid query 
+constant c; procedure p;
+Select c such that Calls*("proc", p)
+none
+5000
+18 - invalid query 
+constant c; procedure p;
+Select c such that Calls*("B", p)
+none
+5000
+19 - invalid query 
+procedure p;
+Select p such that Calls*("procedure", "procedure")
+none
+5000
+20 - invalid query 
+procedure p;
+Select p such that Calls*("procName", "d")
+none
+5000
+21 - valid query 
+procedure p;
+Select p such that Calls*(_, p)
+b, c, d, procedure
+5000
+22 - valid query 
+procedure p;
+Select p such that Calls*(p, _)
+a, b, c, procName
+5000
+23 - valid query 
+procedure p1, p2;
+Select <p1, p1, p1> such that Calls*(p1, p2)
+a a a, b b b, c c c, procName procName procName
+5000
+24 - valid query 
+procedure p1, p2;
+Select <p1, p2> such that Calls*(p1, p2)
+a b, a c, a d, a procedure, b c, b d, b procedure, c procedure, c d, procName procedure
+5000
+25 - valid query 
+procedure p; assign a;
+Select <a, p> such that Calls*(p, "d")
+9 a, 9 b, 9 c
+5000
+26 - invalid query 
+procedure p;
+Select p such that Calls*(p, p)
+none
+5000
+27 - invalid query 
+procedure p; stmt s;
+Select <p, s> such that Calls*(p, "prcName")
+none
+5000
+28 - invalid query 
+if ifs; procedure p;
+Select p such that Calls*(p, "B")
+none
+5000
+29 - valid query 
+procedure p;
+Select p such that Calls*("a", p)
+b, c, d, procedure
+5000
+30 - invalid query 
+procedure p;
+Select p such that Calls*("BOOLEAN", p)
+none
+5000
+31 - invalid query 
+procedure p;
+Select p such that Calls*("procedure", p)
+none
+5000
+32 - valid query 
+stmt s;
+Select s.stmt# such that Calls(_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+5000
+33 - valid query 
+assign a; procedure p;
+Select a such that Calls(_, p)
+9
+5000
+34 - valid query 
+
+Select BOOLEAN such that Calls(_, "procedure")
+TRUE
+5000
+35 - invalid query 
+print p;
+Select p.stmt# such that Calls(_, "e")
+none
+5000
+36 - invalid query 
+prog_line p;
+Select p such that Calls(_, "B")
+none
+5000
+37 - valid query 
+constant c; procedure p;
+Select c such that Calls(p, _)
+3
+5000
+38 - valid query 
+while w; procedure p1, p2;
+Select w such that Calls(p1, p2)
+5
+5000
+39 - valid query 
+if ifs; procedure p;
+Select ifs such that Calls(p, "b")
+1
+5000
+40 - invalid query (independent synonym, entRef1 = p, entRef2 = p, entRef are the same)
+stmt s; procedure p;
+Select s such that Calls(p, p)
+none
+5000
+41 - invalid query (independent synonym, entRef1 = p, entRef2 = p.procName, p.procName does not exist)
+if ifs; procedure p;
+Select ifs such that Calls(p, "_")
+none
+5000
+42 - invalid query (independent synonym, entRef1 = p, entRef2 = p.procName, p.procName is not called)
+procedure p;
+Select BOOLEAN such that Calls(p, "procName")
+FALSE
+5000
+43 - valid query (independent synonym, entRef1 = p.proc_name, entRef2 = _)
+call c;
+Select c such that Calls("b", _)
+2, 3, 4, 6, 7, 12, 13
+5000
+44 - valid query (independent synonym, entRef1 = p.proc_name, entRef2 = p)
+constant c; procedure p;
+Select c.value such that Calls("procName", p)
+3
+5000
+45 - valid query (independent synonym, entRef1 = p.proc_name, entRef2 = p.procName)
+procedure p;
+Select p.procName such that Calls("a", "d")
+a, b, B, c, d, procedure, procName
+5000
+46 - invalid query (independent synonym, entRef1 = p.proc_name, entRef2 = _, p.procName does not exist)
+call c;
+Select c such that Calls("g", _)
+none
+5000
+47 - invalid query (independent synonym, entRef1 = p.proc_name, entRef2 = _, p.procName does not call)
+call c;
+Select c such that Calls("procedure", _)
+none
+5000
+48 - invalid query (independent synonym, entRef1 = p.proc_name, entRef2 = p, p.procName does not exist)
+constant c; procedure p;
+Select c such that Calls("proc", p)
+none
+5000
+49 - invalid query (independent synonym, entRef1 = p.proc_name, entRef2 = p, p.procName does not call)
+constant c; procedure p;
+Select c.value such that Calls("B", p)
+none
+5000
+50 - invalid query (independent synonym, entRef1 = p.proc_name, entRef2 = p.procName, entRef are the same)
+procedure p;
+Select p such that Calls("a", "a")
+none
+5000
+51 - invalid query (independent synonym, entRef1 = p.proc_name, entRef2 = p.procName, entRef1 does not call entRef2)
+procedure p;
+Select p such that Calls("b", "d")
+none
+5000
+52 - valid query (dependent synonym, entRef1 = _, entRef2 = p)
+procedure p;
+Select p.procName such that Calls(_, p)
+b, c, d, procedure
+5000
+53 - valid query (dependent synonym, entRef1 = p, entRef2 = _)
+procedure p;
+Select p such that Calls(p, _)
+a, b, c, procName
+5000
+54 - valid query (dependent synonym, entRef1 = p, entRef2 = p)
+procedure p1, p2; read r;
+Select <p1, r> such that Calls(p1, p2)
+a 8, b 8, c 8, procName 8, a 11, b 11, c 11, procName 11
+5000
+55 - valid query (dependent synonym, entRef1 = p, entRef2 = p.procName)
+procedure p; assign a;
+Select <a, p> such that Calls(p, "d")
+9 a, 9 c
+5000
+56 - invalid query (dependent synonym, entRef1 = p, entRef2 = p, entRef are the same)
+procedure p;
+Select p such that Calls(p, p)
+none
+5000
+57 - invalid query (dependent synonym, entRef1 = p, entRef2 = p.procName, p.procName does not exist)
+procedure p;
+Select p such that Calls(p, "prcName")
+none
+5000
+58 - invalid query (dependent synonym, entRef1 = p, entRef2 = p.procName, p.procName is not called)
+if ifs; procedure p;
+Select p such that Calls(p, "B")
+none
+5000
+59 - valid query (independent synonym, entRef1 = p.proc_name, entRef2 = p)
+procedure p;
+Select p such that Calls("a", p)
+b, d
+5000
+60 - invalid query (independent synonym, entRef1 = p.proc_name, entRef2 = p, p.procName does not exist)
+procedure p;
+Select p such that Calls("BOOLEAN", p)
+none
+5000
+61 - invalid query (independent synonym, entRef1 = p.proc_name, entRef2 = p, p.procName does not call)
+procedure p;
+Select p such that Calls("d", p)
+none
+5000
