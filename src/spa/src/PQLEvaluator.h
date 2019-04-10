@@ -31,13 +31,13 @@ struct ClauseResult {
 
 class PqlEvaluator {
 public:
-  PqlEvaluator(const PKB &pkb);
+  PqlEvaluator(PKB &pkb);
   deque<string> executeQuery(Query &q);
 
 private:
 	vector<vector<Table>> relevantGroups;
 	vector<vector<Table>> inrelevantGroups;
-  PKB mypkb;
+  PKB& mypkb;
 	dataRows resultExtractor(Table result, Query q);
 	deque<string> resultFormater(dataRows t);
 	dataRows executeSimpleQuery(vector<QueryEntity> t);

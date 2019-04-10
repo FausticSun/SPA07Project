@@ -108,7 +108,7 @@ bool isJoined(vector<Table> s1, Table s2) {
 }
 
 
-PqlEvaluator::PqlEvaluator(const PKB &pkb) { this->mypkb = pkb; }
+PqlEvaluator::PqlEvaluator(PKB &pkb) : mypkb(pkb) {};
 
 deque<string> PqlEvaluator::executeQuery(Query &q) {
   deque<string> results;
