@@ -183,19 +183,21 @@ dataRows PqlEvaluator::resultExtractor(Table result, Query q) {
 }
 
 deque<string> PqlEvaluator::resultFormater(dataRows t) {
-	set<vector<string>> tempData = t;
-  set<vector<string>>::iterator iterRow ;
   deque<string> result;
-  string tuple = "";
-  
-  for (iterRow = tempData.begin(); iterRow != tempData.end(); iterRow++) {
-    vector<string> temp = *iterRow;
-    for (int i = 0; i < temp.size(); i++) {
-      tuple = tuple + temp[i] + " ";
+  if (t.size() == 0)
+  {
+    return result;
+  }
+  for (auto data: t)
+  {
+    auto it = data.begin();
+    std::string tuple = *(it++);
+    for (; it != data.end(); ++it)
+    {
+      tuple += " ";
+      tuple += (*it);
     }
-    tuple = tuple.substr(0, tuple.size() - 1);
-    result.push_back(tuple);
-    tuple = "";
+    result.emplace_back(tuple);
   }
   return result;
 }
