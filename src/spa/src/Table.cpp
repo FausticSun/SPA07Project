@@ -214,10 +214,10 @@ void Table::naturalJoin(const Table &other,
   std::set<DataRow> newData;
   // Create Hash Table for Hash-Join
   std::map<DataRow, std::deque<DataRow>> hashTable;
-  for (auto &dataRow : data) {
+  for (auto &dataRow : other.data) {
     DataRow key;
     for (auto &commonIdx : commonIndices) {
-      key.emplace_back(dataRow[commonIdx.first]);
+      key.emplace_back(dataRow[commonIdx.second]);
     }
     if (hashTable.count(key)) {
       hashTable.at(key).emplace_back(dataRow);
@@ -225,11 +225,11 @@ void Table::naturalJoin(const Table &other,
       hashTable.emplace(std::move(key), std::deque<DataRow>({dataRow}));
     }
   }
-  // Iterate through the other table
-  for (auto &dataRow : other.data) {
+  // Iterate through this table
+  for (auto &dataRow : data) {
     DataRow key;
     for (auto &commonIdx : commonIndices) {
-      key.emplace_back(dataRow[commonIdx.second]);
+      key.emplace_back(dataRow[commonIdx.first]);
     }
     // Probe the Hash Table with the key
     if (!hashTable.count(key)) {
@@ -238,9 +238,9 @@ void Table::naturalJoin(const Table &other,
     // Merge this dataRow with matching dataRows in the Hash Table
     // and add the new row to the new data table
     for (auto &otherRow : hashTable.at(key)) {
-      DataRow newRow = otherRow;
+      DataRow newRow = dataRow;
       for (auto &diffIdx : otherDiffIndices) {
-        newRow.emplace_back(dataRow[diffIdx]);
+        newRow.emplace_back(otherRow[diffIdx]);
       }
       newData.emplace(std::move(newRow));
     }
