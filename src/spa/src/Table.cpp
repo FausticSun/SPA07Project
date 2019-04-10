@@ -211,7 +211,7 @@ void Table::transitiveClosure() {
 void Table::naturalJoin(const Table &other,
                         std::vector<std::pair<int, int>> &commonIndices,
                         std::set<int> &otherDiffIndices) {
-  loopJoin(other, commonIndices, otherDiffIndices);
+  hashJoin(other, commonIndices, otherDiffIndices);
 }
 
 void Table::hashJoin(const Table &other,
@@ -222,6 +222,7 @@ void Table::hashJoin(const Table &other,
   std::map<DataRow, std::deque<DataRow>> hashTable;
   for (auto &dataRow : other.data) {
     DataRow key;
+    key.reserve(commonIndices.size());
     for (auto &commonIdx : commonIndices) {
       key.emplace_back(dataRow[commonIdx.second]);
     }
@@ -234,6 +235,7 @@ void Table::hashJoin(const Table &other,
   // Iterate through this table
   for (auto &dataRow : data) {
     DataRow key;
+    key.reserve(commonIndices.size());
     for (auto &commonIdx : commonIndices) {
       key.emplace_back(dataRow[commonIdx.first]);
     }
@@ -245,6 +247,7 @@ void Table::hashJoin(const Table &other,
     // and add the new row to the new data table
     for (auto &otherRow : hashTable.at(key)) {
       DataRow newRow = dataRow;
+      newRow.reserve(dataRow.size() + otherDiffIndices.size());
       for (auto &diffIdx : otherDiffIndices) {
         newRow.emplace_back(otherRow[diffIdx]);
       }
