@@ -80,7 +80,7 @@ Table selfJoin(Table t) {
   }
 }
 
-bool isJoined(Table s1, Table s2) {
+bool isJoined(Table &s1, Table &s2) {
   vector<string> header1 = s1.getHeader();
   vector<string> header2 = s2.getHeader();
   for (int i = 0; i < header1.size(); ++i) {
@@ -93,8 +93,8 @@ bool isJoined(Table s1, Table s2) {
   return false;
 }
 
-bool isJoined(vector<Table> s1, Table s2) {
-  for (Table t : s1) {
+bool isJoined(vector<Table> &s1, Table &s2) {
+  for (Table &t : s1) {
     if (isJoined(t, s2)) {
       return true;
     }
@@ -523,7 +523,7 @@ ClauseResult PqlEvaluator::NextTEvaluate(Clause c) {
     result = dataFilter(pkbData, c);
     return result;
   }
-	//else if (isSynonym(qe1.type)) {
+  // else if (isSynonym(qe1.type)) {
   //  dataRows col1 = getdataByTtype(qe1).getData();
   //  Table pkbData(2);
   //  pkbData.setHeader({"1", "2"});
@@ -563,8 +563,8 @@ ClauseResult PqlEvaluator::NextTEvaluate(Clause c) {
   //  }
   //  data = pkbData;
   //  /*result = dataFilter(pkbData, c);*/
-//  } 
-	else {
+  //  }
+  else {
     Table pkbData(0);
     if (NextTTable.empty()) {
       NextTTable = mypkb.getNextT();
@@ -575,17 +575,17 @@ ClauseResult PqlEvaluator::NextTEvaluate(Clause c) {
     result = dataFilter(pkbData, c);
   }
 
-  //if (isSynonym(qe1.type) && isSynonym(qe2.type) && qe1.name == qe2.name) {
+  // if (isSynonym(qe1.type) && isSynonym(qe2.type) && qe1.name == qe2.name) {
   //  data = selfJoin(data);
   //  data.dropColumn("2");
   //}
 
-  //if (data.empty()) {
+  // if (data.empty()) {
   //  ClauseResult result(true, false);
   //  return result;
   //}
 
-  //if (isSynonym(qe1.type) || isSynonym(qe2.type)) {
+  // if (isSynonym(qe1.type) || isSynonym(qe2.type)) {
   //  if (!isSynonym(qe1.type)) {
   //    data.dropColumn("1");
   //  }
@@ -604,7 +604,7 @@ ClauseResult PqlEvaluator::NextTEvaluate(Clause c) {
   //  result.data = data;
   //  return result;
   //}
-  //return ClauseResult(true, true);
+  // return ClauseResult(true, true);
 
   return result;
 }
