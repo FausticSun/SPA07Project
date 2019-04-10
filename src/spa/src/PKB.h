@@ -1,5 +1,6 @@
 #pragma once
 #include "CFG.h"
+#include "CFGBip.h"
 #include "Table.h"
 #include "Util.h"
 #include <map>
@@ -23,6 +24,7 @@ private:
   CFG cfg;
   std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap;
   std::map<int, StatementType> stmtMap;
+  Table procExitStmtTable{2};
 
   // PQL Relation Tables
   Table followsTable{2};
@@ -37,6 +39,8 @@ private:
   Table callsTTable{2};
   Table nextTable{2};
   Table nextTTable{1};
+  Table nextBipTable{2};
+  Table nextBipTTable{2};
 
   // Other Relation Tables
   Table callProcNameTable{2};
@@ -53,6 +57,7 @@ public:
   void setProc(const std::string &, int, int);
   void setStmtType(int, StatementType);
   void setConst(int);
+  void setProcExitStmt(std::string, std::vector<int>);
   // Relation setters
   void setFollows(int, int);
   void setFollowsT(int, int);
@@ -65,6 +70,8 @@ public:
   void setCalls(std::string, std::string);
   void setCallsT(std::string, std::string);
   void setNext(int, int);
+  void setNextBip(Table);
+  void setNextBipT(Table);
   // Pattern setters
   void setAssign(int, std::string &, std::string &);
   void setIf(int, const std::string &);
@@ -82,6 +89,7 @@ public:
   Table getConstTable() const;
   Table getStmtType(StatementType);
   Table getProcStmt();
+  Table getProcExitStmt() const;
   // Relation getter
   Table getFollows() const;
   Table getFollowsT() const;
@@ -94,6 +102,8 @@ public:
   Table getCalls() const;
   Table getCallsT() const;
   Table getNext() const;
+  Table getNextBip() const;
+  Table getNextBipT() const;
 
   bool isNextT(int, int) const;
   Table getNextT(int, bool) const;

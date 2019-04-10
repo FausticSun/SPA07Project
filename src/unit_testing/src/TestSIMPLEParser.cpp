@@ -172,6 +172,9 @@ TEST_CASE("Read statement") {
   auto modifiesPTable = pkb->getModifiesP();
   REQUIRE(modifiesPTable.size() == 1);
   REQUIRE(modifiesPTable.contains({"main", "a"}));
+  auto procExitStmtTable = pkb->getProcExitStmt();
+  REQUIRE(procExitStmtTable.size() == 1);
+  REQUIRE(procExitStmtTable.contains({ "main", "1" }));
 }
 
 TEST_CASE("Print statement") {
@@ -192,6 +195,9 @@ TEST_CASE("Print statement") {
   auto usesPTable = pkb->getUsesP();
   REQUIRE(usesPTable.size() == 1);
   REQUIRE(usesPTable.contains({"main", "a"}));
+  auto procExitStmtTable = pkb->getProcExitStmt();
+  REQUIRE(procExitStmtTable.size() == 1);
+  REQUIRE(procExitStmtTable.contains({ "main", "1" }));
 }
 
 TEST_CASE("Assign statement") {
@@ -226,6 +232,9 @@ TEST_CASE("Assign statement") {
   auto assignTable = pkb->getAssignMatches("b c + ", true);
   REQUIRE(assignTable.size() == 1);
   REQUIRE(assignTable.contains({"1", "a"}));
+  auto procExitStmtTable = pkb->getProcExitStmt();
+  REQUIRE(procExitStmtTable.size() == 1);
+  REQUIRE(procExitStmtTable.contains({ "main", "1" }));
 }
 
 TEST_CASE("Call statement") {
@@ -254,6 +263,11 @@ TEST_CASE("Call statement") {
   REQUIRE(callProcNameTable.size() == 2);
   REQUIRE(callProcNameTable.contains({"1", "proc2"}));
   REQUIRE(callProcNameTable.contains({"2", "proc3"}));
+  auto procExitStmtTable = pkb->getProcExitStmt();
+  REQUIRE(procExitStmtTable.size() == 3);
+  REQUIRE(procExitStmtTable.contains({ "proc1", "1" }));
+  REQUIRE(procExitStmtTable.contains({ "proc2", "2" }));
+  REQUIRE(procExitStmtTable.contains({ "proc3", "3" }));
 }
 
 TEST_CASE("While statement") {
@@ -279,6 +293,9 @@ TEST_CASE("While statement") {
   REQUIRE(whileCondTable.size() == 2);
   REQUIRE(whileCondTable.contains({"1", "a"}));
   REQUIRE(whileCondTable.contains({"1", "b"}));
+  auto procExitStmtTable = pkb->getProcExitStmt();
+  REQUIRE(procExitStmtTable.size() == 1);
+  REQUIRE(procExitStmtTable.contains({ "main", "1" }));
 }
 
 TEST_CASE("If statement") {
@@ -307,6 +324,10 @@ TEST_CASE("If statement") {
   REQUIRE(ifCondTable.size() == 2);
   REQUIRE(ifCondTable.contains({"1", "a"}));
   REQUIRE(ifCondTable.contains({"1", "b"}));
+  auto procExitStmtTable = pkb->getProcExitStmt();
+  REQUIRE(procExitStmtTable.size() == 2);
+  REQUIRE(procExitStmtTable.contains({ "main", "2" }));
+  REQUIRE(procExitStmtTable.contains({ "main", "3" }));
 }
 
 TEST_CASE("Assign operators") {
