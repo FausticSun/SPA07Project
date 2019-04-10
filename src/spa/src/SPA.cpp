@@ -22,8 +22,8 @@ void SPA::parseSIMPLEFile(std::string filename) {
     exit(0);
   }
 }
-const std::list<std::string> SPA::evaluateQuery(std::string queryString) const {
-  list<string> results;
+const std::deque<std::string> &
+SPA::evaluateQuery(std::string queryString) const {
   bool selectBool = false;
   try {
     std::stringstream ss;
@@ -38,14 +38,11 @@ const std::list<std::string> SPA::evaluateQuery(std::string queryString) const {
     auto query = Parser::parsePQL(tokens);
     PqlEvaluator pe(*pkb);
     auto results = pe.executeQuery(query);
-    return results;
+    return std::deque<string>(results.begin(), results.end());
   } catch (Parser::SemanticError) {
-    if (selectBool) {
-      results.emplace_back("False");
-    }
-    return results;
+    return selectBool ? std::deque<string>({"False"}) : std::deque<string>();
   } catch (...) {
-    return results;
+    return {};
   }
-  return results;
+  return {};
 }
