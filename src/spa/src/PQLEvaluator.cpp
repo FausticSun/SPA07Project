@@ -102,8 +102,7 @@ bool isJoined(vector<Table> s1, Table s2) {
   return false;
 }
 
-
-PqlEvaluator::PqlEvaluator(PKB &pkb) : mypkb(pkb) {};
+PqlEvaluator::PqlEvaluator(PKB &pkb) : mypkb(pkb){};
 
 deque<string> PqlEvaluator::executeQuery(Query &q) {
   deque<string> results;
@@ -173,16 +172,13 @@ dataRows PqlEvaluator::resultExtractor(Table result, Query q) {
 
 deque<string> PqlEvaluator::resultFormater(dataRows t) {
   deque<string> result;
-  if (t.size() == 0)
-  {
+  if (t.size() == 0) {
     return result;
   }
-  for (auto data: t)
-  {
+  for (auto data : t) {
     auto it = data.begin();
     std::string tuple = *(it++);
-    for (; it != data.end(); ++it)
-    {
+    for (; it != data.end(); ++it) {
       tuple += " ";
       tuple += (*it);
     }
