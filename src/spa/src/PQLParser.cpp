@@ -45,7 +45,7 @@ void PQLParser::parseDeclaration() {
   }
   auto synonymToken = expect(PQLTokens::Identifier);
   if (declarations.count(synonymToken.value)) {
-    throw std::logic_error("Synonym already declared");
+    throwSemanticError("Synonym already declared");
   }
   declarations.emplace(std::make_pair(
       synonymToken.value, PQLTokens::tokenEntityMap.at(designEntityToken)));
@@ -112,7 +112,7 @@ void PQLParser::parseAttrCompare() {
   auto attrRef2 = parseRef();
 
   if (getAttRefType(attrRef1) != getAttRefType(attrRef2)) {
-    throw std::logic_error("Attr refs must be of same type");
+    throwSemanticError("Attr refs must be of same type");
   }
 
   Clause withCl(ClauseType::With, {attrRef1, attrRef2});
@@ -191,13 +191,13 @@ void PQLParser::validateSuchThatCl(Clause suchThatCl) {
   if ((suchThatCl.clauseType == ClauseType::UsesS ||
        suchThatCl.clauseType == ClauseType::ModifiesS) &&
       (suchThatCl.parameters[0].type == QueryEntityType::Underscore)) {
-    throw std::logic_error("First param of uses/modifies cannot be _");
+    throwSemanticError("First param of uses/modifies cannot be _");
   }
 }
 
 void PQLParser::validateRef(QueryEntity ref, PQLTokens::RefType refType) {
   if (!PQLTokens::refTypeSpecificTypesMap.at(refType).count(ref.type)) {
-    throw std::logic_error("Invalid ref");
+    throwSemanticError("Invalid ref");
   }
 }
 
@@ -227,7 +227,7 @@ void PQLParser::parsePattern() {
     parseIf(syn);
     break;
   default:
-    throw std::logic_error("Invalid pattern synonym");
+    throwSemanticError("Invalid pattern synonym");
   }
 }
 
@@ -330,12 +330,13 @@ QueryEntity PQLParser::parseRef() {
     return parseName();
   } else if (tokens.front().type == TokenType::Number) {
     return parseLineNo();
-  } else if (tokens.size() > 1 && *std::next(tokens.begin()) == PQLTokens::Period) {
+  } else if (tokens.size() > 1 &&
+             *std::next(tokens.begin()) == PQLTokens::Period) {
     return parseAttrRef();
   } else {
     auto syn = parseSynonym();
     if (syn.type != QueryEntityType::Progline) {
-      throw std::logic_error("Synonym must be of type prog_line");
+      throwSemanticError("Synonym must be of type prog_line");
     }
     return syn;
   }
@@ -394,7 +395,8 @@ QueryEntity PQLParser::parseElem() {
 QueryEntity PQLParser::parseSynonym() {
   auto synToken = expect(PQLTokens::Identifier);
   if (!(declarations.count(synToken.value))) {
-    throw std::logic_error("Synonym " + synToken.value + " not declared");
+    throwSemanticError(
+        ("Synonym " + synToken.value + " not declared").c_str());
   }
   QueryEntity ent;
   ent.name = synToken.value;
@@ -428,8 +430,16 @@ QueryEntity PQLParser::parseName() {
   return ent;
 }
 
+void PQLParser::throwSemanticError(std::string msg) {
+  hasSemanticError = true;
+  errorMsg = msg;
+}
+
 PQLParser::PQLParser(std::list<Lexer::Token> tokens) : tokens(tokens) {
   parseQuery();
+  if (hasSemanticError) {
+    throw SemanticError(errorMsg.c_str());
+  }
 }
 
 Query PQLParser::getQuery() { return query; }

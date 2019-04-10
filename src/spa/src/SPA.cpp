@@ -2,8 +2,8 @@
 #include "DesignExtractor.h"
 #include "GeneralLexer.h"
 #include "PQLEvaluator.h"
-#include "SIMPLEParser.h"
 #include "PQLParser.h"
+#include "SIMPLEParser.h"
 #include <fstream>
 #include <sstream>
 
@@ -24,17 +24,27 @@ void SPA::parseSIMPLEFile(std::string filename) {
 }
 const std::list<std::string> SPA::evaluateQuery(std::string queryString) const {
   list<string> results;
+  bool selectBool = false;
   try {
     std::stringstream ss;
     ss << queryString;
     auto tokens = Lexer::tokenize(ss);
+    for (auto it = tokens.begin(); it != std::prev(tokens.end()); ++it) {
+      if (it->value == "Select" && std::next(it)->value == "BOOLEAN") {
+        selectBool = true;
+        break;
+      }
+    }
     auto query = Parser::parsePQL(tokens);
     PqlEvaluator pe(*pkb);
     auto results = pe.executeQuery(query);
     return results;
-  } catch (logic_error le) {
+  } catch (Parser::SemanticError) {
+    if (selectBool) {
+      results.emplace_back("False");
+    }
     return results;
-  } catch (invalid_argument ia) {
+  } catch (...) {
     return results;
   }
   return results;
