@@ -15,7 +15,7 @@ Table::Table(int noOfCols) {
     throw std::logic_error("No of columns is less that 0");
   }
   for (int i = 0; i < noOfCols; ++i) {
-    headerRow.push_back(std::to_string(i));
+    headerRow.emplace_back(std::to_string(i));
   }
 }
 
@@ -108,14 +108,14 @@ std::set<Table::DataRow> Table::getData(HeaderRow cols) const {
     if (it == headerRow.end()) {
       throw std::logic_error("Column: " + colName + " not found");
     }
-    indices.push_back(std::distance(headerRow.begin(), it));
+    indices.emplace_back(std::distance(headerRow.begin(), it));
   }
 
   // Gets the requested data
   for (auto row : data) {
     DataRow requestedRow;
     for (auto i : indices) {
-      requestedRow.push_back(row[i]);
+      requestedRow.emplace_back(row[i]);
     }
     requestedData.insert(requestedRow);
   }
@@ -145,7 +145,7 @@ void Table::mergeWith(const Table &other) {
   if (!commonIndices.empty()) {
     // Add non-common headers
     for (int i : otherDiffIndices) {
-      headerRow.push_back(other.headerRow[i]);
+      headerRow.emplace_back(other.headerRow[i]);
     }
     // Iterate through DataRow in this table
     auto thisIt = data.begin();
@@ -169,7 +169,7 @@ void Table::mergeWith(const Table &other) {
           // Join and insert back into this table
           auto newData = thisData;
           for (auto i : otherDiffIndices) {
-            newData.push_back(otherIt->at(i));
+            newData.emplace_back(otherIt->at(i));
           }
           data.insert(thisIt, newData);
         }

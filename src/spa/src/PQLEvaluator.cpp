@@ -102,10 +102,11 @@ bool isJoined(vector<Table> s1, Table s2) {
   return false;
 }
 
-PqlEvaluator::PqlEvaluator(const PKB &pkb) { this->mypkb = pkb; }
 
-list<string> PqlEvaluator::executeQuery(Query &q) {
-  list<string> results;
+PqlEvaluator::PqlEvaluator(PKB &pkb) : mypkb(pkb) {};
+
+deque<string> PqlEvaluator::executeQuery(Query &q) {
+  deque<string> results;
   if (q.clauses.empty()) {
     dataRows resultTable = executeSimpleQuery(q.target);
     results = resultFormater(resultTable);
@@ -170,20 +171,22 @@ dataRows PqlEvaluator::resultExtractor(Table result, Query q) {
   return resultTable;
 }
 
-list<string> PqlEvaluator::resultFormater(dataRows t) {
-  set<vector<string>> tempData = t;
-  set<vector<string>>::iterator iterRow;
-  list<string> result;
-  string tuple = "";
-
-  for (iterRow = tempData.begin(); iterRow != tempData.end(); iterRow++) {
-    vector<string> temp = *iterRow;
-    for (int i = 0; i < temp.size(); i++) {
-      tuple = tuple + temp[i] + " ";
+deque<string> PqlEvaluator::resultFormater(dataRows t) {
+  deque<string> result;
+  if (t.size() == 0)
+  {
+    return result;
+  }
+  for (auto data: t)
+  {
+    auto it = data.begin();
+    std::string tuple = *(it++);
+    for (; it != data.end(); ++it)
+    {
+      tuple += " ";
+      tuple += (*it);
     }
-    tuple = tuple.substr(0, tuple.size() - 1);
-    result.push_back(tuple);
-    tuple = "";
+    result.emplace_back(tuple);
   }
   return result;
 }

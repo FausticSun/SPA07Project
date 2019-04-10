@@ -2,6 +2,7 @@
 #include "Table.h"
 #include "Util.h"
 #include <map>
+#include <list>
 
 class CFG {
 private:
@@ -23,10 +24,10 @@ private:
   void populateCompressedToInitial();
   void populateCompressedGraph(Table);
 
-  std::vector<int> getNextTForward(int, int) const;
-  std::vector<int> getNextTReverse(int) const;
-  std::vector<int> getAffectsForward(int, std::string, Table, Table) const;
-  std::vector<int> getAffectsReverse(int, std::string, Table, Table) const;
+  std::list<int> getNextTForward(int, int) const;
+  std::list<int> getNextTReverse(int) const;
+  std::list<int> getAffectsForward(int, std::string, Table, Table) const;
+  std::list<int> getAffectsReverse(int, std::string, Table, Table) const;
 
   std::map<int, std::set<int>> getAffectsTResults(
       int, Table, Table, std::map<int, StatementType>,
