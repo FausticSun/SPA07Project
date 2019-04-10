@@ -359,24 +359,30 @@ ClauseResult PqlEvaluator::executeOneClause(Clause c) {
 void PqlEvaluator::divideGroups(vector<Table> tables,
                                 vector<QueryEntity> targets) {
   bool hasJoin = false;
+  bool end = true;
   Table target = targetsToTable(targets);
   vector<Table> copies(tables.begin(), tables.end());
   while (!copies.empty()) {
     vector<Table> present;
-    vector<Table>::iterator iter = copies.begin();
-    while (iter != copies.end()) {
-      if (present.empty()) {
-        hasJoin = isJoined(*iter, target) ||
-                  targets.front().type == QueryEntityType::Boolean;
-        present.push_back(*iter);
-        iter = copies.erase(iter);
-      } else if (isJoined(present, *iter)) {
-        hasJoin = isJoined(*iter, target) || isJoined(present, target) ||
-                  targets.front().type == QueryEntityType::Boolean;
-        present.push_back(*iter);
-        iter = copies.erase(iter);
-      } else {
-        iter++;
+    while (end) {
+      end = false;
+      vector<Table>::iterator iter = copies.begin();
+      while (iter != copies.end()) {
+        if (present.empty()) {
+          hasJoin = isJoined(*iter, target) ||
+                    targets.front().type == QueryEntityType::Boolean;
+          present.push_back(*iter);
+          iter = copies.erase(iter);
+          end = true;
+        } else if (isJoined(present, *iter)) {
+          hasJoin = isJoined(*iter, target) || isJoined(present, target) ||
+                    targets.front().type == QueryEntityType::Boolean;
+          present.push_back(*iter);
+          iter = copies.erase(iter);
+          end = true;
+        } else {
+          iter++;
+        }
       }
     }
     if (hasJoin) {
@@ -385,6 +391,7 @@ void PqlEvaluator::divideGroups(vector<Table> tables,
       inrelevantGroups.push_back(present);
     }
     hasJoin = false;
+    end = true;
   }
 }
 
@@ -493,6 +500,7 @@ ClauseResult PqlEvaluator::withEvaluate(Clause c) {
 ClauseResult PqlEvaluator::NextTEvaluate(Clause c) {
   QueryEntity qe1 = c.parameters[0];
   QueryEntity qe2 = c.parameters[1];
+  Table data(2);
   ClauseResult result;
   if (isConstant(qe1.type)) {
     Table col1(1);
@@ -502,6 +510,7 @@ ClauseResult PqlEvaluator::NextTEvaluate(Clause c) {
     pkbData.setHeader({"2"});
     col1.mergeWith(pkbData);
     result = dataFilter(col1, c);
+    return result;
   } else if (isConstant(qe2.type)) {
     Table col2(1);
     col2.setHeader({"2"});
@@ -510,39 +519,47 @@ ClauseResult PqlEvaluator::NextTEvaluate(Clause c) {
     pkbData.setHeader({"1"});
     pkbData.mergeWith(col2);
     result = dataFilter(pkbData, c);
+    return result;
   } else if (isSynonym(qe1.type)) {
-		dataRows col1 = getdataByTtype(qe1).getData();
-		Table pkbData(2);
-		pkbData.setHeader({ "1","2" });
-		for (vector<string> row : col1) {
-			Table col1(1);
-			col1.setHeader({ "1" });
-			col1.insertRow({row[0]});
-			Table present = mypkb.getNextT(stoi(row[0]), true);
-			present.setHeader({ "2" });
-			col1.mergeWith(present);
-			pkbData.concatenate(col1);
-		}
-		/*if (isSynonym(qe2.type)) {
-			Table col2 = getdataByTtype(qe2);
-			col2.setHeader({ "2" });
-			pkbData.mergeWith(col2);
-		}*/
-		result = dataFilter(pkbData, c);
+    dataRows col1 = getdataByTtype(qe1).getData();
+    Table pkbData(2);
+    pkbData.setHeader({"1", "2"});
+    for (vector<string> row : col1) {
+      Table col1(1);
+      col1.setHeader({"1"});
+      col1.insertRow({row[0]});
+      Table present = mypkb.getNextT(stoi(row[0]), true);
+      present.setHeader({"2"});
+      col1.mergeWith(present);
+      pkbData.concatenate(col1);
+    }
+    if (isSynonym(qe2.type)) {
+      Table col2 = getdataByTtype(qe2);
+      col2.setHeader({"2"});
+      pkbData.mergeWith(col2);
+    }
+    data = pkbData;
+    /*result = dataFilter(pkbData, c);*/
   } else if (isSynonym(qe2.type)) {
-		dataRows col2 = getdataByTtype(qe2).getData();
-		Table pkbData(2);
-		pkbData.setHeader({"1","2"});
-		for (vector<string> row : col2) {
-			Table col2(1);
-			col2.setHeader({"2"});
-			col2.insertRow({row[0]});
-			Table present = mypkb.getNextT(stoi(row[0]), false);
-			present.setHeader({"1"});
-			present.mergeWith(col2);
-			pkbData.concatenate(present);
-		}
-		result = dataFilter(pkbData, c);
+    dataRows col2 = getdataByTtype(qe2).getData();
+    Table pkbData(2);
+    pkbData.setHeader({"1", "2"});
+    for (vector<string> row : col2) {
+      Table col2(1);
+      col2.setHeader({"2"});
+      col2.insertRow({row[0]});
+      Table present = mypkb.getNextT(stoi(row[0]), false);
+      present.setHeader({"1"});
+      present.mergeWith(col2);
+      pkbData.concatenate(present);
+    }
+    if (isSynonym(qe1.type)) {
+      Table col1 = getdataByTtype(qe1);
+      col1.setHeader({"1"});
+      pkbData.mergeWith(col1);
+    }
+    data = pkbData;
+    /*result = dataFilter(pkbData, c);*/
   } else {
     Table pkbData(0);
     if (NextTTable.empty()) {
@@ -551,8 +568,40 @@ ClauseResult PqlEvaluator::NextTEvaluate(Clause c) {
     } else {
       pkbData = NextTTable;
     }
-    result = dataFilter(pkbData, c);
+    /*result = dataFilter(pkbData, c);*/
   }
+
+  if (isSynonym(qe1.type) && isSynonym(qe2.type) && qe1.name == qe2.name) {
+    data = selfJoin(data);
+    data.dropColumn("2");
+  }
+
+  if (data.empty()) {
+    ClauseResult result(true, false);
+    return result;
+  }
+
+  if (isSynonym(qe1.type) || isSynonym(qe2.type)) {
+    if (!isSynonym(qe1.type)) {
+      data.dropColumn("1");
+    }
+
+    if (!isSynonym(qe2.type)) {
+      data.dropColumn("2");
+    }
+    for (string title : data.getHeader()) {
+      if (title == "1") {
+        data.modifyHeader("1", qe1.name);
+      } else if (title == "2") {
+        data.modifyHeader("2", qe2.name);
+      }
+    }
+    ClauseResult result(false, false);
+    result.data = data;
+    return result;
+  }
+  return ClauseResult(true, true);
+
   return result;
 }
 ClauseResult PqlEvaluator::AffectEvaluate(Clause c) {
