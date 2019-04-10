@@ -14,7 +14,7 @@ CFG::CFG(Table procStmtTable, Table nextTable, Table whileIfTable,
   for (auto data : nextTable.getData()) {
     int u = std::stoi(data[0]);
     int v = std::stoi(data[1]);
-    initialGraph[u].push_back(v);
+    initialGraph[u].emplace_back(v);
   }
 
   // Populate inDegree
@@ -91,7 +91,7 @@ void CFG::populateInitialToCompressed(int start, Table whileIfTable,
 
 void CFG::populateCompressedToInitial() {
   for (auto i : initialToCompressed) {
-    compressedToInitial[i.second].push_back(i.first);
+    compressedToInitial[i.second].emplace_back(i.first);
   }
 }
 
@@ -115,9 +115,9 @@ void CFG::populateCompressedGraph(Table procStmtTable) {
         visited[v] = true;
       }
       if (initialToCompressed[v] != initialToCompressed[u]) {
-        forwardCompressedGraph[initialToCompressed[u]].push_back(
+        forwardCompressedGraph[initialToCompressed[u]].emplace_back(
             initialToCompressed[v]);
-        reverseCompressedGraph[initialToCompressed[v]].push_back(
+        reverseCompressedGraph[initialToCompressed[v]].emplace_back(
             initialToCompressed[u]);
       }
     }
@@ -138,7 +138,7 @@ std::list<int> CFG::getNextTForward(int start, int end = -1) const {
   std::vector<int> linesInNode = compressedToInitial.at(startNode);
   int index = start - linesInNode[0] + 1;
   for (int i = index; i < linesInNode.size(); i++) {
-    result.push_back(linesInNode[i]);
+    result.emplace_back(linesInNode[i]);
     visited[linesInNode[i]] = true;
     if (linesInNode[i] == end) {
       reachedEnd = true;
@@ -157,7 +157,7 @@ std::list<int> CFG::getNextTForward(int start, int end = -1) const {
                  i)) { // adding all elements within current node
           if (!visited[j]) {
             visited[j] = true;
-            result.push_back(j);
+            result.emplace_back(j);
             if (j == end) { // for nextT with 2 constants
               reachedEnd = true;
               break;
@@ -191,7 +191,7 @@ std::list<int> CFG::getNextTReverse(int start) const {
   int index = start - linesInNode[0] - 1;
 
   for (int i = index; i >= 0; i--) {
-    result.push_back(linesInNode[i]);
+    result.emplace_back(linesInNode[i]);
     visited[linesInNode[i]] = true;
   }
 
@@ -207,7 +207,7 @@ std::list<int> CFG::getNextTReverse(int start) const {
                  i)) { // adding all elements within current node
           if (!visited[j]) {
             visited[j] = true;
-            result.push_back(j);
+            result.emplace_back(j);
           }
         }
         q.push(i);
@@ -266,7 +266,7 @@ std::list<int> CFG::getAffectsForward(int start, std::string v,
   for (int i = index; i < linesInNode.size(); i++) {
     int node = linesInNode[i];
     if (usesAssignTable.contains({std::to_string(node), v})) {
-      results.push_back(node);
+      results.emplace_back(node);
     }
     if (modifiesTable.contains({std::to_string(node), v}) &&
         i != linesInNode.size() - 1) {
@@ -295,7 +295,7 @@ std::list<int> CFG::getAffectsForward(int start, std::string v,
             visited[j] = true;
             // Add to results if Uses(j, v) is true
             if (usesAssignTable.contains({std::to_string(j), v})) {
-              results.push_back(j);
+              results.emplace_back(j);
             }
             if (modifiesTable.contains({std::to_string(j), v}) &&
                 !whileIfTable.contains({std::to_string(j)})) {
@@ -330,7 +330,7 @@ std::list<int> CFG::getAffectsReverse(int start, std::string v,
   for (int i = index; i >= 0; i--) {
     int node = linesInNode[i];
     if (modifiesAssignTable.contains({std::to_string(node), v})) {
-      results.push_back(node);
+      results.emplace_back(node);
     }
     if (modifiesTable.contains({std::to_string(node), v})) {
       // v is modified in any line in the start node
@@ -359,7 +359,7 @@ std::list<int> CFG::getAffectsReverse(int start, std::string v,
             visited[line] = true;
             // Add to results if Modifies(line, v) and line is assignment stmt
             if (modifiesAssignTable.contains({std::to_string(line), v})) {
-              results.push_back(line);
+              results.emplace_back(line);
             }
             if (modifiesTable.contains({std::to_string(line), v}) &&
                 !whileIfTable.contains({std::to_string(line)})) {
@@ -408,7 +408,7 @@ Table CFG::getAffects(int start, bool isForward, Table usesTable,
   std::list<int> result;
   std::vector<std::string> assignStmtsVec;
   for (auto i : assignStmts) {
-    assignStmtsVec.push_back(std::to_string(i));
+    assignStmtsVec.emplace_back(std::to_string(i));
   }
 
   if (isForward) {
@@ -431,7 +431,7 @@ Table CFG::getAffects(int start, bool isForward, Table usesTable,
     // usesATable has one or more variables after filter
     std::vector<std::string> variables;
     for (auto data : usesATable.getData({"v"})) {
-      variables.push_back(data[0]);
+      variables.emplace_back(data[0]);
     }
     modifiesTable.setHeader({"a1", "v"});
     auto modifiesAssignTable = modifiesTable.filter("a1", assignStmtsVec);
@@ -452,7 +452,7 @@ Table CFG::getAffects(Table usesTable, Table modifiesTable,
   Table table{2};
   std::vector<std::string> assignStmtsVec;
   for (auto i : assignStmts) {
-    assignStmtsVec.push_back(std::to_string(i));
+    assignStmtsVec.emplace_back(std::to_string(i));
   }
   modifiesTable.setHeader({"a1", "v"});
   usesTable.setHeader({"a2", "v"});
@@ -536,7 +536,7 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
           ++it;
         }
       }
-      newBasket.push_back(std::make_pair(modifiedVar, node));
+      newBasket.emplace_back(std::make_pair(modifiedVar, node));
       break;
     }
     case StatementType::Read: {
@@ -590,7 +590,7 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
             }
             basketsToMerge[v].clear();
             for (auto pair : basketSet) {
-              basketsToMerge[v].push_back(pair);
+              basketsToMerge[v].emplace_back(pair);
             }
           }
         }
