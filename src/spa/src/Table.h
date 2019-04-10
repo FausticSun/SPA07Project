@@ -29,4 +29,8 @@ public:
   void concatenate(const Table &other);
   void setDifference(const Table &other);
   void transitiveClosure();
+  void naturalJoin(const Table &other,
+                   std::vector<std::pair<int, int>> &commonIndices,
+                   std::set<int> &otherDiffIndices);
+  void crossProduct(const Table &other);
 };

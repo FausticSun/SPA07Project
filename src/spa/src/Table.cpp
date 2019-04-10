@@ -143,58 +143,11 @@ void Table::mergeWith(const Table &other) {
   }
   // Natural Join if there are common indices
   if (!commonIndices.empty()) {
-    // Add non-common headers
-    for (int i : otherDiffIndices) {
-      headerRow.emplace_back(other.headerRow[i]);
-    }
-    // Iterate through DataRow in this table
-    auto thisIt = data.begin();
-    while (thisIt != data.end()) {
-      // Remove the row from the table
-      auto thisData = (*thisIt);
-      thisIt = data.erase(thisIt);
-      // Check the row against every row in the other table
-      for (auto otherIt = other.data.begin(); otherIt != other.data.end();
-           ++otherIt) {
-        // Determine if data in common columns are the same
-        bool isCommon = true;
-        for (auto indices : commonIndices) {
-          if (thisData.at(indices.first) != otherIt->at(indices.second)) {
-            isCommon = false;
-            break;
-          }
-        }
-        // If they are the same
-        if (isCommon) {
-          // Join and insert back into this table
-          auto newData = thisData;
-          for (auto i : otherDiffIndices) {
-            newData.emplace_back(otherIt->at(i));
-          }
-          data.insert(thisIt, newData);
-        }
-      }
-    }
+    naturalJoin(other, commonIndices, otherDiffIndices);
   }
   // Cartesian Product otherwise
   else {
-    // Merge headers
-    headerRow.insert(headerRow.end(), other.headerRow.begin(),
-                     other.headerRow.end());
-    // Perform cartesian product
-    // Iterate through DataRow in this table
-    auto thisIt = data.begin();
-    while (thisIt != data.end()) {
-      // Remove the row from the table
-      auto thisData = (*thisIt);
-      thisIt = data.erase(thisIt);
-      // Merge and insert back with every row in the other table
-      for (auto otherRow : other.data) {
-        auto newData = thisData;
-        newData.insert(newData.end(), otherRow.begin(), otherRow.end());
-        data.insert(thisIt, newData);
-      }
-    }
+    crossProduct(other);
   }
 }
 
@@ -249,6 +202,63 @@ void Table::transitiveClosure() {
     t.mergeWith(t2);
     for (auto newRow : t.getData({"0", std::to_string(i)})) {
       data.insert(newRow);
+    }
+  }
+}
+
+void Table::naturalJoin(const Table &other,
+                        std::vector<std::pair<int, int>> &commonIndices,
+                        std::set<int> &otherDiffIndices) {
+  // Add non-common headers
+  for (int i : otherDiffIndices) {
+    headerRow.emplace_back(other.headerRow[i]);
+  }
+  // Iterate through DataRow in this table
+  auto thisIt = data.begin();
+  while (thisIt != data.end()) {
+    // Remove the row from the table
+    auto thisData = (*thisIt);
+    thisIt = data.erase(thisIt);
+    // Check the row against every row in the other table
+    for (auto otherIt = other.data.begin(); otherIt != other.data.end();
+         ++otherIt) {
+      // Determine if data in common columns are the same
+      bool isCommon = true;
+      for (auto indices : commonIndices) {
+        if (thisData.at(indices.first) != otherIt->at(indices.second)) {
+          isCommon = false;
+          break;
+        }
+      }
+      // If they are the same
+      if (isCommon) {
+        // Join and insert back into this table
+        auto newData = thisData;
+        for (auto i : otherDiffIndices) {
+          newData.emplace_back(otherIt->at(i));
+        }
+        data.insert(thisIt, newData);
+      }
+    }
+  }
+}
+
+void Table::crossProduct(const Table &other) {
+  // Merge headers
+  headerRow.insert(headerRow.end(), other.headerRow.begin(),
+                   other.headerRow.end());
+  // Perform cartesian product
+  // Iterate through DataRow in this table
+  auto thisIt = data.begin();
+  while (thisIt != data.end()) {
+    // Remove the row from the table
+    auto thisData = (*thisIt);
+    thisIt = data.erase(thisIt);
+    // Merge and insert back with every row in the other table
+    for (auto otherRow : other.data) {
+      auto newData = thisData;
+      newData.insert(newData.end(), otherRow.begin(), otherRow.end());
+      data.insert(thisIt, newData);
     }
   }
 }
