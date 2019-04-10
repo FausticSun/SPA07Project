@@ -41,7 +41,7 @@ void SPA::evaluateQuery(const std::string &queryString,
     pe.executeQuery(query, results);
   } catch (Parser::SemanticError &) {
     if (selectBool) {
-      results.emplace_back("False");
+      results.emplace_back("FALSE");
     }
   } catch (...) {
   }
