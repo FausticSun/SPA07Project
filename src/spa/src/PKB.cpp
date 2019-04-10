@@ -17,9 +17,9 @@ void PKB::setStmtType(int stmt, StatementType type) {
 void PKB::setConst(int cons) { constTable.insertRow({std::to_string(cons)}); }
 
 void PKB::setProcExitStmt(std::string proc, std::vector<int> exitStmts) {
-	for (auto i : exitStmts) {
-		procExitStmtTable.insertRow({ proc, std::to_string(i) });
-	}
+  for (auto i : exitStmts) {
+    procExitStmtTable.insertRow({proc, std::to_string(i)});
+  }
 }
 void PKB::setFollows(int s1, int s2) {
   followsTable.insertRow({std::to_string(s1), std::to_string(s2)});
@@ -69,13 +69,9 @@ void PKB::setNext(int s1, int s2) {
   nextTable.insertRow({std::to_string(s1), std::to_string(s2)});
 }
 
-void PKB::setNextBip(Table t) {
-	nextBipTable = t;
-}
+void PKB::setNextBip(Table t) { nextBipTable = t; }
 
-void PKB::setNextBipT(Table t) {
-	nextBipTTable = t;
-}
+void PKB::setNextBipT(Table t) { nextBipTTable = t; }
 
 void PKB::setAssign(int a, std::string &v, std::string &expr) {
   assignTable.insert(std::make_pair(a, std::make_pair(v, expr)));
@@ -141,9 +137,7 @@ Table PKB::getProcStmt() {
   return table;
 }
 
-Table PKB::getProcExitStmt() const {
-	return procExitStmtTable;
-}
+Table PKB::getProcExitStmt() const { return procExitStmtTable; }
 
 Table PKB::getFollows() const { return followsTable; }
 Table PKB::getFollowsT() const { return followsTTable; }
@@ -164,7 +158,6 @@ Table PKB::getNextT(int s, bool isLeftConstant) const {
   return cfg.getNextT(s, isLeftConstant);
 }
 Table PKB::getNextT() const { return cfg.getNextT(); }
-
 
 bool PKB::isAffects(int a1, int a2) const {
   // Only query from CFG if a1 and a2 are assign statements
