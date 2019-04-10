@@ -2327,6 +2327,42 @@ TEST_CASE("AffectsT with one while nested in one if") {
   }
 }
 
+TEST_CASE("AffectsT with one if nested in one while") {
+  std::unique_ptr<PKB> pkb{new PKB()};
+  pkb->setProc("A", 1, 6);
+  pkb->setNext(1, 2);
+  pkb->setNext(2, 3);
+  pkb->setNext(2, 4);
+  pkb->setNext(3, 5);
+  pkb->setNext(4, 5);
+  pkb->setNext(5, 1);
+  pkb->setModifies(3, "a");
+  pkb->setModifies(4, "b");
+  pkb->setModifies(5, "c");
+  pkb->setUses(3, "a");
+  pkb->setUses(3, "b");
+  pkb->setUses(4, "a");
+  pkb->setUses(5, "a");
+  pkb->setUses(5, "b");
+  pkb->setParent(1, 2);
+  pkb->setParent(2, 3);
+  pkb->setParent(2, 4);
+  pkb->setParent(1, 5);
+  pkb->setStmtType(1, StatementType::While);
+  pkb->setStmtType(2, StatementType::If);
+  pkb->setStmtType(3, StatementType::Assign);
+  pkb->setStmtType(4, StatementType::Assign);
+  pkb->setStmtType(5, StatementType::Assign);
+  DesignExtractor::populateDesigns(pkb);
+  Table affectsTable = pkb->getAffects();
+  affectsTable.transitiveClosure();
+  Table affectsTTable = pkb->getAffectsT();
+  REQUIRE(affectsTable.size() == affectsTTable.size());
+  for (auto data : affectsTable.getData()) {
+    REQUIRE(affectsTTable.contains(data));
+  }
+}
+
 TEST_CASE("AffectsT with one while nested in one while") {
   std::unique_ptr<PKB> pkb{new PKB()};
   pkb->setProc("A", 1, 5);
