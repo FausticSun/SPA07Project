@@ -11,5 +11,5 @@ private:
 public:
   SPA();
   void parseSIMPLEFile(const std::string &filename);
-  std::deque<std::string> evaluateQuery(const std::string &query) const;
+  void evaluateQuery(const std::string &query, std::list<std::string> &results) const;
 };

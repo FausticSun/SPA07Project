@@ -104,14 +104,14 @@ bool isJoined(vector<Table> s1, Table s2) {
 
 PqlEvaluator::PqlEvaluator(PKB &pkb) : mypkb(pkb){};
 
-deque<string> PqlEvaluator::executeQuery(Query &q) {
+void PqlEvaluator::executeQuery(Query &q, std::list<std::string> &results) {
   dataRows resultTable;
   if (q.clauses.empty()) {
-    dataRows resultTable = executeSimpleQuery(q.target);
+    resultTable = executeSimpleQuery(q.target);
   } else {
-    dataRows resultTable = executeComplexQuery(q);
+    resultTable = executeComplexQuery(q);
   }
-  return resultFormater(resultTable);
+  resultFormater(resultTable, results);
 }
 
 dataRows PqlEvaluator::resultExtractor(Table result, Query q) {
@@ -168,20 +168,25 @@ dataRows PqlEvaluator::resultExtractor(Table result, Query q) {
   return resultTable;
 }
 
-deque<string> PqlEvaluator::resultFormater(dataRows t) {
-  deque<string> result;
+void PqlEvaluator::resultFormater(dataRows &t,
+                                  std::list<std::string> &results) {
   if (t.empty()) {
-    return result;
+    return;
   }
-  for (auto &data : t) {
-    auto it = data.begin();
-    result.emplace_back(*(it++));
-    for (; it != data.end(); ++it) {
-      result.back() += " ";
-      result.back() += (*it);
+  results.assign(t.size(), "");
+  auto resultsIt = results.begin();
+  auto dataIt = t.begin();
+  while (dataIt != t.end()) {
+    auto it = dataIt->begin();
+    resultsIt->append(it->c_str());
+    it++;
+    for (; it != dataIt->end(); ++it) {
+      resultsIt->append(" ");
+      resultsIt->append(it->c_str());
     }
+    dataIt++;
+    resultsIt++;
   }
-  return result;
 }
 
 set<vector<string>> PqlEvaluator::executeSimpleQuery(vector<QueryEntity> t) {

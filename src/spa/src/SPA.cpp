@@ -18,12 +18,13 @@ void SPA::parseSIMPLEFile(const std::string &filename) {
     auto newPKB = Parser::parseSIMPLE(tokens);
     DesignExtractor::populateDesigns(newPKB);
     pkb.swap(newPKB);
-  } catch (std::logic_error& e) {
+  } catch (std::logic_error &e) {
     exit(0);
   }
 }
 
-std::deque<std::string> SPA::evaluateQuery(const std::string &queryString) const {
+void SPA::evaluateQuery(const std::string &queryString,
+                        std::list<std::string> &results) const {
   auto selectBool = false;
   try {
     std::stringstream ss;
@@ -37,11 +38,11 @@ std::deque<std::string> SPA::evaluateQuery(const std::string &queryString) const
     }
     auto query = Parser::parsePQL(tokens);
     PqlEvaluator pe(*pkb);
-    return pe.executeQuery(query);
-  } catch (Parser::SemanticError&) {
-    return selectBool ? std::deque<string>({"False"}) : std::deque<string>();
+    pe.executeQuery(query, results);
+  } catch (Parser::SemanticError &) {
+    if (selectBool) {
+      results.emplace_back("False");
+    }
   } catch (...) {
-    return {};
   }
-  return {};
 }
