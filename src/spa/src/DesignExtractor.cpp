@@ -276,5 +276,7 @@ void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {
   populateCFG(pkb);
   populateAssignMap(pkb);
   populateStmtMap(pkb);
+#ifdef ENABLE_BIP
   populateCFGBip(pkb);
+#endif
 }
