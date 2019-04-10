@@ -34,6 +34,9 @@ public:
   list<string> executeQuery(Query &q);
 
 private:
+	Table NextTTable=Table(0);
+	Table AffectTable= Table(0);
+	Table AffectTTable= Table(0);
 	vector<vector<Table>> relevantGroups;
 	vector<vector<Table>> inrelevantGroups;
   PKB mypkb;
