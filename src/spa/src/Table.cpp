@@ -202,6 +202,7 @@ void Table::transitiveClosure() {
   for (int i = 2; i < n; ++i) {
     t2.setHeader({std::to_string(i - 1), std::to_string(i)});
     t.mergeWith(t2);
+    t.dropColumn(std::to_string(i - 1));
     for (auto newRow : t.getData({"0", std::to_string(i)})) {
       data.insert(newRow);
     }
