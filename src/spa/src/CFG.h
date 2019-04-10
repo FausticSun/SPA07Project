@@ -26,12 +26,12 @@ private:
   void populateCompressedGraph(Table);
 
   // Methods for traversal to retrieve Next* relations
-  std::vector<int> getNextTForward(int, int) const;
-  std::vector<int> getNextTReverse(int) const;
+  std::list<int> getNextTForward(int, int) const;
+  std::list<int> getNextTReverse(int) const;
 
   // Methods for traversal to retrieve Affects relations
-  std::vector<int> getAffectsForward(int, std::string, Table, Table) const;
-  std::vector<int> getAffectsReverse(int, std::string, Table, Table) const;
+  std::list<int> getAffectsForward(int, std::string, Table, Table) const;
+  std::list<int> getAffectsReverse(int, std::string, Table, Table) const;
 
   // Method for traversal to retrieve Affects* relations
   std::map<int, std::set<int>> getAffectsTResults(
