@@ -1,5 +1,7 @@
 #include "Table.h"
 #include <algorithm>
+#include <deque>
+#include <map>
 
 Table::Table(HeaderRow headers) : headerRow(headers) {
   auto headersCopy = headers;
@@ -209,38 +211,46 @@ void Table::transitiveClosure() {
 void Table::naturalJoin(const Table &other,
                         std::vector<std::pair<int, int>> &commonIndices,
                         std::set<int> &otherDiffIndices) {
+  std::set<DataRow> newData;
+  // Create Hash Table for Hash-Join
+  std::map<DataRow, std::set<DataRow>> hashTable;
+  for (auto &dataRow : data) {
+    DataRow key;
+    for (auto &commonIdx : commonIndices) {
+      key.emplace_back(dataRow[commonIdx.first]);
+    }
+    if (hashTable.count(key)) {
+      hashTable.at(key).emplace(dataRow);
+    } else {
+      hashTable.emplace(key, std::set<DataRow>({dataRow}));
+    }
+  }
+  // Iterate through the other table
+  for (auto &dataRow : other.data) {
+    DataRow key;
+    for (auto &commonIdx : commonIndices) {
+      key.emplace_back(dataRow[commonIdx.second]);
+    }
+    // Probe the Hash Table with the key
+    if (!hashTable.count(key)) {
+      continue;
+    }
+    // Merge this dataRow with matching dataRows in the Hash Table
+    // and add the new row to the new data table
+    for (auto &otherRow : hashTable.at(key)) {
+      DataRow newRow = otherRow;
+      for (auto &diffIdx : otherDiffIndices) {
+        newRow.emplace_back(dataRow[diffIdx]);
+      }
+      newData.emplace(std::move(newRow));
+    }
+  }
   // Add non-common headers
   for (int i : otherDiffIndices) {
     headerRow.emplace_back(other.headerRow[i]);
   }
-  // Iterate through DataRow in this table
-  auto thisIt = data.begin();
-  while (thisIt != data.end()) {
-    // Remove the row from the table
-    auto thisData = (*thisIt);
-    thisIt = data.erase(thisIt);
-    // Check the row against every row in the other table
-    for (auto otherIt = other.data.begin(); otherIt != other.data.end();
-         ++otherIt) {
-      // Determine if data in common columns are the same
-      bool isCommon = true;
-      for (auto indices : commonIndices) {
-        if (thisData.at(indices.first) != otherIt->at(indices.second)) {
-          isCommon = false;
-          break;
-        }
-      }
-      // If they are the same
-      if (isCommon) {
-        // Join and insert back into this table
-        auto newData = thisData;
-        for (auto i : otherDiffIndices) {
-          newData.emplace_back(otherIt->at(i));
-        }
-        data.insert(thisIt, newData);
-      }
-    }
-  }
+  // Replace this table's data with the new data
+  data = std::move(newData);
 }
 
 void Table::crossProduct(const Table &other) {
