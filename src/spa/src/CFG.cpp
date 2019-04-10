@@ -250,8 +250,8 @@ bool CFG::isNextT(int start, int end) const {
 }
 
 std::list<int> CFG::getAffectsForward(int start, std::string v,
-                                        Table modifiesTable,
-                                        Table usesAssignTable) const {
+                                      Table modifiesTable,
+                                      Table usesAssignTable) const {
   std::vector<std::vector<int>> compressedCFG = forwardCompressedGraph;
   std::list<int> results;
 
@@ -268,10 +268,8 @@ std::list<int> CFG::getAffectsForward(int start, std::string v,
     if (usesAssignTable.contains({std::to_string(node), v})) {
       results.emplace_back(node);
     }
-    if (modifiesTable.contains({std::to_string(node), v}) &&
-        i != linesInNode.size() - 1) {
+    if (modifiesTable.contains({std::to_string(node), v})) {
       // v is modified in a line in the start node
-      // that is not the last line of start node
       return results;
     }
     visited[node] = true;
@@ -314,8 +312,8 @@ std::list<int> CFG::getAffectsForward(int start, std::string v,
 }
 
 std::list<int> CFG::getAffectsReverse(int start, std::string v,
-                                        Table modifiesTable,
-                                        Table modifiesAssignTable) const {
+                                      Table modifiesTable,
+                                      Table modifiesAssignTable) const {
   std::vector<std::vector<int>> compressedCFG = reverseCompressedGraph;
   std::list<int> results;
 

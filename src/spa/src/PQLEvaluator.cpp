@@ -522,47 +522,49 @@ ClauseResult PqlEvaluator::NextTEvaluate(Clause c) {
     pkbData.mergeWith(col2);
     result = dataFilter(pkbData, c);
     return result;
-  } else if (isSynonym(qe1.type)) {
-    dataRows col1 = getdataByTtype(qe1).getData();
-    Table pkbData(2);
-    pkbData.setHeader({"1", "2"});
-    for (vector<string> row : col1) {
-      Table col1(1);
-      col1.setHeader({"1"});
-      col1.insertRow({row[0]});
-      Table present = mypkb.getNextT(stoi(row[0]), true);
-      present.setHeader({"2"});
-      col1.mergeWith(present);
-      pkbData.concatenate(col1);
-    }
-    if (isSynonym(qe2.type)) {
-      Table col2 = getdataByTtype(qe2);
-      col2.setHeader({"2"});
-      pkbData.mergeWith(col2);
-    }
-    data = pkbData;
-    /*result = dataFilter(pkbData, c);*/
-  } else if (isSynonym(qe2.type)) {
-    dataRows col2 = getdataByTtype(qe2).getData();
-    Table pkbData(2);
-    pkbData.setHeader({"1", "2"});
-    for (vector<string> row : col2) {
-      Table col2(1);
-      col2.setHeader({"2"});
-      col2.insertRow({row[0]});
-      Table present = mypkb.getNextT(stoi(row[0]), false);
-      present.setHeader({"1"});
-      present.mergeWith(col2);
-      pkbData.concatenate(present);
-    }
-    if (isSynonym(qe1.type)) {
-      Table col1 = getdataByTtype(qe1);
-      col1.setHeader({"1"});
-      pkbData.mergeWith(col1);
-    }
-    data = pkbData;
-    /*result = dataFilter(pkbData, c);*/
-  } else {
+  }
+	//else if (isSynonym(qe1.type)) {
+  //  dataRows col1 = getdataByTtype(qe1).getData();
+  //  Table pkbData(2);
+  //  pkbData.setHeader({"1", "2"});
+  //  for (vector<string> row : col1) {
+  //    Table col1(1);
+  //    col1.setHeader({"1"});
+  //    col1.insertRow({row[0]});
+  //    Table present = mypkb.getNextT(stoi(row[0]), true);
+  //    present.setHeader({"2"});
+  //    col1.mergeWith(present);
+  //    pkbData.concatenate(col1);
+  //  }
+  //  if (isSynonym(qe2.type)) {
+  //    Table col2 = getdataByTtype(qe2);
+  //    col2.setHeader({"2"});
+  //    pkbData.mergeWith(col2);
+  //  }
+  //  data = pkbData;
+  //  /*result = dataFilter(pkbData, c);*/
+  //} else if (isSynonym(qe2.type)) {
+  //  dataRows col2 = getdataByTtype(qe2).getData();
+  //  Table pkbData(2);
+  //  pkbData.setHeader({"1", "2"});
+  //  for (vector<string> row : col2) {
+  //    Table col2(1);
+  //    col2.setHeader({"2"});
+  //    col2.insertRow({row[0]});
+  //    Table present = mypkb.getNextT(stoi(row[0]), false);
+  //    present.setHeader({"1"});
+  //    present.mergeWith(col2);
+  //    pkbData.concatenate(present);
+  //  }
+  //  if (isSynonym(qe1.type)) {
+  //    Table col1 = getdataByTtype(qe1);
+  //    col1.setHeader({"1"});
+  //    pkbData.mergeWith(col1);
+  //  }
+  //  data = pkbData;
+  //  /*result = dataFilter(pkbData, c);*/
+//  } 
+	else {
     Table pkbData(0);
     if (NextTTable.empty()) {
       NextTTable = mypkb.getNextT();
@@ -570,39 +572,39 @@ ClauseResult PqlEvaluator::NextTEvaluate(Clause c) {
     } else {
       pkbData = NextTTable;
     }
-    /*result = dataFilter(pkbData, c);*/
+    result = dataFilter(pkbData, c);
   }
 
-  if (isSynonym(qe1.type) && isSynonym(qe2.type) && qe1.name == qe2.name) {
-    data = selfJoin(data);
-    data.dropColumn("2");
-  }
+  //if (isSynonym(qe1.type) && isSynonym(qe2.type) && qe1.name == qe2.name) {
+  //  data = selfJoin(data);
+  //  data.dropColumn("2");
+  //}
 
-  if (data.empty()) {
-    ClauseResult result(true, false);
-    return result;
-  }
+  //if (data.empty()) {
+  //  ClauseResult result(true, false);
+  //  return result;
+  //}
 
-  if (isSynonym(qe1.type) || isSynonym(qe2.type)) {
-    if (!isSynonym(qe1.type)) {
-      data.dropColumn("1");
-    }
+  //if (isSynonym(qe1.type) || isSynonym(qe2.type)) {
+  //  if (!isSynonym(qe1.type)) {
+  //    data.dropColumn("1");
+  //  }
 
-    if (!isSynonym(qe2.type)) {
-      data.dropColumn("2");
-    }
-    for (string title : data.getHeader()) {
-      if (title == "1") {
-        data.modifyHeader("1", qe1.name);
-      } else if (title == "2") {
-        data.modifyHeader("2", qe2.name);
-      }
-    }
-    ClauseResult result(false, false);
-    result.data = data;
-    return result;
-  }
-  return ClauseResult(true, true);
+  //  if (!isSynonym(qe2.type)) {
+  //    data.dropColumn("2");
+  //  }
+  //  for (string title : data.getHeader()) {
+  //    if (title == "1") {
+  //      data.modifyHeader("1", qe1.name);
+  //    } else if (title == "2") {
+  //      data.modifyHeader("2", qe2.name);
+  //    }
+  //  }
+  //  ClauseResult result(false, false);
+  //  result.data = data;
+  //  return result;
+  //}
+  //return ClauseResult(true, true);
 
   return result;
 }
