@@ -1,0 +1,1540 @@
+1 - valid query with ONE Uses 
+stmt s;
+Select s such that Uses(s, "a")
+2, 4, 6, 7, 10, 17, 18, 25
+5000
+2 - valid query with ONE Uses but has empty results 
+stmt s;
+Select s such that Uses(s, "h")
+none
+5000
+3 - valid query with ONE Uses 
+stmt s; variable var;
+Select s such that Uses(s, var)
+1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 29, 30, 31, 32, 35, 36
+5000
+4 - valid query with ONE Uses
+stmt s; variable var;
+Select var such that Uses(s, var)
+x, a, b, c, d, e, f, i, j, k, l, y, m, n, z, p
+5000
+5 - valid query with ONE Uses
+stmt s;
+Select s such that Uses(s, _)
+1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 29, 30, 31, 32, 35, 36
+5000
+6 - valid query with ONE Uses but has empty results 
+print p;
+Select p such that Uses(p, "b")
+none
+5000
+7 - valid query with ONE Uses 
+stmt s;
+Select s such that Uses(9, "f")
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+8 - valid query with ONE Uses but has empty results 
+stmt s;
+Select s such that Uses(3, "x")
+none
+5000
+9 - valid query with ONE Uses
+print p;
+Select p such that Uses(14, _)
+9, 12, 13, 22, 25, 30, 32, 35
+5000
+10 - valid query with ONE Uses (empty result as stmt 10 is Modifies) 
+read r;
+Select r such that Uses(8, _)
+none
+5000
+11 - valid query with ONE Uses 
+variable v;
+Select v such that Uses(10, v)
+f, a
+5000
+12 - valid query with ONE Modifies
+read r;
+Select r such that Modifies(r, "a")
+8, 23
+5000
+13 - valid query with ONE Modifies but has empty results 
+read r;
+Select r such that Modifies(r, "abc")
+none
+5000
+14 - valid query with ONE Modifies 
+stmt s; read r;
+Select r such that Modifies(s, _)
+5, 8, 15, 23, 34
+5000
+15 - valid query with ONE Modifies
+read r1; variable v1;
+Select v1 such that Modifies(r1, v1)
+d, a, c, y
+5000
+16 - valid query with ONE Modifies 
+stmt s;
+Select s such that Modifies(2, "a")
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+17 - valid query with ONE Modifies 
+variable v;
+Select v such that Modifies(2, _)
+x, a, b, c, d, e, f, i, j, k, l, m, n, p, q, r, y, z
+5000
+18 - valid query with ONE Modifies 
+variable v;
+Select v such that Modifies(6, v)
+c
+5000
+19 - valid query with ONE Modifies but has empty results 
+variable v; 
+Select v such that Modifies(9, v)
+none
+5000
+20 - valid syntax 
+assign a;
+Select a pattern a(_, _)
+1, 3, 6, 10, 14, 16, 18, 19, 20, 21, 24, 27, 28, 31, 33, 36
+5000
+21 - valid syntax
+assign a; stmt s;
+Select s pattern a(_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+22 - valid syntax
+assign a;
+Select a pattern a(_, _"3"_)
+10, 24, 28, 33
+5000
+23 - valid syntax 
+assign a;
+Select a pattern a(_, _"b"_)
+3, 6, 14, 18, 19
+5000
+24 - valid syntax
+assign a;
+Select a pattern a("a", _)
+1, 3, 10, 14
+5000
+25 - valid syntax but has empty results 
+assign a;
+Select a pattern a("1", _)
+none
+5000
+26 - valid syntax
+assign a; variable v;
+Select v pattern a(v, _)
+a, k, c, j, l, m, b, q, r, z
+5000
+27 - valid syntax
+assign a; variable v;
+Select v pattern a(v, _"a"_)
+c, j, a
+5000
+28 - valid syntax
+assign a; variable v;
+Select v pattern a(v, _"1"_)
+a
+5000
+29 - valid syntax
+assign a; variable v;
+Select v pattern a(_, _)
+x, a, b, c, d, e, f, i, j, k, l, m, n, p, q, r, y, z
+5000
+30 - valid syntax but has empty results
+assign a; variable v;
+Select v pattern a("1", _)
+none
+5000
+31 - valid syntax
+assign a; variable v;
+Select a pattern a(v, _)
+1, 3, 6, 10, 14, 16, 18, 19, 20, 21, 24, 27, 28, 31, 33, 36
+5000
+32 - valid syntax but has empty results 
+stmt s; assign a;
+Select s pattern a(_, _"100"_)
+none
+5000
+33 - valid syntax
+stmt s; assign a;
+Select s pattern a(_, _"3"_)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+34 - valid syntax
+stmt s; assign a;
+Select s pattern a("m", _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+35 - valid syntax but has empty results
+stmt s; assign a;
+Select s pattern a("99", _)
+none
+5000
+36 - valid syntax 
+stmt s; assign a; variable v;
+Select s pattern a(v, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+37 - valid syntax
+stmt s; assign a; variable v;
+Select s pattern a(v, _"d"_)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+38 - valid syntax
+stmt s; assign a; variable v;
+Select s pattern a(v, _"1"_)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+39 - valid syntax
+stmt s; assign a; variable v;
+Select a pattern a(v, _"1"_)
+1
+5000
+40 - valid syntax 
+stmt s; assign a; variable v;
+Select s pattern a(_, _"99999999999999999999999"_)
+none
+5000
+41 - valid syntax but has empty results
+stmt s; assign a; variable v;
+Select s pattern a("123456", _)
+none
+5000
+42 - valid syntax but has empty results
+stmt s; assign a; variable v;
+Select s pattern a(v, _"123456"_)
+none
+5000
+43 - valid query
+stmt s;
+Select s such that Follows(_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+44 - valid query (stmtRef2 s/a/r/p)
+stmt s; assign a;
+Select a such that Follows(_, s)
+1, 3, 6, 10, 14, 16, 18, 19, 20, 21, 24, 27, 28, 31, 33, 36
+5000
+45 - valid query (stmtRef2 ifs/w)
+stmt s; if ifs;
+Select s such that Follows(_, ifs)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+46 - valid query (stmtRef2 ifs/w)
+stmt s; while w;
+Select s such that Follows(_, w)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+47 - valid query (stmtRef2 stmt#)
+stmt s;
+Select s such that Follows(_, 10)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+48 - valid query (stmtRef2 stmt#) but has empty results
+stmt s;
+Select s such that Follows(_, 15)
+none
+5000
+49 - valid query (stmtRef1 s/a/r/p)
+if ifs; stmt s;
+Select ifs such that Follows(s, _)
+4, 7, 11, 17, 26, 29
+5000
+50 - valid query (stmtRef1 s/a/r/p, stmtRef2 s/a/r/p)
+stmt s, s1; read r;
+Select s1 such that Follows(s, r)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+51 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w)
+constant c; stmt s; while w;
+Select c such that Follows(s,w)
+1, 3, 4, 5, 7
+5000
+52 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#)
+print p; stmt s;
+Select p such that Follows(s, 21)
+9, 12, 13, 22, 25, 30, 32, 35
+5000
+53 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w) but has empty results 
+while w; read r; if ifs;
+Select w such that Follows(r,ifs)
+none
+5000
+54 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#) but has empty results
+stmt s; print p;
+Select s such that Follows(p, 9)
+none
+5000
+55 - valid query (stmtRef1 ifs/w, stmtRef2 _)
+if ifs; stmt s;
+Select s such that Follows(ifs, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+56 - valid query (stmtRef1 ifs/w, stmtRef2 s/a/r/p)
+if ifs; stmt s; read r;
+Select s such that Follows(ifs, r)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+57 - valid query (stmtRef1 ifs/w stmtRef2 ifs/w)
+stmt s; if ifs, ifs1;
+Select s such that Follows(ifs, ifs1)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+58 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#)
+stmt s; if ifs;
+Select s such that Follows(ifs, 14)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+59 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) but has empty results
+stmt s; while w; if ifs;
+Select s such that Follows(ifs, w)
+none
+5000
+60 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#) but has empty results
+stmt s; if ifs;
+Select s such that Follows(ifs, 19)
+none
+5000
+61 - valid query (stmtRef1 stmt#, stmtRef2 = _)
+stmt s;
+Select s such that Follows(20, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+62 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p)
+stmt s; print p;
+Select s such that Follows(8, p)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+63 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w)
+stmt s; if ifs;
+Select s such that Follows(3, ifs)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+64 - valid query (stmtRef1 stmt#, stmtRef2 stmt#)
+stmt s; if ifs;
+Select s such that Follows(2, 26)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+65 - valid query (stmtRef1 stmt#, stmtRef2 _) but has empty results
+stmt s;
+Select s such that Follows(22, _)
+none
+5000
+66 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p) but has empty results
+stmt s; read r;
+Select s such that Follows(14, r)
+none
+5000
+67 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w) but has empty results
+stmt s; if ifs;
+Select s such that Follows(19, ifs)
+none
+5000
+68 - valid query (stmtRef1 stmt#, stmtRef2 stmt#) but has empty results
+stmt s;
+Select s such that Follows(2, 3)
+none
+5000
+69 - valid query (stmtRef1 _, stmtRef2 s/a/r/p)
+stmt s;
+Select s such that Follows(_, s)
+2, 4, 6, 7, 9, 10, 14, 16, 17, 19, 20, 21, 23, 24, 25, 26, 29, 31, 32, 34, 35, 36
+5000
+70 - valid query (stmtRef1 _, stmtRef2 ifs/w)
+if ifs;
+Select ifs such that Follows(_, ifs)
+4, 7, 17, 26, 29
+5000
+71 - valid query (stmtRef1 _, stmtRef2 ifs/w)
+while w;
+Select w such that Follows (_, w)
+2
+5000
+72 - valid query (stmtRef1 s/a/r/p, stmtRef2 _)
+stmt s;
+Select s such that Follows(s, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 18, 19, 20, 23, 24, 26, 29, 30, 31, 34, 35
+5000
+73 - valid query (stmtRef1 s/a/r/p, stmtRef2 s/a/r/p)
+stmt s; assign a;
+Select a such that Follows(s, a)
+6, 10, 14, 16, 19, 20, 21, 24, 31, 36
+5000
+74 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w)
+stmt s; if ifs;
+Select s such that Follows(s ,ifs)
+2, 3, 6, 16, 26
+5000
+75 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#)
+stmt s;
+Select s such that Follows(s, 16)
+15
+5000
+76 - valid query (stmtRef1 s/a/r/p, stmtRef2 s/a/r/p) but has empty results
+assign a;
+Select a such that Follows(a, a)
+none
+5000
+77 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w) but has empty results
+read r; if ifs;
+Select r such that Follows(r , ifs)
+none
+5000
+78 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#) but has empty results
+stmt s;
+Select s such that Follows(s, 3)
+none
+5000
+79 - valid query (stmtRef1 ifs/w, stmtRef2 _)
+while w;
+Select w such that Follows(w, _)
+2
+5000
+80 - valid query (stmtRef1 ifs/w, stmtRef2 s/a/r/p) but has empty results
+while w; assign a;
+Select a such that Follows(w, a)
+none
+5000
+81 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) but has empty results
+while w1, w;
+Select w such that Follows(w, w1)
+none
+5000
+82 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#)
+while w;
+Select w such that Follows(w, 26)
+2
+5000
+83 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) but has empty results
+while w;
+Select w such that Follows(w, w)
+none
+5000
+84 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) but has empty results
+if ifs; while w;
+Select ifs such that Follows(ifs, w)
+none
+5000
+85 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#) but has empty results
+while w;
+Select w such that Follows(w, 29)
+none
+5000
+86 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p)
+stmt s;
+Select s such that Follows(3, s)
+4
+5000
+87 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w)
+while w;
+Select w such that Follows(1,w)
+2
+5000
+88 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p)
+assign a;
+Select a such that Follows(20, a)
+21
+5000
+89 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p) but has empty results
+stmt s;
+Select s such that Follows(33, s)
+none
+5000
+90 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w) but has empty results
+while w;
+Select ifs such that Follows(19,w)
+none
+5000
+91 - valid query (stmtRef1 _, stmtRef2 _)
+stmt s;
+Select s such that Follows*(_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+92 - valid query (stmtRef1 _, stmtRef2 s/a/r/p)
+stmt s; assign a;
+Select a such that Follows*(_, s)
+1, 3, 6, 10, 14, 16, 18, 19, 20, 21, 24, 27, 28, 31, 33, 36
+5000
+93 - valid query (stmtRef1 _, stmtRef2 ifs/w)
+stmt s; while w;
+Select s such that Follows*(_,w)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+94 - valid query (stmtRef1 _, stmtRef2 stmt#)
+stmt s;
+Select s such that Follows*(_, 10)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+95 - valid query (stmtRef1 _, stmtRef2 ifs/w)
+stmt s; if ifs;
+Select s such that Follows*(_, ifs)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+96 - valid query (stmtRef1 _, stmtRef2 stmt#) but has empty results
+stmt s;
+Select s such that Follows*(_, 15)
+none
+5000
+97 - valid query (stmtRef1 s/a/r/p, stmtRef2 _)
+while w; stmt s;
+Select w such that Follows*(s, _)
+2
+5000
+98 - valid query (stmtRef1 s/a/r/p, stmtRef2 s/a/r/p)
+stmt s, s1; read r;
+Select s1 such that Follows*(s, r)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+99 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w)
+constant c; stmt s; while w;
+Select c such that Follows*(s,w)
+1, 3, 4, 5, 7
+5000
+100 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#)
+print p; stmt s;
+Select p such that Follows*(s, 21)
+9, 12, 13, 22, 25, 30, 32, 35
+5000
+101 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w) but has empty results
+while w; print p; if ifs;
+Select w such that Follows*(p,ifs)
+none
+5000
+102 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#) but has empty results
+stmt s; print p;
+Select s such that Follows*(p, 9)
+none
+5000
+103 - valid query (stmtRef1 ifs/w, stmtRef2 _)
+while w; stmt s;
+Select s such that Follows*(w, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+104 - valid query (stmtRef1 ifs/w, stmtRef2 s/a/r/p)
+if ifs; stmt s; assign a;
+Select s such that Follows*(ifs, a)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+105 - valid query (stmtRef1 ifs/w stmtRef2 ifs/w) but has empty results
+stmt s; while w, w1;
+Select s such that Follows*(w, w1)
+none
+5000
+106 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#)
+stmt s; while w;
+Select s such that Follows*(w, 34)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+107 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) but has empty results
+stmt s; while w; if ifs;
+Select s such that Follows*(ifs, w)
+none
+5000
+108 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#) but has empty results
+stmt s; while w;
+Select s such that Follows*(w, 19)
+none
+5000
+109 - valid query (stmtRef1 stmt#, stmtRef2 = _)
+stmt s;
+Select s such that Follows*(20, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+110 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p)
+stmt s; print p;
+Select s such that Follows*(8, p)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+111 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w)
+stmt s; if ifs;
+Select s such that Follows*(3, ifs)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+112 - valid query (stmtRef1 stmt#, stmtRef2 stmt#)
+stmt s;
+Select s such that Follows*(2, 29)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+113 - valid query (stmtRef1 stmt#, stmtRef2 _) but has empty results
+stmt s;
+Select s such that Follows*(22, _)
+none
+5000
+114 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p) but has empty results
+if ifs; stmt s; read r;
+Select s such that Follows*(16, r)
+none
+5000
+115 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w) but has empty results
+stmt s; if ifs;
+Select s such that Follows*(19,ifs)
+none
+5000
+116 - valid query (stmtRef1 stmt#, stmtRef2 stmt#) but has empty results
+stmt s;
+Select s such that Follows*(2, 3)
+none
+5000
+117 - valid query (stmtRef1 _, stmtRef2 s/a/r/p)
+stmt s;
+Select s such that Follows*(_, s)
+2, 4, 6, 7, 9, 10, 14, 16, 17, 19, 20, 21, 23, 24, 25, 26, 29, 31, 32, 34, 35, 36
+5000
+118 - valid query (stmtRef1 _, stmtRef2 ifs/w)
+while w;
+Select w such that Follows*(_, w)
+2
+5000
+119 - valid query (stmtRef1 _, stmtRef2 ifs/w) but has empty results
+if ifs;
+Select w such that Follows*(_, ifs)
+none
+5000
+120 - valid query (stmtRef1 s/a/r/p, stmtRef2 _)
+stmt s;
+Select s such that Follows*(s, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 18, 19, 20, 23, 24, 26, 29, 30, 31, 34, 35
+5000
+121 - valid query (stmtRef1 s/a/r/p, stmtRef2 s/a/r/p)
+stmt s; assign a;
+Select a such that Follows*(s, a)
+6, 10, 14, 16, 19, 20, 21, 24, 31, 36
+5000
+122 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w)
+stmt s; while w;
+Select s such that Follows*(s ,w)
+1
+5000
+123 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#)
+stmt s;
+Select s such that Follows*(s, 19)
+18
+5000
+124 - valid query (stmtRef1 s/a/r/p, stmtRef2 s/a/r/p) but has empty results
+assign a;
+Select a such that Follows*(a, a)
+none
+5000
+125 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w)
+read r; if ifs;
+Select r such that Follows*(r , ifs)
+5, 15
+5000
+126 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#) but has empty results
+stmt s;
+Select s such that Follows*(s, 3)
+none
+5000
+127 - valid query (stmtRef1 ifs/w, stmtRef2 _)
+if ifs;
+Select ifs such that Follows*(ifs, _)
+4, 7, 26, 29
+5000
+128 - valid query (stmtRef1 ifs/w, stmtRef2 s/a/r/p)
+if ifs; assign a;
+Select a such that Follows*(ifs, a)
+14, 24, 36
+5000
+129 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w)
+if ifs, ifs1;
+Select ifs such that Follows*(ifs, ifs1)
+26
+5000
+130 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#)
+if ifs;
+Select ifs such that Follows*(ifs, 24)
+4
+5000
+131 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) but has empty results
+while w;
+Select w such that Follows*(w, w)
+none
+5000
+132 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) but has empty results
+if ifs; while w;
+Select ifs such that Follows*(ifs, w)
+none
+5000
+133 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#) but has empty results
+while w;
+Select w such that Follows*(w, 24)
+none
+5000
+134 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p)
+stmt s;
+Select s such that Follows*(3, s)
+4, 23, 24, 25
+5000
+135 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w)
+if ifs;
+Select ifs such that Follows*(2, ifs)
+26, 29
+5000
+136 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p)
+assign a;
+Select a such that Follows*(18, a)
+19, 20, 21
+5000
+137 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p) but has empty results
+stmt s;
+Select s such that Follows*(36, s)
+none
+5000
+138 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w) but has empty results
+while w; if ifs;
+Select ifs such that Follows*(19, w)
+none
+5000
+139 - valid query (stmtRef1 _, stmtRef2 _)
+stmt s;
+Select s such that Parent(_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+140 - valid query (stmtRef1 _, stmtRef2 s/a/r/p)
+stmt s; assign a;
+Select a such that Parent(_, s)
+1, 3, 6, 10, 14, 16, 18, 19, 20, 21, 24, 27, 28, 31, 33, 36
+5000
+141 - valid query (stmtRef1 _, stmtRef2 ifs/w)
+stmt s; if ifs;
+Select s such that Parent(_, ifs)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+142 - valid query (stmtRef1 _, stmtRef2 stmt#)
+stmt s;
+Select s such that Parent(_, 10)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+143 - valid query (stmtRef1 _, stmtRef2 ifs/w) but has empty results
+stmt s; while w;
+Select s such that Parent(_, w)
+none
+5000
+144 - valid query (stmtRef1 _, stmtRef2 stmt#) but has empty results
+stmt s;
+Select s such that Parent(_, 2)
+none
+5000
+145 - valid query (stmtRef1 s/a/r/p, stmtRef2 _)
+while w; stmt s;
+Select w such that Parent(s, _)
+2
+5000
+146 - valid query (stmtRef1 s/a/r/p, stmtRef2 s/a/r/p)
+stmt s, s1; read r;
+Select s1 such that Parent(s, r)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+147 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w)
+constant c; stmt s; if ifs;
+Select c such that Parent(s, ifs)
+1, 3, 4, 5, 7
+5000
+148 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#)
+print p; stmt s;
+Select p such that Parent(s, 22)
+9, 12, 13, 22, 25, 30, 32, 35
+5000
+149 - valid query (stmtRef1 s/a/r/p, stmtRef2 _) but has empty results
+assign a; stmt s;
+Select s such that Parent(a, _)
+none
+5000
+150 - valid query (stmtRef1 s/a/r/p, stmtRef2 s/a/r/p) but has empty results
+if ifs; assign a; stmt s;
+Select ifs such that Parent(a, s)
+none
+5000
+151 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w) but has empty results
+while w; read r; if ifs;
+Select w such that Parent(r, ifs)
+none
+5000
+152 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#) but has empty results
+stmt s; print p;
+Select s such that Parent(p, 9)
+none
+5000
+153 - valid query (stmtRef1 ifs/w, stmtRef2 _)
+while w; stmt s;
+Select s such that Parent(w, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+154 - valid query (stmtRef1 ifs/w, stmtRef2 s/a/r/p)
+while w; stmt s; read r;
+Select s such that Parent(w, r)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+155 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) 
+stmt s; if ifs, ifs1;
+Select s such that Parent(ifs, ifs1)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+156 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#)
+stmt s; if ifs;
+Select s such that Parent(ifs, 21)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+157 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) but has empty results
+stmt s; while w;
+Select s such that Parent(w, w)
+none
+5000
+158 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) but has empty results
+stmt s; if ifs; while w;
+Select s such that Parent(ifs, w)
+none
+5000
+159 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#) but has empty results
+stmt s; while w;
+Select s such that Parent(w, 28)
+none
+5000
+160 - valid query (stmtRef1 stmt#, stmtRef2 _)
+stmt s;
+Select s such that Parent(17, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+161 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p)
+stmt s; print p;
+Select s such that Parent(7, p)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+162 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w)
+stmt s; if ifs;
+Select s such that Parent(7, ifs)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+163 - valid query (stmtRef1 stmt#, stmtRef2 stmt#)
+stmt s;
+Select s such that Parent(11, 12)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+164 - valid query (stmtRef1 stmt#, stmtRef2 _) but has empty results
+stmt s;
+Select s such that Parent(5, _)
+none
+5000
+165 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p) but has empty results
+stmt s; read r;
+Select s such that Parent(15, r)
+none
+5000
+166 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w) but has empty results
+stmt s; while w;
+Select s such that Parent(20, w)
+none
+5000
+167 - valid query (stmtRef1 stmt#, stmtRef2 stmt#) but has empty results
+stmt s;
+Select s such that Parent(2, 10)
+none
+5000
+168 - valid query (stmtRef1 _, stmtRef2 s/a/r/p)
+stmt s;
+Select s such that Parent(_, s)
+3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27, 28, 30, 31, 32, 33
+5000
+169 - valid query (stmtRef1 _, stmtRef2 ifs/w)
+if ifs;
+Select ifs such that Parent(_, ifs)
+4, 7, 11, 17
+5000
+170 - valid query (stmtRef1 _, stmtRef2 ifs/w) but has empty results
+if ifs; while w;
+Select ifs such that Parent (_, w)
+none
+5000
+171 - valid query (stmtRef1 s/a/r/p, stmtRef2 _)
+stmt s;
+Select s such that Parent(s, _)
+2, 4, 7, 11, 17, 26, 29
+5000
+172 - valid query (stmtRef1 s/a/r/p, stmtRef2 s/a/r/p)
+stmt s; assign a;
+Select a such that Parent(s, a)
+3, 6, 10, 14, 16, 18, 19 ,20, 21, 24, 27, 28, 31, 33
+5000
+173 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w)
+stmt s; if ifs;
+Select s such that Parent(s, ifs)
+2, 4, 7
+5000
+174 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#)
+stmt s;
+Select s such that Parent(s, 17)
+4
+5000
+175 - valid query (stmtRef1 s/a/r/p, stmtRef2 _) but has empty results
+print p;
+Select p such that Parent(p, _)
+none
+5000
+176 - valid query (stmtRef1 s/a/r/p, stmtRef2 s/a/r/p) but has empty results
+stmt s; assign a;
+Select a such that Parent(a, s)
+none
+5000
+177 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w) but has empty results
+stmt s; while w;
+Select s such that Parent(s , w)
+none
+5000
+178 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#) but has empty results
+stmt s;
+Select s such that Parent(s, 29)
+none
+5000
+179 - valid query (stmtRef1 ifs/w, stmtRef2 _)
+if ifs;
+Select ifs such that Parent(ifs, _)
+4, 7, 11, 17, 26, 29
+5000
+180 - valid query (stmtRef1 ifs/w, stmtRef2 s/a/r/p)
+while w; print p;
+Select p such that Parent(w, p)
+25
+5000
+181 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w)
+if ifs, ifs1;
+Select ifs such that Parent(ifs, ifs1)
+4, 7
+5000
+182 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#)
+if ifs;
+Select ifs such that Parent(ifs, 10)
+7
+5000
+183 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) but has empty results
+while w;
+Select w such that  Parent(w, w)
+none
+5000
+184 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) but has empty results
+if ifs; while w;
+Select ifs such that  Parent(ifs, w)
+none
+5000
+185 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#) but has empty results
+while w;
+Select w such that Parent(w, 26)
+none
+5000
+186 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p)
+stmt s;
+Select s such that Parent(17, s)
+18, 19, 20, 21, 22
+5000
+187 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w)
+if ifs;
+Select ifs such that Parent(7, ifs)
+11
+5000
+188 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p)
+print p;
+Select p such that Parent(17, p)
+22
+5000
+189 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p) but has empty results
+stmt s;
+Select s such that Parent(30, s)
+none
+5000
+190 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w) but has empty results
+while w;
+Select w such that Parent(20, w)
+none
+5000
+191 - valid query (stmtRef1 _, stmtRef2 _)
+stmt s;
+Select s such that Parent*(_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+192 - valid query (stmtRef1 _, stmtRef2 s/a/r/p)
+stmt s; assign a;
+Select a such that Parent*(_, s)
+1, 3, 6, 10, 14, 16, 18, 19, 20, 21, 24, 27, 28, 31, 33, 36
+5000
+193 - valid query (stmtRef1 _, stmtRef2 ifs/w)
+stmt s; if ifs;
+Select s such that Parent*(_, ifs)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+194 - valid query (stmtRef1 _, stmtRef2 stmt#)
+stmt s;
+Select s such that Parent*(_, 10)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+195 - valid query (stmtRef1 _, stmtRef2 ifs/w) but has empty results
+stmt s; while w;
+Select s such that Parent*(_, w)
+none
+5000
+196 - valid query (stmtRef1 _, stmtRef2 stmt#) but has empty results
+stmt s;
+Select s such that Parent*(_, 2)
+none
+5000
+197 - valid query (stmtRef1 s/a/r/p, stmtRef2 _)
+while w; stmt s;
+Select w such that Parent*(s, _)
+2
+5000
+198 - valid query (stmtRef1 s/a/r/p, stmtRef2 s/a/r/p)
+stmt s, s1; read r;
+Select s1 such that Parent*(s, r)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+199 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w)
+constant c; stmt s; if ifs;
+Select c such that Parent*(s, ifs)
+1, 3, 4, 5, 7
+5000
+200 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#)
+print p; stmt s;
+Select p such that Parent*(s, 22)
+9, 12, 13, 22, 25, 30, 32, 35
+5000
+201 - valid query (stmtRef1 s/a/r/p, stmtRef2 _) but has empty results
+assign a; stmt s;
+Select s such that Parent*(a, _)
+none
+5000
+202 - valid query (stmtRef1 s/a/r/p, stmtRef2 s/a/r/p) but has empty results
+if ifs; assign a; stmt s;
+Select ifs such that Parent*(a, s)
+none
+5000
+203 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w) but has empty results
+while w; read r; if ifs;
+Select w such that Parent*(r, ifs)
+none
+5000
+204 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#) but has empty results
+stmt s; print p;
+Select s such that Parent*(p, 9)
+none
+5000
+205 - valid query (stmtRef1 ifs/w, stmtRef2 _)
+while w; stmt s;
+Select s such that Parent*(w, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+206 - valid query (stmtRef1 ifs/w, stmtRef2 s/a/r/p)
+while w; stmt s; read r;
+Select s such that Parent*(w, r)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+207 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w)
+stmt s; if ifs, ifs1;
+Select s such that Parent*(ifs, ifs1)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+208 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#)
+stmt s; while w;
+Select s such that Parent*(w, 21)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+209 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) but has empty results
+stmt s; while w;
+Select s such that Parent*(w, w)
+none
+5000
+210 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) but has empty results
+stmt s; if ifs; while w;
+Select s such that Parent*(ifs, w)
+none
+5000
+211 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#) but has empty results
+stmt s; while w;
+Select s such that Parent*(w, 28)
+none
+5000
+212 - valid query (stmtRef1 stmt#, stmtRef2 _)
+stmt s;
+Select s such that Parent*(17, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+213 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p)
+stmt s; print p;
+Select s such that Parent*(7, p)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+214 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w)
+stmt s; if ifs;
+Select s such that Parent*(7, ifs)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+215 - valid query (stmtRef1 stmt#, stmtRef2 stmt#)
+stmt s;
+Select s such that Parent*(11, 12)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+216 - valid query (stmtRef1 stmt#, stmtRef2 _) but has empty results
+stmt s;
+Select s such that Parent*(5, _)
+none
+5000
+217 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p) but has empty results
+stmt s; read r;
+Select s such that Parent*(15, r)
+none
+5000
+218 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w) but has empty results
+stmt s; while w;
+Select s such that Parent*(20, w)
+none
+5000
+219 - valid query (stmtRef1 stmt#, stmtRef2 stmt#) but has empty results
+stmt s;
+Select s such that Parent*(2, 26)
+none
+5000
+220 - valid query (stmtRef1 _, stmtRef2 s/a/r/p)
+stmt s;
+Select s such that Parent*(_, s)
+3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27, 28, 30, 31, 32, 33
+5000
+221 - valid query (stmtRef1 _, stmtRef2 ifs/w)
+if ifs;
+Select ifs such that Parent*(_, ifs)
+4, 7, 11, 17
+5000
+222 - valid query (stmtRef1 _, stmtRef2 ifs/w) but has empty results
+if ifs; while w;
+Select ifs such that Parent*(_, w)
+none
+5000
+223 - valid query (stmtRef1 s/a/r/p, stmtRef2 _)
+stmt s;
+Select s such that Parent*(s, _)
+2, 4, 7, 11, 17, 26, 29
+5000
+224 - valid query (stmtRef1 s/a/r/p, stmtRef2 s/a/r/p)
+stmt s; assign a;
+Select a such that Parent*(s, a)
+3, 6, 10, 14, 16, 18, 19, 20, 21, 24, 27, 28, 31, 33
+5000
+225 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w)
+stmt s; if ifs;
+Select s such that Parent*(s, ifs)
+2, 4, 7
+5000
+226 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#)
+stmt s;
+Select s such that Parent*(s, 17)
+2, 4
+5000
+227 - valid query (stmtRef1 s/a/r/p, stmtRef2 _) but has empty results
+print p;
+Select p such that Parent*(p, _)
+none
+5000
+228 - valid query (stmtRef1 s/a/r/p, stmtRef2 s/a/r/p) but has empty results
+stmt s; assign a;
+Select a such that Parent*(a, s)
+none
+5000
+229 - valid query (stmtRef1 s/a/r/p, stmtRef2 ifs/w) but has empty results
+stmt s; while w;
+Select s such that Parent*(s , w)
+none
+5000
+230 - valid query (stmtRef1 s/a/r/p, stmtRef2 stmt#) but has empty results
+stmt s;
+Select s such that Parent*(s, 34)
+none
+5000
+231 - valid query (stmtRef1 ifs/w, stmtRef2 _)
+while w;
+Select w such that Parent*(w, _)
+2
+5000
+232 - valid query (stmtRef1 ifs/w, stmtRef2 s/a/r/p)
+while w; print p;
+Select p such that Parent*(w, p)
+9, 12, 13, 22, 25
+5000
+233 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w)
+if ifs, ifs1;
+Select ifs such that Parent*(ifs, ifs1)
+4, 7
+5000
+234 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#)
+while w;
+Select w such that Parent*(w, 10)
+2
+5000
+235 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) but has empty results
+while w;
+Select w such that Parent*(w, w)
+none
+5000
+236 - valid query (stmtRef1 ifs/w, stmtRef2 ifs/w) but has empty results
+if ifs; while w;
+Select ifs such that Parent*(ifs, w)
+none
+5000
+237 - valid query (stmtRef1 ifs/w, stmtRef2 stmt#) but has empty results
+while w;
+Select w such that Parent*(w, 29)
+none
+5000
+238 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p)
+stmt s;
+Select s such that Parent*(17, s)
+18, 19, 20, 21, 22
+5000
+239 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w)
+if ifs;
+Select ifs such that Parent*(7, ifs)
+11
+5000
+240 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p)
+print p;
+Select p such that Parent*(17, p)
+22
+5000
+241 - valid query (stmtRef1 stmt#, stmtRef2 s/a/r/p) but has empty results
+stmt s;
+Select s such that Parent*(30, s)
+none
+5000
+242 - valid query (stmtRef1 stmt#, stmtRef2 ifs/w) but has empty results
+while w;
+Select w such that Parent*(20, w)
+none
+5000
+243 - valid syntax with Uses and Pattern
+stmt s1; variable v; assign a;
+Select s1 such that Uses(s1, v) pattern a(v, _"3"_)
+2, 3, 4, 6, 7, 10, 14, 17, 18, 19, 20, 21, 25, 29, 30
+5000
+244 - valid syntax with Uses and Pattern
+stmt s1; assign a;
+Select a such that Uses(a, "x") pattern a(_, _"x"_)
+1
+5000
+245 - valid syntax with Uses and Pattern
+assign a;
+Select a such that Uses(a, "a") pattern a("a", _)
+10
+5000
+246 - valid syntax with Uses and Pattern
+stmt s1; assign a; variable v;
+Select s1 such that Uses(s1, v) pattern a(v, _)
+2, 3, 4, 6, 7, 10, 11, 12, 14, 16, 17, 18, 19, 20, 21, 24, 25, 29, 30, 35, 36
+5000
+247 - valid syntax with Uses and Pattern
+stmt s1; assign a;
+Select s1 such that Uses(10, _) pattern a(_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+248 - valid syntax with Uses and Pattern but has empty results
+stmt s1; assign a;
+Select s1 such that Uses(a, v) pattern a("abc", _)
+none
+5000
+249 - valid syntax with Uses and Pattern but has empty results 
+stmt s1; assign a; variable v;
+Select s1 such that Uses(8, _) pattern a("a", _)
+none
+5000
+250 - valid syntax with Uses and Pattern
+stmt s1; assign a; variable v;
+Select s1 such that Uses(s1, v) pattern a(v, _"b"_)
+2, 3, 4, 6, 7, 10, 11, 12, 14, 16, 17, 18, 19, 24, 25
+5000
+251 - valid syntax with Uses and Pattern
+assign a; variable v;
+Select a such that Uses(a, _) pattern a("m", _"m"_)
+21
+5000
+252 - valid syntax with Uses and Pattern
+assign a; variable v;
+Select v such that Uses(a, _) pattern a(v, _)
+a, c, j, k, l, m, b, z
+5000
+253 - valid syntax with Uses and Pattern
+stmt s1; assign a; variable v;
+Select s1 such that Uses(s1, "c") pattern a("c", _)
+2, 3, 4, 6, 14, 17, 19, 24
+5000
+254 - valid syntax with Uses and Pattern
+assign a; variable v; print p;
+Select p such that Uses(p, v) pattern a("c", _)
+9, 12, 13, 22, 25, 30, 32, 35
+5000
+255 - valid syntax with Uses and Pattern
+assign a; variable v1; print p;
+Select p such that Uses(p, v1) pattern a(v1, _)
+12, 25, 30, 35
+5000
+256 - valid syntax with Uses and Pattern
+stmt s1; assign a; variable v; while w;
+Select v such that Uses(w, v) pattern a(v, _)
+a, b, c, j, k, l, m
+5000
+257 - valid syntax with Uses and Pattern
+stmt s1; assign a; while w; variable v;
+Select v such that Uses(w, "b") pattern a(_, _)
+a, b, c, d, e, f, i, j, k, l, m, n, p, q, r, x, y, z
+5000
+258 - valid syntax with Uses and Pattern
+stmt s1; assign a; if ifs;
+Select ifs such that Uses(ifs, "e") pattern a("a", _"1"_)
+4, 7
+5000
+259 - valid syntax with Uses and Pattern
+stmt s1; assign a; variable v; while w;
+Select w such that Uses(w, v) pattern a(v, _"3"_)
+2
+5000
+260 - valid syntax with Uses and Pattern
+stmt s1; assign a; variable v; while w;
+Select w such that Uses(w, v) pattern a(v, _"d"_)
+2
+5000
+261 - valid query with Uses and Pattern
+read r; assign a; variable v;
+Select r such that Uses(3, "b") pattern a(v,_"d"_)
+5, 8, 15, 23, 34
+5000
+262 - valid syntax with Modifies and Pattern
+stmt s1; variable v; assign a;
+Select s1 such that Modifies(s1, v) pattern a(v, _"4"_)
+26, 27
+5000
+263 - valid syntax with Modifies and Pattern
+assign a;
+Select a such that Modifies(a, "c") pattern a(_, _"b"_)
+6
+5000
+264 - valid syntax with Modifies and Pattern
+assign a;
+Select a such that Modifies(a, "a") pattern a("a", _)
+1, 3, 10, 14
+5000
+265 - valid syntax with Modifies and Pattern
+stmt s1; assign a; variable v;
+Select s1 such that Modifies(s1, v) pattern a(v, _)
+1, 2, 3, 4, 6, 7, 8, 10, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 26, 27, 28, 29, 31, 33, 36
+5000
+266 - valid syntax with Modifies and Pattern
+stmt s1; assign a;
+Select s1 such that Modifies(8, _) pattern a(_, _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+267 - valid syntax with Modifies and Pattern
+stmt s1; assign a;
+Select s1 such that Modifies(a, v) pattern a("abc", _)
+none
+5000
+268 - valid syntax with Modifies and Pattern
+stmt s1; assign a; variable v;
+Select s1 such that Modifies(8, _) pattern a("b", _)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+269 - valid syntax with Modifies and Pattern
+stmt s1; assign a; variable v;
+Select s1 such that Modifies(s1, v) pattern a(v, _"d"_)
+2, 4, 6, 15 
+5000
+270 - valid syntax with Modifies and Pattern
+assign a; variable v;
+Select a such that Modifies(a, _) pattern a("c", _"c"_)
+6
+5000
+271 - valid syntax with Modifies and Pattern
+assign a; variable v;
+Select v such that Modifies(a, _) pattern a(v, _)
+a, c, b, j, k, l, m, q, r, z
+5000
+272 - valid syntax with Modifies and Pattern
+stmt s1; assign a; variable v;
+Select s1 such that Modifies(s1, "m") pattern a("m", _)
+2, 4, 17, 21, 29, 31, 33
+5000
+273 - valid syntax with Modifies and Pattern
+stmt s1; assign a; variable v; read r;
+Select r such that Modifies(r, v) pattern a("a", _)
+5, 8, 15, 23, 34
+5000
+274 - valid syntax with Modifies and Pattern
+stmt s1; assign a; variable v1, v2; read r;
+Select r such that Modifies(r, v2) pattern a(v1, _)
+5, 8, 15, 23, 34
+5000
+275 - valid syntax with Modifies and Pattern
+stmt s1; assign a; variable v; while w;
+Select v such that Modifies(w, v) pattern a(v, _)
+a, b, c, j, k, l, m
+5000
+276 - valid syntax with Modifies and Pattern but has empty results
+stmt s1; assign a; while w;
+Select v such that Modifies(w, "a") pattern a(_, _)
+none
+5000
+277 - valid syntax with Modifies and Pattern
+assign a; if ifs;
+Select ifs such that Modifies(ifs, "a") pattern a("a", _"1"_)
+4, 7
+5000
+278 - valid syntax with Modifies and Pattern
+assign a; variable v; if ifs;
+Select ifs such that Modifies(ifs, v) pattern a(v, _"1"_)
+4, 7
+5000
+279 - valid syntax with Modifies and Pattern
+assign a; variable v; while w;
+Select w such that Modifies(w, v) pattern a(v, _"d"_)
+2
+5000
+280 - valid query with Follows and Pattern
+print p; assign a; stmt s;
+Select p pattern a("a", _"3"_) such that Follows(s, 9)
+9, 12, 13, 22, 25, 30, 32, 35
+5000
+281 - valid query with Follows and Pattern
+variable v; print p; assign a;
+Select v such that Follows(p, a) pattern a(_, _"n"_)
+a, b, c, d, e, f, i, j, k, l, m, n, p, q, r, x, y, z
+5000
+282 - valid query with Follows and Pattern but has empty results
+stmt s; assign a; print p; variable v;
+Select s such that Follows(a, p) pattern a(v, _"1"_)
+none
+5000
+283 - valid query with Follows and Pattern
+variable v; while w; if ifs; assign a;
+Select a such that Follows(w, ifs) pattern a(v, _"1"_)
+1
+5000
+284 - valid query with Follows and Pattern
+variable v; while w; if ifs; assign a;
+Select v such that Follows(w, ifs) pattern a(v, _"1"_)
+a
+5000
+285 - valid query with Follows* and pattern
+assign a; constant c;
+Select c such that Follows*(1, 29) pattern a("c", _"b"_)
+1, 3, 4, 5, 7
+5000
+286 - valid query with Follows* and pattern but has empty results
+assign a; variable v; if ifs; 
+Select ifs such that Follows*(2, 2) pattern a(v, _"8"_)
+none
+5000
+287 - valid query with Follows* and pattern
+read r, r1; assign a;
+Select r1 pattern a("j", _"j"_) such that Follows*(r, a)
+5, 8, 15, 23, 34
+5000
+288 - valid query with Follows* and pattern
+assign a, a1; stmt s; variable v;
+Select s pattern a(v, _"1"_) such that Follows*(a, a1)
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+5000
+289 - valid query with Follows* and pattern
+assign a; while w; if ifs; variable v;
+Select w such that Follows*(w, ifs) pattern a(v, _"b"_)
+2
+5000
+290 - valid query with Follows* and pattern
+assign a, a1; read r;
+Select a such that Follows*(a, r) pattern a1("c", _"b"_)
+1, 3
+5000
+291 - valid query with Follows* and pattern
+print p; assign a;
+Select p pattern a("m", _"7"_) such that Follows*(p, a)
+30
+5000
+292 - valid query with Follows* and pattern but has empty results
+assign a; stmt s;
+Select a such that Follows*(a, s) pattern a(_, _"e"_)
+none
+5000
+293 - valid query with Parent and pattern
+print p; assign a; variable v; if ifs; 
+Select ifs pattern a(v, _"b"_) such that Parent(2, p)
+4, 7, 11, 17, 26, 29
+5000
+294 - valid query with Parent and pattern
+print p; assign a; variable v;
+Select p pattern a(v, _"b"_) such that Parent(2, p)
+25
+5000
+295 - valid query with Parent and pattern
+while w; assign a; stmt s;
+Select w such that Parent(s, a) pattern a(_, _"3"_)
+2
+5000
+296 - valid query with Parent and pattern
+assign a; stmt s;
+Select s such that Parent(s, a) pattern a(_, _"3"_)
+7, 2, 26, 29
+5000
+297 - valid query with Parent and pattern but has empty results
+if ifs; assign a; variable v; read r;
+Select ifs pattern a(v, _"b"_) such that Parent(23, r)
+none
+5000
+298 - valid query with Parent and pattern but has empty results 
+assign a;
+Select a such that Parent(2, 15) pattern a("aa", _"y"_)
+none
+5000
+299 - valid query with Parent and pattern but has empty results 
+while w1; while w; assign a;
+Select w1 such that Parent(w, a) pattern a(_, _"1"_)
+none
+5000
+300 - valid query with Parent and pattern but has empty results 
+while w; assign a;
+Select w such that Parent(w, a) pattern a(_, _"1"_)
+none
+5000
+301 - valid query with Parent* and pattern
+read r; assign a; variable v; if ifs; 
+Select ifs pattern a(v, _"b"_) such that Parent*(4, r)
+4, 7, 11, 17, 26, 29
+5000
+302 - valid query with Parent* and pattern
+print p; assign a; variable v;
+Select p pattern a(v, _"b"_) such that Parent*(2, p)
+9, 12, 13, 22, 25
+5000
+303 - valid query with Parent* and pattern
+while w; assign a; stmt s;
+Select w such that Parent*(s, a) pattern a(_, _"7"_)
+2
+5000
+304 - valid query with Parent* and pattern
+assign a; stmt s;
+Select s such that Parent*(s, a) pattern a(_, _"7"_)
+29
+5000
+305 - valid query with Parent* and pattern but has empty results 
+if ifs; assign a; variable v; read r;
+Select ifs pattern a(v, _"b"_) such that Parent*(23, r)
+none
+5000
+306 - valid query with Parent* and pattern but has empty results 
+assign a;
+Select a such that Parent*(3, 31) pattern a("b", _"b"_)
+none
+5000
+307 - valid query with Parent* and pattern but has empty results
+while w; while w1; assign a;
+Select w such that Parent*(20, a) pattern a(_, _"1"_)
+none
+5000
+308 - valid query with Parent* and pattern but has empty results
+stmt s; assign a;
+Select a such that Parent*(a, s) pattern a(_, _"1"_)
+none
+5000

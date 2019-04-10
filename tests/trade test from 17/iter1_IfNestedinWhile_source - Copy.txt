@@ -1,0 +1,58 @@
+procedure testIf {
+
+    a = x + 1;                                       		//1
+
+    while(a > 1) {                                  		//2
+
+        a = b + c;                                   		//3
+        if ((a > b) && (c < a)) then {               		//4
+            read d;						//5
+	    c = a+ b - c% d;                                  	//6
+            if ((d > e) || (e > a)) then {           		//7
+                read a;                              		//8
+                print f;                             		//9
+                a = (f + 3) * a;                     		//10
+            } else {
+                if (((i == 3) && (!(i != i))) || (j < k)) then {  //11
+                    print k;                         		//12
+                } else {
+                    print i;                         		//13
+                }
+            }
+            a = m + b * c;                           		//14
+        } else {
+            read c;                                  		//15
+            j = j % k;            				//16
+            if ((4 / k + 3) == 5) then {             		//17
+                j = k * (a - b);                               	//18
+                k = b + c;                               	//19
+                l = l + m * n;                               	//20
+                m = m + m + m;                               	//21
+            } else {
+                print n;                             		//22
+            }
+        }
+        
+        read a;                                      		//23
+        b = 3 * c;                                   		//24
+        print a;                                     		//25
+    }
+
+    if(p != 3) then {                                		//26
+        q = 4;                                       		//27
+    } else {
+        r = 3;                                       		//28
+    }
+
+    if ((x != y) || (y > z)) then {               		//29
+        print m;                                		//30
+        m = n + 7;                              		//31
+        print n; 						//32
+    } else {
+	m = 3;							//33
+    }
+    
+    read y;							//34
+    print z;							//35
+    z = z * z;                                       		//36
+}
