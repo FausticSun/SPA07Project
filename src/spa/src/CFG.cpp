@@ -124,8 +124,8 @@ void CFG::populateCompressedGraph(Table procStmtTable) {
   }
 }
 
-std::vector<int> CFG::getNextTForward(int start, int end = -1) const {
-  std::vector<int> result;
+std::list<int> CFG::getNextTForward(int start, int end = -1) const {
+  std::list<int> result;
   std::vector<std::vector<int>> compressedCFG = forwardCompressedGraph;
   bool reachedEnd = false;
 
@@ -172,14 +172,14 @@ std::vector<int> CFG::getNextTForward(int start, int end = -1) const {
   // for nextT with two constants that did not reach end line
   if ((end > 0) && (!reachedEnd)) {
     // return empty vector if end not reachable from start
-    return std::vector<int>{};
+    return std::list<int>{};
   }
 
   return result;
 }
 
-std::vector<int> CFG::getNextTReverse(int start) const {
-  std::vector<int> result;
+std::list<int> CFG::getNextTReverse(int start) const {
+  std::list<int> result;
   std::vector<std::vector<int>> compressedCFG = reverseCompressedGraph;
 
   std::vector<bool> visited(initialToCompressed.size() + 1, false);
@@ -222,7 +222,7 @@ Table CFG::getNextT() const {
   Table table{2};
 
   for (int i = 1; i < initialToCompressed.size() + 1; i++) {
-    std::vector<int> result = getNextTForward(i);
+    std::list<int> result = getNextTForward(i);
     for (int j : result) {
       table.insertRow({std::to_string(i), std::to_string(j)});
     }
@@ -232,7 +232,7 @@ Table CFG::getNextT() const {
 
 Table CFG::getNextT(int start, bool isForward) const {
   Table table{1};
-  std::vector<int> result;
+  std::list<int> result;
   if (isForward) {
     result = getNextTForward(start);
   } else {
@@ -249,11 +249,11 @@ bool CFG::isNextT(int start, int end) const {
   return getNextTForward(start, end).size() > 0;
 }
 
-std::vector<int> CFG::getAffectsForward(int start, std::string v,
+std::list<int> CFG::getAffectsForward(int start, std::string v,
                                         Table modifiesTable,
                                         Table usesAssignTable) const {
   std::vector<std::vector<int>> compressedCFG = forwardCompressedGraph;
-  std::vector<int> results;
+  std::list<int> results;
 
   // Initialize visited array
   std::vector<bool> visited(initialToCompressed.size() + 1, false);
@@ -313,11 +313,11 @@ std::vector<int> CFG::getAffectsForward(int start, std::string v,
   return results;
 }
 
-std::vector<int> CFG::getAffectsReverse(int start, std::string v,
+std::list<int> CFG::getAffectsReverse(int start, std::string v,
                                         Table modifiesTable,
                                         Table modifiesAssignTable) const {
   std::vector<std::vector<int>> compressedCFG = reverseCompressedGraph;
-  std::vector<int> results;
+  std::list<int> results;
 
   // Initialize visited array
   std::vector<bool> visited(initialToCompressed.size() + 1, false);
@@ -405,7 +405,7 @@ bool CFG::isAffects(int a1, int a2, Table usesTable,
 Table CFG::getAffects(int start, bool isForward, Table usesTable,
                       Table modifiesTable, std::set<int> assignStmts) const {
   Table table{1};
-  std::vector<int> result;
+  std::list<int> result;
   std::vector<std::string> assignStmtsVec;
   for (auto i : assignStmts) {
     assignStmtsVec.push_back(std::to_string(i));
