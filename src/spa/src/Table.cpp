@@ -62,7 +62,7 @@ void Table::insertRow(DataRow row) {
   if (row.size() != headerRow.size()) {
     throw std::logic_error("Data row size and header row size mismatch");
   }
-  data.insert(row);
+  data.emplace(row);
 }
 
 void Table::dropColumn(std::string toDrop) {
