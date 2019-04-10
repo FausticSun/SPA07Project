@@ -535,7 +535,7 @@ TEST_CASE("Multiple varied clauses") {
 
 TEST_CASE("Semantic Error") {
   std::string pql = R"(
-  assign a; Select BOOLEAN such that Modifies(a1, "a1")
+  stmt s; Select s pattern s(_,_)
   )";
   std::stringstream ss;
   ss << pql;

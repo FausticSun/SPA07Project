@@ -127,10 +127,15 @@ PQLTokens::AttrRefType PQLParser::getAttRefType(QueryEntity attrRef) {
   case QueryEntityType::Progline:
     return PQLTokens::AttrRefType::Integer;
   case QueryEntityType::Attrref:
+    if (!PQLTokens::attrTypeMap.count(std::make_pair(
+            attrRef.attrRefSynonymType, getAttrValue(attrRef.name)))) {
+      throwSemanticError("Attribute value invalid for specificed synonym");
+      break;
+    }
     return PQLTokens::attrTypeMap.at(
         std::make_pair(attrRef.attrRefSynonymType, getAttrValue(attrRef.name)));
   default:
-    throw std::logic_error("Invalid attr");
+    throwSemanticError("Invalid attr");
   }
 }
 
@@ -227,6 +232,7 @@ void PQLParser::parsePattern() {
     parseIf(syn);
     break;
   default:
+    parseAssign(syn);
     throwSemanticError("Invalid pattern synonym");
   }
 }
@@ -396,8 +402,7 @@ QueryEntity PQLParser::parseSynonym() {
   QueryEntity ent;
   auto synToken = expect(PQLTokens::Identifier);
   if (!(declarations.count(synToken.value))) {
-    throwSemanticError(
-        ("Synonym " + synToken.value + " not declared").c_str());
+    throwSemanticError(("Synonym " + synToken.value + " not declared").c_str());
     return ent;
   }
   ent.name = synToken.value;
