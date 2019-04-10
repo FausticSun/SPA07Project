@@ -1,6 +1,7 @@
 #include "Table.h"
 #include <algorithm>
 #include <deque>
+#include <iterator>
 #include <map>
 
 Table::Table(HeaderRow headers) : headerRow(headers) {
@@ -67,11 +68,16 @@ void Table::dropColumn(std::string toDrop) {
   }
   headerRow.erase(headerRow.begin() + idx);
   std::set<DataRow> newData;
-  for (auto row : data) {
-    row.erase(row.begin() + idx);
-    newData.insert(row);
+  for (auto &row : data) {
+    DataRow newRow;
+    newRow.reserve(row.size() - 1);
+    auto it = row.begin();
+    std::advance(it, idx);
+    newRow.assign(row.begin(), it++);
+    newRow.insert(newRow.end(), it, row.end());
+    newData.emplace_hint(newData.end(), std::move(newRow));
   }
-  data = newData;
+  data = std::move(newData);
 }
 
 Table Table::filter(std::string columnHeader,
