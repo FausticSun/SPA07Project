@@ -4,6 +4,16 @@
 #include <iterator>
 #include <map>
 
+int Table::getHeaderIdx(std::string header) {
+  for (int i = 0; i < headerRow.size(); ++i) {
+    if (headerRow[i] == header) {
+      return i;
+    }
+  }
+  throw std::logic_error("Header not found");
+  return -1;
+}
+
 Table::Table(HeaderRow headers) : headerRow(headers) {
   auto headersCopy = headers;
   std::sort(headersCopy.begin(), headersCopy.end());
@@ -56,16 +66,7 @@ void Table::insertRow(DataRow row) {
 }
 
 void Table::dropColumn(std::string toDrop) {
-  int idx = -1;
-  for (int i = 0; i < headerRow.size(); ++i) {
-    if (headerRow[i] == toDrop) {
-      idx = i;
-      break;
-    }
-  }
-  if (idx == -1) {
-    throw std::logic_error("Header not found");
-  }
+  int idx = getHeaderIdx(toDrop);
   headerRow.erase(headerRow.begin() + idx);
   std::set<DataRow> newData;
   for (auto &row : data) {
@@ -78,6 +79,25 @@ void Table::dropColumn(std::string toDrop) {
     newData.emplace_hint(newData.end(), std::move(newRow));
   }
   data = std::move(newData);
+}
+
+std::set<std::string> Table::getColumn(std::string header) {
+  int idx = getHeaderIdx(header);
+  std::set<std::string> col;
+  for (auto &row : data) {
+    col.emplace(row[idx]);
+  }
+  return col;
+}
+
+void Table::filterColumn(std::string header, std::set<std::string> filter) {
+  int idx = getHeaderIdx(header);
+  std::set<DataRow> newData;
+  for (auto it = data.begin(); it != data.end(); ++it) {
+    if (!filter.count(it->at(idx))) {
+      it = data.erase(it);
+    }
+  }
 }
 
 Table Table::filter(std::string columnHeader,
