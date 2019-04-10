@@ -401,23 +401,17 @@ ClauseResult PqlEvaluator::dataFilter(Table data, Clause c) {
   QueryEntity qe1 = c.parameters[0];
   QueryEntity qe2 = c.parameters[1];
   vector<Table> columns;
+
   data.setHeader({"1", "2"});
   if (!isUnderscore(qe1.type)) {
-    Table col1 = getdataByTtype(qe1);
-    col1.setHeader({"1"});
-    columns.push_back(col1);
+    data.filterColumn("1", getdataByTtype(qe1).getColumn("0"));
   }
   if (!isUnderscore(qe2.type)) {
-    Table col2 = getdataByTtype(qe2);
-    col2.setHeader({"2"});
-    columns.push_back(col2);
-  }
-  for (int i = 0; i < columns.size(); i++) {
-    data.mergeWith(columns[i]);
+    data.filterColumn("2", getdataByTtype(qe2).getColumn("0"));
   }
 
   if (isSynonym(qe1.type) && isSynonym(qe2.type) && qe1.name == qe2.name) {
-    data = selfJoin(data);
+    data.filterColumn("1", data.getColumn("2"));
     data.dropColumn("2");
   }
 
