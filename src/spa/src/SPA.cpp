@@ -43,6 +43,6 @@ void SPA::evaluateQuery(const std::string &queryString,
     if (selectBool) {
       results.emplace_back("FALSE");
     }
-  } catch (...) {
+  } catch (exception le) {
   }
 }

@@ -15,7 +15,7 @@ Select <s1, ifs2, a3, s5> with s1.stmt# = 185 such that Follows(ifs2, s2) with 2
 5000
 4 - number of clauses in random order 
 stmt s1, s2, s5; if ifs2, ifs5; assign a3; while w3; variable v5; read r3; print p3;
-Select <s1, ifs2, a3, s5> with s1.stmt# = 185 such that Uses(ifs5, v5) with "bb2" = v5.varName such that Follows(a3, w3) pattern ifs5("a1a", _, _) such that Follows(r3, p3) such that Follows(ifs2, s2) with 201 = s2.stmt#  and Follows(p3, a3) pattern ifs5("ccc", _, _) such that Parent (s5, ifs5)
+Select <s1, ifs2, a3, s5> with s1.stmt# = 185 such that Uses(ifs5, v5) with "bb2" = v5.varName such that Follows(a3, w3) pattern ifs5("a1a", _, _) such that Follows(r3, p3) such that Follows(ifs2, s2) with 201 = s2.stmt#  such that Follows(p3, a3) pattern ifs5("ccc", _, _) such that Parent (s5, ifs5)
 185 191 208 345
 5000
 5 - number of synonyms in asc order (1 group a1 a2, 2 group s1 s2 s3 s4 s5)
