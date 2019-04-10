@@ -210,40 +210,139 @@ void populateCFG(std::unique_ptr<PKB> &pkb) {
   pkb->setCFG(graph);
 }
 
+/**
 void populateNextBip(std::unique_ptr<PKB> &pkb) {
 	auto callTable = pkb->getStmtType(StatementType::Call); //1-col call stmt numbers
 	auto nextTable = pkb->getNext(); //2-col next Table
-	auto procTable = pkb->getProcStmt(); //3-col procName, start, end
-	auto callProcNameTable = pkb->getCallProcName(); //2-col stmt, proc
-	auto procExitStmtTable = pkb->getProcExitStmt(); //2-col proc exit-i
 
+	auto procTable = pkb->getProcStmt(); //3-col procName, start, end
+	std::map<std::string, std::vector<int>> procMap;
+	for (auto data : procTable.getData()) {
+		procMap.insert(std::make_pair(data[0], std::vector<int>{std::stoi(data[1]), std::stoi(data[2])}));
+	}
+
+	auto callProcNameTable = pkb->getCallProcName(); //2-col stmt, proc
+	std::map<int, std::string> callProcNameMap;
+	for (auto data : callProcNameTable.getData()) {
+		callProcNameMap.insert(std::make_pair(std::stoi(data[0]), data[1]));
+	}
+
+	auto procExitStmtTable = pkb->getProcExitStmt(); //2-col proc exit-i
+	std::map<std::string, std::vector<int>> procExitStmtMap;
+	for (auto data : procExitStmtTable.getData()) {
+		if (procExitStmtMap.count(data[0]) == 1) {
+			procExitStmtMap[data[0]].push_back(std::stoi(data[1]));
+		}
+		else {
+			procExitStmtMap.insert(std::make_pair(data[0], std::vector<int>{std::stoi(data[1])}));
+		}
+	}
+
+	std::map<int, int> callNext;
 	for (auto data : nextTable.getData()) {
+		// not a call statement
 		if (!callTable.contains({ data[0] })) {
 			pkb->setNextBip(std::stoi(data[0]), std::stoi(data[1]));
 		}
 		else {
-			//getting procedure that is called
-			std::string procedure;
-			for (auto data1 : callProcNameTable.getData()) {
-				if (data1[0] == data[0]) {
-					procedure = data1[1];
-				}
+			//store next for call statements
+			callNext.insert(std::pair<int, int> (std::stoi(data[0]), std::stoi(data[1])));
+		}
+	}
+
+	for (auto data : callProcNameTable.getData()) {
+		//create branch in for all calls
+		int stmt = std::stoi(data[0]);
+		std::string procedure = data[1];
+		pkb->setNextBip(stmt, procMap[procedure][0]);
+
+		//create dummy node for call statements at exit stmt of procedure
+		for (auto i : procExitStmtTable.getData()) {
+			if (i[1] == std::to_string(stmt)) {
+				callNext.insert(std::pair<int, int>(stmt, stmt * -1));
 			}
-			//setting call statement to start of procedure
-			for (auto data2 : procTable.getData()) {
-				if (procedure == data2[0]) {
-					pkb->setNextBip(std::stoi(data[0]), std::stoi(data2[1]));
-				}
+		}
+	}
+
+	std::vector<int> uncheckedExits;
+	std::map<int, int> branchbacks;
+	for (auto i : callNext) {
+		//create branch back
+		int curr = i.first;
+		int next = i.second;
+		std::string procedure = callProcNameMap[curr];
+		for (int exit : procExitStmtMap[procedure]) {
+			if ((next > 0) && (!callTable.contains({std::to_string(exit)}))) {
+				pkb->setNextBip(exit, next);
+				branchbacks.insert(std::pair<int, int> (exit, next));
 			}
-			//setting end of procedure to next of call statement
-			for (auto data3 : procExitStmtTable.getData()) {
-				if (procedure == data3[0]) {
-					pkb->setNextBip(std::stoi(data3[1]), std::stoi(data[1]));
+
+			if (callTable.contains({ std::to_string(exit) })) {
+				branchbacks.insert(std::pair<int, int> (exit * -1, next));
+			}
+
+			if ((next < 0) && (!callTable.contains({ std::to_string(exit) }))) {
+				branchbacks.insert(std::pair<int, int> (exit, next));
+				uncheckedExits.push_back(exit);
+			}
+		}
+	}
+
+	for (int exit : uncheckedExits) {
+		int bb = branchbacks[exit];
+		while (bb < 0) {
+			bb = branchbacks[bb];
+		}
+
+		if (bb > 0) {
+			pkb->setNextBip(exit, bb);
+		}
+	}
+
+}
+**/
+
+void populateCFGBip(std::unique_ptr<PKB> &pkb) {
+	CFGBip graph = CFGBip{ pkb->getStmtType(StatementType::Call), pkb->getNext(), pkb->getProcStmt(), 
+		pkb->getCallProcName(), pkb->getProcExitStmt(), pkb->getStmtCount() };
+	pkb->setNextBip(graph.getNextBip());
+	pkb->setNextBipT(graph.getNextBipT());
+}
+/**
+void populateNextBipT(std::unique_ptr<PKB> &pkb) {
+
+	//creating adjacency list
+	auto nextBipTable = pkb->getNextBip();
+	int stmtCount = pkb->getStmtCount();
+	std::vector<std::vector<int>> adjLst;
+	adjLst.resize(stmtCount + 1);
+	for (auto data : nextBipTable.getData()) {
+		adjLst[std::stoi(data[0])].push_back(std::stoi(data[1]));
+	}
+
+	//BFS from every statement number
+	for (int i = 1; i < stmtCount + 1; i++) {
+		std::vector<bool> visited(stmtCount + 1, false);
+		visited[0] = true;
+
+		std::queue<int> q;
+		q.push(i);
+		while (!q.empty()) {
+			int curr = q.front();
+			q.pop();
+
+			for (int j : adjLst[curr]) {
+				if (!visited[j]) {
+					visited[j] = true;
+					q.push(j);
+					pkb->setNextBipT(i, j);
 				}
 			}
 		}
 	}
+	
 }
+**/
 
 void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {
   validateProcs(pkb);
@@ -255,5 +354,6 @@ void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {
   populateModifiesS(pkb);
   populateUsesAndModifiesC(pkb);
   populateCFG(pkb);
-  populateNextBip(pkb);
+  populateCFGBip(pkb);
+  //populateNextBipT(pkb);
 }

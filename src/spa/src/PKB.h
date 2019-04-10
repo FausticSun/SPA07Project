@@ -1,5 +1,6 @@
 #pragma once
 #include "CFG.h"
+#include "CFGBip.h"
 #include "Table.h"
 #include <map>
 #include <queue>
@@ -38,6 +39,7 @@ private:
   Table nextTable{2};
   Table nextTTable{1};
   Table nextBipTable{2};
+  Table nextBipTTable{2};
 
   // Other Relation Tables
   Table callProcNameTable{2};
@@ -67,7 +69,8 @@ public:
   void setCalls(std::string, std::string);
   void setCallsT(std::string, std::string);
   void setNext(int, int);
-  void setNextBip(int, int);
+  void setNextBip(Table);
+  void setNextBipT(Table);
   // Pattern setters
   void setAssign(int, std::string &, std::string &);
   void setIf(int, const std::string &);
@@ -97,6 +100,7 @@ public:
   Table getCallsT() const;
   Table getNext() const;
   Table getNextBip() const;
+  Table getNextBipT() const;
 
   bool isNextT(int, int) const;
   Table getNextT(int, bool) const;

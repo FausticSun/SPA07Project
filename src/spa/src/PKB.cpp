@@ -69,8 +69,12 @@ void PKB::setNext(int s1, int s2) {
   nextTable.insertRow({std::to_string(s1), std::to_string(s2)});
 }
 
-void PKB::setNextBip(int s1, int s2) {
-	nextBipTable.insertRow({std::to_string(s1), std::to_string(s2)});
+void PKB::setNextBip(Table t) {
+	nextBipTable = t;
+}
+
+void PKB::setNextBipT(Table t) {
+	nextBipTTable = t;
 }
 
 void PKB::setAssign(int a, std::string &v, std::string &expr) {
@@ -142,12 +146,14 @@ Table PKB::getCalls() const { return callsTable; }
 Table PKB::getCallsT() const { return callsTTable; }
 Table PKB::getNext() const { return nextTable; }
 Table PKB::getNextBip() const { return nextBipTable; }
+Table PKB::getNextBipT() const { return nextBipTTable; }
 
 bool PKB::isNextT(int start, int end) const { return cfg.isNextT(start, end); }
 Table PKB::getNextT(int s, bool isLeftConstant) const {
   return cfg.getNextT(s, isLeftConstant);
 }
 Table PKB::getNextT() const { return cfg.getNextT(); }
+
 
 bool PKB::isAffects(int a1, int a2) const {
   // Only query from CFG if a1 and a2 are assign statements (check to be
