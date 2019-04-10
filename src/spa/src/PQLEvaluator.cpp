@@ -510,6 +510,39 @@ ClauseResult PqlEvaluator::NextTEvaluate(Clause c) {
     pkbData.setHeader({"1"});
     pkbData.mergeWith(col2);
     result = dataFilter(pkbData, c);
+  } else if (isSynonym(qe1.type)) {
+		dataRows col1 = getdataByTtype(qe1).getData();
+		Table pkbData(2);
+		pkbData.setHeader({ "1","2" });
+		for (vector<string> row : col1) {
+			Table col1(1);
+			col1.setHeader({ "1" });
+			col1.insertRow({row[0]});
+			Table present = mypkb.getNextT(stoi(row[0]), true);
+			present.setHeader({ "2" });
+			col1.mergeWith(present);
+			pkbData.concatenate(col1);
+		}
+		/*if (isSynonym(qe2.type)) {
+			Table col2 = getdataByTtype(qe2);
+			col2.setHeader({ "2" });
+			pkbData.mergeWith(col2);
+		}*/
+		result = dataFilter(pkbData, c);
+  } else if (isSynonym(qe2.type)) {
+		dataRows col2 = getdataByTtype(qe2).getData();
+		Table pkbData(2);
+		pkbData.setHeader({"1","2"});
+		for (vector<string> row : col2) {
+			Table col2(1);
+			col2.setHeader({"2"});
+			col2.insertRow({row[0]});
+			Table present = mypkb.getNextT(stoi(row[0]), false);
+			present.setHeader({"1"});
+			present.mergeWith(col2);
+			pkbData.concatenate(present);
+		}
+		result = dataFilter(pkbData, c);
   } else {
     Table pkbData(0);
     if (NextTTable.empty()) {
