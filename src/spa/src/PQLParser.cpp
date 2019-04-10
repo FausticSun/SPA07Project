@@ -393,12 +393,13 @@ QueryEntity PQLParser::parseElem() {
 }
 
 QueryEntity PQLParser::parseSynonym() {
+  QueryEntity ent;
   auto synToken = expect(PQLTokens::Identifier);
   if (!(declarations.count(synToken.value))) {
     throwSemanticError(
         ("Synonym " + synToken.value + " not declared").c_str());
+    return ent;
   }
-  QueryEntity ent;
   ent.name = synToken.value;
   ent.type = declarations.at(synToken.value);
   return ent;
