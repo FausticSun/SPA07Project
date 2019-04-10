@@ -105,8 +105,8 @@ A
 5000
 22-comment
 call c; procedure p,p1;assign a; prog_line pl;variable v;constant cons;
-Select BOOLEAN with 1 = "1"
-none
+Select BOOLEAN with 1 = "a"
+FALSE
 5000
 23-comment
 call c; procedure p,p1;assign a; prog_line pl;variable v;constant cons;
@@ -311,7 +311,7 @@ Select <s> such that Affects(s, _)
 63-comment
 stmt s,s1;
 Select <s> such that Affects(_, s)
-12,18,19,33,35,52,6,65,71,73,81
+12,18,19,33,35,43,52,6,65,71,73,81
 5000
 64-comment
 stmt s,s1;
@@ -351,22 +351,22 @@ TRUE
 71-comment
 stmt s,s1;
 Select <s,s1> such that Affects*(s, s1)
-none
+1 6,12 12,12 18,18 12,18 18,19 19,35 35,36 33,36 35,43 43,51 52,52 52,63 65,71 71,71 73,73 71,73 73,81 81
 5000
 72-comment
 stmt s,s1;
 Select <s> such that Affects*(s, _)
-none
+1,12,18,19,35,36,43,51,52,63,71,73,81
 5000
 73-comment
 stmt s,s1;
 Select <s> such that Affects*(_, s)
-none
+12,18,19,33,35,43,52,6,65,71,73,81
 5000
 74-comment
 stmt s,s1;
 Select <s> such that Affects*(s, s)
-none
+12,18,19,35,43,52,71,73,81
 5000
 75-comment
 stmt s,s1;
@@ -375,11 +375,11 @@ none
 5000
 76-comment
 stmt s,s1; assign a;
-Select <s> such that Affects*(a, 71)
-none
+Select <a> such that Affects*(a, 71)
+71,73
 5000
 77-comment
 stmt s,s1; assign a;
 Select BOOLEAN such that Affects*(73, 71)
-FALSE
+TRUE
 5000

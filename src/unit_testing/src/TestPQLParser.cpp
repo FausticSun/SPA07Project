@@ -532,3 +532,13 @@ TEST_CASE("Multiple varied clauses") {
   };
   REQUIRE(clauses == toVerify);
 }
+
+TEST_CASE("Semantic Error") {
+  std::string pql = R"(
+  assign a; Select BOOLEAN such that Modifies(a1, "a1")
+  )";
+  std::stringstream ss;
+  ss << pql;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  REQUIRE_THROWS_AS(Parser::parsePQL(tokens), Parser::SemanticError);
+}

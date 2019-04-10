@@ -644,39 +644,6 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
   return results;
 }
 
-bool CFG::isAffectsT(
-    int start, int end, Table modifiesTable, Table parentTable,
-    std::map<int, StatementType> stmtMap,
-    std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap)
-    const {
-  auto results = getAffectsT(modifiesTable, parentTable, stmtMap, assignMap);
-  return results.contains({std::to_string(start), std::to_string(end)});
-}
-
-Table CFG::getAffectsT(
-    int start, bool isForward, Table modifiesTable, Table parentTable,
-    std::map<int, StatementType> stmtMap,
-    std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap)
-    const {
-  auto results = getAffectsT(modifiesTable, parentTable, stmtMap, assignMap);
-  results.setHeader({"a1", "a2"});
-  Table table{1};
-  if (isForward) {
-    for (auto data : results.getData()) {
-      if (std::stoi(data[0]) == start) {
-        table.insertRow({data[1]});
-      }
-    }
-  } else {
-    for (auto data : results.getData()) {
-      if (std::stoi(data[1]) == start) {
-        table.insertRow({data[0]});
-      }
-    }
-  }
-  return table;
-}
-
 Table CFG::getAffectsT(
     Table modifiesTable, Table parentTable,
     std::map<int, StatementType> stmtMap,

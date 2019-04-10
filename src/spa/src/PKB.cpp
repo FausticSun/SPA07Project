@@ -147,8 +147,7 @@ Table PKB::getNextT(int s, bool isLeftConstant) const {
 Table PKB::getNextT() const { return cfg.getNextT(); }
 
 bool PKB::isAffects(int a1, int a2) const {
-  // Only query from CFG if a1 and a2 are assign statements (check to be
-  // removed)
+  // Only query from CFG if a1 and a2 are assign statements
   auto assignStmts = stmtTable.at(StatementType::Assign);
   if (assignStmts.find(a1) == assignStmts.end() ||
       assignStmts.find(a2) == assignStmts.end()) {
@@ -158,7 +157,7 @@ bool PKB::isAffects(int a1, int a2) const {
   }
 }
 Table PKB::getAffects(int a1, bool isLeftConstant) const {
-  // Only query from CFG if a1 is assign statement (check to be removed)
+  // Only query from CFG if a1 is assign statement
   auto assignStmts = stmtTable.at(StatementType::Assign);
   if (assignStmts.find(a1) == assignStmts.end()) {
     return Table{1};
@@ -172,14 +171,6 @@ Table PKB::getAffects() const {
   return cfg.getAffects(usesSTable, modifiesSTable, assignStmts);
 }
 
-bool PKB::isAffectsT(int a1, int a2) const {
-  return cfg.isAffectsT(a1, a2, modifiesSTable, parentTable, stmtMap,
-                        assignMap);
-}
-Table PKB::getAffectsT(int a1, bool isLeftConstant) const {
-  return cfg.getAffectsT(a1, isLeftConstant, modifiesSTable, parentTable,
-                         stmtMap, assignMap);
-}
 Table PKB::getAffectsT() const {
   return cfg.getAffectsT(modifiesSTable, parentTable, stmtMap, assignMap);
 }

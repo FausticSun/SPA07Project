@@ -4,8 +4,8 @@
 #include <algorithm>
 using namespace std;
 
-bool contains(deque<string> &s, string q) {
-  deque<string>::iterator iter = s.begin();
+bool contains(list<string> &s, string q) {
+  auto iter = s.begin();
   for (iter; iter != s.end(); iter++) {
     if (*iter == q) {
       return true;
@@ -202,7 +202,8 @@ SCENARIO("Simple Query No Clause") {
     targets.push_back(stmt);
     sele.push_back(stmt);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 15);
     REQUIRE(contains(result, "1"));
     REQUIRE(contains(result, "2"));
@@ -229,7 +230,8 @@ SCENARIO("Simple Query No Clause") {
     targets.push_back(stmt);
     sele.push_back(stmt);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 2);
     REQUIRE(contains(result, "4"));
     REQUIRE(contains(result, "8"));
@@ -243,7 +245,8 @@ SCENARIO("Simple Query No Clause") {
     targets.push_back(stmt);
     sele.push_back(stmt);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "7"));
   }
@@ -256,7 +259,8 @@ SCENARIO("Simple Query No Clause") {
     targets.push_back(stmt);
     sele.push_back(stmt);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 3);
     REQUIRE(contains(result, "5"));
     REQUIRE(contains(result, "6"));
@@ -271,7 +275,8 @@ SCENARIO("Simple Query No Clause") {
     targets.push_back(stmt);
     sele.push_back(stmt);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "14"));
   }
@@ -284,7 +289,8 @@ SCENARIO("Simple Query No Clause") {
     targets.push_back(stmt);
     sele.push_back(stmt);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "15"));
   }
@@ -297,7 +303,8 @@ SCENARIO("Simple Query No Clause") {
     targets.push_back(stmt);
     sele.push_back(stmt);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 7);
     REQUIRE(contains(result, "1"));
     REQUIRE(contains(result, "2"));
@@ -316,7 +323,8 @@ SCENARIO("Simple Query No Clause") {
     targets.push_back(var);
     sele.push_back(var);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 4);
     REQUIRE(contains(result, "x"));
     REQUIRE(contains(result, "a"));
@@ -332,7 +340,8 @@ SCENARIO("Simple Query No Clause") {
     targets.push_back(pro);
     sele.push_back(pro);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 4);
     REQUIRE(contains(result, "main"));
     REQUIRE(contains(result, "one"));
@@ -358,7 +367,8 @@ SCENARIO("target not in clauses") {
     sele.push_back(stm);
     clause.push_back(c);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.empty());
   }
   SECTION("all are true caluse") {
@@ -375,7 +385,8 @@ SCENARIO("target not in clauses") {
     sele.push_back(stm);
     clause.push_back(c);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 15);
     REQUIRE(contains(result, "1"));
     REQUIRE(contains(result, "2"));
@@ -415,7 +426,8 @@ SCENARIO("target in clause,one clause") {
       targets.push_back(boolean);
       clause.push_back(c1);
       q.setQuery(targets, sele, clause);
-      auto result = pe.executeQuery(q);
+      list<string> result;
+      pe.executeQuery(q, result);
       REQUIRE(result.size() == 1);
       REQUIRE(contains(result, "TRUE"));
     }
@@ -435,7 +447,8 @@ SCENARIO("target in clause,one clause") {
       targets.push_back(n2);
       clause.push_back(c1);
       q.setQuery(targets, sele, clause);
-      auto result = pe.executeQuery(q);
+      list<string> result;
+      pe.executeQuery(q, result);
       REQUIRE(result.size() == 1);
       REQUIRE(contains(result, "x"));
     }
@@ -455,7 +468,8 @@ SCENARIO("target in clause,one clause") {
       targets.push_back(n2);
       clause.push_back(c1);
       q.setQuery(targets, sele, clause);
-      auto result = pe.executeQuery(q);
+      list<string> result;
+      pe.executeQuery(q, result);
       REQUIRE(result.size() == 1);
       REQUIRE(contains(result, "8"));
     }
@@ -475,7 +489,8 @@ SCENARIO("target in clause,one clause") {
       targets.push_back(n1);
       clause.push_back(c1);
       q.setQuery(targets, sele, clause);
-      auto result = pe.executeQuery(q);
+      list<string> result;
+      pe.executeQuery(q, result);
       REQUIRE(result.size() == 1);
       REQUIRE(contains(result, "7"));
     }
@@ -495,7 +510,8 @@ SCENARIO("target in clause,one clause") {
       targets.push_back(boolean);
       clause.push_back(c1);
       q.setQuery(targets, sele, clause);
-      auto result = pe.executeQuery(q);
+      list<string> result;
+      pe.executeQuery(q, result);
       REQUIRE(result.size() == 1);
       REQUIRE(contains(result, "TRUE"));
     }
@@ -515,7 +531,8 @@ SCENARIO("target in clause,one clause") {
       targets.push_back(n2);
       clause.push_back(c1);
       q.setQuery(targets, sele, clause);
-      auto result = pe.executeQuery(q);
+      list<string> result;
+      pe.executeQuery(q, result);
       REQUIRE(result.size() == 6);
       REQUIRE(contains(result, "2"));
       REQUIRE(contains(result, "3"));
@@ -541,7 +558,8 @@ SCENARIO("simple select, no clauses") {
     targets.push_back(boolean);
     sele.push_back(ass);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "TRUE"));
   }
@@ -563,7 +581,8 @@ SCENARIO("simple select, no clauses") {
     sele.push_back(c);
     sele.push_back(w);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 12);
     REQUIRE(contains(result, "main one 7"));
     REQUIRE(contains(result, "main two 7"));
@@ -598,7 +617,8 @@ SCENARIO("test one with clause evaluate") {
     sele.push_back(pl);
     clause.push_back(with);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "7"));
   }
@@ -620,7 +640,8 @@ SCENARIO("test one with clause evaluate") {
     sele.push_back(secondPara);
     clause.push_back(with1);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "7 7"));
   }
@@ -638,7 +659,8 @@ SCENARIO("test one with clause evaluate") {
     sele.push_back(r);
     clause.push_back(with);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "15"));
   }
@@ -656,7 +678,8 @@ SCENARIO("test one with clause evaluate") {
     sele.push_back(c);
     clause.push_back(with);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "1"));
   }
@@ -672,7 +695,8 @@ SCENARIO("test one with clause evaluate") {
     sele.push_back(pl);
     clause.push_back(with);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "2"));
   }
@@ -689,7 +713,8 @@ SCENARIO("test one with clause evaluate") {
     sele.push_back(while1);
     clause.push_back(with);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "7"));
   }
@@ -710,7 +735,8 @@ SCENARIO("test one Next clause evaluate") {
     targets.push_back(boolean);
     clause.push_back(next);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "TRUE"));
   }
@@ -726,7 +752,8 @@ SCENARIO("test one Next clause evaluate") {
     sele.push_back(w);
     clause.push_back(next);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "7"));
   }
@@ -743,7 +770,8 @@ SCENARIO("test one Next clause evaluate") {
     sele.push_back(s);
     clause.push_back(next);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "8"));
   }
@@ -759,7 +787,8 @@ SCENARIO("test one Next clause evaluate") {
     targets.push_back(boolean);
     clause.push_back(next);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "FALSE"));
   }
@@ -782,7 +811,7 @@ SCENARIO("test one Next clause evaluate") {
 //		targets.push_back(boolean);
 //		clause.push_back(next);
 //		q.setQuery(targets, sele, clause);
-//		auto result = pe.executeQuery(q);
+//		list<string> result; pe.executeQuery(q, result);
 //		REQUIRE(result.size() == 1);
 //		REQUIRE(contains(result, "TRUE"));
 //	}
@@ -800,7 +829,7 @@ SCENARIO("test one Next clause evaluate") {
 //		sele.push_back(ifs);
 //		clause.push_back(next);
 //		q.setQuery(targets, sele, clause);
-//		auto result = pe.executeQuery(q);
+//		list<string> result; pe.executeQuery(q, result);
 //		REQUIRE(result.size() == 2);
 //		REQUIRE(contains(result, "4"));
 //		REQUIRE(contains(result, "8"));
@@ -820,7 +849,7 @@ SCENARIO("test one Next clause evaluate") {
 //		sele.push_back(s);
 //		clause.push_back(next);
 //		q.setQuery(targets, sele, clause);
-//		auto result = pe.executeQuery(q);
+//		list<string> result; pe.executeQuery(q, result);
 //		REQUIRE(result.size() == 4);
 //		REQUIRE(contains(result, "7"));
 //		REQUIRE(contains(result, "8"));
@@ -835,11 +864,11 @@ SCENARIO("test one Next clause evaluate") {
 //		QueryEntity unders(QueryEntityType::Underscore, "_");
 //		QueryEntity Int(QueryEntityType::Line, "13");
 //		Clause next(ClauseType::NextT, vector<QueryEntity>{unders,
-//Int}); 		vector<QueryEntity> targets; 		vector<QueryEntity> sele; 		vector<Clause>
-//clause; 		targets.push_back(boolean); 		clause.push_back(next);
-//		q.setQuery(targets, sele, clause);
-//		auto result = pe.executeQuery(q);
-//		REQUIRE(result.size() == 1);
+// Int}); 		vector<QueryEntity> targets; 		vector<QueryEntity>
+// sele; 		vector<Clause>
+// clause; 		targets.push_back(boolean);
+// clause.push_back(next); 		q.setQuery(targets, sele, clause); 		list<string>
+//result; pe.executeQuery(q, result); 		REQUIRE(result.size() == 1);
 //		REQUIRE(contains(result, "FALSE"));
 //	}
 //}
@@ -859,7 +888,8 @@ SCENARIO("test one Calls clause evaluate") {
     targets.push_back(boolean);
     clause.push_back(calls);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "TRUE"));
   }
@@ -875,7 +905,8 @@ SCENARIO("test one Calls clause evaluate") {
     sele.push_back(p);
     clause.push_back(calls);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "main"));
   }
@@ -892,7 +923,8 @@ SCENARIO("test one Calls clause evaluate") {
     sele.push_back(p2);
     clause.push_back(calls);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 3);
     REQUIRE(contains(result, "one"));
     REQUIRE(contains(result, "two"));
@@ -910,7 +942,8 @@ SCENARIO("test one Calls clause evaluate") {
     targets.push_back(boolean);
     clause.push_back(calls);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "TRUE"));
   }
@@ -932,7 +965,8 @@ SCENARIO("test one Calls* clause evaluate") {
     targets.push_back(boolean);
     clause.push_back(calls);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "TRUE"));
   }
@@ -949,7 +983,8 @@ SCENARIO("test one Calls* clause evaluate") {
     targets.push_back(n2);
     clause.push_back(calls);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 3);
     REQUIRE(contains(result, "one"));
     REQUIRE(contains(result, "two"));
@@ -968,7 +1003,8 @@ SCENARIO("test one Calls* clause evaluate") {
     targets.push_back(boolean);
     clause.push_back(calls);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "TRUE"));
   }
@@ -985,7 +1021,8 @@ SCENARIO("test one Calls* clause evaluate") {
     targets.push_back(n1);
     clause.push_back(calls);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "main"));
   }
@@ -1002,7 +1039,8 @@ SCENARIO("test one Calls* clause evaluate") {
     targets.push_back(boolean);
     clause.push_back(calls);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "FALSE"));
   }
@@ -1019,7 +1057,8 @@ SCENARIO("test one Calls* clause evaluate") {
     targets.push_back(n2);
     clause.push_back(calls);
     q.setQuery(targets, sele, clause);
-    auto result = pe.executeQuery(q);
+    list<string> result;
+    pe.executeQuery(q, result);
     REQUIRE(result.size() == 4);
     REQUIRE(contains(result, "main"));
     REQUIRE(contains(result, "one"));
