@@ -8,6 +8,7 @@
 #include <vector>
 #include <unordered_map>
 #include <Table.h>
+#include <Deque>
 
 using namespace std;
 
@@ -31,14 +32,14 @@ struct ClauseResult {
 class PqlEvaluator {
 public:
   PqlEvaluator(const PKB &pkb);
-  list<string> executeQuery(Query &q);
+  deque<string> executeQuery(Query &q);
 
 private:
 	vector<vector<Table>> relevantGroups;
 	vector<vector<Table>> inrelevantGroups;
   PKB mypkb;
 	dataRows resultExtractor(Table result, Query q);
-  list<string> resultFormater(dataRows t);
+	deque<string> resultFormater(dataRows t);
 	dataRows executeSimpleQuery(vector<QueryEntity> t);
 	dataRows executeComplexQuery(Query q);
 	ClauseResult executeOneClause(Clause c);

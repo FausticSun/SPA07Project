@@ -110,8 +110,8 @@ bool isJoined(vector<Table> s1, Table s2) {
 
 PqlEvaluator::PqlEvaluator(const PKB &pkb) { this->mypkb = pkb; }
 
-list<string> PqlEvaluator::executeQuery(Query &q) {
-  list<string> results;
+deque<string> PqlEvaluator::executeQuery(Query &q) {
+  deque<string> results;
   if (q.clauses.empty()) {
 		dataRows resultTable = executeSimpleQuery(q.target);
     results = resultFormater(resultTable);
@@ -182,10 +182,10 @@ dataRows PqlEvaluator::resultExtractor(Table result, Query q) {
 
 }
 
-list<string> PqlEvaluator::resultFormater(dataRows t) {
+deque<string> PqlEvaluator::resultFormater(dataRows t) {
 	set<vector<string>> tempData = t;
   set<vector<string>>::iterator iterRow ;
-  list<string> result;
+  deque<string> result;
   string tuple = "";
   
   for (iterRow = tempData.begin(); iterRow != tempData.end(); iterRow++) {
