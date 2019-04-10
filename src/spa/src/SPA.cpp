@@ -39,7 +39,7 @@ std::deque<std::string> SPA::evaluateQuery(const std::string &queryString) const
     PqlEvaluator pe(*pkb);
     return pe.executeQuery(query);
   } catch (Parser::SemanticError&) {
-    return selectBool ? std::deque<string>({"False"}) : std::deque<string>();
+    return selectBool ? std::deque<string>({"FALSE"}) : std::deque<string>();
   } catch (...) {
     return {};
   }
