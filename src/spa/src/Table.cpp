@@ -246,12 +246,12 @@ void Table::hashJoin(const Table &other,
     // Merge this dataRow with matching dataRows in the Hash Table
     // and add the new row to the new data table
     for (auto &otherRow : hashTable.at(key)) {
-      DataRow newRow = dataRow;
+      DataRow newRow(dataRow.begin(), dataRow.end());
       newRow.reserve(dataRow.size() + otherDiffIndices.size());
       for (auto &diffIdx : otherDiffIndices) {
         newRow.emplace_back(otherRow[diffIdx]);
       }
-      newData.emplace(std::move(newRow));
+      newData.emplace_hint(newData.end(), std::move(newRow));
     }
   }
   // Add non-common headers
