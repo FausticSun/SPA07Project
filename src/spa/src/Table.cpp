@@ -211,6 +211,12 @@ void Table::transitiveClosure() {
 void Table::naturalJoin(const Table &other,
                         std::vector<std::pair<int, int>> &commonIndices,
                         std::set<int> &otherDiffIndices) {
+  loopJoin(other, commonIndices, otherDiffIndices);
+}
+
+void Table::hashJoin(const Table &other,
+                     std::vector<std::pair<int, int>> &commonIndices,
+                     std::set<int> &otherDiffIndices) {
   std::set<DataRow> newData;
   // Create Hash Table for Hash-Join
   std::map<DataRow, std::deque<DataRow>> hashTable;
@@ -251,6 +257,43 @@ void Table::naturalJoin(const Table &other,
   }
   // Replace this table's data with the new data
   data = std::move(newData);
+}
+
+void Table::loopJoin(const Table &other,
+                     std::vector<std::pair<int, int>> &commonIndices,
+                     std::set<int> &otherDiffIndices) {
+  // Add non-common headers
+  for (int i : otherDiffIndices) {
+    headerRow.emplace_back(other.headerRow[i]);
+  }
+  // Iterate through DataRow in this table
+  auto thisIt = data.begin();
+  while (thisIt != data.end()) {
+    // Remove the row from the table
+    auto thisData = (*thisIt);
+    thisIt = data.erase(thisIt);
+    // Check the row against every row in the other table
+    for (auto otherIt = other.data.begin(); otherIt != other.data.end();
+         ++otherIt) {
+      // Determine if data in common columns are the same
+      bool isCommon = true;
+      for (auto indices : commonIndices) {
+        if (thisData.at(indices.first) != otherIt->at(indices.second)) {
+          isCommon = false;
+          break;
+        }
+      }
+      // If they are the same
+      if (isCommon) {
+        // Join and insert back into this table
+        auto newData = thisData;
+        for (auto i : otherDiffIndices) {
+          newData.emplace_back(otherIt->at(i));
+        }
+        data.insert(thisIt, newData);
+      }
+    }
+  }
 }
 
 void Table::crossProduct(const Table &other) {
