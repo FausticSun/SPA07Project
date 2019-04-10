@@ -601,3 +601,143 @@ TEST_CASE("Program with multiple procedures with call stmts") {
   REQUIRE(nextTable.contains({"11", "14"}));
   REQUIRE(nextTable.contains({"10", "14"}));
 }
+
+
+TEST_CASE("AffectsTsmpleaf") {
+	std::string program = R"(
+procedure B {
+while (x==0) {
+  if (x==0) then{
+    a = a + b;
+  } else {
+    b = a;
+  }
+  while (x==0) {
+    c = a +b;
+  }  
+}    
+}
+  )";
+	std::stringstream ss;
+	ss << program;
+	std::list<Token> tokens = Lexer::tokenize(ss);
+	auto pkb = Parser::parseSIMPLE(tokens);
+	DesignExtractor::populateDesigns(pkb);
+	auto affectsTable = pkb->getAffects();
+	affectsTable.transitiveClosure();
+	auto affectsTTable = pkb->getAffectsT();
+	REQUIRE(affectsTable.size() == affectsTTable.size());
+	for (auto data : affectsTable.getData()) {
+		REQUIRE(affectsTTable.contains(data));
+	}
+}
+
+TEST_CASE("AffectsT add a if which have a loop affect in while") {
+	std::string program = R"(
+procedure B {
+while (x==0) {
+  if (x==0) then{
+    a = a + b;
+  } else {
+    b = a;
+  }
+  while (x==0) {
+    c = a +b;
+	if (x == a) then{
+		a = b + 2;
+	} else {
+		c = a;
+	}
+  }  
+}    
+}
+  )";
+	std::stringstream ss;
+	ss << program;
+	std::list<Token> tokens = Lexer::tokenize(ss);
+	auto pkb = Parser::parseSIMPLE(tokens);
+	DesignExtractor::populateDesigns(pkb);
+	auto affectsTable = pkb->getAffects();
+	affectsTable.transitiveClosure();
+	auto affectsTTable = pkb->getAffectsT();
+	REQUIRE(affectsTable.size() == affectsTTable.size());
+	for (auto data : affectsTable.getData()) {
+		REQUIRE(affectsTTable.contains(data));
+	}
+}
+
+TEST_CASE("AffectsT while if while, 3 layer") {
+	std::string program = R"(
+procedure B {
+while (x==0) {
+  if (x==0) then{
+    a = a + b;
+  } else {
+    b = a;
+  }
+  while (x==0) {
+    c = a +b;
+	if (x == a) then{
+		a = b + 2;
+	} else {
+		c = a;
+		while (x==0)
+		{
+			a = a + b;
+		}
+	}
+  }  
+}    
+}
+  )";
+	std::stringstream ss;
+	ss << program;
+	std::list<Token> tokens = Lexer::tokenize(ss);
+	auto pkb = Parser::parseSIMPLE(tokens);
+	DesignExtractor::populateDesigns(pkb);
+	auto affectsTable = pkb->getAffects();
+	affectsTable.transitiveClosure();
+	auto affectsTTable = pkb->getAffectsT();
+	REQUIRE(affectsTable.size() == affectsTTable.size());
+	for (auto data : affectsTable.getData()) {
+		REQUIRE(affectsTTable.contains(data));
+	}
+}
+
+TEST_CASE("AffectsT 4 layer") {
+	std::string program = R"(
+procedure A {
+while (x==0) {
+  if (x==0) then{
+	a = a + b;
+  } else {
+	b = a;
+  }
+  while (x==0) {
+	c = a +b;
+	if (x == a) then{
+		a = b + 2;
+	} else {
+		c = a;
+		while (x==0)
+		{
+			a = a + b;
+		}
+	}
+  }
+}
+}
+  )";
+	std::stringstream ss;
+	ss << program;
+	std::list<Token> tokens = Lexer::tokenize(ss);
+	auto pkb = Parser::parseSIMPLE(tokens);
+	DesignExtractor::populateDesigns(pkb);
+	auto affectsTable = pkb->getAffects();
+	affectsTable.transitiveClosure();
+	auto affectsTTable = pkb->getAffectsT();
+	REQUIRE(affectsTable.size() == affectsTTable.size());
+	for (auto data : affectsTable.getData()) {
+		REQUIRE(affectsTTable.contains(data));
+	}
+}
