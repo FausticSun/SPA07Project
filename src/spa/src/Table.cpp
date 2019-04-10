@@ -213,16 +213,16 @@ void Table::naturalJoin(const Table &other,
                         std::set<int> &otherDiffIndices) {
   std::set<DataRow> newData;
   // Create Hash Table for Hash-Join
-  std::map<DataRow, std::set<DataRow>> hashTable;
+  std::map<DataRow, std::deque<DataRow>> hashTable;
   for (auto &dataRow : data) {
     DataRow key;
     for (auto &commonIdx : commonIndices) {
       key.emplace_back(dataRow[commonIdx.first]);
     }
     if (hashTable.count(key)) {
-      hashTable.at(key).emplace(dataRow);
+      hashTable.at(key).emplace_back(dataRow);
     } else {
-      hashTable.emplace(key, std::set<DataRow>({dataRow}));
+      hashTable.emplace(std::move(key), std::deque<DataRow>({dataRow}));
     }
   }
   // Iterate through the other table
