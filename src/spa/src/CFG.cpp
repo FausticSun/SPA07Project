@@ -256,6 +256,9 @@ bool CFG::isNextT(int start, int end) {
 }
 
 std::deque<int> CFG::getAffectsForward(int start, std::string v) {
+  if (affectsForwardCache.count(start)) {
+    return affectsForwardCache.at(start);
+  }
   std::vector<std::vector<int>> compressedCFG = forwardCompressedGraph;
   std::deque<int> results;
   // Initialize visited array
@@ -272,7 +275,8 @@ std::deque<int> CFG::getAffectsForward(int start, std::string v) {
     }
     if (modifiesTable.contains({std::to_string(node), v})) {
       // v is modified in a line in the start node
-      return results;
+      auto cacheRes = affectsForwardCache.emplace(start, std::move(results));
+      return cacheRes.first->second;
     }
     visited[node] = true;
   }
@@ -308,10 +312,14 @@ std::deque<int> CFG::getAffectsForward(int start, std::string v) {
       }
     }
   }
-  return results;
+  auto cacheRes = affectsForwardCache.emplace(start, std::move(results));
+  return cacheRes.first->second;
 }
 
 std::deque<int> CFG::getAffectsReverse(int start, std::string v) {
+  if (affectsReverseCache.count(start)) {
+    return affectsReverseCache.at(start);
+  }
   std::vector<std::vector<int>> compressedCFG = reverseCompressedGraph;
   std::deque<int> results;
   // Initialize visited array
@@ -328,7 +336,8 @@ std::deque<int> CFG::getAffectsReverse(int start, std::string v) {
     }
     if (modifiesTable.contains({std::to_string(node), v})) {
       // v is modified in any line in the start node
-      return results;
+      auto cacheRes = affectsReverseCache.emplace(start, std::move(results));
+      return cacheRes.first->second;
     }
     visited[node] = true;
   }
@@ -367,7 +376,8 @@ std::deque<int> CFG::getAffectsReverse(int start, std::string v) {
       }
     }
   }
-  return results;
+  auto cacheRes = affectsReverseCache.emplace(start, std::move(results));
+  return cacheRes.first->second;
 }
 
 bool CFG::isAffects(int a1, int a2) {
@@ -404,10 +414,7 @@ Table CFG::getAffects(int start, bool isForward) {
     modifiesATable.filterColumn("a1", {std::to_string(start)});
     // modifiesATable has one variable after filter
     assert(modifiesATable.size() == 1);
-    std::string v;
-    for (auto data : modifiesATable.getData({"v"})) {
-      v = data[0];
-    }
+    auto v = *modifiesATable.getColumn("v").begin();
     result = getAffectsForward(start, v);
   } else {
     // Affects(a, k) utilizes reverseCompressedGraph, k here is a constant
@@ -420,8 +427,8 @@ Table CFG::getAffects(int start, bool isForward) {
       variables.emplace_back(data[0]);
     }
     for (auto v : variables) {
-      auto temp = getAffectsReverse(start, v);
-      result.insert(result.end(), temp.begin(), temp.end());
+      auto partialResults = getAffectsReverse(start, v);
+      result.insert(result.end(), partialResults.begin(), partialResults.end());
     }
   }
   for (int i : result) {
@@ -441,191 +448,15 @@ Table CFG::getAffects() {
   return table;
 }
 
-std::map<int, std::set<int>> CFG::getAffectsTResults(
-    int start, Table modifiesTable, Table parentTable,
-    std::map<int, StatementType> stmtMap,
-    std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap) {
-  std::map<int, std::set<int>> results;
-  std::vector<int> visited(initialGraph.size(), 0);
-  std::vector<int> inDegreeCopy = inDegree;
-  std::vector<int> inDegreeBeforeCopy = inDegreeBefore;
-  std::vector<int> inDegreeAfterCopy = inDegreeAfter;
-  visited[start]++;
-  // allow traversal to go in while loop twice
-  for (auto stmt : stmtMap) {
-    if (stmt.second == StatementType::While) {
-      inDegreeAfterCopy[stmt.first] *= 2;
-    }
-  }
-  // start node is while should not be count as visit
-  if (stmtMap[start] == StatementType::While) {
-    visited[start]--;
-  }
-  std::map<int, std::vector<std::pair<std::string, int>>> basketsToMerge;
-  std::queue<std::pair<int, std::vector<std::pair<std::string, int>>>> queue;
-  std::vector<std::pair<std::string, int>> emptyBasket;
-  queue.push(std::make_pair(start, emptyBasket));
+bool CFG::isAffectsT(int a1, int a2) { return true; }
 
-  while (!queue.empty()) {
-    auto curr = queue.front();
-    queue.pop();
-    auto node = curr.first;
-    auto basket = curr.second;
-    auto nodeType = stmtMap.at(node);
-    std::vector<std::pair<std::string, int>> newBasket = basket;
+Table CFG::getAffectsT(int start, bool isForward) { return Table{1}; }
 
-    switch (nodeType) {
-    case StatementType::Assign: {
-      // add to results if used variable is in basket
-      auto usedVars = assignMap[node].second;
-      for (auto it = newBasket.begin(); it != newBasket.end(); ++it) {
-        auto var = (*it).first;
-        auto line = (*it).second;
-        if (std::find(usedVars.begin(), usedVars.end(), var) !=
-            usedVars.end()) {
-          results[node].insert(line);
-          // backtrack to retrieve more results if any
-          std::vector<bool> innerVisited(initialGraph.size(), false);
-          std::queue<int> innerQueue;
-          innerQueue.push(node);
-          while (!innerQueue.empty()) {
-            auto i = innerQueue.front();
-            innerQueue.pop();
-            for (auto j : results[i]) {
-              if (!innerVisited[j]) {
-                innerVisited[j] = true;
-                innerQueue.push(j);
-                results[node].insert(j);
-              }
-            }
-          }
-        }
-      }
-      // remove if modified variable is in basket
-      auto modifiedVar = assignMap[node].first;
-      auto it = newBasket.begin();
-      while (it != newBasket.end()) {
-        if (modifiesTable.contains(
-                {std::to_string((*it).second), modifiedVar})) {
-          it = newBasket.erase(it);
-        } else {
-          ++it;
-        }
-      }
-      newBasket.emplace_back(std::make_pair(modifiedVar, node));
-      break;
-    }
-    case StatementType::Read: {
-      // only need to remove only one variable
-      auto it = newBasket.begin();
-      while (it != newBasket.end()) {
-        if (modifiesTable.contains({std::to_string(node), (*it).first})) {
-          it = newBasket.erase(it);
-          break;
-        } else {
-          ++it;
-        }
-      }
-      break;
-    }
-    case StatementType::Call: {
-      // can remove more than one variable
-      auto it = newBasket.begin();
-      while (it != newBasket.end()) {
-        if (modifiesTable.contains({std::to_string(node), (*it).first})) {
-          it = newBasket.erase(it);
-        } else {
-          ++it;
-        }
-      }
-      break;
-    }
-    }
-
-    // traverse to neighbours if possible
-    for (int v : initialGraph[node]) {
-      // ensure while block is done before enqueue other neighbours of while
-      // node
-      bool canVisit =
-          stmtMap[node] != StatementType::While ||
-          parentTable.contains({std::to_string(node), std::to_string(v)}) ||
-          visited[node] == inDegreeCopy[node];
-      if ((visited[v] < inDegreeBeforeCopy[v] + inDegreeAfterCopy[v]) &&
-          canVisit) {
-        visited[v]++;
-        // merge if neighbour has total indegree > 1
-        if (inDegreeBeforeCopy[v] + inDegreeAfterCopy[v] > 1) {
-          if (basketsToMerge[v].empty()) {
-            basketsToMerge[v] = newBasket;
-          } else {
-            std::set<std::pair<std::string, int>> basketSet;
-            for (auto pair : basketsToMerge[v]) {
-              basketSet.insert(pair);
-            }
-            for (auto pair : newBasket) {
-              basketSet.insert(pair);
-            }
-            basketsToMerge[v].clear();
-            for (auto pair : basketSet) {
-              basketsToMerge[v].emplace_back(pair);
-            }
-          }
-        }
-        // enqueue neighbour if enough visits from before
-        if (node < v && visited[v] == inDegreeBeforeCopy[v]) {
-          if (inDegreeBeforeCopy[v] + inDegreeAfterCopy[v] > 1) {
-            queue.push(std::make_pair(v, basketsToMerge[v]));
-          } else {
-            queue.push(std::make_pair(v, newBasket));
-          }
-        }
-        bool isWhile = stmtMap[v] == StatementType::While;
-        // enqueue neighbour after first loop
-        if (isWhile && node > v &&
-            visited[v] == inDegreeBeforeCopy[v] + inDegreeAfterCopy[v] / 2) {
-          if (inDegreeBeforeCopy[v] + inDegreeAfterCopy[v] > 1) {
-            queue.push(std::make_pair(v, basketsToMerge[v]));
-          } else {
-            queue.push(std::make_pair(v, newBasket));
-          }
-          // reset for nodes in while block to allow revisit
-          for (int s : whileParentMap.at(v)) {
-            visited[s] = 0;
-          }
-        }
-        // enqueue neighbour after second loop
-        if (isWhile && node > v &&
-            visited[v] == inDegreeBeforeCopy[v] + inDegreeAfterCopy[v]) {
-          if (inDegreeBeforeCopy[v] + inDegreeAfterCopy[v] > 1) {
-            queue.push(std::make_pair(v, basketsToMerge[v]));
-          } else {
-            queue.push(std::make_pair(v, newBasket));
-          }
-        }
-      }
-    }
-  }
-  return results;
-}
-
-Table CFG::getAffectsT(
-    Table modifiesTable, Table parentTable,
-    std::map<int, StatementType> stmtMap,
-    std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap) {
-  Table table{2};
-  for (auto data : procStmtTable.getData()) {
-    std::map<int, std::set<int>> results = getAffectsTResults(
-        std::stoi(data[1]), modifiesTable, parentTable, stmtMap, assignMap);
-    for (auto to : results) {
-      for (auto from : to.second) {
-        table.insertRow({std::to_string(from), std::to_string(to.first)});
-      }
-    }
-  }
-  return table;
-}
+Table CFG::getAffectsT() { return Table{1}; }
 
 void CFG::clearCache() {
   affectsForwardCache.clear();
   affectsReverseCache.clear();
+  affectsTForwardCache.clear();
+  affectsTReverseCache.clear();
 }

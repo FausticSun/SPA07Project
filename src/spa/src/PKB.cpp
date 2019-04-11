@@ -154,9 +154,11 @@ Table PKB::getNextBip() const { return nextBipTable; }
 Table PKB::getNextBipT() const { return nextBipTTable; }
 
 bool PKB::isNextT(int start, int end) { return cfg.isNextT(start, end); }
+
 Table PKB::getNextT(int s, bool isLeftConstant) {
   return cfg.getNextT(s, isLeftConstant);
 }
+
 Table PKB::getNextT() { return cfg.getNextT(); }
 
 bool PKB::isAffects(int a1, int a2) {
@@ -169,20 +171,26 @@ bool PKB::isAffects(int a1, int a2) {
     return cfg.isAffects(a1, a2);
   }
 }
-Table PKB::getAffects(int a1, bool isLeftConstant) {
-  // Only query from CFG if a1 is assign statement
+
+Table PKB::getAffects(int start, bool isLeftConstant) {
+  // Only query from CFG if start is assign statement
   auto assignStmts = stmtTable.at(StatementType::Assign);
-  if (assignStmts.find(a1) == assignStmts.end()) {
+  if (assignStmts.find(start) == assignStmts.end()) {
     return Table{1};
   } else {
-    return cfg.getAffects(a1, isLeftConstant);
+    return cfg.getAffects(start, isLeftConstant);
   }
 }
+
 Table PKB::getAffects() { return cfg.getAffects(); }
 
-Table PKB::getAffectsT() {
-  return cfg.getAffectsT(modifiesSTable, parentTable, stmtMap, assignMap);
+bool PKB::isAffectsT(int a1, int a2) { return cfg.isAffectsT(a1, a2); }
+
+Table PKB::getAffectsT(int start, bool isLeftConstant) {
+  return cfg.getAffectsT(start, isLeftConstant);
 }
+
+Table PKB::getAffectsT() { return cfg.getAffectsT(); }
 
 Table PKB::getCallProcNameTable() const { return callProcNameTable; }
 

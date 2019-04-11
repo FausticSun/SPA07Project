@@ -2,7 +2,6 @@
 #include "Table.h"
 #include "Util.h"
 #include <deque>
-#include <list>
 #include <map>
 
 class CFG {
@@ -18,6 +17,8 @@ private:
   // Cache
   std::map<int, std::deque<int>> affectsForwardCache;
   std::map<int, std::deque<int>> affectsReverseCache;
+  std::map<int, std::deque<int>> affectsTForwardCache;
+  std::map<int, std::deque<int>> affectsTReverseCache;
 
   // Other information
   Table procStmtTable{1};
@@ -46,9 +47,8 @@ private:
   std::deque<int> getAffectsReverse(int, std::string);
 
   // Method for traversal to retrieve Affects* relations
-  std::map<int, std::set<int>> getAffectsTResults(
-      int, Table, Table, std::map<int, StatementType>,
-      std::map<int, std::pair<std::string, std::vector<std::string>>>);
+  std::deque<int> getAffectsTForward(int, std::string);
+  std::deque<int> getAffectsTReverse(int, std::string);
 
 public:
   CFG();
@@ -65,9 +65,9 @@ public:
   Table getAffects(int, bool);
 
   // Getter for Affects*
-  Table
-  getAffectsT(Table, Table, std::map<int, StatementType>,
-              std::map<int, std::pair<std::string, std::vector<std::string>>>);
+  bool isAffectsT(int, int);
+  Table getAffectsT();
+  Table getAffectsT(int, bool);
 
   void clearCache();
 };

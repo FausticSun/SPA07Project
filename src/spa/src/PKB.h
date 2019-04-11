@@ -111,6 +111,8 @@ public:
   bool isAffects(int, int);
   Table getAffects(int, bool);
   Table getAffects();
+  bool isAffectsT(int, int);
+  Table getAffectsT(int, bool);
   Table getAffectsT();
 
   Table getCallProcNameTable() const;
