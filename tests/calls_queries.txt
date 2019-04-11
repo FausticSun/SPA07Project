@@ -383,3 +383,183 @@ stmt s,s1; assign a;
 Select BOOLEAN such that Affects*(73, 71)
 TRUE
 5000
+78-comment
+stmt s,s1; assign a;
+Select BOOLEAN such that Modifies(a, "1a")
+none
+5000
+79-comment
+stmt s,s1; assign a;
+Select BOOLEAN such that Modifies(a, "a1")
+FALSE
+5000
+80-comment
+stmt s,s1; assign 1a;
+Select BOOLEAN such that Modifies(1a, "a1")
+none
+5000
+81-comment
+stmt s,s1; assign a;
+Select BOOLEAN such that Modifies(a1, "a1")
+FALSE
+5000
+82-comment
+
+Select BOOLEAN 
+TRUE
+5000
+83-comment
+stmt s,s1; assign a;
+Select BOOLEAN such that Modifies(a, "a1") and Uses(a, "a1") and pattern a("a1",_)
+none
+5000
+84-comment
+stmt s,s1; assign a;
+Select BOOLEAN such that Modifies(a, "a1") and Uses(a, "a1") pattern a("a1",_)
+FALSE
+5000
+85-comment
+stm s,s1; assign a;
+Select BOOLEAN such that Modifies(a, "a1")
+none
+5000
+86-comment
+stmt s,s1; assign a;
+Selct BOOLEAN such that Modifies(a, "a1")
+none
+5000
+87-comment
+stmt s,s1; assign a;
+Select such that Modifies(a, "a1")
+none
+5000
+88-comment
+stmt s,s1; assign a;
+Select <BOOLEAN> such that Modifies(a, "a1")
+none
+5000
+89-comment
+stmt s,s1; assign a;
+Select <a, BOOLEAN> such that Modifies(a, "a1")
+none
+5000
+90-comment
+stmt s,s1; assign a;
+Select BOOLEAN with a.stmt# = s
+FALSE
+5000
+91-comment
+stmt s,s1; assign a;
+Select BOOLEAN with a.stmt# = "5"
+none
+5000
+92-comment
+stmt s,s1; assign a;
+Select BOOLEAN with a.stmt# = "a"
+FALSE
+5000
+93-comment
+stmt s,s1; assign a;
+Select BOOLEAN with a.varName = "a"
+FALSE
+5000
+94-comment
+stmt s,s1; assign a; procedure p;
+Select BOOLEAN with p.value = 5
+FALSE
+5000
+95-comment
+stmt s,s1; assign a; procedure p;
+Select BOOLEAN such that Modifies(_, "a")
+FALSE
+5000
+96-comment
+stmt s,s1; assign a; procedure p;
+Select BOOLEAN such that Uses(_, "a")
+FALSE
+5000
+97-comment
+stmt s,s1; assign a; procedure p; while w;
+Select BOOLEAN such that Parent(w, "a")
+FALSE
+5000
+98-comment
+stmt s,s1; assign a; procedure p; while w;
+Select BOOLEAN such that Calls(5, "a")
+FALSE
+5000
+99-comment
+stmt s,s1; assign a; procedure p; while w;
+Select BOOLEAN such that Affects(5, w)
+FALSE
+5000
+100-comment
+stmt s,s1; assign a; procedure p; while w;
+Select BOOLEAN pattern s(_,_)
+FALSE
+5000
+101-comment
+stmt s,s1; assign a; procedure p; while w;
+Select BOOLEAN pattern w(_,_,_)
+none
+5000
+102-comment
+stmt s,s1; assign a; procedure p; while w; if ifs;
+Select BOOLEAN pattern ifs(_,_)
+none
+5000
+103-comment
+stmt s,s1; assign a; procedure p; while w; if ifs;
+Select BOOLEAN pattern a(_,_"a")
+none
+5000
+104-comment
+stmt s,s1; assign a; procedure p; while w; if ifs;
+Select BOOLEAN pattern a(_,"a^2")
+none
+5000
+105-comment
+stmt s,s1; assign a; procedure p; while w; if ifs;
+Select BOOLEAN pattern ifs(_,"a*2",_)
+none
+5000
+106-comment
+stmt s,s1; assign a; procedure p; while w; if ifs;
+Select BOOLEAN with 12 = 12
+TRUE
+5000
+107-comment
+stmt s,s1; assign a; procedure p; while w; if ifs;
+Select a such that Parent* (w,a) pattern a("x",_) and Next* (1, a)
+none
+5000
+108-comment
+call c; procedure p,p1,p2;assign a; prog_line pl;variable v, v1, v2;while w; if ifs, ifs2;stmt s,s1,s2; constant cons;
+Select <p,v,s1, s2, v2> such that Uses(p,v) with p.procName = p1.procName such that Calls(p1,"A") such that Uses(p1, v) and Modifies(s, v) with s1.stmt# = cons.value such that Parent*(ifs, s1) such that Parent(w,s2) and Follows(s2,_) and Parent(s2,_) with s2.stmt# = ifs2.stmt# pattern ifs2(v1,_,_) with v1.varName = v2.varName such that Modifies("G", v2) and Affects*(_,_)
+G a 16 14 d,G a 16 14 r,G a 16 86 a,G a 16 86 t,G a 4 14 d,G a 4 14 r,G a 4 86 a,G a 4 86 t,G a 5 14 d,G a 5 14 r,G a 5 86 a,G a 5 86 t,G a 6 14 d,G a 6 14 r,G a 6 86 a,G a 6 86 t,G a 7 14 d,G a 7 14 r,G a 7 86 a,G a 7 86 t,G b 16 14 d,G b 16 14 r,G b 16 86 a,G b 16 86 t,G b 4 14 d,G b 4 14 r,G b 4 86 a,G b 4 86 t,G b 5 14 d,G b 5 14 r,G b 5 86 a,G b 5 86 t,G b 6 14 d,G b 6 14 r,G b 6 86 a,G b 6 86 t,G b 7 14 d,G b 7 14 r,G b 7 86 a,G b 7 86 t,G c 16 14 d,G c 16 14 r,G c 16 86 a,G c 16 86 t,G c 4 14 d,G c 4 14 r,G c 4 86 a,G c 4 86 t,G c 5 14 d,G c 5 14 r,G c 5 86 a,G c 5 86 t,G c 6 14 d,G c 6 14 r,G c 6 86 a,G c 6 86 t,G c 7 14 d,G c 7 14 r,G c 7 86 a,G c 7 86 t,G d 16 14 d,G d 16 14 r,G d 16 86 a,G d 16 86 t,G d 4 14 d,G d 4 14 r,G d 4 86 a,G d 4 86 t,G d 5 14 d,G d 5 14 r,G d 5 86 a,G d 5 86 t,G d 6 14 d,G d 6 14 r,G d 6 86 a,G d 6 86 t,G d 7 14 d,G d 7 14 r,G d 7 86 a,G d 7 86 t,G e 16 14 d,G e 16 14 r,G e 16 86 a,G e 16 86 t,G e 4 14 d,G e 4 14 r,G e 4 86 a,G e 4 86 t,G e 5 14 d,G e 5 14 r,G e 5 86 a,G e 5 86 t,G e 6 14 d,G e 6 14 r,G e 6 86 a,G e 6 86 t,G e 7 14 d,G e 7 14 r,G e 7 86 a,G e 7 86 t,G g 16 14 d,G g 16 14 r,G g 16 86 a,G g 16 86 t,G g 4 14 d,G g 4 14 r,G g 4 86 a,G g 4 86 t,G g 5 14 d,G g 5 14 r,G g 5 86 a,G g 5 86 t,G g 6 14 d,G g 6 14 r,G g 6 86 a,G g 6 86 t,G g 7 14 d,G g 7 14 r,G g 7 86 a,G g 7 86 t,G i 16 14 d,G i 16 14 r,G i 16 86 a,G i 16 86 t,G i 4 14 d,G i 4 14 r,G i 4 86 a,G i 4 86 t,G i 5 14 d,G i 5 14 r,G i 5 86 a,G i 5 86 t,G i 6 14 d,G i 6 14 r,G i 6 86 a,G i 6 86 t,G i 7 14 d,G i 7 14 r,G i 7 86 a,G i 7 86 t,G q 16 14 d,G q 16 14 r,G q 16 86 a,G q 16 86 t,G q 4 14 d,G q 4 14 r,G q 4 86 a,G q 4 86 t,G q 5 14 d,G q 5 14 r,G q 5 86 a,G q 5 86 t,G q 6 14 d,G q 6 14 r,G q 6 86 a,G q 6 86 t,G q 7 14 d,G q 7 14 r,G q 7 86 a,G q 7 86 t,G r 16 14 d,G r 16 14 r,G r 16 86 a,G r 16 86 t,G r 4 14 d,G r 4 14 r,G r 4 86 a,G r 4 86 t,G r 5 14 d,G r 5 14 r,G r 5 86 a,G r 5 86 t,G r 6 14 d,G r 6 14 r,G r 6 86 a,G r 6 86 t,G r 7 14 d,G r 7 14 r,G r 7 86 a,G r 7 86 t,G result 16 14 d,G result 16 14 r,G result 16 86 a,G result 16 86 t,G result 4 14 d,G result 4 14 r,G result 4 86 a,G result 4 86 t,G result 5 14 d,G result 5 14 r,G result 5 86 a,G result 5 86 t,G result 6 14 d,G result 6 14 r,G result 6 86 a,G result 6 86 t,G result 7 14 d,G result 7 14 r,G result 7 86 a,G result 7 86 t,G some 16 14 d,G some 16 14 r,G some 16 86 a,G some 16 86 t,G some 4 14 d,G some 4 14 r,G some 4 86 a,G some 4 86 t,G some 5 14 d,G some 5 14 r,G some 5 86 a,G some 5 86 t,G some 6 14 d,G some 6 14 r,G some 6 86 a,G some 6 86 t,G some 7 14 d,G some 7 14 r,G some 7 86 a,G some 7 86 t,G t 16 14 d,G t 16 14 r,G t 16 86 a,G t 16 86 t,G t 4 14 d,G t 4 14 r,G t 4 86 a,G t 4 86 t,G t 5 14 d,G t 5 14 r,G t 5 86 a,G t 5 86 t,G t 6 14 d,G t 6 14 r,G t 6 86 a,G t 6 86 t,G t 7 14 d,G t 7 14 r,G t 7 86 a,G t 7 86 t,G w 16 14 d,G w 16 14 r,G w 16 86 a,G w 16 86 t,G w 4 14 d,G w 4 14 r,G w 4 86 a,G w 4 86 t,G w 5 14 d,G w 5 14 r,G w 5 86 a,G w 5 86 t,G w 6 14 d,G w 6 14 r,G w 6 86 a,G w 6 86 t,G w 7 14 d,G w 7 14 r,G w 7 86 a,G w 7 86 t,G x 16 14 d,G x 16 14 r,G x 16 86 a,G x 16 86 t,G x 4 14 d,G x 4 14 r,G x 4 86 a,G x 4 86 t,G x 5 14 d,G x 5 14 r,G x 5 86 a,G x 5 86 t,G x 6 14 d,G x 6 14 r,G x 6 86 a,G x 6 86 t,G x 7 14 d,G x 7 14 r,G x 7 86 a,G x 7 86 t,G y 16 14 d,G y 16 14 r,G y 16 86 a,G y 16 86 t,G y 4 14 d,G y 4 14 r,G y 4 86 a,G y 4 86 t,G y 5 14 d,G y 5 14 r,G y 5 86 a,G y 5 86 t,G y 6 14 d,G y 6 14 r,G y 6 86 a,G y 6 86 t,G y 7 14 d,G y 7 14 r,G y 7 86 a,G y 7 86 t
+5000
+109-comment
+call c; procedure p,p1,p2;assign a; prog_line pl;variable v, v1, v2;while w; if ifs, ifs2;stmt s,s1,s2; constant cons;
+Select <p,v,s1, s2, v2> such that Uses(p,v) with p.procName = p1.procName such that Calls(p1,"A") such that Uses(p1, v) and Modifies(s, v) with s1.stmt# = cons.value such that Parent*(ifs, s1) such that Parent(w,s2) and Follows(s2,_) and Parent(s2,_) with s2.stmt# = ifs2.stmt# pattern ifs2(v1,_,_) with v1.varName = v2.varName such that Modifies("G", v2) and Affects*(_,s1)
+G a 6 14 d,G a 6 14 r,G a 6 86 a,G a 6 86 t,G b 6 14 d,G b 6 14 r,G b 6 86 a,G b 6 86 t,G c 6 14 d,G c 6 14 r,G c 6 86 a,G c 6 86 t,G d 6 14 d,G d 6 14 r,G d 6 86 a,G d 6 86 t,G e 6 14 d,G e 6 14 r,G e 6 86 a,G e 6 86 t,G g 6 14 d,G g 6 14 r,G g 6 86 a,G g 6 86 t,G i 6 14 d,G i 6 14 r,G i 6 86 a,G i 6 86 t,G q 6 14 d,G q 6 14 r,G q 6 86 a,G q 6 86 t,G r 6 14 d,G r 6 14 r,G r 6 86 a,G r 6 86 t,G result 6 14 d,G result 6 14 r,G result 6 86 a,G result 6 86 t,G some 6 14 d,G some 6 14 r,G some 6 86 a,G some 6 86 t,G t 6 14 d,G t 6 14 r,G t 6 86 a,G t 6 86 t,G w 6 14 d,G w 6 14 r,G w 6 86 a,G w 6 86 t,G x 6 14 d,G x 6 14 r,G x 6 86 a,G x 6 86 t,G y 6 14 d,G y 6 14 r,G y 6 86 a,G y 6 86 t
+5000
+110-comment
+call c; procedure p,p1,p2;assign a; prog_line pl;variable v, v1, v2;while w; if ifs, ifs2;stmt s,s1,s2; constant cons;
+Select <p,v,s1, s2, v2> such that Uses(p,v) with p.procName = p1.procName such that Calls(p1,"A") such that Uses(p1, v) and Modifies(s, v) with s1.stmt# = cons.value such that Parent*(ifs, s1) such that Parent(w,s2) and Follows(s2,_) and Parent(s2,_) with s2.stmt# = ifs2.stmt# pattern ifs2(v1,_,_) with v1.varName = v2.varName such that Modifies("G", v2) and Affects*(_,s2)
+none
+5000
+111-comment
+call c; procedure p,p1,p2;assign a; prog_line pl;variable v, v1, v2;while w; if ifs, ifs2;stmt s,s1,s2; constant cons;
+Select <p,v,s1, s2, v2> such that Uses(p,v) with p.procName = p1.procName such that Calls(p1,"A") such that Uses(p1, v) and Modifies(s, v) with s1.stmt# = cons.value such that Parent*(ifs, s1) such that Parent(w,s2) and Follows(s2,_) and Parent(s2,_) with s2.stmt# = ifs2.stmt# pattern ifs2(v1,_,_) with v1.varName = v2.varName such that Modifies("G", v2) and Affects*(_,_) and Next*(s1, s2)
+G a 16 14 d,G a 16 14 r,G b 16 14 d,G b 16 14 r,G c 16 14 d,G c 16 14 r,G d 16 14 d,G d 16 14 r,G e 16 14 d,G e 16 14 r,G g 16 14 d,G g 16 14 r,G i 16 14 d,G i 16 14 r,G q 16 14 d,G q 16 14 r,G r 16 14 d,G r 16 14 r,G result 16 14 d,G result 16 14 r,G some 16 14 d,G some 16 14 r,G t 16 14 d,G t 16 14 r,G w 16 14 d,G w 16 14 r,G x 16 14 d,G x 16 14 r,G y 16 14 d,G y 16 14 r
+5000
+112-comment
+call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2;while w; if ifs, ifs2;stmt s,s1,s2; constant cons;
+Select <p,v,s1, s2, v2, a, a1> such that Uses(p,v) with p.procName = p1.procName such that Calls(p1,"A") such that Uses(p1, v) and Modifies(s, v) with s1.stmt# = cons.value such that Parent*(ifs, s1) such that Parent(w,s2) and Follows(s2,_) and Parent(s2,_) with s2.stmt# = ifs2.stmt# pattern ifs2(v1,_,_) with v1.varName = v2.varName such that Modifies("G", v2) and Affects*(_,_) and Next*(s1, s2) and Affects(a, a1) and Next(a1,a)
+G a 16 14 d 36 35,G a 16 14 r 36 35,G b 16 14 d 36 35,G b 16 14 r 36 35,G c 16 14 d 36 35,G c 16 14 r 36 35,G d 16 14 d 36 35,G d 16 14 r 36 35,G e 16 14 d 36 35,G e 16 14 r 36 35,G g 16 14 d 36 35,G g 16 14 r 36 35,G i 16 14 d 36 35,G i 16 14 r 36 35,G q 16 14 d 36 35,G q 16 14 r 36 35,G r 16 14 d 36 35,G r 16 14 r 36 35,G result 16 14 d 36 35,G result 16 14 r 36 35,G some 16 14 d 36 35,G some 16 14 r 36 35,G t 16 14 d 36 35,G t 16 14 r 36 35,G w 16 14 d 36 35,G w 16 14 r 36 35,G x 16 14 d 36 35,G x 16 14 r 36 35,G y 16 14 d 36 35,G y 16 14 r 36 35
+5000
+113-comment
+call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2, v3;while w; if ifs, ifs2;stmt s,s1,s2; constant cons;
+Select <p,v,s1, s2, v2, a, a1> such that Uses(p,v) with p.procName = p1.procName such that Calls(p1,"A") such that Uses(p1, v) and Modifies(s, v) with s1.stmt# = cons.value such that Parent*(ifs, s1) such that Parent(w,s2) and Follows(s2,_) and Parent(s2,_) with s2.stmt# = ifs2.stmt# pattern ifs2(v1,_,_) with v1.varName = v2.varName such that Modifies("G", v2) and Affects*(_,_) and Next*(s1, s2) and Affects(a, a1) and Next(a1,a) pattern a("y", _"c+2"_) and a1(v3, _"y/z"_) with v3.varName = "x"
+G a 16 14 d 36 35,G a 16 14 r 36 35,G b 16 14 d 36 35,G b 16 14 r 36 35,G c 16 14 d 36 35,G c 16 14 r 36 35,G d 16 14 d 36 35,G d 16 14 r 36 35,G e 16 14 d 36 35,G e 16 14 r 36 35,G g 16 14 d 36 35,G g 16 14 r 36 35,G i 16 14 d 36 35,G i 16 14 r 36 35,G q 16 14 d 36 35,G q 16 14 r 36 35,G r 16 14 d 36 35,G r 16 14 r 36 35,G result 16 14 d 36 35,G result 16 14 r 36 35,G some 16 14 d 36 35,G some 16 14 r 36 35,G t 16 14 d 36 35,G t 16 14 r 36 35,G w 16 14 d 36 35,G w 16 14 r 36 35,G x 16 14 d 36 35,G x 16 14 r 36 35,G y 16 14 d 36 35,G y 16 14 r 36 35
+5000
