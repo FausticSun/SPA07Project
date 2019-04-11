@@ -23,6 +23,7 @@ Lexer::Token PQLParser::expect(Lexer::Token token) {
   return token;
 }
 
+// select-cl: declaration* 'Select' result-cl clauses
 void PQLParser::parseQuery() {
   while (!tokens.empty() && tokens.front().value != "Select") {
     parseDeclaration();
@@ -34,6 +35,10 @@ void PQLParser::parseQuery() {
   }
 }
 
+// declaration: design-entity IDENT ( ',' IDENT )* ';'
+// design-entity : 'stmt' | 'read' | 'print' | 'call' | 'while' | 'if' |
+// 'assign' | 'variable' | 'constant' | 'prog_line' | 'procedure'
+// Validates design-entity and repeated declarations of synonyms
 void PQLParser::parseDeclaration() {
   auto designEntityToken = expect(PQLTokens::Identifier);
   if (designEntityToken.value == "prog") {
@@ -58,6 +63,7 @@ void PQLParser::parseDeclaration() {
   expect(PQLTokens::Semicolon);
 }
 
+// clauses: ( suchthat-cl | with-cl | pattern-cl )*
 void PQLParser::parseClauses() {
   if (tokens.front() == PQLTokens::With) {
     parseWithCl();
@@ -70,6 +76,8 @@ void PQLParser::parseClauses() {
   }
 }
 
+// result-cl: tuple | 'BOOLEAN'
+// Sets the target in Query if it is 'BOOLEAN'
 void PQLParser::parseResultCl() {
   if (tokens.front() == PQLTokens::Boolean) {
     expect(PQLTokens::Boolean);
@@ -79,6 +87,8 @@ void PQLParser::parseResultCl() {
   }
 }
 
+// tuple: elem | '<' elem ( ',' elem )* '>'
+// Sets the targets in Query
 void PQLParser::parseTuple() {
   if (tokens.front().type == TokenType::Identifier) {
     query.target.emplace_back(parseElem());
@@ -93,11 +103,13 @@ void PQLParser::parseTuple() {
   }
 }
 
+// with-cl: 'with' attrCond
 void PQLParser::parseWithCl() {
   expect(PQLTokens::With);
   parseAttrCond();
 }
 
+// attrCond: attrCompare ( 'and' attrCompare )*
 void PQLParser::parseAttrCond() {
   parseAttrCompare();
   while (!tokens.empty() && tokens.front() == PQLTokens::And) {
@@ -106,6 +118,9 @@ void PQLParser::parseAttrCond() {
   }
 }
 
+// attrCompare: ref '=' ref
+// Validates the refs to be of the same type
+// Sets the with clause in the query
 void PQLParser::parseAttrCompare() {
   auto attrRef1 = parseRef();
   expect(PQLTokens::Equals);
@@ -119,6 +134,8 @@ void PQLParser::parseAttrCompare() {
   query.clauses.emplace_back(withCl);
 }
 
+// attrRef: synonym '.' attrName
+// Validates attrName and ensure its valid for synonym
 PQLTokens::AttrRefType PQLParser::getAttRefType(QueryEntity attrRef) {
   switch (attrRef.type) {
   case QueryEntityType::Name:
@@ -139,16 +156,19 @@ PQLTokens::AttrRefType PQLParser::getAttRefType(QueryEntity attrRef) {
   }
 }
 
+// Helper to get attrName in a attrRef string
 std::string PQLParser::getAttrValue(std::string attr) {
   return attr.substr(attr.find(".") + 1);
 }
 
+// suchthat-cl: 'such that' relCond
 void PQLParser::parseSuchThatCl() {
   expect(PQLTokens::Such);
   expect(PQLTokens::That);
   parseRelCond();
 }
 
+// relCond: relRef ( 'and' relRef )*
 void PQLParser::parseRelCond() {
   parseRelRef();
   while (!tokens.empty() && tokens.front() == PQLTokens::And) {
@@ -157,6 +177,11 @@ void PQLParser::parseRelCond() {
   }
 }
 
+// relRef: relation '(' genRef ',' genRef ')'
+// relation: 'Modifies' | 'Uses' | 'Calls' | 'Calls*' | 'Parent' | 'Parent*' |
+// 'Follows' | 'Follows*' | 'Next' | 'Next*' | 'Affects' | 'Affects*'
+// Validates relation and ensure its valid (i.e. one of the above)
+// Also calls validation on the parsed relRef
 void PQLParser::parseRelRef() {
   // Alt type determines if the clause is of an "alternate type"
   // For Parent, Follows, Call, Next, Affects, the alt type is transitive
@@ -188,6 +213,8 @@ void PQLParser::parseRelRef() {
   query.clauses.emplace_back(suchThatCl);
 }
 
+// Validates relRef ensuring the 2 genRefs are of valid type for the given
+// relation
 void PQLParser::validateSuchThatCl(Clause suchThatCl) {
   auto allowedRefTypes =
       PQLTokens::allowedRefTypesMap.at(suchThatCl.clauseType);
@@ -200,17 +227,21 @@ void PQLParser::validateSuchThatCl(Clause suchThatCl) {
   }
 }
 
+// Validate the given ref against the refType (whether its stmtRef, lineRef or
+// either)
 void PQLParser::validateRef(QueryEntity ref, PQLTokens::RefType refType) {
   if (!PQLTokens::refTypeSpecificTypesMap.at(refType).count(ref.type)) {
     throwSemanticError("Invalid ref");
   }
 }
 
+// pattern-cl: 'pattern' patternCond
 void PQLParser::parsePatternCl() {
   expect(PQLTokens::Pattern);
   parsePatternCond();
 }
 
+// patternCond: pattern ( 'and' pattern )*
 void PQLParser::parsePatternCond() {
   parsePattern();
   while (!tokens.empty() && tokens.front() == PQLTokens::And) {
@@ -219,6 +250,9 @@ void PQLParser::parsePatternCond() {
   }
 }
 
+// pattern: syn ( assign | while | if )
+// Uses type of syn to decide what type of pattern to parse
+// If type is invalid, parses anyway and throw error later
 void PQLParser::parsePattern() {
   auto syn = parseSynonym();
   switch (syn.type) {
@@ -237,6 +271,8 @@ void PQLParser::parsePattern() {
   }
 }
 
+// assign: '(' entRef ',' expression-spec ')'
+// Sets pattern clause in query
 void PQLParser::parseAssign(QueryEntity syn) {
   expect(PQLTokens::LeftParentheses);
   auto entRef = parseEntRef();
@@ -248,6 +284,7 @@ void PQLParser::parseAssign(QueryEntity syn) {
   query.clauses.emplace_back(patternCl);
 }
 
+// while: '(' entRef ',' '_' ')'
 void PQLParser::parseWhile(QueryEntity syn) {
   expect(PQLTokens::LeftParentheses);
   auto entRef = parseEntRef();
@@ -259,6 +296,7 @@ void PQLParser::parseWhile(QueryEntity syn) {
   query.clauses.emplace_back(patternCl);
 }
 
+// if: '(' entRef ',' '_' ',' '_' ')'
 void PQLParser::parseIf(QueryEntity syn) {
   expect(PQLTokens::LeftParentheses);
   auto entRef = parseEntRef();
@@ -272,6 +310,7 @@ void PQLParser::parseIf(QueryEntity syn) {
   query.clauses.emplace_back(patternCl);
 }
 
+// expression-spec: quoted-expr | '_' quoted-expr '_' | '_'
 QueryEntity PQLParser::parseExprSpec() {
   QueryEntity ent;
   std::string expr = "";
@@ -295,6 +334,9 @@ QueryEntity PQLParser::parseExprSpec() {
   return ent;
 }
 
+// quoted-expr: '"' expr '"'
+// Extracts out expr and delegates parsing to ExprParser
+// Validates expr and ensure it does not contain relational operators
 std::string PQLParser::parseQuotedExpr() {
   std::list<Token> exprTokens;
   std::string expr = "";
@@ -307,11 +349,21 @@ std::string PQLParser::parseQuotedExpr() {
       tokens.pop_front();
     }
     expect(PQLTokens::Quote);
-    expr = Parser::tokensToString(Parser::parseExpr(exprTokens));
+    auto postfix = Parser::parseExpr(exprTokens);
+    for (auto token : postfix) {
+      if (ExprTokens::isRelationalOp(token)) {
+        throw std::logic_error(
+            "Non-arithmetic operators found in expression");
+      }
+    }
+    expr = Parser::tokensToString(postfix);
   }
   return expr;
 }
 
+// attrRef: synonym '.' attrName
+// attrName: 'procName' | 'varName' | 'value' | 'stmt#'
+// Validates attrName and ensure its one of the above strings
 QueryEntity PQLParser::parseAttrRef() {
   auto ent = parseSynonym();
   expect(PQLTokens::Period);
@@ -331,6 +383,8 @@ QueryEntity PQLParser::parseAttrRef() {
   return ent;
 }
 
+// ref: '"' IDENT '"' | INTEGER | attrRef | synonym
+// Validates synonym and ensure its of type prog_line
 QueryEntity PQLParser::parseRef() {
   if (tokens.front() == PQLTokens::Quote) {
     return parseName();
@@ -348,6 +402,7 @@ QueryEntity PQLParser::parseRef() {
   }
 }
 
+// genRef: '"' IDENT '"' | INTEGER | '_' | synonym
 QueryEntity PQLParser::parseGenRef() {
   if (tokens.front() == PQLTokens::Underscore) {
     return parseUnderscore();
@@ -360,6 +415,7 @@ QueryEntity PQLParser::parseGenRef() {
   }
 }
 
+// entRef: '"' IDENT '"' | '_' | synonym
 QueryEntity PQLParser::parseEntRef() {
   if (tokens.front() == PQLTokens::Underscore) {
     return parseUnderscore();
@@ -370,6 +426,7 @@ QueryEntity PQLParser::parseEntRef() {
   }
 }
 
+// entRef: INTEGER | '_' | synonym
 QueryEntity PQLParser::parseStmtRef() {
   if (tokens.front() == PQLTokens::Underscore) {
     return parseUnderscore();
@@ -380,6 +437,7 @@ QueryEntity PQLParser::parseStmtRef() {
   }
 }
 
+// lineRef: INTEGER | '_' | synonym
 QueryEntity PQLParser::parseLineRef() {
   if (tokens.front() == PQLTokens::Underscore) {
     return parseUnderscore();
@@ -390,6 +448,7 @@ QueryEntity PQLParser::parseLineRef() {
   }
 }
 
+// elem: synonym | attrRef
 QueryEntity PQLParser::parseElem() {
   if (tokens.size() < 2 || !(*std::next(tokens.begin()) == PQLTokens::Period)) {
     return parseSynonym();
@@ -398,6 +457,8 @@ QueryEntity PQLParser::parseElem() {
   }
 }
 
+// synonym: IDENT
+// Validates synonym and ensure its declared
 QueryEntity PQLParser::parseSynonym() {
   QueryEntity ent;
   auto synToken = expect(PQLTokens::Identifier);
@@ -410,6 +471,7 @@ QueryEntity PQLParser::parseSynonym() {
   return ent;
 }
 
+// Parse _ and convert it to an entity
 QueryEntity PQLParser::parseUnderscore() {
   expect(PQLTokens::Underscore);
   QueryEntity ent;
@@ -418,6 +480,7 @@ QueryEntity PQLParser::parseUnderscore() {
   return ent;
 }
 
+// Parse INTEGER and convert it to an entity
 QueryEntity PQLParser::parseLineNo() {
   auto noToken = expect(PQLTokens::Number);
   QueryEntity ent;
@@ -426,6 +489,7 @@ QueryEntity PQLParser::parseLineNo() {
   return ent;
 }
 
+// Parse '"' IDENT '"' and convert it to an entity
 QueryEntity PQLParser::parseName() {
   expect(PQLTokens::Quote);
   auto nameToken = expect(PQLTokens::Identifier);
