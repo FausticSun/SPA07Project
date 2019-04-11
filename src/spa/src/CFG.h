@@ -23,6 +23,8 @@ private:
   Table procStmtTable{1};
   Table modifiesTable{2};
   Table usesTable{2};
+  Table modifiesAssignTable{2};
+  Table usesAssignTable{2};
   Table assignTable{1};
   Table whileIfTable{1};
   std::map<int, std::set<int>> whileParentMap;
@@ -40,8 +42,8 @@ private:
   std::deque<int> getNextTReverse(int);
 
   // Methods for traversal to retrieve Affects relations
-  std::deque<int> getAffectsForward(int, std::string, Table, Table);
-  std::deque<int> getAffectsReverse(int, std::string, Table, Table);
+  std::deque<int> getAffectsForward(int, std::string);
+  std::deque<int> getAffectsReverse(int, std::string);
 
   // Method for traversal to retrieve Affects* relations
   std::map<int, std::set<int>> getAffectsTResults(

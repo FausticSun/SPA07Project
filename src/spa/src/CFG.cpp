@@ -6,12 +6,21 @@
 
 CFG::CFG() {}
 
-CFG::CFG(Table procStmtTable, Table nextTable, Table modifesTable,
+CFG::CFG(Table procStmtTable, Table nextTable, Table modifiesTable,
          Table usesTable, Table whileIfTable, Table whileParentTable,
          Table assignTable, int stmtCount)
     : procStmtTable(procStmtTable), whileIfTable(whileIfTable),
       modifiesTable(modifiesTable), usesTable(usesTable),
       assignTable(assignTable) {
+  // Populate UsesAssignTable and ModifiesAssignTable
+  assignTable.setHeader({"s"});
+  usesTable.setHeader({"s", "v"});
+  modifiesTable.setHeader({"s", "v"});
+  usesAssignTable = usesTable;
+  modifiesAssignTable = modifiesTable;
+  usesAssignTable.mergeWith(assignTable);
+  modifiesAssignTable.mergeWith(assignTable);
+
   // Populate initialGraph from nextTable (1-based indexing)
   initialGraph.resize(stmtCount + 1);
   for (auto data : nextTable.getData()) {
@@ -19,7 +28,6 @@ CFG::CFG(Table procStmtTable, Table nextTable, Table modifesTable,
     int v = std::stoi(data[1]);
     initialGraph[u].emplace_back(v);
   }
-
   // Populate inDegree
   inDegree.resize(stmtCount + 1);
   for (int i = 1; i < initialGraph.size(); ++i) {
@@ -27,7 +35,6 @@ CFG::CFG(Table procStmtTable, Table nextTable, Table modifesTable,
       inDegree[j]++;
     }
   }
-
   // Populate inDegreeBefore and inDegreeAfter
   inDegreeBefore.resize(stmtCount + 1);
   inDegreeAfter.resize(stmtCount + 1);
@@ -40,12 +47,10 @@ CFG::CFG(Table procStmtTable, Table nextTable, Table modifesTable,
       }
     }
   }
-
   // Populate whileParentMap
   for (auto data : whileParentTable.getData()) {
     whileParentMap[std::stoi(data[0])].insert(std::stoi(data[1]));
   }
-
   // Populate initial to compressed map
   for (auto data : procStmtTable.getData()) {
     int start = std::stoi(data[1]);
@@ -78,11 +83,9 @@ void CFG::populateInitialToCompressed(int start, Table whileIfTable,
     if (!visited[u]) {
       visited[u] = true;
     }
-
     for (auto v : initialGraph[u]) {
       if (!visited[v]) {
         stack.push(v);
-
         if (whileIfTable.contains({std::to_string(v)})) {
           // Child is while or if statement
           numCompressedNodes++;
@@ -144,11 +147,9 @@ std::deque<int> CFG::getNextTForward(int start, int end = -1) {
   std::deque<int> result;
   std::vector<std::vector<int>> compressedCFG = forwardCompressedGraph;
   bool reachedEnd = false;
-
   // initialize visited array
   std::vector<bool> visited(initialToCompressed.size() + 1, false);
   visited[0] = true; // no stmt line 0
-
   // adding all elements in start node
   int startNode = initialToCompressed.at(start);
   std::vector<int> linesInNode = compressedToInitial.at(startNode);
@@ -160,13 +161,11 @@ std::deque<int> CFG::getNextTForward(int start, int end = -1) {
       reachedEnd = true;
     }
   }
-
   std::queue<int> q;
   q.push(startNode);
   while (!q.empty()) {
     int curr = q.front();
     q.pop();
-
     for (int i : compressedCFG[curr]) {
       if (!visited[compressedToInitial.at(i)[0]]) {
         for (int j : compressedToInitial.at(
@@ -184,33 +183,27 @@ std::deque<int> CFG::getNextTForward(int start, int end = -1) {
       }
     }
   }
-
   // for nextT with two constants that did not reach end line
   if ((end > 0) && (!reachedEnd)) {
     // return empty vector if end not reachable from start
     return std::deque<int>{};
   }
-
   return result;
 }
 
 std::deque<int> CFG::getNextTReverse(int start) {
   std::deque<int> result;
   std::vector<std::vector<int>> compressedCFG = reverseCompressedGraph;
-
   std::vector<bool> visited(initialToCompressed.size() + 1, false);
   visited[0] = true;
-
   // adding all elements in start node
   int startNode = initialToCompressed.at(start);
   std::vector<int> linesInNode = compressedToInitial.at(startNode);
   int index = start - linesInNode[0] - 1;
-
   for (int i = index; i >= 0; i--) {
     result.emplace_back(linesInNode[i]);
     visited[linesInNode[i]] = true;
   }
-
   std::queue<int> q;
   q.push(startNode);
   while (!q.empty()) {
@@ -230,13 +223,11 @@ std::deque<int> CFG::getNextTReverse(int start) {
       }
     }
   }
-
   return result;
 }
 
 Table CFG::getNextT() {
   Table table{2};
-
   for (int i = 1; i < initialToCompressed.size() + 1; i++) {
     std::deque<int> result = getNextTForward(i);
     for (int j : result) {
@@ -254,7 +245,6 @@ Table CFG::getNextT(int start, bool isForward) {
   } else {
     result = getNextTReverse(start);
   }
-
   for (int i : result) {
     table.insertRow({std::to_string(i)});
   }
@@ -265,16 +255,12 @@ bool CFG::isNextT(int start, int end) {
   return getNextTForward(start, end).size() > 0;
 }
 
-std::deque<int> CFG::getAffectsForward(int start, std::string v,
-                                       Table modifiesTable,
-                                       Table usesAssignTable) {
+std::deque<int> CFG::getAffectsForward(int start, std::string v) {
   std::vector<std::vector<int>> compressedCFG = forwardCompressedGraph;
   std::deque<int> results;
-
   // Initialize visited array
   std::vector<bool> visited(initialToCompressed.size() + 1, false);
   visited[0] = true; // no stmt line 0
-
   // Add lines in start node to results if modified some variable
   int startNode = initialToCompressed.at(start);
   std::vector<int> linesInNode = compressedToInitial.at(startNode);
@@ -290,13 +276,11 @@ std::deque<int> CFG::getAffectsForward(int start, std::string v,
     }
     visited[node] = true;
   }
-
   std::queue<int> q;
   q.push(startNode);
   while (!q.empty()) {
     int curr = q.front();
     q.pop();
-
     // Looping through neighbor nodes
     for (int i : compressedCFG[curr]) {
       if (!visited[compressedToInitial.at(i)[0]]) {
@@ -327,16 +311,12 @@ std::deque<int> CFG::getAffectsForward(int start, std::string v,
   return results;
 }
 
-std::deque<int> CFG::getAffectsReverse(int start, std::string v,
-                                       Table modifiesTable,
-                                       Table modifiesAssignTable) {
+std::deque<int> CFG::getAffectsReverse(int start, std::string v) {
   std::vector<std::vector<int>> compressedCFG = reverseCompressedGraph;
   std::deque<int> results;
-
   // Initialize visited array
   std::vector<bool> visited(initialToCompressed.size() + 1, false);
   visited[0] = true; // no stmt line 0
-
   // Add lines in start node to results if modified some variable
   int startNode = initialToCompressed.at(start);
   std::vector<int> linesInNode = compressedToInitial.at(startNode);
@@ -352,13 +332,11 @@ std::deque<int> CFG::getAffectsReverse(int start, std::string v,
     }
     visited[node] = true;
   }
-
   std::queue<int> q;
   q.push(startNode);
   while (!q.empty()) {
     int curr = q.front();
     q.pop();
-
     // Looping through neighbor nodes
     for (int i : compressedCFG[curr]) {
       if (!visited[compressedToInitial.at(i)[0]]) {
@@ -394,12 +372,13 @@ std::deque<int> CFG::getAffectsReverse(int start, std::string v,
 
 bool CFG::isAffects(int a1, int a2) {
   // Get variable modified in line a1 and used in line a2
-  modifiesTable.setHeader({"a1", "v"});
-  usesTable.setHeader({"a2", "v"});
-  auto modifiesA1Table = modifiesTable.filter("a1", {std::to_string(a1)});
-  auto usesA2Table = usesTable.filter("a2", {std::to_string(a2)});
+  auto modifiesA1Table = modifiesTable;
+  modifiesA1Table.setHeader({"a1", "v"});
+  modifiesA1Table.filterColumn("a1", {std::to_string(a1)});
+  auto usesA2Table = usesTable;
+  usesA2Table.setHeader({"a2", "v"});
+  usesA2Table.filterColumn("a2", {std::to_string(a2)});
   modifiesA1Table.mergeWith(usesA2Table);
-
   if (modifiesA1Table.empty()) {
     // No variable modified in line a1 and used in line a2
     return false;
@@ -410,7 +389,7 @@ bool CFG::isAffects(int a1, int a2) {
     for (auto data : modifiesA1Table.getData({"v"})) {
       v = data[0];
     }
-    auto result = getAffectsForward(a1, v, modifiesTable, usesA2Table);
+    auto result = getAffectsForward(a1, v);
     return std::find(result.begin(), result.end(), a2) != result.end();
   }
 }
@@ -418,38 +397,30 @@ bool CFG::isAffects(int a1, int a2) {
 Table CFG::getAffects(int start, bool isForward) {
   Table table{1};
   std::deque<int> result;
-  std::vector<std::string> assignStmtsVec;
-  for (auto data : assignTable.getData()) {
-    assignStmtsVec.emplace_back(data[0]);
-  }
-
   if (isForward) {
     // Affects(k, a) utilizes forwardCompressedGraph, k here is a constant
-    modifiesTable.setHeader({"a1", "v"});
-    auto modifiesATable = modifiesTable.filter("a1", {std::to_string(start)});
+    auto modifiesATable = modifiesTable;
+    modifiesATable.setHeader({"a1", "v"});
+    modifiesATable.filterColumn("a1", {std::to_string(start)});
     // modifiesATable has one variable after filter
     assert(modifiesATable.size() == 1);
     std::string v;
     for (auto data : modifiesATable.getData({"v"})) {
       v = data[0];
     }
-    usesTable.setHeader({"a2", "v"});
-    auto usesAssignTable = usesTable.filter("a2", assignStmtsVec);
-    result = getAffectsForward(start, v, modifiesTable, usesAssignTable);
+    result = getAffectsForward(start, v);
   } else {
     // Affects(a, k) utilizes reverseCompressedGraph, k here is a constant
-    usesTable.setHeader({"a2", "v"});
-    auto usesATable = usesTable.filter("a2", {std::to_string(start)});
+    auto usesATable = usesTable;
+    usesATable.setHeader({"a2", "v"});
+    usesATable.filter("a2", {std::to_string(start)});
     // usesATable has one or more variables after filter
     std::vector<std::string> variables;
     for (auto data : usesATable.getData({"v"})) {
       variables.emplace_back(data[0]);
     }
-    modifiesTable.setHeader({"a1", "v"});
-    auto modifiesAssignTable = modifiesTable.filter("a1", assignStmtsVec);
     for (auto v : variables) {
-      auto temp =
-          getAffectsReverse(start, v, modifiesTable, modifiesAssignTable);
+      auto temp = getAffectsReverse(start, v);
       result.insert(result.end(), temp.begin(), temp.end());
     }
   }
@@ -461,17 +432,8 @@ Table CFG::getAffects(int start, bool isForward) {
 
 Table CFG::getAffects() {
   Table table{2};
-  std::vector<std::string> assignStmtsVec;
-  for (auto data : assignTable.getData()) {
-    assignStmtsVec.emplace_back(data[0]);
-  }
-  modifiesTable.setHeader({"a1", "v"});
-  usesTable.setHeader({"a2", "v"});
-  auto modifiesAssignTable = modifiesTable.filter("a1", assignStmtsVec);
-  auto usesAssignTable = usesTable.filter("a2", assignStmtsVec);
   for (auto data : modifiesAssignTable.getData()) {
-    auto result = getAffectsForward(std::stoi(data[0]), data[1], modifiesTable,
-                                    usesAssignTable);
+    auto result = getAffectsForward(std::stoi(data[0]), data[1]);
     for (int i : result) {
       table.insertRow({data[0], std::to_string(i)});
     }
@@ -661,4 +623,9 @@ Table CFG::getAffectsT(
     }
   }
   return table;
+}
+
+void CFG::clearCache() {
+  affectsForwardCache.clear();
+  affectsReverseCache.clear();
 }
