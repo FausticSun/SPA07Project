@@ -1,0 +1,25 @@
+101 - 
+stmt s, s1; assign a, a1, a2; while w; if ifs; variable v; procedure p, q; call c; constant const; print pn, pn2; read rd;
+Select v such that Follows (s, _) and Uses (s, v) and Parent* (s, c)
+m, n, p, a, b
+5000
+102 - 
+stmt s, s1; assign a, a1, a2; while w; if ifs; variable v; procedure p, q; call c; constant const; print pn, pn2; read rd;
+Select a such that Modifies (s, v) and Next (a, s) pattern w (v, _) and ifs (v, _, _)
+11, 15
+5000
+103 - 
+stmt s, s1; assign a, a1, a2; while w; if ifs; variable v; procedure p, q; call c; constant const; print pn, pn2; read rd;
+Select <const, p, a, v> such that Modifies (a, v) pattern a (_, _"n-p"_) with c.stmt# = const.value and q.procName = c.procName such that Calls (p, q)
+7 functionCompute 9 m, 13 functionExe 9 m
+5000
+104 - 
+stmt s, s1; assign a, a1, a2; while w; if ifs; variable v; procedure p, q; call c; constant const; print pn, pn2; read rd;
+Select <s, s1> such that Affects* (s, s1) and Next (ifs, s) and Next* (s, pn)
+11 9, 11 12, 11 15, 11 16, 11 18
+5000
+105 - 
+stmt s, s1; assign a, a1, a2; while w; if ifs; variable v; procedure p, q; call c; constant const; print pn, pn2; read rd;
+Select <a, a2> such that Next* (a2, a) and Affects (a, a1) and Affects (a1, a2)
+5 5, 5 6, 6 5, 6 6, 24 26, 27 24, 26 27
+5000

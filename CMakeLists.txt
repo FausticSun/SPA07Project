@@ -1,4 +1,5 @@
 cmake_minimum_required (VERSION 2.6)
+cmake_policy(SET CMP0054 OLD)
 project (autotester)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/cmake)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -39,11 +40,8 @@ file(GLOB_RECURSE
      )
 
 # Clang-tidy
-if(ENABLE_CLANG_TIDY)
-    find_program(CLANG_TIDY_BIN clang-tidy-7)
-    if(CLANG_TIDY_BIN STREQUAL "CLANG_TIDY_BIN-NOTFOUND")
-        message(FATAL_ERROR "unable to locate clang-tidy-7")
-    endif()
+find_program(CLANG_TIDY_BIN clang-tidy-7)
+if(CLANG_TIDY_BIN)
     list(APPEND CLANG_TIDY_BIN_ARGS
 		-config=''
         -header-filter=.*
@@ -63,11 +61,8 @@ if(ENABLE_CLANG_TIDY)
 endif()
 
 # Clang-format
-if(ENABLE_CLANG_FORMAT)
-	find_program(CLANG_FORMAT_BIN clang-format-7)
-	if(CLANG_FORMAT_BIN STREQUAL "CLANG_FORMAT_BIN-NOTFOUND")
-        message(FATAL_ERROR "unable to locate clang-format-7")
-    endif()
+find_program(CLANG_FORMAT_BIN clang-format-7)
+if(CLANG_FORMAT_BIN)
     list(APPEND CLANG_FORMAT_ARGS
 		-i
 		--verbose
@@ -79,7 +74,6 @@ if(ENABLE_CLANG_FORMAT)
         COMMAND ${CLANG_FORMAT_BIN} ${CLANG_FORMAT_ARGS}
         COMMENT "running clang-format"
     )
-
 endif()
 
 
@@ -89,7 +83,6 @@ include_directories("${CMAKE_CURRENT_LIST_DIR}/lib")#include catch.hpp
 
 add_subdirectory(src/spa)
 add_subdirectory(src/autotester)
-#add_subdirectory(src/autotester_gui)
+add_subdirectory(src/autotester_gui)
 add_subdirectory(src/unit_testing)
 add_subdirectory(src/integration_testing)
-

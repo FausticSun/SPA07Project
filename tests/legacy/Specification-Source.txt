@@ -1,0 +1,152 @@
+procedure SpecificationTest {
+	read ABC; 									
+	print abc;									
+	read AbC;
+	read A0;
+	print Z9;
+	while (x == 0) {						
+		read y;
+	}
+	if (x != 0) then {						
+		read y;
+	} else {
+		read z;
+	}
+
+	
+	x = 0; 							
+	x = a; 									
+	x = (x + 1); 								
+
+	
+	x = a * b;									
+	x = a / b;									
+	x = a % b;									
+	x = a * 2;									
+	x = a / 2;									
+	x = a % 2;								
+	x = a * (b + c);						
+	x = a / (b + c);							
+	x = a % (b + c);							
+
+	x = (a * b) * c;						
+	x = (a * b) / c;						
+	x = (a * b) % c;							
+	x = (a * b) * 10;							
+	x = (a * b) / 10;							
+	x = (a * b) % 10;							
+	x = (a * b) * (c + d);						
+	x = (a * b) / (c + d);						
+	x = (a * b) % (c + d);						
+
+	x = (a / b) + (a % b);						
+	x = (a / b) - (a % b);						
+
+	
+	x = (a / b) + (a % b) + (a * b);			
+	x = (a / b) + (a % b) - (a * b);			
+
+	while (x == 0) {						
+		read y;
+	}
+	while (0 == 0) {							
+		read y;
+	}
+	while ((a / b) == 0) {						
+		read y;
+	}
+	while (a / b == 0) {						
+		read y;
+	}
+
+
+	while (x == 0) {							
+		read a;
+		print b;
+		c = d + e;
+		f = (g + h) - i;
+		j = k + (l - m);
+		n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z);
+	}
+	while (x != y) {							
+		if (y == 0) then {	
+			read x;
+			print y;
+			z = a + b;
+		} else {
+			read p;
+			print q;
+			r = a + b;
+		}
+	}
+	while (x > a / b) {								
+		read y;
+	}
+	while (x >= (a / b)) {							
+		read y;
+	}
+	while (0 < x) {									
+		read y;
+	}
+	while (a / b <= a % b) {						
+		read y;
+	}
+	while ((a / b) <= (a % b)) {						
+		read y;
+	}
+
+	while (!(x == 0)) {
+		read y;
+	}
+
+
+	while ((x == 0) && (y == 0)) {
+		read y;
+	}
+
+	
+	while ((x == 0) || (y == 0)) {
+		read y;
+	}
+
+	
+	while (!(!(x == 0))) {
+		read y;
+	}
+
+	
+	while (((x == 0) && (y == 0)) || (z == 0)) {
+		read y;
+	}
+	if(ABC>0) then{
+		call one;
+	} else {
+		call three;
+	}
+}
+
+procedure one {
+	x=a;
+	a = (x + a) * j /h;
+	while(a>1) {
+		if(x>a) then{
+			a= a+1;
+			call two;
+		} else{
+			x = x+1;
+			call three;
+		}
+		x = x+a;
+	}
+}
+
+procedure two {
+read a;
+print x;
+call three;
+}
+
+procedure three {
+j = j + x * a;
+print j;
+}

@@ -1,0 +1,126 @@
+procedure main
+{
+    I1= r / (8 + b % y ) - 11 + b * b;                   
+
+    b = g - 6 % rOM;                                               
+
+    while (d < on) {                                                   
+        if (!( (b >= 0) && (c != c) )) then {                        
+            i = i - 1;                                                
+        } else {
+            print x;                                                    
+            while (c != b) {                                 
+                l = I - (k + h * t);                    
+                read randOM;                                            
+            }
+        }
+        while (b >= 11) {                                            
+            if ( (6 > y) && (!(c == Z)) ) then {                 
+                if ( g != R ) then {                              
+                    p = a % c1 + 1 ;                                    
+                } else {
+                    print ydj;                                          
+                    while ( !(i <= 22) ) {                             
+                        read one;                                       
+                    }
+                    y = y + 1;                                              
+                }
+                e = e - 2;                                          
+            } else {
+                read x;                                                 
+                read y;                                                 
+                print x;                                                
+                y = (y * 7 - 23 * 11) / (100 + x);                      
+            } 
+        }
+
+        while ((c == 0) || ((a < 11) || (b * ydj + 10 == a)) )  {  
+            c = 1000;                                                       
+            print one;                                                      
+            b = be + l  / bb + R;                                    
+        }
+    }
+    read bp;                                                                
+}
+ 
+procedure ONE {
+    if (d < o) then {                                              
+        if (count > x) then {                                      
+            call TWO;                                               
+        } else {
+            y = (d + d + (a + c + 21)) + (b + b / 14);              
+        }
+    } else {
+        if (s < 21) then {                                        
+            print sum;                                              
+        } else {
+            count = count + 1;                                      
+            f = r - 4 - g / b * 2 * 1 + s;                   
+        }
+    }
+    read r;                                                         
+    read x;                                                         
+    x = x + 200;                                                    
+    print r;                                                        
+}
+
+procedure TWO {
+    while ((c < 0) && ((a > 11) || (b * y + 10 > a)) )    
+    {
+        a = f + y + z + s * s / f + x;                          
+        if ((x < 100) || (x > 1)) then {                           
+            x = x * 10;                                             
+        } else {                    
+            x = v - x + y + z * t;                                  
+        }
+    }
+}
+
+procedure THREE {
+    read y;                                                         
+    r = s * 2;                                               
+    call main;                                                      
+    if (a != s) then {                                             
+        print y;                                                    
+        while (l == a) {                                         
+            l = l - 1;                                        
+            w = a - l;                                           
+            s = i - r;                                       
+        }
+        d  = (s - 12) * (l + 13);                            
+        read s;                                                 
+        print a;                                                    
+    } else {
+        if (l != c) then {                                       
+            f = f + 71 / 88;                                        
+            c = 1;                                                  
+        } else {
+            while (6 > x + 5 - 8) {                                 
+                read f;                                             
+                print z;                                            
+                y = f - 6 + 1;                                      
+                print y;                                            
+            }   
+        }
+    }
+}
+
+procedure FOUR {
+    while (x - y - z != t) {                                     
+        x = (t + 102 % (x + y) * 11) / z;                        
+        read test;                                                  
+        y = y + z - 1;                                              
+        print z;                                                    
+        if (z < 1) then {                                           
+            call main;                                              
+        } else {    
+            print test;                                             
+        }
+        while (x - 1 > y + 21) {                                   
+            print x;                                                
+            y = y * 1;                                              
+            print y;                                                
+            read a;                                                 
+        }
+    }
+}

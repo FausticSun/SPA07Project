@@ -1,0 +1,320 @@
+1 - valid query Next (2 int) 
+
+Select BOOLEAN such that Next(25, 26)
+TRUE
+5000
+2 - valid query Next (2 int)
+
+Select BOOLEAN such that Next(47, 55)
+TRUE
+5000
+3 - valid query Next (2 int)
+
+Select BOOLEAN such that Next(34, 44)
+TRUE
+5000
+4 - invalid query Next (2 int)
+
+Select BOOLEAN such that Next(42, 39)
+FALSE
+5000
+5 - valid query Next (2 int) 
+
+Select BOOLEAN such that Next(12, 17)
+TRUE
+5000
+6 - valid query Next (2 int) 
+
+Select BOOLEAN such that Next(55, 59)
+TRUE
+5000
+7 - valid query Next (2 int)
+
+Select BOOLEAN such that Next(70, 78)
+TRUE
+5000
+8 - valid query Next (2 int)
+
+Select BOOLEAN such that Next(30, 45)
+TRUE
+5000
+9 - valid query Next (2 int)
+
+Select BOOLEAN such that Next(32, 45)
+TRUE
+5000
+10 - valid query Next (2 int)
+
+Select BOOLEAN such that Next(43, 34)
+TRUE
+5000
+11 - valid query Next (2 int)
+
+Select BOOLEAN such that Next(54, 60)
+TRUE
+5000
+12 - valid query Next (2 int)
+
+Select BOOLEAN such that Next(41,39)
+TRUE
+5000
+13 - valid query Next (int, synonym)
+stmt s2; 
+Select s2 such that Next(32, s2)
+45
+5000
+14 - valid query Next (int, synonym)
+stmt s2; 
+Select s2 such that Next(1, s2)
+2
+5000
+15 - valid query Next (int, synonym)
+stmt s2; 
+Select s2 such that Next(7, s2)
+8, 9
+5000
+16 - valid query Next (int, synonym)
+stmt s2; 
+Select s2 such that Next(9, s2)
+10, 11
+5000
+17 - valid query Next (int, synonym)
+stmt s2; 
+Select s2 such that Next(12, s2)
+17
+5000
+18 - valid query Next (int, synonym)
+stmt s2; 
+Select s2 such that Next(30, s2)
+45
+5000
+19 - valid query Next (int, synonym)
+stmt s2; 
+Select s2 such that Next(39, s2)
+40, 34
+5000
+20 - valid query Next (int, synonym)
+stmt s2; 
+Select s2 such that Next(34, s2)
+44, 35
+5000
+21 - valid query Next (int, synonym)
+stmt s2; 
+Select s2 such that Next(41, s2)
+42, 39
+5000
+22 - valid query Next (int, synonym)
+stmt s2; 
+Select s2 such that Next(42, s2)
+41
+5000
+23 - valid query Next (int, synonym)
+stmt s2; 
+Select s2 such that Next(43, s2)
+34
+5000
+24 - valid query Next (int, synonym)
+stmt s2; 
+Select s2 such that Next(52, s2)
+53, 54
+5000
+25 - valid query Next (synonym, int)
+stmt s2; 
+Select s2 such that Next(s2, 7)
+5, 6, 8
+5000
+26 - valid query Next (synonym, int)
+stmt s2; 
+Select s2 such that Next(s2, 8)
+7
+5000
+27 - valid query Next (synonym, int)
+stmt s2; 
+Select s2 such that Next(s2, 17)
+12, 16
+5000
+28 - valid query Next (synonym, int)
+stmt s2; 
+Select s2 such that Next(s2, 45)
+30, 32, 44
+5000
+29 - valid query Next (synonym, int)
+stmt s2; 
+Select s2 such that Next(s2, 44)
+34
+5000
+30 - valid query Next (synonym, int)
+stmt s2; 
+Select s2 such that Next(s2, 34)
+33, 39, 43
+5000
+31 - valid query Next (synonym, int)
+stmt s2; 
+Select s2 such that Next(s2, 39)
+38, 41
+5000
+32 - valid query Next (synonym, int)
+stmt s2; 
+Select s2 such that Next(s2, 41)
+42, 40
+5000
+33 - valid query Next (synonym, int)
+stmt s2; 
+Select s2 such that Next(s2, 52)
+49, 51, 53
+5000
+34 - valid query Next (synonym, int)
+stmt s2; 
+Select s2 such that Next(s2, 60)
+54, 59
+5000
+35 - valid query Next (synonym, int)
+stmt s2; 
+Select s2 such that Next(s2, 57)
+56, 58
+5000
+36 - valid query Next (synonym, int)
+stmt s2; 
+Select s2 such that Next(s2, 74)
+72
+5000
+37 - valid query Next (2 synonym)
+stmt s1, s2;
+Select s1 such that Next(s1, s2)
+1, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 2, 20, 21, 22, 23, 25, 26, 27, 28, 29, 3, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 4, 40, 41, 42, 43, 44, 47, 48, 49, 5, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 6, 60, 62, 63, 64, 65, 66, 68, 69, 7, 70, 71, 72, 73, 74, 75, 76, 77, 8, 9
+5000
+38 - valid query Next (2 synonym)
+stmt s1; assign a;
+Select a such that Next(s1, a)
+10, 12, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 27, 33, 35, 36, 44, 5, 50, 51, 53, 54, 56, 58, 59, 6, 60, 63, 66, 67, 70, 71, 73, 75, 76, 77, 8
+5000
+39 - valid query Next (2 synonym)
+stmt s2; assign a;
+Select a such that Next(a, s2)
+10, 12, 14, 16, 17, 18, 19, 20, 21, 22, 23, 27, 33, 35, 36, 44, 5, 50, 51, 53, 54, 56, 58, 59, 6, 60, 63, 66, 70, 71, 73, 75, 76, 77, 8
+5000
+40 - valid query Next (2 synonym)
+stmt s1; while w;
+Select w such that Next(s1, w)
+34, 39, 41, 49, 52, 55, 57, 62, 7, 9
+5000
+41 - valid query Next (2 synonym)
+stmt s2; while w;
+Select w such that Next(w, s2)
+34, 39, 41, 49, 52, 55, 57, 62, 7, 9
+5000
+42 - valid query Next (2 synonym)
+stmt s1; if ifs;
+Select ifs such that Next(s1, ifs)
+11, 13, 26, 28, 38, 4, 48, 69, 72, 74
+5000
+43 - valid query Next (2 synonym)
+stmt s2; if ifs;
+Select ifs such that Next(ifs, s2)
+11, 13, 26, 28, 38, 4, 47, 48, 69, 72, 74
+5000
+44 - valid query Next (2 synonym)
+if ifs; assign a;
+Select ifs such that Next(ifs, a)
+11, 13, 26, 4, 48, 69, 72, 74
+5000
+45 - valid query Next (2 synonym)
+if ifs; read r;
+Select ifs such that Next(ifs, r)
+none
+5000
+46 - valid query Next (2 synonym)
+if ifs; print pr;
+Select ifs such that Next(ifs, pr)
+13, 38
+5000
+47 - valid query Next (2 synonym)
+while w; assign a;
+Select w such that Next(w, a)
+34, 49, 52, 55, 57, 62, 7, 9
+5000
+48 - valid query Next (2 synonym)
+while w; read r;
+Select w such that Next(w, r)
+none
+5000
+49 - valid query Next (2 synonym)
+while w; print pr;
+Select w such that Next(w, pr)
+41, 62
+5000
+50 - valid query Next (2 synonym)
+while w; if ifs;
+Select w such that Next(w, ifs)
+9
+5000
+51 - valid query Next (2 synonym)
+while w; if ifs;
+Select ifs such that Next(w, ifs)
+11
+5000
+52 - valid query Next (2 synonym)
+while w; if ifs;
+Select ifs such that Next(ifs, w)
+38, 47, 48 
+5000
+53 - valid query Next (2 synonym)
+while w; if ifs;
+Select w such that Next(ifs, w)
+39, 49, 55 
+5000
+54 - valid query Next (2 synonym)
+assign a1, a2;
+Select a1 such that Next(a1, a2)
+12, 14, 16, 17, 18, 19, 20, 21, 22, 23, 35, 54, 59, 66, 75, 76
+5000
+55 - valid query Next (2 synonym)
+call c; stmt s1;
+Select s1 such that Next(s1, c)
+2, 28, 30, 32, 36, 39, 44, 63
+5000
+56 - valid query Next (2 synonym)
+stmt s1; prog_line l;
+Select s1 such that Next(s1, l)
+1, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 2, 20, 21, 22, 23, 25, 26, 27, 28, 29, 3, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 4, 40, 41, 42, 43, 44, 47, 48, 49, 5, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 6, 60, 62, 63, 64, 65, 66, 68, 69, 7, 70, 71, 72, 73, 74, 75, 76, 77, 8, 9
+5000
+57 - invalid query Next (2 synonym)
+stmt s1;
+Select BOOLEAN such that Next(s1, s1)
+FALSE
+5000
+58 - valid query Next (int, _)
+
+Select BOOLEAN such that Next(44, _)
+TRUE
+5000
+59 - invalid query Next (int, _)
+
+Select BOOLEAN such that Next(61, _)
+FALSE
+5000
+60 - valid query Next (_, int)
+
+Select BOOLEAN such that Next(_, 38)
+TRUE
+5000
+61 - invalid query Next (_, int)
+
+Select BOOLEAN such that Next(_, 1)
+FALSE
+5000
+62 - valid query Next (synonym, _)
+stmt s1;
+Select s1 such that Next(s1, _)
+1, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 2, 20, 21, 22, 23, 25, 26, 27, 28, 29, 3, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 4, 40, 41, 42, 43, 44, 47, 48, 49, 5, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 6, 60, 62, 63, 64, 65, 66, 68, 69, 7, 70, 71, 72, 73, 74, 75, 76, 77, 8, 9
+5000
+63 - valid query Next (_, synonym)
+stmt s2;
+Select s2 such that Next(_, s2)
+10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 2, 20, 21, 22, 23, 24, 26, 27, 28, 29, 3, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 4, 40, 41, 42, 43, 44, 45, 48, 49, 5, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 6, 60, 61, 62, 63, 64, 65, 66, 67, 69, 7, 70, 71, 72, 73, 74, 75, 76, 77, 78, 8, 9
+5000
+64 - valid query Next (_, _)
+
+Select BOOLEAN such that Next(_, _)
+TRUE
+5000

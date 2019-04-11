@@ -1,0 +1,110 @@
+1 - modifies, modifies
+variable v;
+Select v such that Modifies("procA", v) such that Modifies(3, v)
+bA, bD, dA, dAAA, file, k, uniA, x, y, z
+5000
+2 - modifies, uses
+stmt s; variable v; procedure p;
+Select v such that Modifies(s, v) such that Uses(p, v)
+a, b, bA, bD, c, dAAA, file, ifA, ifB, ifVar, k, uniA, uniC, x, y, z
+5000
+3 - uses
+procedure p; variable v;
+Select v such that Uses(p, v)
+EEEEE, a, a1, ab, abc, ai, b, b1, bA, bAAA, bB, bBBB, bC, bD, c, cA, d, dAAA, dB, dBBB, dC, dD, dE, dF, dc, e, file, ifA, ifB, ifC, ifD, ifVar, ifVar2, ifVar3, k, m, max, min, o, p, q, r, result, uniA, uniB, uniC, x, y, z
+5000
+4 - modifies
+stmt s; variable v;
+Select v such that Modifies(s, v)
+a, b, bA, bD, c, dA, dAAA, file, ifA, ifB, ifVar, k, n, procC, uniA, uniC, x, y, z
+5000
+5 - uses, modifies
+stmt s; variable v; procedure p;
+Select v such that Uses(p, v) such that Modifies(s, v)
+a, b, bA, bD, c, dAAA, file, ifA, ifB, ifVar, k, uniA, uniC, x, y, z
+5000
+6 - uses, modifies, next star
+stmt s; variable v; procedure p;
+Select v such that Uses(p, v) such that Modifies(s, v) and Next*(16, s)
+a
+5000
+7 - with Modifies Uses Modifies Uses with 
+procedure p; stmt s; variable v; constant c;
+Select s with p.procName = "procA" such that Modifies(s, v) and Uses(s, v) and Modifies(p, v) and Uses(p, v) with s.stmt# = c.value
+3, 11, 13
+5000
+8 - with procA statements Modifies Uses Modifies Uses
+procedure p; stmt s; variable v;
+Select s with p.procName = "procA" such that Modifies(s, v) and Uses(s, v) and Modifies(p, v) and Uses(p, v)
+11, 13, 20, 24, 26, 28, 29, 3, 34, 37, 4, 45, 47, 54, 55, 56, 57, 58, 62
+5000
+9 - statements Modifies Uses Modifies Uses 
+procedure p; stmt s; variable v;
+Select s such that Modifies(s, v) and Uses(s, v) and Modifies(p, v) and Uses(p, v)
+11, 13, 20, 24, 26, 28, 29, 3, 34, 37, 4, 45, 47, 54, 55, 56, 57, 58, 62, 69, 72, 74
+5000
+10 - modified and used statements
+procedure p; stmt s; variable v;
+Select s such that Modifies(s, v) and Uses(s, v)
+11, 13, 20, 24, 26, 28, 29, 3, 34, 37, 4, 45, 47, 54, 55, 56, 57, 58, 62, 69, 72, 74
+5000
+11 - proc e statements
+procedure p; print pr; variable v;
+Select pr such that Uses(pr, v) and Uses(p, v) with p.procName = "procE" 
+46
+5000
+12 - print EEEE statements
+print pr; variable v;
+Select pr such that Uses(pr, v) with "EEEEE" = v.varName
+46
+5000
+13 - Next Next 
+while w; print pr; stmt s1;
+Select w such that Next(s1, w) such that Next(w, pr)
+41, 62
+5000
+14 - Modifies Modifies
+variable v; procedure p; stmt s;
+Select v such that Modifies(s, v) such that Modifies(p, v)
+a, b, bA, bD, c, dA, dAAA, file, ifA, ifB, ifVar, k, n, procC, uniA, uniC, x, y, z
+5000
+15 - Parent* while, call with proc name
+procedure p; call c; while w;
+Select p such that Calls("procB", p) and Parent*(w, c) with c.procName = p.procName
+procD, procE
+5000
+16 - pattern pattern 
+assign a;
+Select a pattern a("a", _"c-d"_) pattern a("a", _"b+c"_)
+none
+5000
+17 - tuple with 
+stmt s; constant cs; call c;
+Select <s, c> with cs.value = s.stmt# and c.procName = "procE" such that Uses(s, "file")
+9 31, 9 40, 9 64
+5000
+18 - select attrRef 
+stmt s; constant cs; call c;
+Select <s, c.procName> with cs.value = s.stmt# and c.procName = "procE" such that Uses(s, "file")
+9 procE
+5000
+19 - tuple Uses Modifies with 
+stmt s; constant c; prog_line n; assign a; variable v;
+Select <s, n, v, c> such that Uses(n,"a") such that Modifies("procD", v) with s.stmt# = c.value and c.value = 1 and s.stmt# = 1
+1 11 dA 1, 1 13 dA 1, 1 14 dA 1, 1 20 dA 1, 1 24 dA 1, 1 9 dA 1, 1 11 dAAA 1, 1 13 dAAA 1, 1 14 dAAA 1, 1 20 dAAA 1, 1 24 dAAA 1, 1 9 dAAA 1
+5000
+20 - tuple Follows* pattern pattern 
+stmt s; if ifs; assign a;
+Select <a, ifs, s> such that Follows*(s,24) pattern ifs("y",_,_) pattern a(_,_"b+c"_)
+17 4 1, 17 4 11, 17 4 17, 17 4 18, 17 4 19, 17 4 2, 17 4 20, 17 4 21, 17 4 22, 17 4 23, 17 4 3, 17 4 4, 17 4 7, 17 4 9, 17 48 1, 17 48 11, 17 48 17, 17 48 18, 17 48 19, 17 48 2, 17 48 20, 17 48 21, 17 48 22, 17 48 23, 17 48 3, 17 48 4, 17 48 7, 17 48 9, 19 4 1, 19 4 11, 19 4 17, 19 4 18, 19 4 19, 19 4 2, 19 4 20, 19 4 21, 19 4 22, 19 4 23, 19 4 3, 19 4 4, 19 4 7, 19 4 9, 19 48 1, 19 48 11, 19 48 17, 19 48 18, 19 48 19, 19 48 2, 19 48 20, 19 48 21, 19 48 22, 19 48 23, 19 48 3, 19 48 4, 19 48 7, 19 48 9, 20 4 1, 20 4 11, 20 4 17, 20 4 18, 20 4 19, 20 4 2, 20 4 20, 20 4 21, 20 4 22, 20 4 23, 20 4 3, 20 4 4, 20 4 7, 20 4 9, 20 48 1, 20 48 11, 20 48 17, 20 48 18, 20 48 19, 20 48 2, 20 48 20, 20 48 21, 20 48 22, 20 48 23, 20 48 3, 20 48 4, 20 48 7, 20 48 9, 21 4 1, 21 4 11, 21 4 17, 21 4 18, 21 4 19, 21 4 2, 21 4 20, 21 4 21, 21 4 22, 21 4 23, 21 4 3, 21 4 4, 21 4 7, 21 4 9, 21 48 1, 21 48 11, 21 48 17, 21 48 18, 21 48 19, 21 48 2, 21 48 20, 21 48 21, 21 48 22, 21 48 23, 21 48 3, 21 48 4, 21 48 7, 21 48 9, 23 4 1, 23 4 11, 23 4 17, 23 4 18, 23 4 19, 23 4 2, 23 4 20, 23 4 21, 23 4 22, 23 4 23, 23 4 3, 23 4 4, 23 4 7, 23 4 9, 23 48 1, 23 48 11, 23 48 17, 23 48 18, 23 48 19, 23 48 2, 23 48 20, 23 48 21, 23 48 22, 23 48 23, 23 48 3, 23 48 4, 23 48 7, 23 48 9
+5000
+21 - reordered
+stmt s; if ifs; assign a;
+Select <s, a, ifs> such that Follows*(s,24) pattern ifs("y",_,_) pattern a(_,_"b+c"_)
+1 17 4, 1 17 48, 1 19 4, 1 19 48, 1 20 4, 1 20 48, 1 21 4, 1 21 48, 1 23 4, 1 23 48, 11 17 4, 11 17 48, 11 19 4, 11 19 48, 11 20 4, 11 20 48, 11 21 4, 11 21 48, 11 23 4, 11 23 48, 17 17 4, 17 17 48, 17 19 4, 17 19 48, 17 20 4, 17 20 48, 17 21 4, 17 21 48, 17 23 4, 17 23 48, 18 17 4, 18 17 48, 18 19 4, 18 19 48, 18 20 4, 18 20 48, 18 21 4, 18 21 48, 18 23 4, 18 23 48, 19 17 4, 19 17 48, 19 19 4, 19 19 48, 19 20 4, 19 20 48, 19 21 4, 19 21 48, 19 23 4, 19 23 48, 2 17 4, 2 17 48, 2 19 4, 2 19 48, 2 20 4, 2 20 48, 2 21 4, 2 21 48, 2 23 4, 2 23 48, 20 17 4, 20 17 48, 20 19 4, 20 19 48, 20 20 4, 20 20 48, 20 21 4, 20 21 48, 20 23 4, 20 23 48, 21 17 4, 21 17 48, 21 19 4, 21 19 48, 21 20 4, 21 20 48, 21 21 4, 21 21 48, 21 23 4, 21 23 48, 22 17 4, 22 17 48, 22 19 4, 22 19 48, 22 20 4, 22 20 48, 22 21 4, 22 21 48, 22 23 4, 22 23 48, 23 17 4, 23 17 48, 23 19 4, 23 19 48, 23 20 4, 23 20 48, 23 21 4, 23 21 48, 23 23 4, 23 23 48, 3 17 4, 3 17 48, 3 19 4, 3 19 48, 3 20 4, 3 20 48, 3 21 4, 3 21 48, 3 23 4, 3 23 48, 4 17 4, 4 17 48, 4 19 4, 4 19 48, 4 20 4, 4 20 48, 4 21 4, 4 21 48, 4 23 4, 4 23 48, 7 17 4, 7 17 48, 7 19 4, 7 19 48, 7 20 4, 7 20 48, 7 21 4, 7 21 48, 7 23 4, 7 23 48, 9 17 4, 9 17 48, 9 19 4, 9 19 48, 9 20 4, 9 20 48, 9 21 4, 9 21 48, 9 23 4, 9 23 48
+5000
+22 - Find all assignments 
+assign a; while w; prog_line n;
+Select a such that Parent*(w, a) and Next*(23, n) pattern a("x", _) with a.stmt# = n
+36, 56
+5000

@@ -1,0 +1,160 @@
+procedure A {
+	print x; \\ 1
+	\\ Test if stmt
+	if (x == 1) then { \\ 2
+		read y; \\ 3
+	} else {
+		read z; \\ 4
+	}
+	\\ Test while stmt
+	while (x == 0) { \\ 5
+		read a; \\ 6
+	}
+	\\ Test while stmt nested in if-then stmt
+	if (x == 0) then { \\ 7
+		while (x == 0) { \\ 8
+			read b; \\ 9
+		}
+	} else {
+		read c; \\ 10
+	}
+	\\ Test while stmt nested in if-else stmt
+	if (x == 0) then { \\ 11
+		read c; \\ 12
+	} else {
+		while (x == 0) { \\ 13
+			read b; \\ 14
+		}
+	}
+	\\ Test if stmt nested in while stmt 
+	while (x == 1) { \\ 15
+		if (y == 2) then { \\ 16
+			z = 3 + 2 - x; \\ 17
+		} else {
+			x = 5; \\ 18
+		}
+	}
+	\\ Test if stmt nested in while stmt with one line after if block
+	while (x == 0) { \\ 19
+		if (x == 0) then { \\ 20
+			read x; \\ 21
+		} else {
+			read d; \\ 22
+		}
+		print k; \\ 23
+	}
+	\\ Test if stmt nested in if-then stmt
+	if (x == 0) then { \\ 24
+		if (x == 0) then { \\ 25
+			read y; \\ 26
+		} else {
+			read z; \\ 27
+		}
+	} else {
+		read z; \\ 28
+	}
+	\\ Test if stmt nested in if-else stmt
+	if (x == 0) then { \\ 29
+		read x; \\ 30
+	} else {
+		if (x == 0) then { \\ 31
+			read y; \\ 32
+		} else {
+			read z; \\ 33
+		}
+	}
+	\\ Test if stmt nested in both if-then and if-else stmts
+	if (x == 0) then { \\ 34
+		if (q == 213) then { \\ 35
+			read y; \\ 36
+		} else {
+			read z; \\ 37
+		}
+	} else {
+		if (r == 22) then { \\ 38
+			print y; \\ 39
+		} else {
+			read z; \\ 40
+		}
+	}
+	\\ Test if stmt nested in if-then stmt with one line after if stmt
+	if (x == 0) then { \\ 41
+		if (x == 0) then { \\ 42
+			read y; \\ 43
+		} else {
+			read z; \\ 44
+		}
+		print xyz; \\ 45
+	} else {
+		read z; \\ 46
+	}
+	\\ Test if stmt nested in if-else stmt with next line after if stmt
+	if (x == 0) then { \\ 47
+		read x; \\ 48
+	} else {
+		if (x == 0) then { \\ 49
+			read y; \\ 50
+		} else {
+			read z; \\ 51
+		}
+		print xyz; \\ 52
+	}
+	\\ Test if stmt nested in if stmt with next line after both if-then and if-else stmts
+	if (x == 0) then { \\ 53
+		if (x == 0) then { \\ 54
+			read y; \\ 55
+		} else {
+			read z; \\ 56
+		}
+		print xyz; \\ 57
+	} else {
+		if (x == 0) then { \\ 58
+			read y; \\ 59
+		} else {
+			read z; \\ 60
+		}
+		print xyz; \\ 61
+	}
+	\\ Test if stmt nested if stmt nested in while stmt
+	while (p == (10 + l)) { \\ 62
+		if ((o == 0) && (b == 6)) then { \\ 63
+			if (k == 1) then { \\ 64
+				fas = 0; \\ 65
+			} else {
+				fass = 1; \\ 66
+			}
+		} else {
+			if (q == 2) then { \\ 67
+				foo = 2; \\ 68
+			} else {
+				bar = 3; \\ 69
+			}
+		}
+	}
+	\\ Test while stmt nested in while stmt nested in if stmt
+	if (x == h) then { \\ 70
+		while (w == 3) { \\ 71
+			while (f != 3243) { \\ 72
+				read s; \\ 73
+			}
+		}
+	} else {
+		print k; \\ 74
+	}
+	\\ Test if stmt nested in while stmt nested in if stmt nested in if stmt
+	if (c == d) then { \\ 75
+		if (v == u) then { \\ 76
+			while (t == g) { \\ 77
+				if (d == 2) then { \\ 78
+					print x; \\ 79
+				} else {
+					read y; \\ 80
+				}
+			}
+		} else {
+			a = b; \\ 81
+		}
+	} else {
+		x = 5; \\ 82
+	}
+}

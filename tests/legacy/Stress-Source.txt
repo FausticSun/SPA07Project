@@ -1,0 +1,53 @@
+procedure main {
+    \\ 8 nested containers
+    while (a == 0) {
+        while (b >= 1) {
+            while (c <= 2) {
+                while (d > 3) {
+                    while (e < 4) {
+                        \\ Complex expression in conditionals
+                        if (!(f + g * h + i > j - k % l / m)) then {
+                            if (((n > o) || (p < q)) && (!(r == s))) then {
+                                \\ Simple ambiguous expression tree
+                                t = 12321 + 00100 + u;
+                                \\ Full 4-layer expression tree
+                                v = a % b * (c + d) + e * f / (g - h);
+                                \\ Complex ambiguous expression tree
+                                w = 1 + 1 * 1 + 1 * 1 + 1 * 1 + 1;
+								\\ Nested brackets
+                                x = (a * ( b / (c + d)) + e) * f;
+                            } else {
+                                \\ 4 nested layers of conditionals
+                                while ((((aa == bb) && (cc == dd)) || (!(ee == ff))) && (hh == ii)) {
+                                    print b;
+                                }
+                            }
+                        } else {
+                            print a;
+							call one;
+                        }
+                    } 
+					call two;
+                }
+            } 
+        }
+    }
+	call three;
+}
+
+
+procedure one{
+	x = a;
+	x = 3;
+}
+
+procedure two{
+	x= b;
+	call three;
+}
+
+procedure three{
+	x=c;
+	print c;
+	read x;
+}

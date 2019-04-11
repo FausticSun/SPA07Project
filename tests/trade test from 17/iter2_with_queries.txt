@@ -1,0 +1,175 @@
+1 - valid query (IDENT, attrRef NAME)
+procedure p;
+Select p with "main" = p.procName
+main
+5000
+2 - valid query (IDENT, attrRef NAME)
+procedure p;
+Select p.procName with "TWO" = p.procName
+TWO
+5000
+3 - valid query (IDENT, attrRef NAME)
+procedure p;
+Select p with "FOUR" = p.procName
+FOUR
+5000
+4 - valid query (attrRef, IDENT NAME)
+call c;
+Select c.stmt# with c.procName = "main"
+47, 71
+5000
+5 - valid query (attrRef, IDENT NAME)
+call c;
+Select c.procName with c.procName = "TWO"
+TWO
+5000
+6 - valid query (attrRef, IDENT NAME)
+variable v;
+Select v with v.varName = "f"
+f
+5000
+7 - valid query (IDENT, attrRef NAME)
+read r;
+Select r with "x" = r.varName
+19, 37
+5000
+8 - valid query (IDENT, attrRef NAME)
+read r;
+Select r.stmt# with "one" = r.varName
+16
+5000
+9 - valid query (IDENT, attrRef NAME)
+read r;
+Select r.varName with "randOM" = r.varName
+randOM
+5000
+10 - valid query (IDENT, attrRef NAME)
+read r;
+Select r with "y" = r.varName
+20, 45
+5000
+11 - valid query (IDENT, attrRef NAME)
+read r;
+Select r with "test" = r.varName
+67
+5000
+12 - valid query (IDENT, attrRef NAME)
+print p;
+Select p.stmt# with "x" = p.varName
+6, 21, 74
+5000
+13 - valid query (IDENT, ref2 = attrRef NAME)
+print p;
+Select p.stmt# with "ydj" = p.varName
+14
+5000
+14 - valid query (IDENT, ref2 = attrRef NAME)
+print p;
+Select p.stmt# with "one" = p.varName
+25
+5000
+15 - valid query (IDENT, ref2 = attrRef NAME)
+print p;
+Select p.stmt# with "sum" = p.varName
+33
+5000
+16 - valid query (IDENT, ref2 = attrRef NAME)
+print p;
+Select p.stmt# with "z" = p.varName
+62, 69
+5000
+17 - valid query (IDENT, ref2 = attrRef NAME)
+print p;
+Select p.stmt# with "y" = p.varName
+49, 64, 76
+5000
+18 - valid query (IDENT, ref2 = attrRef NAME)
+print p;
+Select p.varName with "a" = p.varName  
+a
+5000
+19 - valid query (INTEGER, ref2 = attrRef INTEGER)
+constant c;
+Select c with 71 = c.value
+71
+5000
+20 - valid query (INTEGER, ref2 = attrRef INTEGER, constant does not exist)
+constant c;
+Select c with 77 = c.value 
+none
+5000
+21 - valid query (attrCond, ref1 = INTEGER, ref2 = attrRef INTEGER)
+assign a;
+Select a with 66 = a.stmt#
+66
+5000
+22 - valid query (INTEGER, ref2 = attrRef INTEGER)
+stmt s;
+Select s with 45 = s.stmt#
+45
+5000
+23 - valid query (INTEGER, ref2 = attrRef INTEGER)
+print p;
+Select p.varName with 33 = p.stmt# 
+sum
+5000
+24 - valid query (INTEGER, ref2 = attrRef INTEGER)
+read r;
+Select r.varName with 61 = r.stmt#
+f
+5000
+25 - valid query (synonym, ref2 = INTEGER INTEGER)
+prog_line n;
+Select BOOLEAN with n = 96 
+false
+5000
+26 - valid query (attrRef, ref2 = synonym INTEGER)
+prog_line n; constant c;
+Select <c, n> with c.value = n 
+8 8, 11 11, 6 6, 1 1, 22 22, 2 2, 7 7, 23 23, 10 10, 21 21, 14 14, 4 4, 12 12, 13 13, 71 71, 5 5
+5000
+27 - valid query (attrRef, ref2 = synonym INTEGER)
+prog_line n; call c;
+Select <c, n> with c.stmt# = n
+30 30, 47 47, 71 71
+5000
+28 - valid query (IDENT, ref2 = IDENT NAME)
+
+Select BOOLEAN with "test" = "test"
+true
+5000
+29 - valid query (IDENT, ref2 = IDENT NAME)
+
+Select BOOLEAN with "test" = "testing"
+false
+5000
+30 - valid query (int, ref2 = int INTEGER)
+
+Select BOOLEAN with 1 = 1
+true
+5000
+31 - valid query (int, ref2 = int INTEGER)
+
+Select BOOLEAN with 1 = 10
+false
+5000
+32 - valid query (int, ref2 = IDENT different types)
+
+Select BOOLEAN with 1 = "true"
+false
+5000
+33 - valid query (IDENT, ref2 = int different types)
+
+Select BOOLEAN with "3203" = 3203
+false
+5000
+34 - valid query (int, ref2 = attrRef different types)
+read r;
+Select BOOLEAN with 1 = r.varName
+false
+5000
+35 - invalid query (missing quotation marks)
+read r;
+Select BOOLEAN with one = r.varName
+false
+5000

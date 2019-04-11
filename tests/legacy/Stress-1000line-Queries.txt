@@ -1,0 +1,200 @@
+1-comment
+procedure p;
+Select p 
+StressTest
+5000
+2-comment
+stmt s, s1;
+Select s such that Follows(s, s1)
+none
+5000
+3-comment
+stmt s, s1, s2;
+Select s such that Follows(s, s1) and Follows(s1, s2)
+none
+5000
+4-comment
+stmt s, s1, s2;
+Select <s, s1> such that Follows(s1, s2)
+none
+5000
+5-comment
+stmt s, s1, s2; print p; assign a;
+Select p such that Follows(a, p)
+none
+5000
+6-comment
+stmt s,s1,s2; read r; assign a;
+Select a pattern a("x", _) such that Follows(a, s)
+none
+5000
+7-comment
+stmt s, s1; print p;
+Select s such that Follows(s, s1) and Follows(s1, p)
+none
+5000
+8-comment
+stmt s; assign a;
+Select s such that Modifies(a, "x") and Follows(s, a)
+none
+5000
+9-comment
+stmt s, s1;
+Select s such that Modifies(s, "x") and Modifies(s1, "x") and Follows(s, s1)
+none
+5000
+10-comment
+stmt s, s1, s2;
+Select s such that Modifies(s, "x") and Modifies(s1, "x") and Modifies(s2, "x") and Follows(s, s1) and Follows(s1, s2)
+ none
+5000
+11-comment
+stmt s; read r;
+Select s such that Uses(s, "a") and Follows(s, r)
+none
+5000
+12-comment
+stmt s, s1;
+Select <s, s1> such that Follows*(s, s1)
+none
+5000
+13-comment
+assign a, a1;
+Select a such that Follows*(a, a1) pattern a("x", _) and a1("x", _)
+none
+5000
+14-comment
+read r; print p;
+Select r such that Follows*(r, p)
+none
+5000
+15-comment
+stmt s; read r;
+Select r such that Follows*(s, r) and Uses(s, "a")
+none
+5000
+16-comment
+print p, p1;
+Select p such that Follows*(p, p1)
+none
+5000
+17-comment
+assign a, a1; read r;
+Select r such that Follows(r, a) and Modifies(a, "x") and Modifies(a1, "x") and Follows*(r, a1)
+none
+5000
+18-comment
+stmt s, s1; assign a;
+Select a such that Follows*(s, a) and Modifies(a, "j")
+none
+5000
+19-comment
+stmt s; print p;
+Select <s, p> such that Follows*(1, s) and Follows*(2, p)
+none
+5000
+20-comment
+stmt s, s1, s2, s3;
+Select <s, s1, s2, s3> such that Follows*(1, s) and Follows(s, s1)
+none
+5000
+21-comment
+stmt s, s1;
+Select <s, s1> such that Next(s, s1)
+none
+5000
+22-comment
+stmt s; assign a;
+Select s such that Next(s, a)
+none
+5000
+23-comment
+stmt s; print p;
+Select s such that Next(s, p)
+none
+5000
+24-comment
+stmt s; read r;
+Select s such that Next(s, r)
+none
+5000
+25-comment
+read r; print p;
+Select r such that Next(r, p)
+none
+5000
+26-comment
+print p, p1;
+Select p such that Next(p, p1)
+none
+5000
+27-comment
+read r; assign a;
+Select r such that Next(r, a)
+none
+5000
+28-comment
+print p; assign a;
+Select a such that Next(p, a)
+none
+5000
+29-comment
+print p, p1; assign a;
+Select a such that Next(p, p1) and Next(a, p)
+none
+5000
+30-comment
+assign a, a1, a2;
+Select a such that Next(a, a1) and Next(a1, a2) and Modifies(a1, "j")
+none
+5000
+31-comment
+read r; stmt s;
+Select s such that Next(77, r) and Next(r, s)
+none
+5000
+32-comment
+stmt s;
+Select s such that Next*(93, s)
+none
+5000
+33-comment
+stmt s, s1; assign a;
+Select <s, s1, a> such that Next*(s, s1) and Next*(s1, a)
+none
+5000
+34-comment
+stmt s; print p;
+Select <p, s> such that Next*(s, p)
+none
+5000
+35-comment
+stmt s;
+Select s such that Next*(s, 2)
+none
+5000
+36-comment
+stmt s;
+Select s such that Next*(1, s)
+none
+5000
+37-comment
+stmt s; read r; print p;
+Select r such that Next(s, 91) and Next*(r, s)
+none
+5000
+38-comment
+stmt s; read r;
+Select r such that Next*(r, s) and Next*(90, s)
+none
+5000
+39-comment
+assign a;
+Select a such that Next*(50, a) such that Modifies(a, "x")
+none
+5000
+40-comment
+print p;
+Select p such that Uses(p, "x") and Next*(200, p)
+none
+5000

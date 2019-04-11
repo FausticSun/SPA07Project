@@ -1,0 +1,572 @@
+procedure main {
+    read x;             \\ 1
+    count = 0;          \\ 2
+    call miss;   \\ 3
+}
+
+procedure mr{
+    if ((x > 10) && (x <99)) then {  \\ 4
+        x = x % 10;                  \\ 5
+    } else {                        
+        x = 5;                       \\ 6
+    }
+    print sum;                       \\ 7
+}
+
+procedure miss{
+    read y;                         \\ 8
+    x = y;                          \\ 9
+    sum = sum * sum + f + x;        \\ 10
+    z = 1;                          \\ 11
+    f = 0;                          \\ 12
+    y = 1;                          \\ 13
+    count = count + 1;              \\ 14
+    sum = 0;                        \\ 15
+    call mr;                  \\ 16
+    while (count <= x) {            \\ 17
+        sum = sum + y;              \\ 18
+        m = y + z;                  \\ 19
+        y = z;                      \\ 20
+        z = m;                      \\ 21
+        if (sum > 10) then {        \\ 22
+            f = 1;                  \\ 23
+        } else {                    
+            f = 0;                  \\ 24
+        }   
+        count = count + 1;          \\ 25 
+    }
+    print sum;                      \\ 26
+    a = f + y + z + sum * sum / f + x;  \\ 27
+    print a;                            \\ 28
+}
+
+procedure sir {
+    read x;                 \\ 29
+    y = 2 *z;               \\ 30
+    call mr;          \\ 31
+    z = p - y;              \\ 32
+    if (q!=1) then {        \\ 33
+        z = x + 24;         \\ 34
+        call main;          \\ 35
+    } else {
+        while (z > 0) {     \\ 36
+            y = x * q - 5;  \\ 37
+            z = z - 1;      \\ 38
+        }
+        y = x + y * z + p*q;    \\ 39
+        call mr;          \\ 40
+    }
+    i = x + j + z;              \\ 41
+    print z;                    \\ 42
+}
+
+procedure COLOUR {
+    white = a + 2310 % blue;    \\ 43
+    call animals;               \\ 44
+    pink = white + blue / 124;  \\ 45
+    while (a < 13) {            \\ 46
+        red = 4;                \\ 47
+        print pink;             \\ 48
+        read a;                 \\ 49
+        if ((x + pink != white) || (yellow >= 1)) then {     \\ 50
+            c = (1 - white) + b;                 \\ 51
+            if (black >= 21) then {              \\ 52       
+                print white;                     \\ 53
+                read pink;                       \\ 54
+                if (3 != purple) then {          \\ 55
+                    green = blue * c;            \\ 56
+                    grey = white % black;       \\ 57
+                    while ((c == 8) && (x < orange)) { \\ 58
+                        yellow = yellow + jekki;        \\ 59
+                        read yellow;                    \\ 60
+                        print yellow;                   \\ 61
+                    }
+                } else {
+                    print blue;                 \\ 62
+                    pink = green + pink - 10;   \\ 63
+                    if (velvet == green) then { \\ 64
+                        print red;              \\ 65
+                        purple = (pink - grey) / b + 10;    \\ 66
+                    } else {        
+                        black = blue - 82 / 10; \\ 67
+                        blue = grey;            \\ 68
+                    }
+                }
+            } else {
+                read blue;              \\ 69
+                while (c != 25) {       \\ 70
+                    read red;           \\ 71
+                    call SPA;           \\ 72
+                    white = blue - a % 7; \\ 73
+                }
+                blue = 1 - purple / 77;  \\ 74
+                if ((grey < 1) || (121 < blue - 1)) then { \\ 75
+                   white = red / velvet - 5;                \\ 76
+                   a = 0;           \\ 77
+                   print c;         \\ 78
+                } else {
+                    print orange;   \\ 79
+                    read pink;      \\ 80
+                    black = blue - red + pink;  \\ 81
+                }
+            }
+        } else {
+            while(c + a - 173 <= jekki) { \\ 82
+               orange = red / 50;         \\ 83
+               red = red + 2;             \\ 84
+               blue = 1 + white - yellow; \\ 85
+            }
+            blue = 5 * yellow - c;        \\ 86
+            read white;                   \\ 87
+            if (white != 134) then {      \\ 88
+                orange = 2- grey;         \\ 89
+                read c;                   \\ 90
+            } else {
+                print pink;               \\ 91
+                a = c * purple / 3;       \\ 92
+            }
+        }
+    }
+}
+
+procedure fruits {
+    if (apple <= sweet) then {      \\ 93
+        banana = 21 + x;            \\ 94
+        read pear;                  \\ 95
+        while((x <= 0) && ((y > 67) || (z % y + 45 != banana) )) { \\ 96
+            b = a;  \\ 97
+            c = b;  \\ 98
+            d = c;  \\ 99
+            a = d;  \\ 100
+        }
+        pineapple = 0;  \\ 101
+        call food;      \\ 102
+        print apple;    \\ 103
+        apple = a - 41 * z; \\ 104
+    } else {
+        while (strawberry <= pear) {    \\ 105
+            pear = papaya - 3;          \\ 106
+            blueberry = 1;              \\ 107
+            papaya = pear - blueberry + papaya; \\ 108
+        }
+        read sweet;         \\ 109
+        grape = 10;         \\ 110
+        soju = pear * apple;    \\ 111
+        print grape;            \\ 112
+        while (soju != cider + 2) { \\ 113
+            apple = cider * soju;   \\ 114
+            blueberry = apple + soju;   \\ 115
+            call animals;           \\ 116
+        }
+    }
+    strawberry = sweet * sweet - pineapple; \\ 117
+    read sweet;         \\ 118
+    print strawberry;   \\ 119
+    strawberry = 1;     \\ 120
+    papaya = strawberry - blueberry * 33 / pear; \\ 121
+}
+
+procedure animals {
+    while (lion == king) {  \\ 122
+        while(bear > bare) { \\ 123
+            grizz = brown + cony;   \\ 124
+            read icebear;           \\ 125
+            cat = meow + wolf - 1900;   \\ 126
+            print tiger;            \\ 127
+        }
+        panda = sichuan / fat - cat - dog;  \\ 128
+        while (brown <= icebear - 1) {      \\ 129
+            icebear = russia + love;        \\ 130
+            print lion;                     \\ 131
+            read cat;                       \\ 132
+            panda = panda + 1;              \\ 133
+        }
+        animals = grizz - icebear * dog % sichuan + tiger; \\ 134
+        tiger = 9;      \\ 135
+        while (meow < 21) { \\ 136
+            print brown;    \\ 137
+            cony = brown + love; \\ 138
+        }
+    }
+    if (dog + 18 > meow * meow) then {  \\ 139
+        read icebear;   \\ 140
+        russia = 1;     \\ 141
+        if (tiger == fierce * tiger) then { \\ 142
+            love = cat + rat - meow;        \\ 143
+            lion = panda * dog;             \\ 144
+        } else {
+            read meow;                  \\ 145
+            lion = icebear - brown;     \\ 146
+        }
+        print cat;              \\ 147
+    } else {
+        while (cat - (dog + 614) % 1 != animals) {  \\ 148
+            dog = dog + cat / 14;       \\ 149
+            meow = 2;                   \\ 150
+            rat = animals % brown;      \\ 151
+        }
+        tiger = king - lion;            \\ 152
+        blue = 99;                      \\ 153
+        fish = animals;                 \\ 154
+    }
+}
+
+procedure food {
+    noodles = flour * noodles;          \\ 155
+    print butter;                       \\ 156  
+    if (6 > rice + 1 - 22) then {       \\ 157
+        while(bread != flour) {         \\ 158
+            bread = butter * noodles;   \\ 159
+            read butter;                \\ 160
+            print noodles;              \\ 161
+            noodles = 1;                \\ 162
+        }
+        if (ramen == noodles) then {    \\ 163
+            chocolate = candy;          \\ 164
+            sugar = rice + sugar;       \\ 165
+            read kaya;                  \\ 166
+        } else {
+            flour = fresh - rice * biscuit; \\ 167
+            butter = 7;             \\ 168
+            print chocolate;        \\ 169
+            print candy;            \\ 170
+        }
+    } else {
+        if (flour - flour * 1 % (rice + 12) > flour) then {  \\ 171
+            print sugar;        \\ 172
+            noodles = 1;        \\ 173
+            read flour;         \\ 174
+        } else {
+            rice = chocolate * 2;   \\ 175
+            flour = 0;              \\ 176
+        }
+        read chocolate;             \\ 177
+        call animals;               \\ 178
+        while(tart - 6 < cake % 1) {        \\ 179
+            candy = candy / 2;              \\ 180
+            rice = candy / (candy - sugar + rice % butter); \\ 181
+            butter = sugar - 5;             \\ 182
+        }
+    }
+    print bread;        \\ 183
+    kaya = bread + 7 - flour;   \\ 184
+}
+
+procedure SPA {
+    while (and == 3203) {   \\ 185
+        suchthat = parent + (modifies % pattern) * 11 - affects / stmt; \\ 186
+        stmt = stmt - 10;   \\ 187
+        print pattern;      \\ 188
+        read affects;       \\ 189
+        uses = pattern + suchthat;  \\ 190
+        if (procedure + uses >= uses - 230) then { \\ 191
+            read orange;        \\ 192
+            progline = print;   \\ 193
+            call animals;       \\ 194
+            assign = print * modifies;  \\ 195
+        } else {
+            stmtLst = ast * (contains - cfg) - procedure / suchthat % 101; \\ 196
+            print pattern;      \\ 197
+            assign = 2;         \\ 198
+            and = and - 7;      \\ 199
+            read cfg;           \\ 200
+        }
+        while (call == procedure - suchthat) {      \\ 201
+            pink = pink - uses;         \\ 202
+            progline = 1 + procedure;   \\ 203
+            read suchthat;      \\ 204
+            parent = 33;        \\ 205
+        }
+    }
+}
+
+procedure multipleNesting {
+    read z1;    \\ 206
+    print b1;   \\ 207
+    c1 = 20 - c1;   \\ 208
+    while (x1 % a1 >= 3 - 9 * x1 + z1 / 2) {    \\ 209
+        a1 = b1 - 2;            \\ 210
+        d1 = c1 * c1 - 320;     \\ 211
+        z1 = 207;               \\ 212
+        while((a % 200 < 350) || (x1 + y1 == 0)) {  \\ 213
+            print a;            \\ 214
+            if (a1 + b1 - s1 * t1 != 7) then {  \\ 215
+                print t1;                   \\ 216
+                m1 = m1 - f1 + y1 * z1;     \\ 217
+                while(c >= 0) {             \\ 218
+                    read s1;                \\ 219
+                    a = (c1 * x1 - z1) % 1000000; \\ 220
+                    if (100 <= m1 + n1) then {    \\ 221
+                        f1 = 0;             \\ 222
+                        a1 = a1 + 1;        \\ 223
+                        while (x == 0) {    \\ 224
+                            c1 = a1 + z1;   \\ 225
+                            n1 = f1 * s1 - 99 % c1 + x1;    \\ 226
+                            read t1;        \\ 227
+                            while ((f1 * 2 < 5) && (n1 - 1 == 7)) { \\ 228
+                                b1 = c1 % a1 - 300 * z1;    \\ 229
+                                print b1;           \\ 230
+                                call miss;   \\ 231
+                                z1 = c1 / b1;       \\ 232
+                                if (y1 > 1) then {  \\ 233
+                                    c1 = y1 / 10;   \\ 234
+                                    x1 = n1 + n1 - s1;  \\ 235
+                                    while (t1 < t1 + 2 % 1) {   \\ 236
+                                        f1 = m1 - 17;   \\ 237
+                                        print a1;       \\ 238
+                                        read n1;        \\ 239
+                                    }
+                                } else {
+                                    n1 = 200;   \\ 240
+                                    print a;    \\ 241
+                                    read x;     \\ 242
+                                    a = a + t1 + y1 - x1 * z1 / 312;    \\ 243
+                                }
+                            }
+                        }
+                    } else {
+                        print f1;       \\ 244
+                        z1 = t1 - 4;    \\ 245
+                        y1 = n1 * 3;    \\ 246
+                        s1 = s1 - 2;    \\ 247
+                        while (n1 * 2 == t1 % 22) { \\ 248
+                            d1 = 9;         \\ 249
+                            read m1;        \\ 250
+                            x1 = d1 - n1;   \\ 251
+                            s1 = 10 - y1;   \\ 252
+                        }
+                    }
+                } 
+            } else {
+                read x1;        \\ 253
+                print f1;       \\ 254
+                print d1;       \\ 255
+                g1 = 30;        \\ 256
+                if (g1 - x1 >= m1 % g1) then {  \\ 257
+                    t1 = t1 + 2;    \\ 258
+                    y1 = n1 - 2;    \\ 259
+                    while (z1 == 1) {   \\ 260
+                        read g1;        \\ 261
+                        s1 = 1;         \\ 262
+                        read y1;        \\ 263
+                        r1 = s1 - z1 * t1;  \\ 264
+                    }
+                } else {
+                    print x1;           \\ 265
+                    m1 = r1 * 1000;     \\ 266
+                    call animals;       \\ 267
+                    if (m1 % 4 == 11) then {    \\ 268
+                        read t1;        \\ 269
+                        read d1;        \\ 270
+                        z1 = m1 - 3;    \\ 271
+                        s1 = g1 * 2 - x1;   \\ 272
+                    } else {        
+                        d1 = s1 - 2;        \\ 273
+                        while (r1 <= t1) {  \\ 274
+                            n1 = 30;        \\ 275
+                            t1 = t1 - x1 + y1 / z1; \\ 276
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+procedure proc {
+  x = 2;            \\ 277
+  z = 3;            \\ 278
+  i = 5;            \\ 279  
+  while (i!=0) {    \\ 280
+    x = x - 1;      \\ 281
+    if (x==1) then {    \\ 282
+      z = x + 1; }      \\ 283
+    else {      
+      y = z + x; }      \\ 284
+    z = z + x + i;      \\ 285
+    call q;             \\ 286
+    i = i - 1; }        \\ 287
+  call p; }             \\ 288
+
+procedure p {
+  if (x<0) then {       \\ 289
+    while (i>0) {       \\ 290
+      x = z * 3 + 2 * y;    \\ 291
+      call q;           \\ 292
+      i = i - 1; }      \\ 293
+    x = x + 1;          \\ 294
+    z = x + z; }        \\ 295
+  else {
+    z = 1; }            \\ 296
+  z = z + x + i; }      \\ 297
+
+procedure q {
+  if (x==1) then {      \\ 298
+    z = x + 1; }        \\ 299
+  else {
+    x = z + x; } }      \\ 300
+
+procedure SIMPLE {
+ p = 4;         \\ 301
+ a = p * 2;     \\ 302
+ if (c == k) then {     \\ 303
+ pattern = p * a * a + p * ifs + p * w;     \\ 304
+ while(w > 0) {     \\ 305
+ call AST;          \\ 306
+ w = w - 1;}        \\ 307
+ ifs = ifs -1;}     \\ 308
+else {      
+ call PQL;}}        \\ 309
+
+procedure AST {
+ read c;            \\ 310
+ print c;}          \\ 311
+
+
+procedure PQL {
+ call AST;}         \\ 312
+
+
+procedure procA {
+ read shine;        \\ 313
+ ring = shine * 2;  \\ 314
+ f = ring + 3;      \\ 315
+ read lost;         \\ 316
+ call procB;        \\ 317
+ if (lost == shine) then {  \\ 318
+ call procC;       \\ 319
+ d = (shine + 12) * (lost + 13);}       \\ 320
+else {
+ while (f > 10) {       \\ 321
+ read g;                \\ 322
+ f = ring + 4 + g * a * 2 * 1 + shine;  \\ 323
+ call procB;}   \\ 324
+ d = 2;}        \\ 325
+ print d;}      \\ 326
+
+procedure procB {   
+ a = f + shine;         \\ 327
+ if (a < 2) then {      \\ 328
+ call procC;}          \\ 329
+else{
+ f = f + 19;}}          \\ 330
+
+procedure procC {
+ while (shine < 3) {        \\ 331
+ a = 1 * 2 + lost - f;      \\ 332
+  while (lost == a) {       \\ 333
+ lost = lost - 1;           \\ 334
+ w = a + lost;              \\ 335
+ shine = 1 + ring;}         \\ 336
+ if (a != shine) then {     \\ 337
+ a = lost + 1;              \\ 338
+ w = shine * 2;}            \\ 339
+else {
+ w = 1;}}}                  \\ 340
+
+ procedure please {
+
+    a1a = 4;                                                                       \\ 341
+
+    while (a1a > 0) {                                                              \\ 342
+
+        bb2 = a1a * a1a;                                                           \\ 343
+        ccc = 2 + a1a * 3;                                                         \\ 344
+
+        while (bb2 < 99) {                                                         \\ 345
+            
+            read dD4;                                                              \\ 346
+            if ( ((a1a > 5) && (a1a <= 10)) || ((16 > ccc) && (bb2 < 80)) ) then { \\ 347
+    
+                while ( !( (!(a1a < ccc)) && (50 < bb2) ) ) {                      \\ 348
+                
+                    while ( ccc >= dD4 ) {                                         \\ 349
+                        e33 = ccc + dD4 * a1a;                                     \\ 350
+                        print e33;                                                 \\ 351
+                        read ccc;                                                  \\ 352
+                    }
+                }
+
+            } else {
+                
+                fff = 9827 % 3820;                                                 \\ 353
+                while (fff != 999 ) {                                              \\ 354
+                    fff = fff - 1;                                                 \\ 355
+                    dD4 = (7 + a1a % dD4) / ( (9 * bb2) % ccc ) - 4;               \\ 356
+                    print fff;                                                     \\ 357
+                }
+            }
+
+            dD4 = bb2 + 1920;                                                      \\ 358
+            read x;                                                                \\ 359
+            call pass;                                                           \\ 360
+        }
+        
+        if ( x != 0 ) then {                                                       \\ 361
+            
+            y = 5;                                                                 \\ 362
+            while ( x < 10 ) {                                                     \\ 363
+                y = y * 2;                                                         \\ 364
+                x = (((x)) + (((1)))) * y;                                         \\ 365
+            }
+            
+            while ( !( y != 100) ) {                                               \\ 366
+                x = 0;                                                             \\ 367
+                y = ((((y / 2)))) - x;                                             \\ 368
+            }
+            print y;                                                               \\ 369
+            while ( x == 0 ) {                                                     \\ 370
+                x = x - 1;                                                         \\ 371
+                print y; }                                                          \\ 372
+        } else { print x; }                                                        \\ 373
+
+        if (y >= 0) then {                                                         \\ 374
+            read z;                                                                \\ 375
+        } else {
+            read pz;                                                               \\ 376
+        }
+    }
+}
+
+procedure pass {
+
+    a = x + 1;                                  \\ 377
+
+    if (a == 1) then {                          \\ 378
+
+        while ( b== (c + 2)){                   \\ 379
+            print b;                            \\ 380
+            c = (b - c) * 2;                    \\ 381
+            b = b + 1; }                        \\ 382
+
+        while((d % 3) != 0) {                   \\ 383
+                
+            d = 4;                              \\ 384
+            print d;                            \\ 385
+
+            while(d > (b / 40)){                \\ 386
+                d = d + d / d + d * d; }        \\ 387
+
+            d = d * 3 / 2; }                    \\ 388
+
+        a = a + 5;                              \\ 389
+
+    } else {
+    
+        while ((e <= f) && (f == 9)) {          \\ 390
+
+            while (f < 20) {                    \\ 391
+
+                read f;                         \\ 392
+
+                while ( g>=4) {                 \\ 393
+                    read g; } } } }             \\ 394
+
+    while (!(p != p)) {                         \\ 395
+        read p;                                 \\ 396
+        q = p + 900;                            \\ 397
+        read q; }                               \\ 398
+
+    read y;                                     \\ 399
+    print z;                                    \\ 400
+}

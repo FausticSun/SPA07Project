@@ -1,0 +1,17 @@
+procedure MessySyntaxTest {
+	x =     a + 292 - mixNumbers111WithLetters   ;
+	while ((!(x != 0)) && ((y == (k % 5 * 2)) || (random908142 > 0)))      {
+		if ((!((x+2) != 0)) || (!(x!=y))) 
+		then
+		{
+			print m;
+			read o;
+		}
+		else
+		
+
+		{
+			b = 2019 + spa % prototype / (first - submission);
+		}
+	}
+}

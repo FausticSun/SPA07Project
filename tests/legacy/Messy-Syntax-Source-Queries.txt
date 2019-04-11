@@ -1,0 +1,155 @@
+1-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select a such that Follows(a,w) pattern a(_,_" a + 292 "_)
+1
+5000
+2-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select pr such that  Follows*(pr,r) pattern a("x",_"a + 292 - mixNumbers111WithLetters"_)
+4
+5000
+3-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select s such that Follows*(a,s) pattern a(_,_)
+2
+5000
+4-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;if ifs;
+Select ifs such that Parent(ifs,pr) pattern a("b",_)
+3
+5000
+5-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select s such that Parent*(w,a) pattern a("b",_"first - submission"_)
+1, 2, 3, 4, 5, 6
+5000
+6-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select w such that Parent*(w,pr) pattern a("b",_)
+2
+5000
+7-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select r such that Modifies(r,"o") pattern a(_,_"mixNumbers111WithLetters"_)
+5
+5000
+8-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select v such that Modifies(a,v) pattern a(v,_)
+x, b
+5000
+9-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select a such that Uses(a,"mixNumbers111WithLetters") pattern a("x",_)
+1
+5000
+10-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select s such that Uses(s,"m") pattern a("b",_"spa % prototype"_)
+2, 3, 4
+5000
+11-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select s such that Uses(s,"spa")
+6, 2, 3
+5000
+12-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select v such that Uses(2,v)
+m, spa, prototype, first, submission, x, y, k, random908142
+5000
+13-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select v such that Uses(w,v)
+m, spa, prototype, first, submission,x, y, k, random908142
+5000
+14-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select w such that Modifies(w,"b")
+2
+5000
+15-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;if ifs;
+Select p such that Modifies(ifs,"o")
+MessySyntaxTest
+5000
+16-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;if ifs;
+Select v such that Modifies(ifs,v)
+o, b
+5000
+17-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select s such that Follows(a,s)
+2
+5000
+18-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select s such that Follows(s,2)
+1
+5000
+19-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select pr such that Follows(pr,r)
+4
+5000
+20-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select s such that Follows*(1,2)
+1,2,3,4,5,6
+5000
+21-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select s such that Follows*(s,a)
+none
+5000
+22-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select r such that Follows*(pr,r)
+5
+5000
+23-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r; if ifs;
+Select a such that Parent(ifs,a)
+6
+5000
+24-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r;
+Select s such that Parent(s,a)
+3
+5000
+25-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r; if ifs;
+Select w such that Parent(w,ifs)
+2
+5000
+26-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r; if ifs;
+Select a such that Parent*(w,a)
+6
+5000
+27-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r; if ifs;
+Select s such that Parent*(s,6)
+2, 3
+5000
+28-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r; if ifs;
+Select s such that Parent*(2,s)
+3, 4, 5, 6
+5000
+29-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r; if ifs;
+Select a pattern a("b",_)
+6
+5000
+30-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r; if ifs;
+Select v pattern a(v,_"a+292"_)
+x
+5000
+31-comment
+stmt s; assign a; variable v; while w; procedure p; print pr; read r; if ifs;
+Select a pattern a(_,_"spa % prototype"_)
+6
+5000

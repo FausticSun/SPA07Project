@@ -1,0 +1,120 @@
+1 - valid query BOOLEAN 
+
+Select BOOLEAN
+TRUE
+5000
+2 - valid query BOOLEAN 1 caluse
+assign a;
+Select BOOLEAN such that Modifies(a, "b")
+TRUE
+5000
+3 - valid query BOOLEAN 1 caluse
+call c;
+Select BOOLEAN such that Uses(c, "EEEEE")
+TRUE
+5000
+4 - valid query BOOLEAN 1 caluse
+
+Select BOOLEAN with 1=1
+TRUE
+5000
+5 - valid query BOOLEAN 1 caluse
+assign a;
+Select BOOLEAN with a.stmt#=12
+TRUE
+5000
+6 - valid query BOOLEAN 1 caluse
+assign a;
+Select BOOLEAN such that Next(6, 7)
+TRUE
+5000
+7 - valid query BOOLEAN 1 caluse
+
+Select BOOLEAN such that Calls(_,_) 
+TRUE
+5000
+8 - valid query BOOLEAN 2 caluses
+stmt s;
+Select BOOLEAN such that Modifies(s, "a") and Uses(11, "ifVar") 
+TRUE
+5000
+9 - valid query BOOLEAN 2 caluses
+if ifs;
+Select BOOLEAN such that Calls(_,_) pattern ifs("bA",_,_)
+TRUE
+5000
+10 - valid query BOOLEAN 2 caluses
+
+Select BOOLEAN such that Next*(34, 41) and Modifies(34, "EEEEE") 
+FALSE
+5000
+11 - valid query BOOLEAN 2 caluses
+
+Select BOOLEAN such that Parent*(34, 41) and Uses("procA", "abc")
+TRUE
+5000
+12 - valid query BOOLEAN 3 caluses
+assign a; procedure p;
+Select BOOLEAN such that Follows*(51, 60) and Modifies(a, "a") and Uses(p, "dBBB")
+FALSE
+5000
+13 - valid query BOOLEAN 3 caluses
+assign a; call c;
+Select BOOLEAN such that Follows*(34, 45) and Uses(c, "x") with c.procName="procC"
+FALSE
+5000
+14 - valid query BOOLEAN 3 caluses
+assign a; variable v; if ifs;
+Select BOOLEAN such that Modifies(a, v) and Uses(a, v) pattern ifs(v,_,_)
+TRUE
+5000
+15 - valid query BOOLEAN 3 caluses
+assign a;
+Select BOOLEAN such that Calls*("procB", "procC") and Modifies(a, "a") pattern a("dAAA", "dBBB")
+FALSE
+5000
+16 - valid query BOOLEAN 3 caluses
+procedure p;
+Select BOOLEAN such that Next*(34, 34) and Uses(p, "dBBB") and Calls(p, "procC")
+TRUE
+5000
+17 - valid query BOOLEAN 4 caluses
+assign a; stmt s, s1; variable v;
+Select BOOLEAN such that Follows*(s, 38) and Uses(s, v) and Modifies(s, v) and Parent*(s1, a)
+TRUE
+5000
+18 - valid query BOOLEAN 4 caluses
+assign a; variable v; stmt s1; if ifs1, ifs2; 
+Select BOOLEAN such that Follows*(ifs1, ifs2) and Modifies(ifs2, v) and Uses(s1, v) pattern a(v, _)
+TRUE
+5000
+19 - valid query BOOLEAN 4 caluses
+procedure p1, p2; variable v; while w1, w2;
+Select BOOLEAN such that Parent*(w1, w2) and Calls*(p1, p2) and Uses(p1, v) pattern w1(v, _)
+TRUE
+5000
+20 - valid query BOOLEAN 4 caluses
+assign a; stmt s1; procedure p; variable v; if ifs;
+Select BOOLEAN such that Next*(7, s1) and Modifies(s1, v) and Uses(s1, v) pattern ifs(v,_,_)
+TRUE
+5000
+21 - valid query BOOLEAN 5 clauses
+assign a; variable v; stmt s1; procedure p; if ifs; 
+Select BOOLEAN such that Uses(s1, v) and Modifies(ifs, v) such that Modifies(p, v) pattern a(v, _) such that Parent*(34, s1)
+TRUE
+5000
+22 - valid query BOOLEAN 6 clauses
+assign a; variable v; stmt s1; procedure p1, p2; if ifs; 
+Select BOOLEAN pattern a(v, _) such that Calls*(p1, p2) such that Modifies(ifs, v) and Uses(p1, _) and Uses(s1, v) and Modifies(p2, v)
+TRUE
+5000
+23 - valid query BOOLEAN 6 clauses
+assign a; variable v; procedure p; if ifs; while w; 
+Select BOOLEAN pattern a(v, _) such that Parent*(ifs, w) pattern ifs("bA", _, _) such that Uses(p, v) such that Modifies(ifs, v) pattern w(v, _)
+TRUE
+5000
+24 - valid query BOOLEAN 7 clauses
+assign a; variable v; procedure p; if ifs; while w1, w2; 
+Select BOOLEAN such that Next*(25, w2) such that Modifies(ifs, v) such that Uses(p, v) pattern a(v, _) pattern w1(v, _) such that Parent*(w1, w2) pattern ifs("bA", _, _) 
+TRUE
+5000
