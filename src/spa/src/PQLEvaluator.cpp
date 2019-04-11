@@ -407,8 +407,7 @@ ClauseResult PqlEvaluator::dataFilter(Table data, Clause c) {
     data.filterColumn("1", getdataByTtype(qe1).getColumn("0"));
   }
   if (isSynonym(qe1.type) && isSynonym(qe2.type) && qe1.name == qe2.name) {
-    data.filterColumn("2", data.getColumn("1"));
-    data.dropColumn("2");
+    data.selfJoin();
   } else if (!isUnderscore(qe2.type)) {
     data.filterColumn("2", getdataByTtype(qe2).getColumn("0"));
   }

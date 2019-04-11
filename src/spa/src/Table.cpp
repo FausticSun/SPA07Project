@@ -81,6 +81,22 @@ void Table::dropColumn(std::string toDrop) {
   data = std::move(newData);
 }
 
+void Table::selfJoin() {
+  if (headerRow.size() != 2) {
+    throw std::logic_error(
+        "Self Join can only be performed on table with 2 columns");
+  }
+  auto it = data.begin();
+  while (it != data.end()) {
+    if (it->at(0) != it->at(1)) {
+      it = data.erase(it);
+    } else {
+      ++it;
+    }
+  }
+  dropColumn(headerRow[1]);
+}
+
 std::set<std::string> Table::getColumn(std::string header) {
   int idx = getHeaderIdx(header);
   std::set<std::string> col;
