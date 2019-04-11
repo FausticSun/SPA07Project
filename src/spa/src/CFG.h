@@ -3,6 +3,7 @@
 #include "Util.h"
 #include <list>
 #include <map>
+#include <deque>
 
 class CFG {
 private:
@@ -13,6 +14,10 @@ private:
   std::vector<std::vector<int>> forwardCompressedGraph;
   std::vector<std::vector<int>> reverseCompressedGraph;
   int numCompressedNodes = 0;
+
+  // Cache
+  std::map<int, std::deque<int>> affectsForwardCache;
+  std::map<int, std::deque<int>> affectsReverseCache;
 
   // Other information
   Table whileIfTable{1};
@@ -28,34 +33,36 @@ private:
   void populateCompressedGraph(Table);
 
   // Methods for traversal to retrieve Next* relations
-  std::list<int> getNextTForward(int, int) const;
-  std::list<int> getNextTReverse(int) const;
+  std::deque<int> getNextTForward(int, int);
+  std::deque<int> getNextTReverse(int);
 
   // Methods for traversal to retrieve Affects relations
-  std::list<int> getAffectsForward(int, std::string, Table, Table) const;
-  std::list<int> getAffectsReverse(int, std::string, Table, Table) const;
+  std::deque<int> getAffectsForward(int, std::string, Table, Table);
+  std::deque<int> getAffectsReverse(int, std::string, Table, Table);
 
   // Method for traversal to retrieve Affects* relations
   std::map<int, std::set<int>> getAffectsTResults(
       int, Table, Table, std::map<int, StatementType>,
-      std::map<int, std::pair<std::string, std::vector<std::string>>>) const;
+      std::map<int, std::pair<std::string, std::vector<std::string>>>);
 
 public:
   CFG();
   CFG(Table, Table, Table, Table, int);
 
   // Getters for Next*
-  bool isNextT(int, int) const;
-  Table getNextT() const;
-  Table getNextT(int, bool) const;
+  bool isNextT(int, int);
+  Table getNextT();
+  Table getNextT(int, bool);
 
   // Getters for Affects
-  bool isAffects(int, int, Table, Table) const;
-  Table getAffects(Table, Table, std::set<int>) const;
-  Table getAffects(int, bool, Table, Table, std::set<int>) const;
+  bool isAffects(int, int, Table, Table);
+  Table getAffects(Table, Table, std::set<int>);
+  Table getAffects(int, bool, Table, Table, std::set<int>);
 
   // Getter for Affects*
   Table getAffectsT(
       Table, Table, std::map<int, StatementType>,
-      std::map<int, std::pair<std::string, std::vector<std::string>>>) const;
+      std::map<int, std::pair<std::string, std::vector<std::string>>>);
+
+  void clearCache();
 };

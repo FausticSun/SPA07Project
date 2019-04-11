@@ -137,8 +137,8 @@ void CFG::populateCompressedGraph(Table procStmtTable) {
   }
 }
 
-std::list<int> CFG::getNextTForward(int start, int end = -1) const {
-  std::list<int> result;
+std::deque<int> CFG::getNextTForward(int start, int end = -1) {
+  std::deque<int> result;
   std::vector<std::vector<int>> compressedCFG = forwardCompressedGraph;
   bool reachedEnd = false;
 
@@ -185,14 +185,14 @@ std::list<int> CFG::getNextTForward(int start, int end = -1) const {
   // for nextT with two constants that did not reach end line
   if ((end > 0) && (!reachedEnd)) {
     // return empty vector if end not reachable from start
-    return std::list<int>{};
+    return std::deque<int>{};
   }
 
   return result;
 }
 
-std::list<int> CFG::getNextTReverse(int start) const {
-  std::list<int> result;
+std::deque<int> CFG::getNextTReverse(int start) {
+  std::deque<int> result;
   std::vector<std::vector<int>> compressedCFG = reverseCompressedGraph;
 
   std::vector<bool> visited(initialToCompressed.size() + 1, false);
@@ -231,11 +231,11 @@ std::list<int> CFG::getNextTReverse(int start) const {
   return result;
 }
 
-Table CFG::getNextT() const {
+Table CFG::getNextT() {
   Table table{2};
 
   for (int i = 1; i < initialToCompressed.size() + 1; i++) {
-    std::list<int> result = getNextTForward(i);
+    std::deque<int> result = getNextTForward(i);
     for (int j : result) {
       table.insertRow({std::to_string(i), std::to_string(j)});
     }
@@ -243,9 +243,9 @@ Table CFG::getNextT() const {
   return table;
 }
 
-Table CFG::getNextT(int start, bool isForward) const {
+Table CFG::getNextT(int start, bool isForward) {
   Table table{1};
-  std::list<int> result;
+  std::deque<int> result;
   if (isForward) {
     result = getNextTForward(start);
   } else {
@@ -258,15 +258,18 @@ Table CFG::getNextT(int start, bool isForward) const {
   return table;
 }
 
-bool CFG::isNextT(int start, int end) const {
+bool CFG::isNextT(int start, int end) {
   return getNextTForward(start, end).size() > 0;
 }
 
-std::list<int> CFG::getAffectsForward(int start, std::string v,
-                                      Table modifiesTable,
-                                      Table usesAssignTable) const {
+std::deque<int> CFG::getAffectsForward(int start, std::string v,
+                                       Table modifiesTable,
+                                       Table usesAssignTable) {
+  if (affectsForwardCache.count(start)) {
+    return affectsForwardCache.at(start);
+  }
   std::vector<std::vector<int>> compressedCFG = forwardCompressedGraph;
-  std::list<int> results;
+  std::deque<int> results;
 
   // Initialize visited array
   std::vector<bool> visited(initialToCompressed.size() + 1, false);
@@ -283,6 +286,8 @@ std::list<int> CFG::getAffectsForward(int start, std::string v,
     }
     if (modifiesTable.contains({std::to_string(node), v})) {
       // v is modified in a line in the start node
+      auto cacheRes = affectsForwardCache.emplace(start, std::move(results));
+      return cacheRes.first->second;
       return results;
     }
     visited[node] = true;
@@ -321,14 +326,18 @@ std::list<int> CFG::getAffectsForward(int start, std::string v,
       }
     }
   }
-  return results;
+  auto cacheRes = affectsForwardCache.emplace(start, std::move(results));
+  return cacheRes.first->second;
 }
 
-std::list<int> CFG::getAffectsReverse(int start, std::string v,
-                                      Table modifiesTable,
-                                      Table modifiesAssignTable) const {
+std::deque<int> CFG::getAffectsReverse(int start, std::string v,
+                                       Table modifiesTable,
+                                       Table modifiesAssignTable) {
+  if (affectsReverseCache.count(start)) {
+    return affectsReverseCache.at(start);
+  }
   std::vector<std::vector<int>> compressedCFG = reverseCompressedGraph;
-  std::list<int> results;
+  std::deque<int> results;
 
   // Initialize visited array
   std::vector<bool> visited(initialToCompressed.size() + 1, false);
@@ -345,7 +354,8 @@ std::list<int> CFG::getAffectsReverse(int start, std::string v,
     }
     if (modifiesTable.contains({std::to_string(node), v})) {
       // v is modified in any line in the start node
-      return results;
+      auto cacheRes = affectsReverseCache.emplace(start, std::move(results));
+      return cacheRes.first->second;
     }
     visited[node] = true;
   }
@@ -386,11 +396,11 @@ std::list<int> CFG::getAffectsReverse(int start, std::string v,
       }
     }
   }
-  return results;
+  auto cacheRes = affectsReverseCache.emplace(start, std::move(results));
+  return cacheRes.first->second;
 }
 
-bool CFG::isAffects(int a1, int a2, Table usesTable,
-                    Table modifiesTable) const {
+bool CFG::isAffects(int a1, int a2, Table usesTable, Table modifiesTable) {
   // Get variable modified in line a1 and used in line a2
   modifiesTable.setHeader({"a1", "v"});
   usesTable.setHeader({"a2", "v"});
@@ -414,9 +424,9 @@ bool CFG::isAffects(int a1, int a2, Table usesTable,
 }
 
 Table CFG::getAffects(int start, bool isForward, Table usesTable,
-                      Table modifiesTable, std::set<int> assignStmts) const {
+                      Table modifiesTable, std::set<int> assignStmts) {
   Table table{1};
-  std::list<int> result;
+  std::deque<int> result;
   std::vector<std::string> assignStmtsVec;
   for (auto i : assignStmts) {
     assignStmtsVec.emplace_back(std::to_string(i));
@@ -459,7 +469,7 @@ Table CFG::getAffects(int start, bool isForward, Table usesTable,
 }
 
 Table CFG::getAffects(Table usesTable, Table modifiesTable,
-                      std::set<int> assignStmts) const {
+                      std::set<int> assignStmts) {
   Table table{2};
   std::vector<std::string> assignStmtsVec;
   for (auto i : assignStmts) {
@@ -482,8 +492,7 @@ Table CFG::getAffects(Table usesTable, Table modifiesTable,
 std::map<int, std::set<int>> CFG::getAffectsTResults(
     int start, Table modifiesTable, Table parentTable,
     std::map<int, StatementType> stmtMap,
-    std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap)
-    const {
+    std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap) {
   std::map<int, std::set<int>> results;
   std::vector<int> visited(initialGraph.size(), 0);
   std::vector<int> inDegreeCopy = inDegree;
@@ -650,8 +659,7 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
 Table CFG::getAffectsT(
     Table modifiesTable, Table parentTable,
     std::map<int, StatementType> stmtMap,
-    std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap)
-    const {
+    std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap) {
   Table table{2};
   for (auto data : procStmtTable.getData()) {
     std::map<int, std::set<int>> results = getAffectsTResults(
@@ -663,4 +671,9 @@ Table CFG::getAffectsT(
     }
   }
   return table;
+}
+
+void CFG::clearCache() {
+  affectsForwardCache.clear();
+  affectsReverseCache.clear();
 }

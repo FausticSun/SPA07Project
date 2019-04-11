@@ -20,6 +20,7 @@ public:
   void modifyHeader(std::string oldHeader, std::string newHeader);
   void insertRow(DataRow row);
   void dropColumn(std::string toDrop);
+  void selfJoin();
   std::set<std::string> getColumn(std::string header);
   void filterColumn(std::string header, std::set<std::string> filter);
   Table filter(std::string columnHeader, std::vector<std::string> elements);
