@@ -124,7 +124,7 @@ void CFG::populateCompressedGraph(Table procStmtTable) {
   }
 }
 
-std::deque<int> CFG::getNextTForward(int start, int end = -1) const {
+std::deque<int> CFG::getNextTForward(int start, int end = -1) {
   std::deque<int> result;
   std::vector<std::vector<int>> compressedCFG = forwardCompressedGraph;
   bool reachedEnd = false;
@@ -178,7 +178,7 @@ std::deque<int> CFG::getNextTForward(int start, int end = -1) const {
   return result;
 }
 
-std::deque<int> CFG::getNextTReverse(int start) const {
+std::deque<int> CFG::getNextTReverse(int start) {
   std::deque<int> result;
   std::vector<std::vector<int>> compressedCFG = reverseCompressedGraph;
 
@@ -218,7 +218,7 @@ std::deque<int> CFG::getNextTReverse(int start) const {
   return result;
 }
 
-Table CFG::getNextT() const {
+Table CFG::getNextT() {
   Table table{2};
 
   for (int i = 1; i < initialToCompressed.size() + 1; i++) {
@@ -230,7 +230,7 @@ Table CFG::getNextT() const {
   return table;
 }
 
-Table CFG::getNextT(int start, bool isForward) const {
+Table CFG::getNextT(int start, bool isForward) {
   Table table{1};
   std::deque<int> result;
   if (isForward) {
@@ -245,13 +245,13 @@ Table CFG::getNextT(int start, bool isForward) const {
   return table;
 }
 
-bool CFG::isNextT(int start, int end) const {
+bool CFG::isNextT(int start, int end) {
   return getNextTForward(start, end).size() > 0;
 }
 
 std::deque<int> CFG::getAffectsForward(int start, std::string v,
-                                      Table modifiesTable,
-                                      Table usesAssignTable) const {
+                                       Table modifiesTable,
+                                       Table usesAssignTable) {
   std::vector<std::vector<int>> compressedCFG = forwardCompressedGraph;
   std::deque<int> results;
 
@@ -312,8 +312,8 @@ std::deque<int> CFG::getAffectsForward(int start, std::string v,
 }
 
 std::deque<int> CFG::getAffectsReverse(int start, std::string v,
-                                      Table modifiesTable,
-                                      Table modifiesAssignTable) const {
+                                       Table modifiesTable,
+                                       Table modifiesAssignTable) {
   std::vector<std::vector<int>> compressedCFG = reverseCompressedGraph;
   std::deque<int> results;
 
@@ -377,7 +377,7 @@ std::deque<int> CFG::getAffectsReverse(int start, std::string v,
 }
 
 bool CFG::isAffects(int a1, int a2, Table usesTable,
-                    Table modifiesTable) const {
+                    Table modifiesTable) {
   // Get variable modified in line a1 and used in line a2
   modifiesTable.setHeader({"a1", "v"});
   usesTable.setHeader({"a2", "v"});
@@ -401,7 +401,7 @@ bool CFG::isAffects(int a1, int a2, Table usesTable,
 }
 
 Table CFG::getAffects(int start, bool isForward, Table usesTable,
-                      Table modifiesTable, std::set<int> assignStmts) const {
+                      Table modifiesTable, std::set<int> assignStmts) {
   Table table{1};
   std::deque<int> result;
   std::vector<std::string> assignStmtsVec;
@@ -446,7 +446,7 @@ Table CFG::getAffects(int start, bool isForward, Table usesTable,
 }
 
 Table CFG::getAffects(Table usesTable, Table modifiesTable,
-                      std::set<int> assignStmts) const {
+                      std::set<int> assignStmts) {
   Table table{2};
   std::vector<std::string> assignStmtsVec;
   for (auto i : assignStmts) {
@@ -470,7 +470,7 @@ std::map<int, std::set<int>> CFG::getAffectsTResults(
     int start, Table modifiesTable, Table parentTable,
     std::map<int, StatementType> stmtMap,
     std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap)
-    const {
+    {
   std::map<int, std::set<int>> results;
   std::vector<int> visited(initialGraph.size(), 0);
   std::vector<int> inDegreeCopy = inDegree;
@@ -646,7 +646,7 @@ Table CFG::getAffectsT(
     Table modifiesTable, Table parentTable,
     std::map<int, StatementType> stmtMap,
     std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap)
-    const {
+    {
   Table table{2};
   for (auto data : procStmtTable.getData()) {
     std::map<int, std::set<int>> results = getAffectsTResults(
@@ -661,5 +661,6 @@ Table CFG::getAffectsT(
 }
 
 void CFG::clearCache() {
-
+  affectsForwardCache.clear();
+  affectsReverseCache.clear();
 }
