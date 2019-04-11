@@ -6,9 +6,12 @@
 
 CFG::CFG() {}
 
-CFG::CFG(Table procStmtTable, Table nextTable, Table whileIfTable,
-         Table whileParentTable, int stmtCount)
-    : whileIfTable(whileIfTable), procStmtTable(procStmtTable) {
+CFG::CFG(Table procStmtTable, Table nextTable, Table modifesTable,
+         Table usesTable, Table whileIfTable, Table whileParentTable,
+         Table assignTable, int stmtCount)
+    : procStmtTable(procStmtTable), whileIfTable(whileIfTable),
+      modifiesTable(modifiesTable), usesTable(usesTable),
+      assignTable(assignTable) {
   // Populate initialGraph from nextTable (1-based indexing)
   initialGraph.resize(stmtCount + 1);
   for (auto data : nextTable.getData()) {
@@ -265,9 +268,6 @@ bool CFG::isNextT(int start, int end) {
 std::deque<int> CFG::getAffectsForward(int start, std::string v,
                                        Table modifiesTable,
                                        Table usesAssignTable) {
-  if (affectsForwardCache.count(start)) {
-    return affectsForwardCache.at(start);
-  }
   std::vector<std::vector<int>> compressedCFG = forwardCompressedGraph;
   std::deque<int> results;
 
@@ -286,8 +286,6 @@ std::deque<int> CFG::getAffectsForward(int start, std::string v,
     }
     if (modifiesTable.contains({std::to_string(node), v})) {
       // v is modified in a line in the start node
-      auto cacheRes = affectsForwardCache.emplace(start, std::move(results));
-      return cacheRes.first->second;
       return results;
     }
     visited[node] = true;
@@ -326,16 +324,12 @@ std::deque<int> CFG::getAffectsForward(int start, std::string v,
       }
     }
   }
-  auto cacheRes = affectsForwardCache.emplace(start, std::move(results));
-  return cacheRes.first->second;
+  return results;
 }
 
 std::deque<int> CFG::getAffectsReverse(int start, std::string v,
                                        Table modifiesTable,
                                        Table modifiesAssignTable) {
-  if (affectsReverseCache.count(start)) {
-    return affectsReverseCache.at(start);
-  }
   std::vector<std::vector<int>> compressedCFG = reverseCompressedGraph;
   std::deque<int> results;
 
@@ -354,8 +348,7 @@ std::deque<int> CFG::getAffectsReverse(int start, std::string v,
     }
     if (modifiesTable.contains({std::to_string(node), v})) {
       // v is modified in any line in the start node
-      auto cacheRes = affectsReverseCache.emplace(start, std::move(results));
-      return cacheRes.first->second;
+      return results;
     }
     visited[node] = true;
   }
@@ -396,11 +389,10 @@ std::deque<int> CFG::getAffectsReverse(int start, std::string v,
       }
     }
   }
-  auto cacheRes = affectsReverseCache.emplace(start, std::move(results));
-  return cacheRes.first->second;
+  return results;
 }
 
-bool CFG::isAffects(int a1, int a2, Table usesTable, Table modifiesTable) {
+bool CFG::isAffects(int a1, int a2) {
   // Get variable modified in line a1 and used in line a2
   modifiesTable.setHeader({"a1", "v"});
   usesTable.setHeader({"a2", "v"});
@@ -423,13 +415,12 @@ bool CFG::isAffects(int a1, int a2, Table usesTable, Table modifiesTable) {
   }
 }
 
-Table CFG::getAffects(int start, bool isForward, Table usesTable,
-                      Table modifiesTable, std::set<int> assignStmts) {
+Table CFG::getAffects(int start, bool isForward) {
   Table table{1};
   std::deque<int> result;
   std::vector<std::string> assignStmtsVec;
-  for (auto i : assignStmts) {
-    assignStmtsVec.emplace_back(std::to_string(i));
+  for (auto data : assignTable.getData()) {
+    assignStmtsVec.emplace_back(data[0]);
   }
 
   if (isForward) {
@@ -468,12 +459,11 @@ Table CFG::getAffects(int start, bool isForward, Table usesTable,
   return table;
 }
 
-Table CFG::getAffects(Table usesTable, Table modifiesTable,
-                      std::set<int> assignStmts) {
+Table CFG::getAffects() {
   Table table{2};
   std::vector<std::string> assignStmtsVec;
-  for (auto i : assignStmts) {
-    assignStmtsVec.emplace_back(std::to_string(i));
+  for (auto data : assignTable.getData()) {
+    assignStmtsVec.emplace_back(data[0]);
   }
   modifiesTable.setHeader({"a1", "v"});
   usesTable.setHeader({"a2", "v"});
@@ -671,9 +661,4 @@ Table CFG::getAffectsT(
     }
   }
   return table;
-}
-
-void CFG::clearCache() {
-  affectsForwardCache.clear();
-  affectsReverseCache.clear();
 }

@@ -166,7 +166,7 @@ bool PKB::isAffects(int a1, int a2) {
       assignStmts.find(a2) == assignStmts.end()) {
     return false;
   } else {
-    return cfg.isAffects(a1, a2, usesSTable, modifiesSTable);
+    return cfg.isAffects(a1, a2);
   }
 }
 Table PKB::getAffects(int a1, bool isLeftConstant) {
@@ -175,14 +175,10 @@ Table PKB::getAffects(int a1, bool isLeftConstant) {
   if (assignStmts.find(a1) == assignStmts.end()) {
     return Table{1};
   } else {
-    return cfg.getAffects(a1, isLeftConstant, usesSTable, modifiesSTable,
-                          assignStmts);
+    return cfg.getAffects(a1, isLeftConstant);
   }
 }
-Table PKB::getAffects() {
-  auto assignStmts = stmtTable.at(StatementType::Assign);
-  return cfg.getAffects(usesSTable, modifiesSTable, assignStmts);
-}
+Table PKB::getAffects() { return cfg.getAffects(); }
 
 Table PKB::getAffectsT() {
   return cfg.getAffectsT(modifiesSTable, parentTable, stmtMap, assignMap);
@@ -207,6 +203,4 @@ Table PKB::getCallProcName() { return callProcNameTable; }
 CFG PKB::getCFG() { return cfg; }
 int PKB::getStmtCount() { return stmtCount; }
 
-void PKB::clearCache() {
-  cfg.clearCache();
-}
+void PKB::clearCache() { cfg.clearCache(); }

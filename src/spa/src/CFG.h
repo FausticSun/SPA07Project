@@ -1,9 +1,9 @@
 #pragma once
 #include "Table.h"
 #include "Util.h"
+#include <deque>
 #include <list>
 #include <map>
-#include <deque>
 
 class CFG {
 private:
@@ -20,8 +20,11 @@ private:
   std::map<int, std::deque<int>> affectsReverseCache;
 
   // Other information
-  Table whileIfTable{1};
   Table procStmtTable{1};
+  Table modifiesTable{2};
+  Table usesTable{2};
+  Table assignTable{1};
+  Table whileIfTable{1};
   std::map<int, std::set<int>> whileParentMap;
   std::vector<int> inDegree;
   std::vector<int> inDegreeBefore;
@@ -47,7 +50,7 @@ private:
 
 public:
   CFG();
-  CFG(Table, Table, Table, Table, int);
+  CFG(Table, Table, Table, Table, Table, Table, Table, int);
 
   // Getters for Next*
   bool isNextT(int, int);
@@ -55,14 +58,14 @@ public:
   Table getNextT(int, bool);
 
   // Getters for Affects
-  bool isAffects(int, int, Table, Table);
-  Table getAffects(Table, Table, std::set<int>);
-  Table getAffects(int, bool, Table, Table, std::set<int>);
+  bool isAffects(int, int);
+  Table getAffects();
+  Table getAffects(int, bool);
 
   // Getter for Affects*
-  Table getAffectsT(
-      Table, Table, std::map<int, StatementType>,
-      std::map<int, std::pair<std::string, std::vector<std::string>>>);
+  Table
+  getAffectsT(Table, Table, std::map<int, StatementType>,
+              std::map<int, std::pair<std::string, std::vector<std::string>>>);
 
   void clearCache();
 };

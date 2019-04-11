@@ -210,8 +210,14 @@ void populateCFG(std::unique_ptr<PKB> &pkb) {
   auto parentTTable = pkb->getParentT();
   parentTTable.setHeader({"w", "s"});
   whileParentTable.mergeWith(parentTTable);
-  CFG graph = CFG{pkb->getProcStmt(), pkb->getNext(), whileIfTable,
-                  whileParentTable, pkb->getStmtCount()};
+  CFG graph = CFG{pkb->getProcStmt(),
+                  pkb->getNext(),
+                  pkb->getModifiesS(),
+                  pkb->getUsesS(),
+                  whileIfTable,
+                  whileParentTable,
+                  pkb->getStmtType(StatementType::Assign),
+                  pkb->getStmtCount()};
   pkb->setCFG(graph);
 }
 
