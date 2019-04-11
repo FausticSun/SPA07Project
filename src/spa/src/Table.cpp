@@ -92,9 +92,12 @@ std::set<std::string> Table::getColumn(std::string header) {
 
 void Table::filterColumn(std::string header, std::set<std::string> filter) {
   int idx = getHeaderIdx(header);
-  for (auto it = data.begin(); it != data.end(); ++it) {
+  auto it = data.begin();
+  while (it != data.end()) {
     if (!filter.count(it->at(idx))) {
-      it = std::prev(data.erase(it));
+      it = data.erase(it);
+    } else {
+      ++it;
     }
   }
 }
