@@ -1,5 +1,4 @@
 #include "CFG.h"
-#include "assert.h"
 #include <map>
 #include <queue>
 #include <stack>
@@ -394,11 +393,7 @@ bool CFG::isAffects(int a1, int a2) {
     return false;
   } else {
     // Continue to get variable
-    assert(modifiesA1Table.size() == 1);
-    std::string v;
-    for (auto data : modifiesA1Table.getData({"v"})) {
-      v = data[0];
-    }
+    auto v = *modifiesA1Table.getColumn("v").begin();
     auto result = getAffectsForward(a1, v);
     return std::find(result.begin(), result.end(), a2) != result.end();
   }
@@ -413,7 +408,6 @@ Table CFG::getAffects(int start, bool isForward) {
     modifiesATable.setHeader({"a1", "v"});
     modifiesATable.filterColumn("a1", {std::to_string(start)});
     // modifiesATable has one variable after filter
-    assert(modifiesATable.size() == 1);
     auto v = *modifiesATable.getColumn("v").begin();
     result = getAffectsForward(start, v);
   } else {
