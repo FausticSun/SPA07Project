@@ -659,3 +659,6 @@ Table CFG::getAffectsT(
   }
   return table;
 }
+
+void CFG::clearCache() {
+}

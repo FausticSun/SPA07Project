@@ -56,4 +56,6 @@ public:
   Table getAffectsT(
       Table, Table, std::map<int, StatementType>,
       std::map<int, std::pair<std::string, std::vector<std::string>>>) const;
+
+  void clearCache();
 };

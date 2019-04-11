@@ -206,3 +206,7 @@ Table PKB::getIfMatches() { return ifTable; }
 Table PKB::getCallProcName() { return callProcNameTable; }
 CFG PKB::getCFG() { return cfg; }
 int PKB::getStmtCount() { return stmtCount; }
+
+void PKB::clearCache() {
+  cfg.clearCache();
+}

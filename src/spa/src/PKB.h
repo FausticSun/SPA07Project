@@ -122,4 +122,6 @@ public:
   Table getCallProcName();
   CFG getCFG();
   int getStmtCount();
+
+  void clearCache();
 };
