@@ -407,7 +407,13 @@ ClauseResult PqlEvaluator::dataFilter(Table data, Clause c) {
     data.filterColumn("1", getdataByTtype(qe1).getColumn("0"));
   }
   if (isSynonym(qe1.type) && isSynonym(qe2.type) && qe1.name == qe2.name) {
-    data.selfJoin();
+    if ((c.clauseType == ClauseType::Calls ||
+         c.clauseType == ClauseType::CallsT) &&
+        qe1.type == qe2.type && qe2.type == QueryEntityType::Procedure) {
+      data = Table(1);
+    } else {
+      data.selfJoin();
+    }
   } else if (!isUnderscore(qe2.type)) {
     data.filterColumn("2", getdataByTtype(qe2).getColumn("0"));
   }
