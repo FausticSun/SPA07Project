@@ -1,5 +1,18 @@
 #include "Table.h"
 #include <algorithm>
+#include <deque>
+#include <iterator>
+#include <map>
+
+int Table::getHeaderIdx(std::string header) {
+  for (int i = 0; i < headerRow.size(); ++i) {
+    if (headerRow[i] == header) {
+      return i;
+    }
+  }
+  throw std::logic_error("Header not found");
+  return -1;
+}
 
 Table::Table(HeaderRow headers) : headerRow(headers) {
   auto headersCopy = headers;
@@ -49,27 +62,42 @@ void Table::insertRow(DataRow row) {
   if (row.size() != headerRow.size()) {
     throw std::logic_error("Data row size and header row size mismatch");
   }
-  data.insert(row);
+  data.emplace(row);
 }
 
 void Table::dropColumn(std::string toDrop) {
-  int idx = -1;
-  for (int i = 0; i < headerRow.size(); ++i) {
-    if (headerRow[i] == toDrop) {
-      idx = i;
-      break;
-    }
-  }
-  if (idx == -1) {
-    throw std::logic_error("Header not found");
-  }
+  int idx = getHeaderIdx(toDrop);
   headerRow.erase(headerRow.begin() + idx);
   std::set<DataRow> newData;
-  for (auto row : data) {
-    row.erase(row.begin() + idx);
-    newData.insert(row);
+  for (auto &row : data) {
+    DataRow newRow;
+    newRow.reserve(row.size() - 1);
+    auto it = row.begin();
+    std::advance(it, idx);
+    newRow.assign(row.begin(), it++);
+    newRow.insert(newRow.end(), it, row.end());
+    newData.emplace_hint(newData.end(), std::move(newRow));
   }
-  data = newData;
+  data = std::move(newData);
+}
+
+std::set<std::string> Table::getColumn(std::string header) {
+  int idx = getHeaderIdx(header);
+  std::set<std::string> col;
+  for (auto &row : data) {
+    col.emplace(row[idx]);
+  }
+  return col;
+}
+
+void Table::filterColumn(std::string header, std::set<std::string> filter) {
+  int idx = getHeaderIdx(header);
+  std::set<DataRow> newData;
+  for (auto it = data.begin(); it != data.end(); ++it) {
+    if (!filter.count(it->at(idx))) {
+      it = data.erase(it);
+    }
+  }
 }
 
 Table Table::filter(std::string columnHeader,
@@ -143,58 +171,11 @@ void Table::mergeWith(const Table &other) {
   }
   // Natural Join if there are common indices
   if (!commonIndices.empty()) {
-    // Add non-common headers
-    for (int i : otherDiffIndices) {
-      headerRow.emplace_back(other.headerRow[i]);
-    }
-    // Iterate through DataRow in this table
-    auto thisIt = data.begin();
-    while (thisIt != data.end()) {
-      // Remove the row from the table
-      auto thisData = (*thisIt);
-      thisIt = data.erase(thisIt);
-      // Check the row against every row in the other table
-      for (auto otherIt = other.data.begin(); otherIt != other.data.end();
-           ++otherIt) {
-        // Determine if data in common columns are the same
-        bool isCommon = true;
-        for (auto indices : commonIndices) {
-          if (thisData.at(indices.first) != otherIt->at(indices.second)) {
-            isCommon = false;
-            break;
-          }
-        }
-        // If they are the same
-        if (isCommon) {
-          // Join and insert back into this table
-          auto newData = thisData;
-          for (auto i : otherDiffIndices) {
-            newData.emplace_back(otherIt->at(i));
-          }
-          data.insert(thisIt, newData);
-        }
-      }
-    }
+    naturalJoin(other, commonIndices, otherDiffIndices);
   }
   // Cartesian Product otherwise
   else {
-    // Merge headers
-    headerRow.insert(headerRow.end(), other.headerRow.begin(),
-                     other.headerRow.end());
-    // Perform cartesian product
-    // Iterate through DataRow in this table
-    auto thisIt = data.begin();
-    while (thisIt != data.end()) {
-      // Remove the row from the table
-      auto thisData = (*thisIt);
-      thisIt = data.erase(thisIt);
-      // Merge and insert back with every row in the other table
-      for (auto otherRow : other.data) {
-        auto newData = thisData;
-        newData.insert(newData.end(), otherRow.begin(), otherRow.end());
-        data.insert(thisIt, newData);
-      }
-    }
+    crossProduct(other);
   }
 }
 
@@ -247,8 +228,120 @@ void Table::transitiveClosure() {
   for (int i = 2; i < n; ++i) {
     t2.setHeader({std::to_string(i - 1), std::to_string(i)});
     t.mergeWith(t2);
+    t.dropColumn(std::to_string(i - 1));
     for (auto newRow : t.getData({"0", std::to_string(i)})) {
       data.insert(newRow);
+    }
+  }
+}
+
+void Table::naturalJoin(const Table &other,
+                        std::vector<std::pair<int, int>> &commonIndices,
+                        std::set<int> &otherDiffIndices) {
+  hashJoin(other, commonIndices, otherDiffIndices);
+}
+
+void Table::hashJoin(const Table &other,
+                     std::vector<std::pair<int, int>> &commonIndices,
+                     std::set<int> &otherDiffIndices) {
+  std::set<DataRow> newData;
+  // Create Hash Table for Hash-Join
+  std::map<DataRow, std::deque<DataRow>> hashTable;
+  for (auto &dataRow : other.data) {
+    DataRow key;
+    key.reserve(commonIndices.size());
+    for (auto &commonIdx : commonIndices) {
+      key.emplace_back(dataRow[commonIdx.second]);
+    }
+    if (hashTable.count(key)) {
+      hashTable.at(key).emplace_back(dataRow);
+    } else {
+      hashTable.emplace(std::move(key), std::deque<DataRow>({dataRow}));
+    }
+  }
+  // Iterate through this table
+  for (auto &dataRow : data) {
+    DataRow key;
+    key.reserve(commonIndices.size());
+    for (auto &commonIdx : commonIndices) {
+      key.emplace_back(dataRow[commonIdx.first]);
+    }
+    // Probe the Hash Table with the key
+    if (!hashTable.count(key)) {
+      continue;
+    }
+    // Merge this dataRow with matching dataRows in the Hash Table
+    // and add the new row to the new data table
+    for (auto &otherRow : hashTable.at(key)) {
+      DataRow newRow(dataRow.begin(), dataRow.end());
+      newRow.reserve(dataRow.size() + otherDiffIndices.size());
+      for (auto &diffIdx : otherDiffIndices) {
+        newRow.emplace_back(otherRow[diffIdx]);
+      }
+      newData.emplace_hint(newData.end(), std::move(newRow));
+    }
+  }
+  // Add non-common headers
+  for (int i : otherDiffIndices) {
+    headerRow.emplace_back(other.headerRow[i]);
+  }
+  // Replace this table's data with the new data
+  data = std::move(newData);
+}
+
+void Table::loopJoin(const Table &other,
+                     std::vector<std::pair<int, int>> &commonIndices,
+                     std::set<int> &otherDiffIndices) {
+  // Add non-common headers
+  for (int i : otherDiffIndices) {
+    headerRow.emplace_back(other.headerRow[i]);
+  }
+  // Iterate through DataRow in this table
+  auto thisIt = data.begin();
+  while (thisIt != data.end()) {
+    // Remove the row from the table
+    auto thisData = (*thisIt);
+    thisIt = data.erase(thisIt);
+    // Check the row against every row in the other table
+    for (auto otherIt = other.data.begin(); otherIt != other.data.end();
+         ++otherIt) {
+      // Determine if data in common columns are the same
+      bool isCommon = true;
+      for (auto indices : commonIndices) {
+        if (thisData.at(indices.first) != otherIt->at(indices.second)) {
+          isCommon = false;
+          break;
+        }
+      }
+      // If they are the same
+      if (isCommon) {
+        // Join and insert back into this table
+        auto newData = thisData;
+        for (auto i : otherDiffIndices) {
+          newData.emplace_back(otherIt->at(i));
+        }
+        data.insert(thisIt, newData);
+      }
+    }
+  }
+}
+
+void Table::crossProduct(const Table &other) {
+  // Merge headers
+  headerRow.insert(headerRow.end(), other.headerRow.begin(),
+                   other.headerRow.end());
+  // Perform cartesian product
+  // Iterate through DataRow in this table
+  auto thisIt = data.begin();
+  while (thisIt != data.end()) {
+    // Remove the row from the table
+    auto thisData = (*thisIt);
+    thisIt = data.erase(thisIt);
+    // Merge and insert back with every row in the other table
+    for (auto otherRow : other.data) {
+      auto newData = thisData;
+      newData.insert(newData.end(), otherRow.begin(), otherRow.end());
+      data.insert(thisIt, newData);
     }
   }
 }

@@ -32,7 +32,7 @@ struct ClauseResult {
 class PqlEvaluator {
 public:
   PqlEvaluator(PKB &pkb);
-  deque<string> executeQuery(Query &q);
+  void executeQuery(Query &q, std::list<std::string> &results);
 
 private:
   Table NextTTable = Table(0);
@@ -42,7 +42,7 @@ private:
   vector<vector<Table>> inrelevantGroups;
   PKB &mypkb;
   dataRows resultExtractor(Table result, Query q);
-  deque<string> resultFormater(dataRows t);
+  void resultFormater(dataRows& t, std::list<std::string> &results);
   dataRows executeSimpleQuery(vector<QueryEntity> t);
   dataRows executeComplexQuery(Query q);
   ClauseResult executeOneClause(Clause c);

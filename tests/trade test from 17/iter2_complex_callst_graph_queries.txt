@@ -1,0 +1,100 @@
+1 - valid query 
+stmt s;
+Select s.stmt# such that Calls*("proca", "procb")
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
+5000
+2 - valid query 
+assign a; procedure p;
+Select a such that Calls*("procb", "proce")
+1, 3, 7, 9, 10, 13, 14
+5000
+3 - valid query 
+
+Select BOOLEAN such that Calls*("proca", "proca")
+FALSE
+5000
+4 - valid query 
+procedure p;
+Select p such that Calls*(p, "proce")
+proca, procb, procc, procd
+5000
+5 - invalid query 
+print p;
+Select p.stmt# such that Calls*(p, "e")
+none
+5000
+6 - invalid query 
+prog_line p;
+Select p such that Calls*(p, "B")
+none
+5000
+6 - valid query 
+constant c; procedure p;
+Select c such that Calls*(p, "procc")
+0, 1, 2, 4, 5
+5000
+7 - valid query 
+while w; procedure p;
+Select w such that Calls*("procd", p)
+5
+5000
+8 - valid query 
+if ifs; procedure p;
+Select ifs such that Calls*("procc", p)
+11
+5000
+9 - valid query 
+procedure p;
+Select p such that Calls*("proca", p)
+procb, procc, procd, proce
+5000
+10 - invalid query (same synonym)
+stmt s; procedure p;
+Select s such that Calls*(p, p)
+none
+5000
+11 - valid query (dependent synonym)
+procedure p1, p2;
+Select p1 such that Calls*(p1, p2)
+proca, procb, procc, procd
+5000
+12 - valid query (dependent synonym)
+procedure p1, p2;
+Select p2 such that Calls*(p1, p2)
+procb, procc, procd, proce
+5000
+13 - valid query (independent synonym)
+call c;
+Select c such that Calls*("procc", _)
+2, 4, 6, 12, 16, 18, 19, 20, 21, 22
+5000
+16 - invalid query (independent synonym)
+stmt s;
+Select s such that Calls*("g", _)
+none
+5000
+22 - valid query (independent synonym)
+procedure p;
+Select p.procName such that Calls*(_, "procc")
+proca, procb, procc, procd, proce
+5000
+23 - valid query (independent synonym)
+procedure p;
+Select p such that Calls*(_, "procc")
+proca, procb, procc, procd, proce
+5000
+23 - valid query (dependent synonym)
+procedure p;
+Select p such that Calls*(p, _)
+proca, procb, procc, procd
+5000
+23 - valid query (dependent synonym)
+procedure p;
+Select p such that Calls*(_, p)
+procb, procc, procd, proce
+5000
+23 - valid query (independent synonym)
+procedure p;
+Select p such that Calls*(_,_)
+proca, procb, procc, procd, proce
+5000

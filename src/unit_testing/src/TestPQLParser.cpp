@@ -532,3 +532,13 @@ TEST_CASE("Multiple varied clauses") {
   };
   REQUIRE(clauses == toVerify);
 }
+
+TEST_CASE("Semantic Error") {
+  std::string pql = R"(
+  stmt s; Select s pattern s(_,_)
+  )";
+  std::stringstream ss;
+  ss << pql;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  REQUIRE_THROWS_AS(Parser::parsePQL(tokens), Parser::SemanticError);
+}

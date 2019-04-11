@@ -1,0 +1,39 @@
+procedure proce {
+    a = a + 1;  	
+}
+
+procedure procd {
+    call proce;		
+    x = x + 1;				
+}
+
+procedure procc {
+    call proce;		
+    while (l > i){	
+    call procd;		            
+    z = x + y;		
+    read b;		
+    }
+    v = v + v;		
+    c = c * 2;		
+}
+
+procedure procb {
+    if (h == 0) then {	
+	call procd;	
+        b = c + 4;	
+	n = p + q + 5;	
+	print f;	
+    } else {
+	call proce;	
+	read m;		
+    }
+    call procc;		
+}
+
+procedure proca {
+    call procb;		
+    call procc;		
+    call procd;		
+    call proce;		
+}

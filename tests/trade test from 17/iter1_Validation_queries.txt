@@ -1,0 +1,160 @@
+1 - valid syntax (only letters)
+stmt statement;
+Select statement
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34
+5000
+2 - valid syntax (letters and digits)
+stmt stmt1;
+Select stmt1
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34
+5000
+3 - valid syntax (Capital letters and digits)
+stmt Statement1;
+Select Statement1
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34
+5000
+4 - valid syntax (extra whitespaces)
+stmt        s;
+Select           s
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34
+5000
+5 - valid syntax (multiple declarations, extra whitespaces)
+stmt s1,s2,  s3,  s4,   s6 ;
+Select   s2
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34
+5000
+6 - valid syntax (multiple declarations, extra whitespaces)
+stmt s1,s2,  s3;  variable v1,  v123v ;
+Select   s1
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34
+5000
+7 - invalid synonym syntax (does not start with a letter)
+stmt 1s;
+Select 1s
+none
+5000
+8 - invalid synonym syntax (contains special characters)
+stmt a>b;
+Select a>b
+none
+5000
+9 - invalid design entity (no boolean variable)
+boolean a;
+Select a
+none
+5000
+10 - invalid synonym (duplicated synonym) 
+read s; stmt s;
+Select s
+none
+5000
+11 - invalid synonym (duplicated synonym)
+stmt s1, stmt s2; 
+Select s1
+none
+5000
+12 - invalid synonym selected (not declared)
+stmt s1;
+Select s2
+none
+5000
+13 - invalid synonym (design entity not all lowercase)
+Stmt s;
+Select s;
+none
+5000
+14 - invalid query with ONE Uses (stmtRef cannot be _) 
+print p1;
+Select p1 such that Uses(_, "a")
+none
+5000
+15 - invalid query with ONE Uses (stmtRef cannot be _)
+stmt s;
+Select s such that Uses(_, "a1")
+none
+5000
+16 - invalid query with ONE Uses (stmtRef cannot be _)
+read r;
+Select r such that Uses(_, _)
+none
+5000
+17 - invalid query with ONE Uses (stmtRef cannot be _)
+variable v; 
+Select v such that Uses(_, v)
+none
+5000
+18 - invalid query with ONE Modifies (stmtRef cannot be _)
+read r;
+Select r such that Modifies(_, "a1")
+none
+5000
+19 - invalid query with ONE Modifies (stmtRef cannot be _)
+read r;
+Select r such that Modifies(_, _)
+none
+5000
+20 - invalid query with ONE Modifies (stmtRef cannot be _)
+variable v;
+Select v such that Modifies(_, v)
+none
+5000
+21 - invalid query with ONE Modifies (stmtRef is out of range) 
+variable v; 
+Select v such that Modifies(55, v)
+none
+5000
+22 - invalid query with ONE Uses (stmtRef is out of range) 
+variable v; 
+Select v such that Uses(-99, v)
+none
+5000
+23 - invalid syntax (missing right underscore)
+assign a;
+Select a pattern a(_, _"1")
+none
+5000
+24 - invalid syntax (missing left underscore)
+assign a;
+Select a pattern a(_, "b"_)
+none
+5000
+25 - invalid syntax (missing left underscore)
+assign a; variable v;
+Select v pattern a(v, "a"_)
+none
+5000
+26 - invalid syntax (missing right underscore)
+assign a; variable v;
+Select v pattern a(v, _"a")
+none
+5000
+27 - invalid syntax (missing pattern)
+assign a; variable v;
+Select v a(v, _"a"_)
+none
+5000
+28 - invalid syntax (additional and)
+assign a; variable v;
+Select v and pattern a(v, _"a"_)
+none
+5000
+29 - invalid syntax (missing parentheses)
+assign a; variable v;
+Select v pattern a(v, "a"_
+none
+5000
+30 - invalid query (assign does not exist)
+assign a; stmt s;
+Select a1 pattern a1("a", _)
+none
+5000
+31 - invalid query (w is not declared)
+stmt s; if ifs;
+Select s such that Parent(s ,w)
+none
+5000
+32 - invalid query (extra 'and')
+assign a;
+Select such that Follows(1, 2) and pattern a(1,_"a"_)
+none
+5000

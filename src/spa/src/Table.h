@@ -10,6 +10,7 @@ class Table {
 private:
   HeaderRow headerRow;
   std::set<DataRow> data;
+  int getHeaderIdx(std::string);
 
 public:
   explicit Table(HeaderRow headers);
@@ -19,6 +20,8 @@ public:
   void modifyHeader(std::string oldHeader, std::string newHeader);
   void insertRow(DataRow row);
   void dropColumn(std::string toDrop);
+  std::set<std::string> getColumn(std::string header);
+  void filterColumn(std::string header, std::set<std::string> filter);
   Table filter(std::string columnHeader, std::vector<std::string> elements);
   std::set<DataRow> getData(HeaderRow cols) const;
   std::set<DataRow> getData() const;
@@ -29,4 +32,14 @@ public:
   void concatenate(const Table &other);
   void setDifference(const Table &other);
   void transitiveClosure();
+  void naturalJoin(const Table &other,
+                   std::vector<std::pair<int, int>> &commonIndices,
+                   std::set<int> &otherDiffIndices);
+  void hashJoin(const Table &other,
+                std::vector<std::pair<int, int>> &commonIndices,
+                std::set<int> &otherDiffIndices);
+  void loopJoin(const Table &other,
+                std::vector<std::pair<int, int>> &commonIndices,
+                std::set<int> &otherDiffIndices);
+  void crossProduct(const Table &other);
 };

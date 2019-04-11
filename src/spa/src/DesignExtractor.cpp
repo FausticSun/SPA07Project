@@ -253,6 +253,17 @@ void populateStmtMap(std::unique_ptr<PKB> &pkb) {
   }
 }
 
+void populateCFGBip(std::unique_ptr<PKB> &pkb) {
+  CFGBip graph = CFGBip{pkb->getStmtType(StatementType::Call),
+                        pkb->getNext(),
+                        pkb->getProcStmt(),
+                        pkb->getCallProcName(),
+                        pkb->getProcExitStmt(),
+                        pkb->getStmtCount()};
+  pkb->setNextBip(graph.getNextBip());
+  pkb->setNextBipT(graph.getNextBipT());
+}
+
 void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {
   validateProcs(pkb);
   validateCyclicCalls(pkb);
@@ -265,4 +276,7 @@ void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {
   populateCFG(pkb);
   populateAssignMap(pkb);
   populateStmtMap(pkb);
+#ifdef ENABLE_BIP
+  populateCFGBip(pkb);
+#endif
 }
