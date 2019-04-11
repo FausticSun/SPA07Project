@@ -19,6 +19,8 @@ private:
   Table procStmtTable{1};
   std::map<int, std::set<int>> whileParentMap;
   std::vector<int> inDegree;
+  std::vector<int> inDegreeBefore;
+  std::vector<int> inDegreeAfter;
 
   // Methods to get CFG information
   void populateInitialToCompressed(int, Table, std::vector<int>);
