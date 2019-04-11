@@ -413,7 +413,7 @@ Table CFG::getAffects(int start, bool isForward) {
     // Affects(a, k) utilizes reverseCompressedGraph, k here is a constant
     auto usesATable = usesTable;
     usesATable.setHeader({"a2", "v"});
-    usesATable.filter("a2", {std::to_string(start)});
+    usesATable.filterColumn("a2", {std::to_string(start)});
     // usesATable has one or more variables after filter
     std::vector<std::string> variables;
     for (auto data : usesATable.getData({"v"})) {
