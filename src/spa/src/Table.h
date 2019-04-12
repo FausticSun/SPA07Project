@@ -13,6 +13,7 @@ private:
   int getHeaderIdx(std::string);
 
 public:
+  Table();
   explicit Table(HeaderRow headers);
   explicit Table(int noOfCols);
   HeaderRow getHeader() const;
