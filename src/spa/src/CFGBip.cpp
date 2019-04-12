@@ -184,38 +184,6 @@ void CFGBip::populateNextBipT(int stmtCount) {
               break;
             }
           }
-          /**
-  if (!visited[v]) {
-          if (type == LinkType::CFLink) {
-                  visited[v] = true;
-                  q.push(v);
-                  nextBipT.insertRow({ std::to_string(i), std::to_string(v) });
-          }
-          else if (type == LinkType::BranchIn) {
-                  visited[v] = true;
-                  q.push(v);
-                  branches.push(curr);
-                  nextBipT.insertRow({ std::to_string(i), std::to_string(v) });
-          }
-          else if (type == LinkType::BranchBack) {
-                  if (branches.empty()) {
-                          visited[v] = true;
-                          q.push(v);
-                          nextBipT.insertRow({ std::to_string(i),
-  std::to_string(v) });
-                  }
-                  else {
-                          if (j.sources.count(branches.top()) == 1) {
-                                  branches.pop();
-                                  visited[v] = true;
-                                  q.push(v);
-                                  nextBipT.insertRow({ std::to_string(i),
-  std::to_string(v) }); break;
-                          }
-
-                  }
-          }
-          **/
         }
       }
     }
