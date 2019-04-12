@@ -5,6 +5,8 @@
 #include <map>
 #include <stack>
 
+Table::Table() { headerRow.emplace_back(std::to_string(0)); }
+
 int Table::getHeaderIdx(std::string header) {
   for (int i = 0; i < headerRow.size(); ++i) {
     if (headerRow[i] == header) {

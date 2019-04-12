@@ -1,6 +1,7 @@
 #pragma once
 #include "PKB.h"
 #include <deque>
+#include <list>
 #include <memory>
 #include <string>
 
@@ -11,5 +12,6 @@ private:
 public:
   SPA();
   void parseSIMPLEFile(const std::string &filename);
-  void evaluateQuery(const std::string &query, std::list<std::string> &results) const;
+  void evaluateQuery(const std::string &query,
+                     std::list<std::string> &results) const;
 };

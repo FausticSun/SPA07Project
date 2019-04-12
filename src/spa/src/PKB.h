@@ -122,6 +122,9 @@ public:
   Table getCallProcName();
   CFG getCFG();
   int getStmtCount();
+  std::map<int, std::pair<std::string, std::vector<std::string>>>
+  getAssignMap();
+  std::map<int, StatementType> getStmtMap();
 
   void clearCache();
 };

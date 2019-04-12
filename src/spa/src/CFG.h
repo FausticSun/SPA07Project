@@ -2,7 +2,6 @@
 #include "Table.h"
 #include "Util.h"
 #include <deque>
-#include <list>
 #include <map>
 
 class CFG {
@@ -18,6 +17,8 @@ private:
   // Cache
   std::map<int, std::deque<int>> affectsForwardCache;
   std::map<int, std::deque<int>> affectsReverseCache;
+  Table affectsTCache{1};
+  std::map<int, Table> whileBlockCache;
 
   // Other information
   Table procStmtTable{1};
@@ -27,10 +28,11 @@ private:
   Table usesAssignTable{2};
   Table assignTable{1};
   Table whileIfTable{1};
-  std::map<int, std::set<int>> whileParentMap;
+  Table whileParentTable{2};
+  std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap;
+  std::map<int, StatementType> stmtMap;
+  std::map<int, std::vector<int>> assignWhileMap;
   std::vector<int> inDegree;
-  std::vector<int> inDegreeBefore;
-  std::vector<int> inDegreeAfter;
 
   // Methods to get CFG information
   void populateInitialToCompressed(int, Table, std::vector<int>);
@@ -46,13 +48,17 @@ private:
   std::deque<int> getAffectsReverse(int, std::string);
 
   // Method for traversal to retrieve Affects* relations
-  std::map<int, std::set<int>> getAffectsTResults(
-      int, Table, Table, std::map<int, StatementType>,
-      std::map<int, std::pair<std::string, std::vector<std::string>>>);
+  std::map<int, std::set<int>> getAffectsTResults(int);
+
+  Table getAffectsTWhile(int, std::map<int, std::vector<int>>);
 
 public:
   CFG();
-  CFG(Table, Table, Table, Table, Table, Table, Table, int);
+  CFG(Table procStmtTable, Table nextTable, Table modifiesTable,
+      Table usesTable, Table whileIfTable, Table whileParentTable,
+      Table assignTable,
+      std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap,
+      std::map<int, StatementType> stmtMap, int stmtCount);
 
   // Getters for Next*
   bool isNextT(int, int);
@@ -65,9 +71,7 @@ public:
   Table getAffects(int, bool);
 
   // Getter for Affects*
-  Table
-  getAffectsT(Table, Table, std::map<int, StatementType>,
-              std::map<int, std::pair<std::string, std::vector<std::string>>>);
+  Table getAffectsT();
 
   void clearCache();
 };

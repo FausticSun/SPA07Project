@@ -170,3 +170,23 @@ if (e != (y + 1)) then { \\74
 a = e - t; \\95
 }
 
+procedure H {
+	aa = 1; \\96
+	bb = 4; \\97
+	ee = 7 + 3 / a; \\98 
+	while ((ss < 0) && (rr > tt) || (mm == 12) && (nn != (bb - aa)) || (kk <= (pp + 1))) { \\99
+		if (aa != 1) then { \\100
+			print rresult; \\101
+		} else {
+			if (ss < tt) then { \\102
+				while (ww != 0) { \\103
+					rresult = rresult + 3 / ii; \\104
+				}
+			} else {
+				while ((ss - rr) == (bb % ss)) { \\105
+					rresult = rresult / 2 + jj; \\106
+				}
+			}
+		}
+	}
+}
