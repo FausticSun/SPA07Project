@@ -15,25 +15,6 @@ public:
   Table data = Table(0);
   vector<string> schema;
   int size;
-  // node() {
-  //	isJoin = false;
-  //}
-  // node(bool ij, vector<string> sche, int s) {
-  //
-  //}
-  // node(bool ij, Table t, vector<string> sche, int s) {
-  //	isJoin = ij;
-  //	data = t;
-  //	schema = sche;
-  //	size = s;
-  //}
-
-  // node(bool ij, node l, node r, vector<string> sche, int s) {
-  //	isJoin = ij;
-  //	size = s;
-  //	schema = sche;
-  //	left = l.isJoin? new node(l.isJoin,l.left,l.right,l.schema,l.size):
-  //}
 };
 
 class Optimizer {
