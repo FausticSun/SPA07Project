@@ -118,26 +118,6 @@ void Table::filterColumn(std::string header, std::set<std::string> filter) {
   }
 }
 
-Table Table::filter(std::string columnHeader,
-                    std::vector<std::string> elements) {
-  // Get the index of the required column
-  auto it = std::find(headerRow.begin(), headerRow.end(), columnHeader);
-  if (it == headerRow.end()) {
-    throw std::logic_error("Column: " + columnHeader + " not found");
-  }
-  int index = std::distance(headerRow.begin(), it);
-
-  // Put required rows into a new table
-  Table table{headerRow};
-  for (auto row : data) {
-    if (std::find(elements.begin(), elements.end(), row[index]) !=
-        elements.end()) {
-      table.insertRow(row);
-    }
-  }
-  return table;
-}
-
 std::set<Table::DataRow> Table::getData() const { return data; }
 
 int Table::size() const { return data.size(); }

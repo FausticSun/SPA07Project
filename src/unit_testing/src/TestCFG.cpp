@@ -2231,6 +2231,7 @@ TEST_CASE("AffectsT with call stmt and no nesting") {
   affectsTable.transitiveClosure();
   Table affectsTTable = pkb->getAffectsT();
   REQUIRE(affectsTable.size() == affectsTTable.size());
+  REQUIRE(affectsTTable.empty());
 }
 
 TEST_CASE("AffectsT with one while") {

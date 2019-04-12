@@ -3,7 +3,7 @@
 #include <PQLEvaluator.h>
 #include <iostream>
 #include <sstream>
-
+// split AttrRef  by '.'
 vector<string> split(const string &s, const char delim = '.') {
   vector<string> sv;
   sv.clear();
@@ -16,7 +16,7 @@ vector<string> split(const string &s, const char delim = '.') {
 
   return sv;
 }
-
+// judge whether the a string is a partial expression
 bool isPartial(string s) {
   char ending = '_';
   if (s.size() > 2 && s[0] == ending && s[s.size() - 1] == ending) {
@@ -24,21 +24,10 @@ bool isPartial(string s) {
   }
   return false;
 }
-
+// remove underscore of partial expression
 string removeUnderscore(string s) { return s.substr(1, s.size() - 2); }
-Table getCols(vector<string> s, Table t) {
-  if (s.empty()) {
-    return Table(0);
-  } else {
-    dataRows rows = t.getData(s);
-    Table result(s.size());
-    result.setHeader(s);
-    for (vector<string> row : rows) {
-      result.insertRow(row);
-    }
-    return result;
-  }
-}
+// take in a one column table, double the column size, copy the 1st column to
+// 2nd column
 Table duplicateCols(string s, Table t) {
   if (t.getHeader().size() == 1) {
     dataRows rows = t.getData();
@@ -53,6 +42,7 @@ Table duplicateCols(string s, Table t) {
     return Table(0);
   }
 }
+// convert dataRows to a complete TRable with Header
 Table rowsToTable(dataRows rows, vector<string> header) {
   Table result(header.size());
   result.setHeader(header);
@@ -65,6 +55,7 @@ Table rowsToTable(dataRows rows, vector<string> header) {
   }
   return result;
 }
+// take in a two-column table, join the 1st column with the 2nd column
 Table selfJoin(Table t) {
   if (t.getHeader().size() == 2) {
     Table result(2);
@@ -79,7 +70,7 @@ Table selfJoin(Table t) {
     return Table(0);
   }
 }
-
+// check whether two tables have joined attributes
 bool isJoined(Table &s1, Table &s2) {
   vector<string> header1 = s1.getHeader();
   vector<string> header2 = s2.getHeader();
@@ -92,7 +83,7 @@ bool isJoined(Table &s1, Table &s2) {
   }
   return false;
 }
-
+// check whether a table and a group of tables have joined columns
 bool isJoined(vector<Table> &s1, Table &s2) {
   for (Table &t : s1) {
     if (isJoined(t, s2)) {
@@ -103,7 +94,8 @@ bool isJoined(vector<Table> &s1, Table &s2) {
 }
 
 PqlEvaluator::PqlEvaluator(PKB &pkb) : mypkb(pkb){};
-
+// start execute query, judge whether query is simple or complex, use different
+// way to evaluate
 void PqlEvaluator::executeQuery(Query &q, std::list<std::string> &results) {
   dataRows resultTable;
   if (q.clauses.empty()) {
@@ -111,14 +103,17 @@ void PqlEvaluator::executeQuery(Query &q, std::list<std::string> &results) {
   } else {
     resultTable = executeComplexQuery(q);
   }
+  // already get all results, format results into list of strings
   resultFormater(resultTable, results);
 }
-
+// take in tables merged from result table of each clause, according to selected
+// tuple extract the data we want
 dataRows PqlEvaluator::resultExtractor(Table result, Query q) {
   vector<string> s;
   vector<QueryEntity> attr;
   vector<Table> tables;
   Table tempTable(0);
+  // when the selected is BOOLEAN
   if (q.target.front() == QueryEntityType::Boolean) {
     if (result.size() > 0) {
       Table t(1);
@@ -129,6 +124,7 @@ dataRows PqlEvaluator::resultExtractor(Table result, Query q) {
     t.insertRow({"FALSE"});
     return t.getData();
   }
+  // when selected is tuple
   if (result.empty()) {
     dataRows t;
     return t;
@@ -159,15 +155,12 @@ dataRows PqlEvaluator::resultExtractor(Table result, Query q) {
       }
       s.push_back(qe.name);
     }
-    /*for (Table t : tables) {
-            result.mergeWith(t);
-    }*/
   }
   dataRows resultTable = result.getData(s);
 
   return resultTable;
 }
-
+// format results into list of string
 void PqlEvaluator::resultFormater(dataRows &t,
                                   std::list<std::string> &results) {
   if (t.empty()) {
@@ -188,7 +181,7 @@ void PqlEvaluator::resultFormater(dataRows &t,
     resultsIt++;
   }
 }
-
+// execute queries without clauses
 set<vector<string>> PqlEvaluator::executeSimpleQuery(vector<QueryEntity> t) {
   int count = 0;
   vector<string> s;
@@ -225,7 +218,7 @@ set<vector<string>> PqlEvaluator::executeSimpleQuery(vector<QueryEntity> t) {
   }
   return result.getData(s);
 }
-
+// execute clauses with clause
 set<vector<string>> PqlEvaluator::executeComplexQuery(Query q) {
   vector<Clause> clauses = q.clauses;
   vector<Table> tables;
@@ -233,7 +226,9 @@ set<vector<string>> PqlEvaluator::executeComplexQuery(Query q) {
   Table data(0);
   ClauseResult result;
   for (iter; iter != clauses.end(); ++iter) {
+    // get result by evaluating each clause
     result = executeOneClause(*iter);
+    // when the result is from boolean type clause and is false
     if (result.isBool && !result.boolValue) {
 
       if (q.target.front().type == QueryEntityType::Boolean) {
@@ -244,13 +239,15 @@ set<vector<string>> PqlEvaluator::executeComplexQuery(Query q) {
       Table resultTable(0);
       return resultTable.getData();
     }
+    // when the result is from boolean type clause and is true, ignore it
     if (result.isBool && result.boolValue) {
 
     } else {
       tables.push_back(result.data);
     }
   }
-
+  // divided result tables into connected groups, which are divided to groups
+  // having selected attributes or not
   divideGroups(tables, q.target);
   vector<Table> relevantResults;
   for (vector<Table> t : relevantGroups) {
@@ -261,6 +258,7 @@ set<vector<string>> PqlEvaluator::executeComplexQuery(Query q) {
     }
     relevantResults.push_back(groupResult);
   }
+  // join the groups that are relevant to the selected tuplle
   vector<Table> inrelevantResults;
   for (vector<Table> t : inrelevantGroups) {
     Optimizer optimizer(t);
@@ -275,20 +273,18 @@ set<vector<string>> PqlEvaluator::executeComplexQuery(Query q) {
     for (int i = 1; i < relevantResults.size(); i++) {
       relevantResults[0].mergeWith(relevantResults[i]);
     }
-    /*	for (int i = 1; i < tables.size(); i++) {
-  tables[0].mergewith(tables[i]);
-}*/
     dataRows complexresult = resultExtractor(relevantResults[0], q);
     return complexresult;
   }
   dataRows simpleResult = executeSimpleQuery(q.target);
   return simpleResult;
 }
-
+// evaluate each single clause
 ClauseResult PqlEvaluator::executeOneClause(Clause c) {
   Table data(0);
   ClauseResult result;
   if (c.clauseType == ClauseType::ModifiesS) {
+    // identity the first parameter is procedure or statement
     if ((c.parameters.front().type == QueryEntityType::Procedure ||
          c.parameters.front().type == QueryEntityType::Name)) {
       data = mypkb.getModifiesP();
@@ -297,6 +293,7 @@ ClauseResult PqlEvaluator::executeOneClause(Clause c) {
     }
     result = dataFilter(data, c);
   } else if (c.clauseType == ClauseType::UsesS) {
+    // identity the first parameter is procedure or statement
     if ((c.parameters.front().type == QueryEntityType::Procedure ||
          c.parameters.front().type == QueryEntityType::Name)) {
       data = mypkb.getUsesP();
@@ -318,6 +315,7 @@ ClauseResult PqlEvaluator::executeOneClause(Clause c) {
     data = mypkb.getFollowsT();
     result = dataFilter(data, c);
   } else if (c.clauseType == ClauseType::AssignPatt) {
+    // classify AssignPatt into Expression or Underscore to evaluate
     if (isConstant(c.parameters[2].type)) {
       if (isPartial(c.parameters[2].name)) {
         data = mypkb.getAssignMatches(removeUnderscore(c.parameters[2].name),
@@ -335,9 +333,7 @@ ClauseResult PqlEvaluator::executeOneClause(Clause c) {
   } else if (c.clauseType == ClauseType::IfPatt) {
     data = mypkb.getIfMatches();
     result = dataFilter(data, c);
-  }
-
-  else if (c.clauseType == ClauseType::With) {
+  } else if (c.clauseType == ClauseType::With) {
     result = withEvaluate(c);
   } else if (c.clauseType == ClauseType::Next) {
     data = mypkb.getNext();
@@ -354,10 +350,19 @@ ClauseResult PqlEvaluator::executeOneClause(Clause c) {
     result = AffectEvaluate(c);
   } else if (c.clauseType == ClauseType::AffectsT) {
     result = AffectsTEvaluate(c);
+  } else if (c.clauseType == ClauseType::AffectsBip) {
+    result = AffectsBipEvaluate(c);
+  } else if (c.clauseType == ClauseType::AffectsBipT) {
+    result = AffectsBipTEvaluate(c);
+  } else if (c.clauseType == ClauseType::NextBip) {
+    result = NextBipEvaluate(c);
+  } else if (c.clauseType == ClauseType::NextBipT) {
+    result = NextBipTEvaluate(c);
   }
+
   return result;
 }
-
+// divide results into selected and not selected
 void PqlEvaluator::divideGroups(vector<Table> tables,
                                 vector<QueryEntity> targets) {
   bool hasJoin = false;
@@ -396,7 +401,7 @@ void PqlEvaluator::divideGroups(vector<Table> tables,
     end = true;
   }
 }
-
+// filter result get from pkb according to type of parameters in clause
 ClauseResult PqlEvaluator::dataFilter(Table data, Clause c) {
   QueryEntity qe1 = c.parameters[0];
   QueryEntity qe2 = c.parameters[1];
@@ -444,7 +449,7 @@ ClauseResult PqlEvaluator::dataFilter(Table data, Clause c) {
   }
   return ClauseResult(true, true);
 }
-
+// evaluate with clause
 ClauseResult PqlEvaluator::withEvaluate(Clause c) {
   vector<Table> tables;
   vector<pair<string, string>> expectation;
@@ -495,7 +500,8 @@ ClauseResult PqlEvaluator::withEvaluate(Clause c) {
   result.data = t;
   return result;
 }
-
+// evaluate NextT,Affects,AffectsT,NextBip,NextBipT,AffectsBip,AffectsBipT
+// clause
 ClauseResult PqlEvaluator::NextTEvaluate(Clause c) {
   QueryEntity qe1 = c.parameters[0];
   QueryEntity qe2 = c.parameters[1];
@@ -519,90 +525,11 @@ ClauseResult PqlEvaluator::NextTEvaluate(Clause c) {
     pkbData.mergeWith(col2);
     result = dataFilter(pkbData, c);
     return result;
-  }
-  // else if (isSynonym(qe1.type)) {
-  //  dataRows col1 = getdataByTtype(qe1).getData();
-  //  Table pkbData(2);
-  //  pkbData.setHeader({"1", "2"});
-  //  for (vector<string> row : col1) {
-  //    Table col1(1);
-  //    col1.setHeader({"1"});
-  //    col1.insertRow({row[0]});
-  //    Table present = mypkb.getNextT(stoi(row[0]), true);
-  //    present.setHeader({"2"});
-  //    col1.mergeWith(present);
-  //    pkbData.concatenate(col1);
-  //  }
-  //  if (isSynonym(qe2.type)) {
-  //    Table col2 = getdataByTtype(qe2);
-  //    col2.setHeader({"2"});
-  //    pkbData.mergeWith(col2);
-  //  }
-  //  data = pkbData;
-  //  /*result = dataFilter(pkbData, c);*/
-  //} else if (isSynonym(qe2.type)) {
-  //  dataRows col2 = getdataByTtype(qe2).getData();
-  //  Table pkbData(2);
-  //  pkbData.setHeader({"1", "2"});
-  //  for (vector<string> row : col2) {
-  //    Table col2(1);
-  //    col2.setHeader({"2"});
-  //    col2.insertRow({row[0]});
-  //    Table present = mypkb.getNextT(stoi(row[0]), false);
-  //    present.setHeader({"1"});
-  //    present.mergeWith(col2);
-  //    pkbData.concatenate(present);
-  //  }
-  //  if (isSynonym(qe1.type)) {
-  //    Table col1 = getdataByTtype(qe1);
-  //    col1.setHeader({"1"});
-  //    pkbData.mergeWith(col1);
-  //  }
-  //  data = pkbData;
-  //  /*result = dataFilter(pkbData, c);*/
-  //  }
-  else {
+  } else {
     Table pkbData(0);
-    if (NextTTable.empty()) {
-      NextTTable = mypkb.getNextT();
-      pkbData = NextTTable;
-    } else {
-      pkbData = NextTTable;
-    }
+    pkbData = mypkb.getNextT();
     result = dataFilter(pkbData, c);
   }
-
-  // if (isSynonym(qe1.type) && isSynonym(qe2.type) && qe1.name == qe2.name) {
-  //  data = selfJoin(data);
-  //  data.dropColumn("2");
-  //}
-
-  // if (data.empty()) {
-  //  ClauseResult result(true, false);
-  //  return result;
-  //}
-
-  // if (isSynonym(qe1.type) || isSynonym(qe2.type)) {
-  //  if (!isSynonym(qe1.type)) {
-  //    data.dropColumn("1");
-  //  }
-
-  //  if (!isSynonym(qe2.type)) {
-  //    data.dropColumn("2");
-  //  }
-  //  for (string title : data.getHeader()) {
-  //    if (title == "1") {
-  //      data.modifyHeader("1", qe1.name);
-  //    } else if (title == "2") {
-  //      data.modifyHeader("2", qe2.name);
-  //    }
-  //  }
-  //  ClauseResult result(false, false);
-  //  result.data = data;
-  //  return result;
-  //}
-  // return ClauseResult(true, true);
-
   return result;
 }
 ClauseResult PqlEvaluator::AffectEvaluate(Clause c) {
@@ -627,12 +554,7 @@ ClauseResult PqlEvaluator::AffectEvaluate(Clause c) {
     result = dataFilter(pkbData, c);
   } else {
     Table pkbData(0);
-    if (AffectTable.empty()) {
-      AffectTable = mypkb.getAffects();
-      pkbData = AffectTable;
-    } else {
-      pkbData = AffectTable;
-    }
+    pkbData = mypkb.getAffects();
     result = dataFilter(pkbData, c);
   }
   return result;
@@ -640,16 +562,41 @@ ClauseResult PqlEvaluator::AffectEvaluate(Clause c) {
 ClauseResult PqlEvaluator::AffectsTEvaluate(Clause c) {
   Table pkbData(0);
   ClauseResult result;
-  if (AffectTTable.empty()) {
-    AffectTTable = mypkb.getAffectsT();
-    pkbData = AffectTTable;
-  } else {
-    pkbData = AffectTTable;
-  }
+  pkbData = mypkb.getAffectsT();
+  result = dataFilter(pkbData, c);
+  return result;
+}
+ClauseResult PqlEvaluator::AffectsBipEvaluate(Clause c) {
+  Table pkbData(0);
+  ClauseResult result;
+  /*pkbData = mypkb.getAffectsBip();*/
   result = dataFilter(pkbData, c);
   return result;
 }
 
+ClauseResult PqlEvaluator::AffectsBipTEvaluate(Clause c) {
+  Table pkbData(0);
+  ClauseResult result;
+  /*pkbData = mypkb.getAffectsBipT();*/
+  result = dataFilter(pkbData, c);
+  return result;
+}
+ClauseResult PqlEvaluator::NextBipEvaluate(Clause c) {
+  Table pkbData(0);
+  ClauseResult result;
+  pkbData = mypkb.getNextBip();
+  result = dataFilter(pkbData, c);
+  return result;
+}
+ClauseResult PqlEvaluator::NextBipTEvaluate(Clause c) {
+  Table pkbData(0);
+  ClauseResult result;
+  pkbData = mypkb.getNextBipT();
+  result = dataFilter(pkbData, c);
+  return result;
+}
+// get data from pkb according to requested entity type:stmt, assign, while,
+// if...
 Table PqlEvaluator::getdataByTtype(QueryEntity q) {
   if (isSynonym(q.type)) {
     if (q.type == QueryEntityType::Variable) {
@@ -670,7 +617,7 @@ Table PqlEvaluator::getdataByTtype(QueryEntity q) {
     return t;
   }
 }
-
+// get data from pkb that requested entity type is AttrRef: s.stmt#,prog_line
 Table PqlEvaluator::getdataWith(QueryEntity q) {
   if (q.type != QueryEntityType::Attrref) {
     return Table(0);
@@ -716,7 +663,7 @@ Table PqlEvaluator::getdataWith(QueryEntity q) {
   }
   return result;
 }
-
+// accept empty result table, if select boolean, return flase;else,return none
 Table PqlEvaluator::validateResult(Table t, vector<QueryEntity> target) {
   if (t.empty()) {
     if (target.front().type == QueryEntityType::Boolean) {
@@ -728,7 +675,8 @@ Table PqlEvaluator::validateResult(Table t, vector<QueryEntity> target) {
     return resultTable;
   }
 }
-
+// convert query entity type to corresbonding statement type,which are
+// accepted by pkb to retrieve data
 StatementType PqlEvaluator::convertQType(QueryEntityType q) {
   if (q == QueryEntityType::While)
     return StatementType::While;
@@ -745,7 +693,7 @@ StatementType PqlEvaluator::convertQType(QueryEntityType q) {
   if (q == QueryEntityType::Stmt || q == QueryEntityType::Progline)
     return StatementType::Stmt;
 }
-
+// convert clausetype to readable string
 string PqlEvaluator::convertClauseTypeToString(ClauseType ct) {
   switch (ct) {
   case ClauseType::Affects:
@@ -762,7 +710,7 @@ string PqlEvaluator::convertClauseTypeToString(ClauseType ct) {
     break;
   }
 }
-
+// convert selected tuple to table form
 Table PqlEvaluator::targetsToTable(vector<QueryEntity> t) {
   set<string> result;
   for (QueryEntity qe : t) {
@@ -781,7 +729,7 @@ Table PqlEvaluator::targetsToTable(vector<QueryEntity> t) {
   table.setHeader(newTargets);
   return table;
 }
-
+// classify the query entity
 bool PqlEvaluator::isSynonym(QueryEntityType q) {
   return q == QueryEntityType::Stmt || q == QueryEntityType::Read ||
          q == QueryEntityType::Print || q == QueryEntityType::Call ||

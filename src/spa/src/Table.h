@@ -23,7 +23,6 @@ public:
   void selfJoin();
   std::set<std::string> getColumn(std::string header);
   void filterColumn(std::string header, std::set<std::string> filter);
-  Table filter(std::string columnHeader, std::vector<std::string> elements);
   std::set<DataRow> getData(HeaderRow cols) const;
   std::set<DataRow> getData() const;
   int size() const;
