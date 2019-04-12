@@ -158,7 +158,7 @@ procedure A {
 		x = 5; \\ 82
 	}
 	\\ Test affects in nested loops
-	while (m == 13) { \\ 83
+	while ((ss < 0) && (rr > tt) || (mm == 12) && (nn != (bb - aa)) || (kk <= (pp + 1))) { \\ 83
 		m =  (n - p) / 2  +  n; \\84
 		p = 9; \\ 85
 		k = j; \\ 86
@@ -207,4 +207,6 @@ procedure A {
 		n = p; \\ 117
 	}
 	aa = m - p + n + aa; \\ 118
+	x = (a / b) + (a % b) - (a * b); \\ 119
+	n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\ 120
 }
