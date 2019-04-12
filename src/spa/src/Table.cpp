@@ -3,6 +3,7 @@
 #include <deque>
 #include <iterator>
 #include <map>
+#include <stack>
 
 int Table::getHeaderIdx(std::string header) {
   for (int i = 0; i < headerRow.size(); ++i) {
@@ -209,6 +210,10 @@ void Table::transitiveClosure() {
     throw std::logic_error(
         "Transitive closure can only be performed on table with 2 columns");
   }
+  repeatedDFS();
+}
+
+void Table::recursiveSelfJoin() {
   // Get number of unique elements
   std::set<std::string> uniqueElements;
   for (auto i : data) {
@@ -231,6 +236,51 @@ void Table::transitiveClosure() {
       data.insert(newRow);
     }
   }
+}
+
+void dfs(const std::string &v,
+         const std::map<std::string, std::set<std::string>> &adjList,
+         std::map<std::string, std::set<std::string>> &tcList) {
+  if (tcList.count(v)) {
+    return;
+  }
+  tcList.emplace(v, std::move(std::set<std::string>()));
+  if (!adjList.count(v)) {
+    return;
+  }
+  for (auto &n : adjList.at(v)) {
+    tcList.at(v).emplace(n);
+    dfs(n, adjList, tcList);
+    auto &tc = tcList.at(n);
+    tcList.at(v).insert(tc.begin(), tc.end());
+  }
+}
+
+void Table::repeatedDFS() {
+  // Generate an adjacency list
+  std::map<std::string, std::set<std::string>> adjList;
+  for (auto &row : data) {
+    if (!adjList.count(row[0])) {
+      adjList.emplace(row[0], std::move(std::set<std::string>({row[1]})));
+    } else {
+      adjList.at(row[0]).emplace(row[1]);
+    }
+  }
+  // Perform depth-first search
+  std::map<std::string, std::set<std::string>> tcList;
+  for (auto &kv : adjList) {
+    if (!tcList.count(kv.first)) {
+      dfs(kv.first, adjList, tcList);
+    }
+  }
+  // Convert transitive closure adjacency list to table
+  std::set<DataRow> newData;
+  for (auto &kv : tcList) {
+    for (auto &n : kv.second) {
+      newData.emplace(std::move(DataRow({kv.first, n})));
+    }
+  }
+  data = std::move(newData);
 }
 
 void Table::naturalJoin(const Table &other,

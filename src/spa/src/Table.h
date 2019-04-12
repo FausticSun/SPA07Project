@@ -32,6 +32,8 @@ public:
   void concatenate(const Table &other);
   void setDifference(const Table &other);
   void transitiveClosure();
+  void recursiveSelfJoin();
+  void repeatedDFS();
   void naturalJoin(const Table &other,
                    std::vector<std::pair<int, int>> &commonIndices,
                    std::set<int> &otherDiffIndices);
