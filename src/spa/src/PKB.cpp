@@ -184,12 +184,6 @@ Table PKB::getAffects(int start, bool isLeftConstant) {
 
 Table PKB::getAffects() { return cfg.getAffects(); }
 
-bool PKB::isAffectsT(int a1, int a2) { return cfg.isAffectsT(a1, a2); }
-
-Table PKB::getAffectsT(int start, bool isLeftConstant) {
-  return cfg.getAffectsT(start, isLeftConstant);
-}
-
 Table PKB::getAffectsT() { return cfg.getAffectsT(); }
 
 Table PKB::getCallProcNameTable() const { return callProcNameTable; }
@@ -210,5 +204,10 @@ Table PKB::getIfMatches() { return ifTable; }
 Table PKB::getCallProcName() { return callProcNameTable; }
 CFG PKB::getCFG() { return cfg; }
 int PKB::getStmtCount() { return stmtCount; }
+std::map<int, std::pair<std::string, std::vector<std::string>>>
+PKB::getAssignMap() {
+  return assignMap;
+};
+std::map<int, StatementType> PKB::getStmtMap() { return stmtMap; };
 
 void PKB::clearCache() { cfg.clearCache(); }

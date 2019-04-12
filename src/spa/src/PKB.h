@@ -111,8 +111,6 @@ public:
   bool isAffects(int, int);
   Table getAffects(int, bool);
   Table getAffects();
-  bool isAffectsT(int, int);
-  Table getAffectsT(int, bool);
   Table getAffectsT();
 
   Table getCallProcNameTable() const;
@@ -124,6 +122,9 @@ public:
   Table getCallProcName();
   CFG getCFG();
   int getStmtCount();
+  std::map<int, std::pair<std::string, std::vector<std::string>>>
+  getAssignMap();
+  std::map<int, StatementType> getStmtMap();
 
   void clearCache();
 };
