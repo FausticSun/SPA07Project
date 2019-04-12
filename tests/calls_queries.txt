@@ -563,3 +563,68 @@ call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2, v3;whil
 Select <p,v,s1, s2, v2, a, a1> such that Uses(p,v) with p.procName = p1.procName such that Calls(p1,"A") such that Uses(p1, v) and Modifies(s, v) with s1.stmt# = cons.value such that Parent*(ifs, s1) such that Parent(w,s2) and Follows(s2,_) and Parent(s2,_) with s2.stmt# = ifs2.stmt# pattern ifs2(v1,_,_) with v1.varName = v2.varName such that Modifies("G", v2) and Affects*(_,_) and Next*(s1, s2) and Affects(a, a1) and Next(a1,a) pattern a("y", _"c+2"_) and a1(v3, _"y/z"_) with v3.varName = "x"
 G a 16 14 d 36 35,G a 16 14 r 36 35,G b 16 14 d 36 35,G b 16 14 r 36 35,G c 16 14 d 36 35,G c 16 14 r 36 35,G d 16 14 d 36 35,G d 16 14 r 36 35,G e 16 14 d 36 35,G e 16 14 r 36 35,G g 16 14 d 36 35,G g 16 14 r 36 35,G i 16 14 d 36 35,G i 16 14 r 36 35,G q 16 14 d 36 35,G q 16 14 r 36 35,G r 16 14 d 36 35,G r 16 14 r 36 35,G result 16 14 d 36 35,G result 16 14 r 36 35,G some 16 14 d 36 35,G some 16 14 r 36 35,G t 16 14 d 36 35,G t 16 14 r 36 35,G w 16 14 d 36 35,G w 16 14 r 36 35,G x 16 14 d 36 35,G x 16 14 r 36 35,G y 16 14 d 36 35,G y 16 14 r 36 35
 5000
+114-comment
+call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2, v3;while w; if ifs, ifs2;stmt s,s1,s2; constant cons;
+Select v such that Uses(a, v) with a.stmt# = 35
+x, y, z
+5000
+115-comment
+call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2, v3;while w; if ifs, ifs2;stmt s,s1,s2; constant cons; print pr;
+Select v such that Uses(pr, v) with pr.stmt# = 42
+result
+5000
+116-comment
+call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2, v3;while w; if ifs, ifs2;stmt s,s1,s2; constant cons; print pr;
+Select v such that Uses(ifs, v) with ifs.stmt# = 45
+y, a, w, z, b, c, x, s, r, t, result, i, j, v
+5000
+117-comment
+call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2, v3;while w; if ifs, ifs2;stmt s,s1,s2; constant cons; print pr;
+Select v such that Uses(ifs, v) with ifs.stmt# = 69
+s, t, w, result, i, j, b, r
+5000
+118-comment
+call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2, v3;while w; if ifs, ifs2;stmt s,s1,s2; constant cons; print pr;
+Select v such that Uses(p, v) with p.procName = "C"
+x, y, w, z, c, a, s, r, t, result, i, j, b
+5000
+119-comment
+call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2, v3;while w; if ifs, ifs2;stmt s,s1,s2; constant cons; print pr;
+Select v such that Uses(c, v) with c.stmt# = 16
+x, y, w, z, c, a, s, r, t, result, i, j, b
+5000
+120-comment
+call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2, v3;while w; if ifs, ifs2;stmt s,s1,s2; constant cons; print pr;
+Select v such that Modifies(a, v) with a.stmt# = 92
+d
+5000
+121-comment
+call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2, v3;while w; if ifs, ifs2;stmt s,s1,s2; constant cons; print pr; read r;
+Select v such that Modifies(r, v) with r.stmt# = 82
+some
+5000
+122-comment
+call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2, v3;while w; if ifs, ifs2;stmt s,s1,s2; constant cons; print pr; read r;
+Select v such that Modifies(ifs, v) with ifs.stmt# = 69
+result
+5000
+123-comment
+call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2, v3;while w; if ifs, ifs2;stmt s,s1,s2; constant cons; print pr; read r;
+Select v such that Modifies(ifs, v) with ifs.stmt# = 45
+a, t, b, in, e, result
+5000
+123-comment
+call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2, v3;while w; if ifs, ifs2;stmt s,s1,s2; constant cons; print pr; read r;
+Select v such that Modifies(w, v) with w.stmt# = 75
+a, q, d, in, e, w, b, i, r, c, x, y, result, t, k, something, l, input
+5000
+124-comment
+call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2, v3;while w; if ifs, ifs2;stmt s,s1,s2; constant cons; print pr; read r;
+Select v such that Modifies(p, v) with p.procName = "D"
+e, a, t, b, in, result
+5000
+125-comment
+call c; procedure p,p1,p2;assign a, a1; prog_line pl;variable v, v1, v2, v3;while w; if ifs, ifs2;stmt s,s1,s2; constant cons; print pr; read r;
+Select v such that Modifies(c, v) with c.stmt# = 10
+b, a, i, r, c, x, y, result, e, t, in, k, something, l, input
+5000
