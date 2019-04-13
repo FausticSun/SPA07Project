@@ -342,7 +342,7 @@ std::deque<int> CFG::getAffectsReverse(int start, std::string v) {
     q.pop();
     // Looping through neighbor nodes
     for (int i : compressedCFG[curr]) {
-      if (!visited[compressedToInitial.at(i)[0]]) {
+      if (!visited[compressedToInitial.at(i).back()]) {
         bool isModified = false;
         auto lines = compressedToInitial.at(i);
         for (int j = lines.size() - 1; j >= 0; j--) {
@@ -450,7 +450,8 @@ Table CFG::getAffectsTWhile(int whileStmtNo,
     }
   }
   table.transitiveClosure();
-  return table;
+  whileBlockCache[whileStmtNo] = std::move(table);
+  return whileBlockCache[whileStmtNo];
 }
 
 std::map<int, std::set<int>> CFG::getAffectsTResults(int start) {
