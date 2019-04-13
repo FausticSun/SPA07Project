@@ -608,16 +608,8 @@ Table CFG::getAffectsT() {
   if (affectsTCache.getHeader().size() == 2) {
     return affectsTCache;
   }
-  Table table{2};
-  auto results = std::move(getAffectsTResults(1));
-  for (auto &data : procStmtTable.getData()) {
-    auto results = std::move(getAffectsTResults(std::stoi(data[1])));
-    for (auto &to : results) {
-      for (auto &from : to.second) {
-        table.insertRow({std::to_string(from), std::to_string(to.first)});
-      }
-    }
-  }
+  Table table = getAffects();
+  table.transitiveClosure();
   affectsTCache = std::move(table);
   return affectsTCache;
 }

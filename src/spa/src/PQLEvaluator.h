@@ -63,6 +63,8 @@ private:
   Table validateResult(Table t, vector<QueryEntity> target);
   // filter result get from pkb according to type of parameters in clause
   ClauseResult dataFilter(Table data, Clause c);
+	//projectOut unnecessary columns
+	Table projectOut(Table t, vector<QueryEntity> targets);
   // evaluate with clauses
   ClauseResult withEvaluate(Clause c);
   // evaluate NextT,Affects,AffectsT,NextBip,NextBipT,AffectsBip,AffectsBipT
