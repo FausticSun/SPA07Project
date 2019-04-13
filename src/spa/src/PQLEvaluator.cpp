@@ -248,33 +248,38 @@ set<vector<string>> PqlEvaluator::executeComplexQuery(Query q) {
   }
   // divided result tables into connected groups, which are divided to groups
   // having selected attributes or not
-  divideGroups(tables, q.target);
-  vector<Table> relevantResults;
-  for (vector<Table> t : relevantGroups) {
-    Optimizer optimizer(t);
-    Table groupResult = optimizer.getResult();
-    if (groupResult.empty()) {
-      return validateResult(groupResult, q.target).getData();
-    }
-		groupResult = projectOut(groupResult,q.target);
-    relevantResults.push_back(groupResult);
-  }
-  // join the groups that are relevant to the selected tuplle
-  vector<Table> inrelevantResults;
-  for (vector<Table> t : inrelevantGroups) {
-    Optimizer optimizer(t);
-    Table groupResult = optimizer.getResult();
-    if (groupResult.empty()) {
-      return validateResult(groupResult, q.target).getData();
-    }
-  }
+  //divideGroups(tables, q.target);
+  //vector<Table> relevantResults;
+  //for (vector<Table> t : relevantGroups) {
+  //  Optimizer optimizer(t);
+  //  Table groupResult = optimizer.getResult();
+  //  if (groupResult.empty()) {
+  //    return validateResult(groupResult, q.target).getData();
+  //  }
+		//groupResult = projectOut(groupResult,q.target);
+  //  relevantResults.push_back(groupResult);
+  //}
+  //// join the groups that are relevant to the selected tuplle
+  //vector<Table> inrelevantResults;
+  //for (vector<Table> t : inrelevantGroups) {
+  //  Optimizer optimizer(t);
+  //  Table groupResult = optimizer.getResult();
+  //  if (groupResult.empty()) {
+  //    return validateResult(groupResult, q.target).getData();
+  //  }
+  //}
 
-  if (!relevantResults.empty()) {
-    // optimization
-    for (int i = 1; i < relevantResults.size(); i++) {
-      relevantResults[0].mergeWith(relevantResults[i]);
-    }
-    dataRows complexresult = resultExtractor(relevantResults[0], q);
+  //if (!relevantResults.empty()) {
+  //  // optimization
+  //  for (int i = 1; i < relevantResults.size(); i++) {
+  //    relevantResults[0].mergeWith(relevantResults[i]);
+  //  }
+	/*dataRows complexresult = resultExtractor(relevantResults[0], q); */
+	if (!tables.empty()) {
+		for (int i = 1; i < tables.size(); i++) {
+			tables[0].mergeWith(tables[1]);
+		}
+	dataRows complexresult = resultExtractor(tables[0], q);
     return complexresult;
   }
   dataRows simpleResult = executeSimpleQuery(q.target);
