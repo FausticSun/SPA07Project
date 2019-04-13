@@ -242,30 +242,31 @@ void Table::recursiveSelfJoin() {
 
 void dfs(const std::string &v,
          const std::map<std::string, std::set<std::string>> &adjList,
-         std::map<std::string, std::set<std::string>> &tcList,
-         std::set<std::string> &visited) {
-  visited.emplace(v);
-  if (!adjList.count(v)) {
-    return;
-  }
-  for (auto &n : adjList.at(v)) {
-    if (!visited.count(n)) {
-      if (tcList.count(n)) {
-        visited.emplace(n);
-        auto &tc = tcList.at(n);
-        visited.insert(tc.begin(), tc.end());
-      } else {
-        dfs(n, adjList, tcList, visited);
+         std::map<std::string, std::set<std::string>> &tcList) {
+  std::set<std::string> visited;
+  std::stack<std::string> stack;
+  std::string curr;
+  int selfLoops = -1;
+  stack.emplace(v);
+  while (!stack.empty()) {
+    curr = std::move(stack.top());
+    stack.pop();
+    if (curr == v) {
+      selfLoops++;
+    }
+    if (!visited.count(curr)) {
+      visited.emplace(curr);
+      if (adjList.count(curr)) {
+        for (auto &n : adjList.at(curr)) {
+          stack.emplace(n);
+        }
       }
     }
   }
-}
-
-void dfs(const std::string &v,
-         const std::map<std::string, std::set<std::string>> &adjList,
-         std::map<std::string, std::set<std::string>> &tcList) {
-  std::set<std::string> visited;
-  dfs(v, adjList, tcList, visited);
+  if (selfLoops == 0) {
+    visited.erase(v);
+  }
+  tcList.emplace(v, std::move(visited));
 }
 
 void Table::repeatedDFS() {
