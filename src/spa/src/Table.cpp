@@ -390,17 +390,14 @@ void Table::crossProduct(const Table &other) {
   headerRow.insert(headerRow.end(), other.headerRow.begin(),
                    other.headerRow.end());
   // Perform cartesian product
-  // Iterate through DataRow in this table
-  auto thisIt = data.begin();
-  while (thisIt != data.end()) {
-    // Remove the row from the table
-    auto thisData = (*thisIt);
-    thisIt = data.erase(thisIt);
-    // Merge and insert back with every row in the other table
-    for (auto otherRow : other.data) {
-      auto newData = thisData;
-      newData.insert(newData.end(), otherRow.begin(), otherRow.end());
-      data.insert(thisIt, newData);
+  std::set<DataRow> newData;
+  for (auto &thisRow : data) {
+    for (auto &otherRow : other.data) {
+      auto newRow = thisRow;
+      newRow.reserve(thisRow.size() + otherRow.size());
+      newRow.insert(newRow.end(), otherRow.begin(), otherRow.end());
+      newData.emplace_hint(newData.end(), std::move(newRow));
     }
   }
+  data = std::move(newData);
 }
