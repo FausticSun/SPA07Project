@@ -61,9 +61,6 @@ void CFGBip::buildCFGBip(Table callTable, Table nextTable, Table procTable, Tabl
 		}
 	}
 
-	std::vector<int> uncheckedExits;
-	std::map<int, std::vector<std::pair<int, int>>> tempBranchbacks;
-
 	//create branch backs
 	for (auto i : callNext) {
 		int curr = i.first;
