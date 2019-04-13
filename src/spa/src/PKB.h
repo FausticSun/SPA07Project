@@ -22,8 +22,6 @@ private:
   Table constTable{1};
   std::map<StatementType, std::set<int>> stmtTable;
   CFG cfg;
-  std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap;
-  std::map<int, StatementType> stmtMap;
   Table procExitStmtTable{2};
 
   // PQL Relation Tables
@@ -79,8 +77,6 @@ public:
   // Other setters
   void setCallProcName(int, const std::string &);
   void setCFG(CFG &);
-  void setAssignMap(int, std::string);
-  void setStmtMap(int, StatementType);
 
   // Getters
   // Entity getter
@@ -122,9 +118,6 @@ public:
   Table getCallProcName();
   CFG getCFG();
   int getStmtCount();
-  std::map<int, std::pair<std::string, std::vector<std::string>>>
-  getAssignMap();
-  std::map<int, StatementType> getStmtMap();
 
   void clearCache();
 };

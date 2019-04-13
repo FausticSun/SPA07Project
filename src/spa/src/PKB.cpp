@@ -91,17 +91,6 @@ void PKB::setCallProcName(int stmtNo, const std::string &procName) {
 
 void PKB::setCFG(CFG &graph) { cfg = graph; }
 
-void PKB::setAssignMap(int stmtNo, std::string var) {
-  if (assignMap.find(stmtNo) != assignMap.end()) {
-    assignMap[stmtNo].second.push_back(var);
-  } else {
-    std::vector<std::string> emptyVec;
-    assignMap[stmtNo] = std::make_pair(var, emptyVec);
-  }
-}
-
-void PKB::setStmtMap(int stmtNo, StatementType type) { stmtMap[stmtNo] = type; }
-
 Table PKB::getVarTable() const { return varTable; }
 
 Table PKB::getProcTable() const {
@@ -204,10 +193,5 @@ Table PKB::getIfMatches() { return ifTable; }
 Table PKB::getCallProcName() { return callProcNameTable; }
 CFG PKB::getCFG() { return cfg; }
 int PKB::getStmtCount() { return stmtCount; }
-std::map<int, std::pair<std::string, std::vector<std::string>>>
-PKB::getAssignMap() {
-  return assignMap;
-};
-std::map<int, StatementType> PKB::getStmtMap() { return stmtMap; };
 
 void PKB::clearCache() { cfg.clearCache(); }
