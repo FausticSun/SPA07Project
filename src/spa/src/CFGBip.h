@@ -2,11 +2,11 @@
 #include "Table.h"
 #include <map>
 #include <queue>
-#include <stack>
 #include <set>
+#include <stack>
 
 class CFGBip {
-	enum class LinkType {CFLink, BranchIn, BranchBack};
+  enum class LinkType { CFLink, BranchIn, BranchBack };
 
 	struct Link {
 		LinkType type;
@@ -32,9 +32,10 @@ private:
 	void populateNextBip(int);
 	void populateNextBipT(int);
 	bool isCallStatement(int);
+
 public:
-	CFGBip();
-	CFGBip(Table, Table, Table, Table, Table, int);
-	Table getNextBip();
-	Table getNextBipT();
+  CFGBip();
+  CFGBip(Table, Table, Table, Table, Table, int);
+  Table getNextBip();
+  Table getNextBipT();
 };

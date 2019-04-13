@@ -2,14 +2,13 @@
 #include "CFG.h"
 #include "CFGBip.h"
 #include "Table.h"
+#include "Util.h"
 #include <map>
 #include <queue>
 #include <set>
 #include <string>
 #include <utility>
 #include <vector>
-
-enum class StatementType { Stmt, Assign, If, While, Read, Call, Print };
 
 class PKB {
 private:
@@ -23,6 +22,8 @@ private:
   Table constTable{1};
   std::map<StatementType, std::set<int>> stmtTable;
   CFG cfg;
+  std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap;
+  std::map<int, StatementType> stmtMap;
   Table procExitStmtTable{2};
 
   // PQL Relation Tables
@@ -78,6 +79,8 @@ public:
   // Other setters
   void setCallProcName(int, const std::string &);
   void setCFG(CFG &);
+  void setAssignMap(int, std::string);
+  void setStmtMap(int, StatementType);
 
   // Getters
   // Entity getter
@@ -102,12 +105,13 @@ public:
   Table getNextBip() const;
   Table getNextBipT() const;
 
-  bool isNextT(int, int) const;
-  Table getNextT(int, bool) const;
-  Table getNextT() const;
-  bool isAffects(int, int) const;
-  Table getAffects(int, bool) const;
-  Table getAffects() const;
+  bool isNextT(int, int);
+  Table getNextT(int, bool);
+  Table getNextT();
+  bool isAffects(int, int);
+  Table getAffects(int, bool);
+  Table getAffects();
+  Table getAffectsT();
 
   Table getCallProcNameTable() const;
   // Pattern getter
@@ -118,4 +122,9 @@ public:
   Table getCallProcName();
   CFG getCFG();
   int getStmtCount();
+  std::map<int, std::pair<std::string, std::vector<std::string>>>
+  getAssignMap();
+  std::map<int, StatementType> getStmtMap();
+
+  void clearCache();
 };

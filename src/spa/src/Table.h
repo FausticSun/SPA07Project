@@ -10,8 +10,10 @@ class Table {
 private:
   HeaderRow headerRow;
   std::set<DataRow> data;
+  int getHeaderIdx(std::string);
 
 public:
+  Table();
   explicit Table(HeaderRow headers);
   explicit Table(int noOfCols);
   HeaderRow getHeader() const;
@@ -19,7 +21,9 @@ public:
   void modifyHeader(std::string oldHeader, std::string newHeader);
   void insertRow(DataRow row);
   void dropColumn(std::string toDrop);
-  Table filter(std::string columnHeader, std::vector<std::string> elements);
+  void selfJoin();
+  std::set<std::string> getColumn(std::string header);
+  void filterColumn(std::string header, std::set<std::string> filter);
   std::set<DataRow> getData(HeaderRow cols) const;
   std::set<DataRow> getData() const;
   int size() const;
@@ -29,4 +33,16 @@ public:
   void concatenate(const Table &other);
   void setDifference(const Table &other);
   void transitiveClosure();
+  void recursiveSelfJoin();
+  void repeatedDFS();
+  void naturalJoin(const Table &other,
+                   std::vector<std::pair<int, int>> &commonIndices,
+                   std::set<int> &otherDiffIndices);
+  void hashJoin(const Table &other,
+                std::vector<std::pair<int, int>> &commonIndices,
+                std::set<int> &otherDiffIndices);
+  void loopJoin(const Table &other,
+                std::vector<std::pair<int, int>> &commonIndices,
+                std::set<int> &otherDiffIndices);
+  void crossProduct(const Table &other);
 };

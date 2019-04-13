@@ -13,6 +13,22 @@ bool ExprTokens::isRelationalOp(Token t) {
   return RelationalOperators.find(t) != RelationalOperators.end();
 }
 
+/*
+cond_expr: rel_expr | '!' '(' cond_expr ')' | '(' cond_expr ')' '&&' '('
+cond_expr ')' | '(' cond_expr ')' '||' '(' cond_expr ')'
+rel_expr: rel_factor '>' rel_factor | rel_factor '>=' rel_factor | rel_factor
+'<' rel_factor | rel_factor '<=' rel_factor | rel_factor '==' rel_factor |
+rel_factor '!=' rel_factor
+rel_factor: var_name | const_value | expr
+expr: expr '+' term | expr '-' term | term
+term: term '*' factor | term '/' factor | term '%' factor | factor
+factor: var_name | const_value | '(' expr ')'
+var_name: NAME
+const_value: INTEGER
+
+Implements the above grammar using a shunting-yard parser
+and if parsed succesfully returns the expression in postfix format
+*/
 std::list<Token> parseExpr(std::list<Token> &tokens) {
   // Ensures there are parentheses after ! and surrounding && and ||
   for (auto it = tokens.begin(); it != tokens.end(); ++it) {
@@ -49,8 +65,8 @@ std::list<Token> parseExpr(std::list<Token> &tokens) {
     else if (t == ExprTokens::Not) {
       stack.push_back(t);
     }
-    // Handle operator token
-    else if (t.type == TokenType::Operator) {
+    // Handle operator token that is mapped
+    else if (precedenceMap.count(t)) {
       // While (operator at the top of the stack is not a parenthesis)
       // and ((function is at the top of the stack)
       // or (operator at the top of the stack has greater or equal

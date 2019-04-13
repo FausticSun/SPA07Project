@@ -17,9 +17,9 @@ void PKB::setStmtType(int stmt, StatementType type) {
 void PKB::setConst(int cons) { constTable.insertRow({std::to_string(cons)}); }
 
 void PKB::setProcExitStmt(std::string proc, std::vector<int> exitStmts) {
-	for (auto i : exitStmts) {
-		procExitStmtTable.insertRow({ proc, std::to_string(i) });
-	}
+  for (auto i : exitStmts) {
+    procExitStmtTable.insertRow({proc, std::to_string(i)});
+  }
 }
 void PKB::setFollows(int s1, int s2) {
   followsTable.insertRow({std::to_string(s1), std::to_string(s2)});
@@ -69,13 +69,9 @@ void PKB::setNext(int s1, int s2) {
   nextTable.insertRow({std::to_string(s1), std::to_string(s2)});
 }
 
-void PKB::setNextBip(Table t) {
-	nextBipTable = t;
-}
+void PKB::setNextBip(Table t) { nextBipTable = t; }
 
-void PKB::setNextBipT(Table t) {
-	nextBipTTable = t;
-}
+void PKB::setNextBipT(Table t) { nextBipTTable = t; }
 
 void PKB::setAssign(int a, std::string &v, std::string &expr) {
   assignTable.insert(std::make_pair(a, std::make_pair(v, expr)));
@@ -94,6 +90,17 @@ void PKB::setCallProcName(int stmtNo, const std::string &procName) {
 }
 
 void PKB::setCFG(CFG &graph) { cfg = graph; }
+
+void PKB::setAssignMap(int stmtNo, std::string var) {
+  if (assignMap.find(stmtNo) != assignMap.end()) {
+    assignMap[stmtNo].second.push_back(var);
+  } else {
+    std::vector<std::string> emptyVec;
+    assignMap[stmtNo] = std::make_pair(var, emptyVec);
+  }
+}
+
+void PKB::setStmtMap(int stmtNo, StatementType type) { stmtMap[stmtNo] = type; }
 
 Table PKB::getVarTable() const { return varTable; }
 
@@ -130,9 +137,7 @@ Table PKB::getProcStmt() {
   return table;
 }
 
-Table PKB::getProcExitStmt() const {
-	return procExitStmtTable;
-}
+Table PKB::getProcExitStmt() const { return procExitStmtTable; }
 
 Table PKB::getFollows() const { return followsTable; }
 Table PKB::getFollowsT() const { return followsTTable; }
@@ -148,38 +153,38 @@ Table PKB::getNext() const { return nextTable; }
 Table PKB::getNextBip() const { return nextBipTable; }
 Table PKB::getNextBipT() const { return nextBipTTable; }
 
-bool PKB::isNextT(int start, int end) const { return cfg.isNextT(start, end); }
-Table PKB::getNextT(int s, bool isLeftConstant) const {
+bool PKB::isNextT(int start, int end) { return cfg.isNextT(start, end); }
+
+Table PKB::getNextT(int s, bool isLeftConstant) {
   return cfg.getNextT(s, isLeftConstant);
 }
-Table PKB::getNextT() const { return cfg.getNextT(); }
 
+Table PKB::getNextT() { return cfg.getNextT(); }
 
-bool PKB::isAffects(int a1, int a2) const {
-  // Only query from CFG if a1 and a2 are assign statements (check to be
-  // removed)
+bool PKB::isAffects(int a1, int a2) {
+  // Only query from CFG if a1 and a2 are assign statements
   auto assignStmts = stmtTable.at(StatementType::Assign);
   if (assignStmts.find(a1) == assignStmts.end() ||
       assignStmts.find(a2) == assignStmts.end()) {
     return false;
   } else {
-    return cfg.isAffects(a1, a2, usesSTable, modifiesSTable);
+    return cfg.isAffects(a1, a2);
   }
 }
-Table PKB::getAffects(int a1, bool isLeftConstant) const {
-  // Only query from CFG if a1 is assign statement (check to be removed)
+
+Table PKB::getAffects(int start, bool isLeftConstant) {
+  // Only query from CFG if start is assign statement
   auto assignStmts = stmtTable.at(StatementType::Assign);
-  if (assignStmts.find(a1) == assignStmts.end()) {
+  if (assignStmts.find(start) == assignStmts.end()) {
     return Table{1};
   } else {
-    return cfg.getAffects(a1, isLeftConstant, usesSTable, modifiesSTable,
-                          assignStmts);
+    return cfg.getAffects(start, isLeftConstant);
   }
 }
-Table PKB::getAffects() const {
-  auto assignStmts = stmtTable.at(StatementType::Assign);
-  return cfg.getAffects(usesSTable, modifiesSTable, assignStmts);
-}
+
+Table PKB::getAffects() { return cfg.getAffects(); }
+
+Table PKB::getAffectsT() { return cfg.getAffectsT(); }
 
 Table PKB::getCallProcNameTable() const { return callProcNameTable; }
 
@@ -199,3 +204,10 @@ Table PKB::getIfMatches() { return ifTable; }
 Table PKB::getCallProcName() { return callProcNameTable; }
 CFG PKB::getCFG() { return cfg; }
 int PKB::getStmtCount() { return stmtCount; }
+std::map<int, std::pair<std::string, std::vector<std::string>>>
+PKB::getAssignMap() {
+  return assignMap;
+};
+std::map<int, StatementType> PKB::getStmtMap() { return stmtMap; };
+
+void PKB::clearCache() { cfg.clearCache(); }

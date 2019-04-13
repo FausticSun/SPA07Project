@@ -1,0 +1,58 @@
+procedure testIf {
+
+    a = x + 1;                                       
+
+    while(a > 1) {                                  
+
+        a = b + c;                                   
+        if ((a > b) && (c < a)) then {               
+            read d;
+	    c = a+ b - c% d;                                  
+            if ((d > e) || (e > a)) then {           
+                read a;                              
+                print f;                             
+                a = (f + 3) * a;                     
+            } else {
+                if (((i == 3) && (!(i != i))) || (j < k)) then {  
+                    print k;                         
+                } else {
+                    print i;                         
+                }
+            }
+            a = m + b * c;                           
+        } else {
+            read c;                                  
+            j = j % k;            
+            if ((4 / k + 3) == 5) then {             
+                j = k * (a - b);                               
+                k = b + c;                               
+                l = l + m * n;                               
+                m = m + m + m;                               
+            } else {
+                print n;                             
+            }
+        }
+        
+        read a;                                      
+        b = 3 * c;                                   
+        print a;                                     
+    }
+
+    if(p != 3) then {                                
+        q = 4;                                       
+    } else {
+        r = 3;                                       
+    }
+
+    if ((x != y) || (y > z)) then {               
+        print m;                                
+        m = n + 7;                              
+        print n; 				
+    } else {
+	m = 3;
+    }
+    
+    read y;
+    print z;
+    z = z * z;                                       
+}

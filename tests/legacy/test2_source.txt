@@ -1,0 +1,35 @@
+procedure functionCompute {
+	      read m;
+	      n = 1; 
+	      p = 1;
+	      while (m != 15) {
+	              n = p;
+	              p = p + 7 * n / 4; }
+	      call functionExe; }
+
+procedure functionExe{
+	      while (m == 13) {
+	              m =  (n - p) / 2  +  n;
+	              if (p >=  9)  then {
+	                      n = p; }
+                     else {
+	                      p = n; 
+	                      call functionAux; } } 
+	       print m; 
+	       q = m + p;
+	       m = n - p / 2 + n;
+	       if  ((q == 11) && (m > 22)) then {
+	               p = m;
+               } else {
+	               call functionAux; }}
+
+procedure functionAux {
+	      read x;
+	      a = 0;
+	      b = 1;
+	      while (a <= 8){
+	              p = a / 2; 
+	              if (p == 0) then {
+	                      a = b;
+                     } else {
+	                      b = p + 1; }}}

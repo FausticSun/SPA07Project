@@ -1,0 +1,1597 @@
+procedure StressTest {
+    x = a % 2; \\1
+    print abc; \\2
+    x = (a / b) + (a % b) + (a * b); \\3
+    x = (a * b) * (c + d); \\4
+    x = a * b; \\5
+    x = a * b; \\6
+    x = a % 2; \\7
+    x = (a / b) + (a % b) + (a * b); \\8
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\9
+    x = a * b; \\10
+    j = k + (l - m); \\11
+    read ABC; \\12
+    x = 0; \\13
+    x = (a * b) * 10; \\14
+    f = (g + h) - i; \\15
+    print abc; \\16
+    x = (a * b) / (c + d); \\17
+    x = a / (b + c); \\18
+    x = a / b; \\19
+    x = (a / b) + (a % b) + (a * b); \\20
+    x = (a / b) + (a % b) - (a * b); \\21
+    x = (a * b) / 10; \\22
+    x = a % (b + c); \\23
+    j = j + x * a; \\24
+    x = a % 2; \\25
+    x = (x + 1); \\26
+    x = (a * b) / 10; \\27
+    x = (a * b) % (c + d); \\28
+    x = (a * b) * 10; \\29
+    x = (x + 1); \\30
+    x = (a / b) + (a % b) + (a * b); \\31
+    print abc; \\32
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\33
+    x = (a * b) % (c + d); \\34
+    print abc; \\35
+    x = (a * b) / (c + d); \\36
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\37
+    x = a * b; \\38
+    x = (a * b) % (c + d); \\39
+    x = a / 2; \\40
+    print abc; \\41
+    x = (a / b) - (a % b); \\42
+    x = a % b; \\43
+    x = a * (b + c); \\44
+    x = a % (b + c); \\45
+    x = a; \\46
+    x = (a * b) % (c + d); \\47
+    x = (a / b) + (a % b) + (a * b); \\48
+    x = a * b; \\49
+    x = a * b; \\50
+    x = (a * b) / (c + d); \\51
+    x = a % (b + c); \\52
+    x = a / b; \\53
+    read AbC; \\54
+    x = a / b; \\55
+    j = k + (l - m); \\56
+    x = (a / b) - (a % b); \\57
+    x = (a * b) % (c + d); \\58
+    x = (a * b) % (c + d); \\59
+    j = j + x * a; \\60
+    read A0; \\61
+    x = (a / b) + (a % b) - (a * b); \\62
+    x = 0; \\63
+    x = (x + 1); \\64
+    x = a % (b + c); \\65
+    x = a / (b + c); \\66
+    x = (a * b) * (c + d); \\67
+    x = a % 2; \\68
+    x = a * 2; \\69
+    read A0; \\70
+    x = (a * b) * 10; \\71
+    x = (a * b) % 10; \\72
+    x = (a * b) * 10; \\73
+    x = a % 2; \\74
+    x = (a / b) + (a % b) + (a * b); \\75
+    x = (a * b) / 10; \\76
+    x = (x + 1); \\77
+    read A0; \\78
+    x = 0; \\79
+    x = a % (b + c); \\80
+    x = a * 2; \\81
+    x = (a * b) % (c + d); \\82
+    x = a * (b + c); \\83
+    x = (a * b) * (c + d); \\84
+    x = a % 2; \\85
+    x = (a * b) * (c + d); \\86
+    x = (a * b) / (c + d); \\87
+    j = k + (l - m); \\88
+    x = (a * b) * c; \\89
+    x = a * b; \\90
+    x = a % 2; \\91
+    print abc; \\92
+    print Z9; \\93
+    x = a * (b + c); \\94
+    x = a / (b + c); \\95
+    x = a * (b + c); \\96
+    x = (a * b) * c; \\97
+    x = 0; \\98
+    x = (a * b) * c; \\99
+    x = a / 2; \\100
+    read A0; \\101
+    x = (a / b) + (a % b); \\102
+    read AbC; \\103
+    j = j + x * a; \\104
+    x = (a * b) / (c + d); \\105
+    x = a / (b + c); \\106
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\107
+    f = (g + h) - i; \\108
+    x = (a / b) + (a % b) - (a * b); \\109
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\110
+    x = a / (b + c); \\111
+    x = a % b; \\112
+    x = (a * b) % (c + d); \\113
+    x = (a / b) - (a % b); \\114
+    x = a / (b + c); \\115
+    x = (x + 1); \\116
+    read ABC; \\117
+    x = a / 2; \\118
+    j = j + x * a; \\119
+    read ABC; \\120
+    read ABC; \\121
+    print abc; \\122
+    x = a / b; \\123
+    x = a; \\124
+    x = (a * b) / 10; \\125
+    j = k + (l - m); \\126
+    read A0; \\127
+    x = a / 2; \\128
+    c = d + e; \\129
+    x = (a * b) % 10; \\130
+    x = a; \\131
+    x = (a * b) * c; \\132
+    x = a / 2; \\133
+    print Z9; \\134
+    x = (a * b) % 10; \\135
+    j = j + x * a; \\136
+    x = 0; \\137
+    x = a / (b + c); \\138
+    read ABC; \\139
+    c = d + e; \\140
+    x = (a / b) + (a % b) + (a * b); \\141
+    x = a / b; \\142
+    x = (a / b) + (a % b) + (a * b); \\143
+    x = (a * b) % (c + d); \\144
+    x = (a / b) + (a % b) - (a * b); \\145
+    j = k + (l - m); \\146
+    x = a * (b + c); \\147
+    j = j + x * a; \\148
+    read AbC; \\149
+    j = j + x * a; \\150
+    x = (a / b) - (a % b); \\151
+    x = (a * b) * c; \\152
+    x = (a * b) * c; \\153
+    x = a * b; \\154
+    read AbC; \\155
+    x = (x + 1); \\156
+    x = (a / b) + (a % b) - (a * b); \\157
+    x = (a * b) % 10; \\158
+    print Z9; \\159
+    read AbC; \\160
+    read A0; \\161
+    x = (a * b) % (c + d); \\162
+    f = (g + h) - i; \\163
+    x = a * b; \\164
+    x = a % 2; \\165
+    x = a * 2; \\166
+    x = a / (b + c); \\167
+    x = a; \\168
+    x = (a / b) + (a % b) + (a * b); \\169
+    x = a; \\170
+    x = (a * b) * c; \\171
+    x = (a / b) + (a % b); \\172
+    x = a / b; \\173
+    x = a % (b + c); \\174
+    x = (a * b) % 10; \\175
+    x = (a * b) * c; \\176
+    x = a; \\177
+    x = (a * b) * (c + d); \\178
+    read AbC; \\179
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\180
+    read ABC; \\181
+    print Z9; \\182
+    x = (a * b) * c; \\183
+    x = (a / b) - (a % b); \\184
+    x = a * b; \\185
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\186
+    print abc; \\187
+    x = (x + 1); \\188
+    x = a % (b + c); \\189
+    j = j + x * a; \\190
+    x = a % b; \\191
+    print abc; \\192
+    x = (x + 1); \\193
+    print abc; \\194
+    x = (a / b) + (a % b); \\195
+    x = (a * b) / (c + d); \\196
+    x = a * b; \\197
+    read AbC; \\198
+    x = a * 2; \\199
+    x = (a * b) % (c + d); \\200
+    read AbC; \\201
+    x = (a * b) % (c + d); \\202
+    x = (a * b) % (c + d); \\203
+    x = (a * b) * (c + d); \\204
+    x = (a * b) * c; \\205
+    read ABC; \\206
+    x = (a * b) / (c + d); \\207
+    f = (g + h) - i; \\208
+    x = 0; \\209
+    x = (a / b) + (a % b) - (a * b); \\210
+    x = 0; \\211
+    x = a / b; \\212
+    print abc; \\213
+    x = a % b; \\214
+    read A0; \\215
+    x = a % (b + c); \\216
+    x = (a * b) % (c + d); \\217
+    x = a / (b + c); \\218
+    x = (a / b) + (a % b); \\219
+    x = (a * b) * 10; \\220
+    x = a % (b + c); \\221
+    j = k + (l - m); \\222
+    print abc; \\223
+    j = j + x * a; \\224
+    x = a % b; \\225
+    x = a; \\226
+    x = a % 2; \\227
+    read AbC; \\228
+    x = (a * b) % (c + d); \\229
+    x = a / b; \\230
+    read AbC; \\231
+    x = a * b; \\232
+    read AbC; \\233
+    x = (a * b) / 10; \\234
+    x = a / 2; \\235
+    x = (a / b) + (a % b); \\236
+    x = (a * b) % 10; \\237
+    x = (a * b) * c; \\238
+    read AbC; \\239
+    x = (a * b) % (c + d); \\240
+    x = (a * b) / 10; \\241
+    read ABC; \\242
+    x = a % 2; \\243
+    x = (a / b) + (a % b) - (a * b); \\244
+    j = j + x * a; \\245
+    x = (a * b) % (c + d); \\246
+    x = (a / b) - (a % b); \\247
+    x = 0; \\248
+    x = (x + 1); \\249
+    x = a * (b + c); \\250
+    x = a / b; \\251
+    x = a % 2; \\252
+    read ABC; \\253
+    x = (a * b) * 10; \\254
+    x = a % b; \\255
+    x = a / b; \\256
+    x = a; \\257
+    x = a * 2; \\258
+    x = a * 2; \\259
+    x = (a / b) + (a % b); \\260
+    print Z9; \\261
+    x = (a * b) % 10; \\262
+    x = (a / b) - (a % b); \\263
+    x = a % (b + c); \\264
+    print abc; \\265
+    x = a % 2; \\266
+    x = a / (b + c); \\267
+    x = (a * b) % 10; \\268
+    x = 0; \\269
+    f = (g + h) - i; \\270
+    read ABC; \\271
+    read ABC; \\272
+    read A0; \\273
+    x = a / 2; \\274
+    read ABC; \\275
+    x = (a * b) * c; \\276
+    print abc; \\277
+    x = (a / b) - (a % b); \\278
+    x = a / 2; \\279
+    x = (a / b) + (a % b) + (a * b); \\280
+    x = 0; \\281
+    x = (a * b) * (c + d); \\282
+    read A0; \\283
+    x = a * b; \\284
+    x = a % b; \\285
+    x = a % b; \\286
+    read ABC; \\287
+    c = d + e; \\288
+    x = a % (b + c); \\289
+    x = (a * b) / (c + d); \\290
+    x = (a / b) + (a % b) - (a * b); \\291
+    f = (g + h) - i; \\292
+    x = (a * b) / (c + d); \\293
+    x = 0; \\294
+    x = a / 2; \\295
+    x = (a / b) + (a % b); \\296
+    x = 0; \\297
+    x = a / b; \\298
+    x = a / b; \\299
+    x = a * (b + c); \\300
+    x = (a / b) - (a % b); \\301
+    x = (a / b) + (a % b) + (a * b); \\302
+    x = (a / b) + (a % b) - (a * b); \\303
+    x = (x + 1); \\304
+    x = a / (b + c); \\305
+    x = a; \\306
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\307
+    x = a * 2; \\308
+    x = (a * b) * (c + d); \\309
+    x = a % 2; \\310
+    x = a % 2; \\311
+    x = (a * b) / (c + d); \\312
+    x = a % b; \\313
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\314
+    x = a % 2; \\315
+    c = d + e; \\316
+    j = j + x * a; \\317
+    x = a * (b + c); \\318
+    read ABC; \\319
+    x = (a * b) * c; \\320
+    c = d + e; \\321
+    x = a * b; \\322
+    x = (a * b) * 10; \\323
+    x = (x + 1); \\324
+    x = (a * b) / (c + d); \\325
+    x = (a * b) * (c + d); \\326
+    x = (a / b) - (a % b); \\327
+    j = k + (l - m); \\328
+    x = a % b; \\329
+    x = 0; \\330
+    x = 0; \\331
+    f = (g + h) - i; \\332
+    x = (a / b) + (a % b); \\333
+    x = (a * b) % 10; \\334
+    x = a; \\335
+    x = (a / b) + (a % b) - (a * b); \\336
+    j = k + (l - m); \\337
+    x = (a / b) + (a % b); \\338
+    x = a / b; \\339
+    x = a * (b + c); \\340
+    read ABC; \\341
+    j = k + (l - m); \\342
+    x = a % 2; \\343
+    x = (a / b) + (a % b) - (a * b); \\344
+    x = (a * b) % (c + d); \\345
+    c = d + e; \\346
+    x = a % b; \\347
+    x = (a * b) / (c + d); \\348
+    x = (a / b) + (a % b); \\349
+    x = (x + 1); \\350
+    x = a % (b + c); \\351
+    x = (a * b) * 10; \\352
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\353
+    x = a / (b + c); \\354
+    c = d + e; \\355
+    x = a * 2; \\356
+    x = a % b; \\357
+    read ABC; \\358
+    f = (g + h) - i; \\359
+    j = j + x * a; \\360
+    print Z9; \\361
+    x = (a * b) / 10; \\362
+    x = 0; \\363
+    x = (a * b) % 10; \\364
+    x = a / b; \\365
+    x = (a / b) + (a % b) - (a * b); \\366
+    x = a % b; \\367
+    x = (a * b) % 10; \\368
+    x = (a / b) - (a % b); \\369
+    x = a; \\370
+    x = a / (b + c); \\371
+    x = (x + 1); \\372
+    print abc; \\373
+    x = (a * b) * (c + d); \\374
+    x = a * b; \\375
+    x = (a / b) + (a % b) - (a * b); \\376
+    x = a / 2; \\377
+    x = (a * b) % (c + d); \\378
+    print abc; \\379
+    x = a / b; \\380
+    x = (a * b) % (c + d); \\381
+    x = a / 2; \\382
+    x = a * 2; \\383
+    read AbC; \\384
+    x = (a / b) + (a % b) + (a * b); \\385
+    x = (a * b) % (c + d); \\386
+    print abc; \\387
+    j = k + (l - m); \\388
+    j = j + x * a; \\389
+    c = d + e; \\390
+    x = a; \\391
+    x = a / 2; \\392
+    c = d + e; \\393
+    print Z9; \\394
+    f = (g + h) - i; \\395
+    j = k + (l - m); \\396
+    x = a * b; \\397
+    x = (a / b) + (a % b) + (a * b); \\398
+    read ABC; \\399
+    x = a % 2; \\400
+    x = 0; \\401
+    x = (a / b) + (a % b); \\402
+    x = (a * b) / (c + d); \\403
+    x = (a * b) % (c + d); \\404
+    read ABC; \\405
+    x = a / b; \\406
+    x = (a / b) + (a % b); \\407
+    x = a / (b + c); \\408
+    x = (x + 1); \\409
+    x = a / 2; \\410
+    x = (a / b) + (a % b) + (a * b); \\411
+    x = (a / b) + (a % b); \\412
+    print Z9; \\413
+    j = j + x * a; \\414
+    x = a % 2; \\415
+    j = k + (l - m); \\416
+    x = 0; \\417
+    x = a / (b + c); \\418
+    x = (a / b) + (a % b); \\419
+    x = (a * b) * (c + d); \\420
+    x = a / 2; \\421
+    j = j + x * a; \\422
+    x = (a / b) + (a % b) - (a * b); \\423
+    x = (a * b) * c; \\424
+    x = (a / b) + (a % b); \\425
+    x = (a * b) % 10; \\426
+    j = j + x * a; \\427
+    x = a / b; \\428
+    x = (a * b) % (c + d); \\429
+    x = a / b; \\430
+    read ABC; \\431
+    x = a / (b + c); \\432
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\433
+    read AbC; \\434
+    x = a % 2; \\435
+    x = a / 2; \\436
+    j = k + (l - m); \\437
+    x = a / b; \\438
+    x = (a / b) - (a % b); \\439
+    x = (a * b) / (c + d); \\440
+    j = k + (l - m); \\441
+    x = (a / b) + (a % b) + (a * b); \\442
+    x = a % (b + c); \\443
+    x = a * b; \\444
+    read AbC; \\445
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\446
+    f = (g + h) - i; \\447
+    j = j + x * a; \\448
+    x = (x + 1); \\449
+    x = (a * b) * (c + d); \\450
+    x = a % (b + c); \\451
+    x = a; \\452
+    x = a % (b + c); \\453
+    x = a % 2; \\454
+    print Z9; \\455
+    x = a / b; \\456
+    x = (a / b) + (a % b); \\457
+    x = (a * b) % (c + d); \\458
+    x = (a / b) - (a % b); \\459
+    x = a % 2; \\460
+    x = a / b; \\461
+    c = d + e; \\462
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\463
+    x = (a * b) % (c + d); \\464
+    j = k + (l - m); \\465
+    x = (a / b) + (a % b); \\466
+    x = a % (b + c); \\467
+    j = j + x * a; \\468
+    f = (g + h) - i; \\469
+    x = (a / b) + (a % b) - (a * b); \\470
+    j = j + x * a; \\471
+    read ABC; \\472
+    x = a % b; \\473
+    x = (a * b) % (c + d); \\474
+    x = a % b; \\475
+    x = (a * b) % (c + d); \\476
+    x = (a / b) + (a % b); \\477
+    x = (a * b) * (c + d); \\478
+    x = a; \\479
+    f = (g + h) - i; \\480
+    x = (a * b) / (c + d); \\481
+    read ABC; \\482
+    x = a % 2; \\483
+    x = a % (b + c); \\484
+    x = a * b; \\485
+    x = (a * b) / (c + d); \\486
+    c = d + e; \\487
+    x = (a * b) * (c + d); \\488
+    x = a * (b + c); \\489
+    x = (a * b) / (c + d); \\490
+    x = a * (b + c); \\491
+    x = (a * b) * (c + d); \\492
+    x = (a / b) + (a % b) + (a * b); \\493
+    x = (a / b) - (a % b); \\494
+    x = (a * b) % (c + d); \\495
+    x = a % 2; \\496
+    x = (a * b) % (c + d); \\497
+    x = a % 2; \\498
+    x = a % 2; \\499
+    print Z9; \\500
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\501
+    x = (a / b) + (a % b) + (a * b); \\502
+    x = (a * b) / 10; \\503
+    x = a / 2; \\504
+    x = a * 2; \\505
+    x = a * b; \\506
+    x = (a * b) * 10; \\507
+    x = 0; \\508
+    x = (a * b) % (c + d); \\509
+    x = (a * b) / (c + d); \\510
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\511
+    x = a % 2; \\512
+    x = (a * b) * c; \\513
+    c = d + e; \\514
+    x = a * (b + c); \\515
+    x = a / b; \\516
+    x = a * b; \\517
+    x = (a * b) / 10; \\518
+    x = a; \\519
+    j = j + x * a; \\520
+    j = k + (l - m); \\521
+    x = a / (b + c); \\522
+    print Z9; \\523
+    x = a / (b + c); \\524
+    x = (a * b) / 10; \\525
+    c = d + e; \\526
+    x = (x + 1); \\527
+    print abc; \\528
+    x = (a * b) % (c + d); \\529
+    x = (a * b) * 10; \\530
+    c = d + e; \\531
+    x = (a * b) / 10; \\532
+    x = a * (b + c); \\533
+    x = (a / b) + (a % b) - (a * b); \\534
+    x = a % (b + c); \\535
+    f = (g + h) - i; \\536
+    f = (g + h) - i; \\537
+    x = (a / b) + (a % b) - (a * b); \\538
+    x = a % b; \\539
+    x = (a * b) / 10; \\540
+    x = a / b; \\541
+    x = a % 2; \\542
+    x = (a * b) * 10; \\543
+    x = a % b; \\544
+    x = (a * b) / (c + d); \\545
+    x = a % 2; \\546
+    x = (a / b) + (a % b) - (a * b); \\547
+    x = (a / b) + (a % b) - (a * b); \\548
+    c = d + e; \\549
+    print Z9; \\550
+    x = a / (b + c); \\551
+    x = (a * b) % (c + d); \\552
+    j = j + x * a; \\553
+    x = (a * b) * (c + d); \\554
+    c = d + e; \\555
+    print abc; \\556
+    x = 0; \\557
+    print Z9; \\558
+    x = a / (b + c); \\559
+    x = a % 2; \\560
+    print Z9; \\561
+    x = (a * b) / (c + d); \\562
+    x = a; \\563
+    x = (a * b) * 10; \\564
+    print abc; \\565
+    x = (a * b) * (c + d); \\566
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\567
+    x = a / (b + c); \\568
+    x = (a * b) * (c + d); \\569
+    x = a * 2; \\570
+    x = a / (b + c); \\571
+    x = (a / b) - (a % b); \\572
+    x = a % b; \\573
+    x = (a * b) * (c + d); \\574
+    print Z9; \\575
+    x = (a / b) + (a % b); \\576
+    x = (a * b) % (c + d); \\577
+    x = a * 2; \\578
+    x = a % b; \\579
+    j = k + (l - m); \\580
+    read A0; \\581
+    x = a % 2; \\582
+    x = (a * b) % 10; \\583
+    print Z9; \\584
+    x = (a * b) * (c + d); \\585
+    x = a / (b + c); \\586
+    f = (g + h) - i; \\587
+    x = a % 2; \\588
+    c = d + e; \\589
+    x = a * (b + c); \\590
+    print Z9; \\591
+    print abc; \\592
+    j = k + (l - m); \\593
+    x = (a / b) + (a % b) + (a * b); \\594
+    c = d + e; \\595
+    read AbC; \\596
+    j = k + (l - m); \\597
+    x = (a * b) / 10; \\598
+    x = (a / b) + (a % b) - (a * b); \\599
+    x = (a * b) * 10; \\600
+    x = a * b; \\601
+    x = a * 2; \\602
+    print abc; \\603
+    x = (a * b) * (c + d); \\604
+    x = (a / b) - (a % b); \\605
+    x = a / b; \\606
+    x = a * b; \\607
+    read AbC; \\608
+    x = a * b; \\609
+    print Z9; \\610
+    x = a / 2; \\611
+    x = (a * b) * 10; \\612
+    x = a / b; \\613
+    x = a * (b + c); \\614
+    x = (a / b) - (a % b); \\615
+    x = (a * b) * 10; \\616
+    x = (a * b) * 10; \\617
+    f = (g + h) - i; \\618
+    x = a % b; \\619
+    x = a / (b + c); \\620
+    x = a % b; \\621
+    x = (a * b) / 10; \\622
+    x = a * 2; \\623
+    x = a * b; \\624
+    f = (g + h) - i; \\625
+    x = a / 2; \\626
+    read ABC; \\627
+    x = a % b; \\628
+    x = (a * b) * 10; \\629
+    x = a * 2; \\630
+    c = d + e; \\631
+    c = d + e; \\632
+    x = a * b; \\633
+    x = a; \\634
+    read A0; \\635
+    j = j + x * a; \\636
+    x = (a / b) + (a % b) - (a * b); \\637
+    x = (a * b) % 10; \\638
+    x = a * (b + c); \\639
+    x = (a * b) / 10; \\640
+    x = a % (b + c); \\641
+    x = (a * b) % 10; \\642
+    read AbC; \\643
+    x = a / 2; \\644
+    print abc; \\645
+    x = a / 2; \\646
+    x = (a * b) / (c + d); \\647
+    x = (a * b) / (c + d); \\648
+    read AbC; \\649
+    j = k + (l - m); \\650
+    f = (g + h) - i; \\651
+    x = (a * b) % (c + d); \\652
+    x = (a * b) / 10; \\653
+    x = (a / b) - (a % b); \\654
+    x = (a * b) * (c + d); \\655
+    x = (a * b) / 10; \\656
+    x = a / (b + c); \\657
+    x = a / b; \\658
+    f = (g + h) - i; \\659
+    x = a % b; \\660
+    x = (a * b) * (c + d); \\661
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\662
+    x = (a * b) % 10; \\663
+    x = a * (b + c); \\664
+    x = (a / b) + (a % b); \\665
+    x = (a * b) / 10; \\666
+    print Z9; \\667
+    x = (a / b) - (a % b); \\668
+    x = (a / b) + (a % b) - (a * b); \\669
+    x = (a / b) + (a % b) - (a * b); \\670
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\671
+    x = (a * b) % (c + d); \\672
+    x = a / 2; \\673
+    x = 0; \\674
+    read AbC; \\675
+    x = (a * b) / 10; \\676
+    x = a / b; \\677
+    x = a; \\678
+    read AbC; \\679
+    x = a * 2; \\680
+    x = (a * b) % (c + d); \\681
+    x = (a * b) / (c + d); \\682
+    x = a % b; \\683
+    x = a / (b + c); \\684
+    read ABC; \\685
+    x = (a / b) + (a % b) - (a * b); \\686
+    x = (a * b) / (c + d); \\687
+    f = (g + h) - i; \\688
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\689
+    c = d + e; \\690
+    x = a / 2; \\691
+    x = a * (b + c); \\692
+    x = a % 2; \\693
+    x = (a / b) - (a % b); \\694
+    x = (a * b) % 10; \\695
+    x = a * (b + c); \\696
+    x = (a * b) % 10; \\697
+    x = (a / b) - (a % b); \\698
+    x = (a / b) + (a % b); \\699
+    x = (a / b) + (a % b) + (a * b); \\700
+    x = (a * b) / (c + d); \\701
+    x = a / b; \\702
+    x = (a * b) % 10; \\703
+    x = a / b; \\704
+    x = a % b; \\705
+    x = a % 2; \\706
+    x = a * (b + c); \\707
+    x = a % 2; \\708
+    x = 0; \\709
+    read ABC; \\710
+    print abc; \\711
+    x = (a / b) + (a % b) - (a * b); \\712
+    x = (a * b) * 10; \\713
+    x = a * (b + c); \\714
+    x = (a * b) / (c + d); \\715
+    f = (g + h) - i; \\716
+    x = a * b; \\717
+    c = d + e; \\718
+    x = 0; \\719
+    j = k + (l - m); \\720
+    x = a * 2; \\721
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\722
+    x = (a / b) + (a % b) + (a * b); \\723
+    read A0; \\724
+    print abc; \\725
+    f = (g + h) - i; \\726
+    j = j + x * a; \\727
+    x = a * (b + c); \\728
+    x = a * b; \\729
+    x = a % (b + c); \\730
+    x = a % 2; \\731
+    x = a / 2; \\732
+    x = a / b; \\733
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\734
+    x = (a * b) * c; \\735
+    print abc; \\736
+    x = (a * b) % (c + d); \\737
+    f = (g + h) - i; \\738
+    x = (a * b) % 10; \\739
+    read ABC; \\740
+    x = (a * b) * 10; \\741
+    x = a * b; \\742
+    x = (a / b) + (a % b) - (a * b); \\743
+    x = a % b; \\744
+    x = (a * b) % 10; \\745
+    print abc; \\746
+    x = a / 2; \\747
+    f = (g + h) - i; \\748
+    print abc; \\749
+    x = (a / b) + (a % b) - (a * b); \\750
+    x = (a * b) % 10; \\751
+    x = (a / b) + (a % b) + (a * b); \\752
+    x = a / 2; \\753
+    x = (a * b) * (c + d); \\754
+    print Z9; \\755
+    read ABC; \\756
+    x = (a * b) * c; \\757
+    c = d + e; \\758
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\759
+    x = a * (b + c); \\760
+    j = j + x * a; \\761
+    x = (a / b) + (a % b); \\762
+    x = a * b; \\763
+    x = a / 2; \\764
+    x = (a * b) % (c + d); \\765
+    x = (a / b) + (a % b) - (a * b); \\766
+    read A0; \\767
+    read AbC; \\768
+    read A0; \\769
+    x = a * b; \\770
+    x = (a * b) / (c + d); \\771
+    x = 0; \\772
+    x = (a / b) + (a % b) + (a * b); \\773
+    c = d + e; \\774
+    x = (a * b) * c; \\775
+    j = j + x * a; \\776
+    x = (a * b) % 10; \\777
+    x = (a / b) + (a % b) - (a * b); \\778
+    x = a * 2; \\779
+    print Z9; \\780
+    x = a * (b + c); \\781
+    x = (a * b) * (c + d); \\782
+    read ABC; \\783
+    x = a; \\784
+    x = (a * b) / 10; \\785
+    x = (a * b) / (c + d); \\786
+    x = (x + 1); \\787
+    x = 0; \\788
+    x = (a * b) / 10; \\789
+    x = a; \\790
+    j = k + (l - m); \\791
+    read ABC; \\792
+    x = (a / b) + (a % b); \\793
+    x = (a * b) / (c + d); \\794
+    x = 0; \\795
+    x = a; \\796
+    print Z9; \\797
+    x = (a * b) * c; \\798
+    x = (a / b) + (a % b); \\799
+    x = a; \\800
+    x = (a / b) + (a % b) + (a * b); \\801
+    read A0; \\802
+    x = (a * b) / (c + d); \\803
+    read AbC; \\804
+    x = 0; \\805
+    x = a % 2; \\806
+    j = j + x * a; \\807
+    x = (a * b) / 10; \\808
+    x = (a / b) + (a % b) - (a * b); \\809
+    x = 0; \\810
+    x = (a * b) * c; \\811
+    print abc; \\812
+    x = (a * b) * (c + d); \\813
+    x = a * (b + c); \\814
+    print Z9; \\815
+    j = j + x * a; \\816
+    x = (a / b) + (a % b) + (a * b); \\817
+    x = (x + 1); \\818
+    c = d + e; \\819
+    j = j + x * a; \\820
+    read AbC; \\821
+    print Z9; \\822
+    x = (a * b) * 10; \\823
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\824
+    x = a * 2; \\825
+    x = a % (b + c); \\826
+    x = (a / b) - (a % b); \\827
+    x = a * (b + c); \\828
+    j = j + x * a; \\829
+    x = a / b; \\830
+    x = a / b; \\831
+    x = a; \\832
+    read AbC; \\833
+    x = a; \\834
+    x = a % 2; \\835
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\836
+    x = (x + 1); \\837
+    x = a / b; \\838
+    x = a / (b + c); \\839
+    x = 0; \\840
+    c = d + e; \\841
+    x = (x + 1); \\842
+    x = (a * b) * (c + d); \\843
+    x = a / (b + c); \\844
+    print Z9; \\845
+    x = (a / b) - (a % b); \\846
+    x = (a / b) - (a % b); \\847
+    x = a % 2; \\848
+    x = (a * b) * (c + d); \\849
+    x = (a / b) + (a % b); \\850
+    print Z9; \\851
+    x = (a * b) * 10; \\852
+    x = (a * b) * c; \\853
+    x = a % b; \\854
+    read AbC; \\855
+    x = a % (b + c); \\856
+    x = (a * b) * c; \\857
+    x = a; \\858
+    x = 0; \\859
+    x = a; \\860
+    x = (a / b) + (a % b) + (a * b); \\861
+    print Z9; \\862
+    x = a % 2; \\863
+    x = (x + 1); \\864
+    print abc; \\865
+    x = (a * b) / 10; \\866
+    print abc; \\867
+    f = (g + h) - i; \\868
+    x = (a / b) + (a % b); \\869
+    read AbC; \\870
+    x = (a * b) * c; \\871
+    f = (g + h) - i; \\872
+    x = (a * b) / 10; \\873
+    x = a / 2; \\874
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\875
+    x = a * b; \\876
+    x = a / b; \\877
+    x = (a * b) % 10; \\878
+    x = (a * b) % 10; \\879
+    read A0; \\880
+    print Z9; \\881
+    x = (a * b) % (c + d); \\882
+    x = (a * b) % 10; \\883
+    x = a % 2; \\884
+    x = (a * b) * (c + d); \\885
+    x = (a * b) / (c + d); \\886
+    c = d + e; \\887
+    read A0; \\888
+    x = a % (b + c); \\889
+    x = (a * b) % (c + d); \\890
+    x = 0; \\891
+    x = (x + 1); \\892
+    x = (a * b) * c; \\893
+    x = (a / b) - (a % b); \\894
+    x = a / (b + c); \\895
+    j = j + x * a; \\896
+    x = a / b; \\897
+    j = j + x * a; \\898
+    x = a; \\899
+    x = a / b; \\900
+    j = k + (l - m); \\901
+    x = (a / b) + (a % b) + (a * b); \\902
+    read AbC; \\903
+    x = (x + 1); \\904
+    j = j + x * a; \\905
+    x = (a * b) * c; \\906
+    read A0; \\907
+    x = (a * b) / 10; \\908
+    x = a * (b + c); \\909
+    x = a % 2; \\910
+    j = j + x * a; \\911
+    c = d + e; \\912
+    x = a; \\913
+    x = a * 2; \\914
+    x = 0; \\915
+    x = (x + 1); \\916
+    x = (x + 1); \\917
+    print abc; \\918
+    x = a % (b + c); \\919
+    x = (x + 1); \\920
+    read ABC; \\921
+    x = 0; \\922
+    f = (g + h) - i; \\923
+    print abc; \\924
+    x = a / b; \\925
+    x = a % b; \\926
+    x = (a * b) * 10; \\927
+    x = a * 2; \\928
+    x = (a / b) + (a % b) + (a * b); \\929
+    x = a % b; \\930
+    x = a; \\931
+    x = (a * b) % (c + d); \\932
+    j = k + (l - m); \\933
+    x = (a * b) / 10; \\934
+    x = (a * b) * 10; \\935
+    x = a % (b + c); \\936
+    read AbC; \\937
+    read A0; \\938
+    x = (a / b) - (a % b); \\939
+    x = a / (b + c); \\940
+    j = j + x * a; \\941
+    x = a / 2; \\942
+    f = (g + h) - i; \\943
+    x = (a / b) + (a % b); \\944
+    x = (a * b) / 10; \\945
+    x = a % 2; \\946
+    f = (g + h) - i; \\947
+    print abc; \\948
+    x = a / 2; \\949
+    x = (x + 1); \\950
+    c = d + e; \\951
+    x = a % b; \\952
+    x = (a * b) * c; \\953
+    x = a / 2; \\954
+    x = a * 2; \\955
+    x = (a / b) + (a % b) + (a * b); \\956
+    read A0; \\957
+    x = (a * b) / (c + d); \\958
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\959
+    x = (a / b) + (a % b) + (a * b); \\960
+    x = (a * b) / 10; \\961
+    x = a % (b + c); \\962
+    read A0; \\963
+    x = (a * b) / 10; \\964
+    j = j + x * a; \\965
+    x = (a / b) + (a % b); \\966
+    j = j + x * a; \\967
+    x = a % (b + c); \\968
+    x = a % (b + c); \\969
+    x = a / b; \\970
+    x = a * (b + c); \\971
+    x = a * b; \\972
+    x = (a / b) - (a % b); \\973
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\974
+    x = (a * b) * c; \\975
+    x = (x + 1); \\976
+    x = a * (b + c); \\977
+    x = (a * b) % (c + d); \\978
+    print abc; \\979
+    read AbC; \\980
+    x = a / b; \\981
+    x = a % b; \\982
+    n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\983
+    x = a; \\984
+    x = (a / b) + (a % b) + (a * b); \\985
+    x = a % b; \\986
+    j = j + x * a; \\987
+    x = a; \\988
+    x = (a * b) * 10; \\989
+    x = a * b; \\990
+    x = (a / b) - (a % b); \\991
+    x = a * (b + c); \\992
+    x = 0; \\993
+    c = d + e; \\994
+    x = a * b; \\995
+    x = (a / b) + (a % b) - (a * b); \\996
+    x = 0; \\997
+    x = (a / b) + (a % b); \\998
+    print abc; \\999
+    x = a; \\1000
+}
+
+procedure P1 {
+    print a; \\1001
+    call P4; \\1002
+    call P2; \\1003
+    call P43; \\1004
+    call P7; \\1005
+}
+
+procedure P2 {
+    print a; \\1006
+    call P38; \\1007
+    call P24; \\1008
+}
+
+procedure P3 {
+    print a; \\1009
+    call P8; \\1010
+    call P17; \\1011
+    call P79; \\1012
+    call P97; \\1013
+}
+
+procedure P4 {
+    print a; \\1014
+    call P14; \\1015
+}
+
+procedure P5 {
+    print a; \\1016
+}
+
+procedure P6 {
+    print a; \\1017
+    call P40; \\1018
+    call P70; \\1019
+}
+
+procedure P7 {
+    print a; \\1020
+    call P44; \\1021
+}
+
+procedure P8 {
+    print a; \\1022
+    call P76; \\1023
+    call P91; \\1024
+}
+
+procedure P9 {
+    print a; \\1025
+    call P20; \\1026
+    call P94; \\1027
+    call P60; \\1028
+}
+
+procedure P10 {
+    print a; \\1029
+    call P60; \\1030
+    call P8; \\1031
+    call P6; \\1032
+}
+
+procedure P11 {
+    print a; \\1033
+    call P49; \\1034
+    call P19; \\1035
+    call P25; \\1036
+}
+
+procedure P12 {
+    print a; \\1037
+    call P29; \\1038
+    call P32; \\1039
+    call P99; \\1040
+    call P26; \\1041
+    call P3; \\1042
+}
+
+procedure P13 {
+    print a; \\1043
+    call P20; \\1044
+    call P21; \\1045
+    call P28; \\1046
+    call P52; \\1047
+}
+
+procedure P14 {
+    print a; \\1048
+    call P72; \\1049
+}
+
+procedure P15 {
+    print a; \\1050
+    call P28; \\1051
+}
+
+procedure P16 {
+    print a; \\1052
+    call P9; \\1053
+}
+
+procedure P17 {
+    print a; \\1054
+    call P77; \\1055
+}
+
+procedure P18 {
+    print a; \\1056
+    call P98; \\1057
+    call P7; \\1058
+}
+
+procedure P19 {
+    print a; \\1059
+    call P47; \\1060
+    call P41; \\1061
+    call P76; \\1062
+}
+
+procedure P20 {
+    print a; \\1063
+    call P54; \\1064
+    call P49; \\1065
+}
+
+procedure P21 {
+    print a; \\1066
+}
+
+procedure P22 {
+    print a; \\1067
+    call P96; \\1068
+}
+
+procedure P23 {
+    print a; \\1069
+    call P85; \\1070
+    call P45; \\1071
+}
+
+procedure P24 {
+    print a; \\1072
+    call P97; \\1073
+    call P96; \\1074
+}
+
+procedure P25 {
+    print a; \\1075
+    call P10; \\1076
+    call P45; \\1077
+    call P18; \\1078
+}
+
+procedure P26 {
+    print a; \\1079
+}
+
+procedure P27 {
+    print a; \\1080
+    call P32; \\1081
+}
+
+procedure P28 {
+    print a; \\1082
+}
+
+procedure P29 {
+    print a; \\1083
+    call P49; \\1084
+    call P9; \\1085
+    call P100; \\1086
+}
+
+procedure P30 {
+    print a; \\1087
+}
+
+procedure P31 {
+    print a; \\1088
+    call P20; \\1089
+}
+
+procedure P32 {
+    print a; \\1090
+    call P3; \\1091
+}
+
+procedure P33 {
+    print a; \\1092
+}
+
+procedure P34 {
+    print a; \\1093
+    call P44; \\1094
+}
+
+procedure P35 {
+    print a; \\1095
+    call P6; \\1096
+    call P68; \\1097
+}
+
+procedure P36 {
+    print a; \\1098
+    call P78; \\1099
+    call P7; \\1100
+    call P11; \\1101
+}
+
+procedure P37 {
+    print a; \\1102
+    call P70; \\1103
+    call P24; \\1104
+}
+
+procedure P38 {
+    print a; \\1105
+    call P46; \\1106
+}
+
+procedure P39 {
+    print a; \\1107
+}
+
+procedure P40 {
+    print a; \\1108
+    call P22; \\1109
+    call P28; \\1110
+    call P20; \\1111
+    call P41; \\1112
+}
+
+procedure P41 {
+    print a; \\1113
+    call P14; \\1114
+    call P98; \\1115
+}
+
+procedure P42 {
+    print a; \\1116
+    call P95; \\1117
+    call P68; \\1118
+    call P63; \\1119
+    call P65; \\1120
+}
+
+procedure P43 {
+    print a; \\1121
+    call P74; \\1122
+}
+
+procedure P44 {
+    print a; \\1123
+    call P39; \\1124
+    call P30; \\1125
+}
+
+procedure P45 {
+    print a; \\1126
+    call P10; \\1127
+    call P35; \\1128
+}
+
+procedure P46 {
+    print a; \\1129
+    call P82; \\1130
+    call P76; \\1131
+}
+
+procedure P47 {
+    print a; \\1132
+}
+
+procedure P48 {
+    print a; \\1133
+    call P42; \\1134
+    call P49; \\1135
+}
+
+procedure P49 {
+    print a; \\1136
+    call P44; \\1137
+    call P80; \\1138
+    call P60; \\1139
+}
+
+procedure P50 {
+    print a; \\1140
+    call P15; \\1141
+    call P29; \\1142
+}
+
+procedure P51 {
+    print a; \\1143
+    call P93; \\1144
+    call P42; \\1145
+    call P29; \\1146
+}
+
+procedure P52 {
+    print a; \\1147
+    call P22; \\1148
+    call P9; \\1149
+}
+
+procedure P53 {
+    print a; \\1150
+    call P78; \\1151
+    call P6; \\1152
+}
+
+procedure P54 {
+    print a; \\1153
+}
+
+procedure P55 {
+    print a; \\1154
+    call P39; \\1155
+    call P78; \\1156
+    call P42; \\1157
+}
+
+procedure P56 {
+    print a; \\1158
+    call P80; \\1159
+    call P55; \\1160
+}
+
+procedure P57 {
+    print a; \\1161
+    call P82; \\1162
+    call P53; \\1163
+}
+
+procedure P58 {
+    print a; \\1164
+    call P18; \\1165
+}
+
+procedure P59 {
+    print a; \\1166
+    call P93; \\1167
+    call P36; \\1168
+    call P3; \\1169
+    call P54; \\1170
+    call P68; \\1171
+}
+
+procedure P60 {
+    print a; \\1172
+    call P44; \\1173
+    call P76; \\1174
+}
+
+procedure P61 {
+    print a; \\1175
+    call P35; \\1176
+    call P59; \\1177
+}
+
+procedure P62 {
+    print a; \\1178
+    call P50; \\1179
+    call P40; \\1180
+    call P37; \\1181
+    call P55; \\1182
+}
+
+procedure P63 {
+    print a; \\1183
+    call P31; \\1184
+    call P92; \\1185
+    call P24; \\1186
+    call P65; \\1187
+}
+
+procedure P64 {
+    print a; \\1188
+    call P77; \\1189
+    call P79; \\1190
+}
+
+procedure P65 {
+    print a; \\1191
+    call P38; \\1192
+}
+
+procedure P66 {
+    print a; \\1193
+    call P60; \\1194
+    call P63; \\1195
+}
+
+procedure P67 {
+    print a; \\1196
+    call P38; \\1197
+    call P37; \\1198
+}
+
+procedure P68 {
+    print a; \\1199
+}
+
+procedure P69 {
+    print a; \\1200
+    call P1; \\1201
+    call P4; \\1202
+    call P16; \\1203
+    call P33; \\1204
+}
+
+procedure P70 {
+    print a; \\1205
+    call P17; \\1206
+}
+
+procedure P71 {
+    print a; \\1207
+    call P34; \\1208
+    call P19; \\1209
+    call P62; \\1210
+    call P38; \\1211
+}
+
+procedure P72 {
+    print a; \\1212
+    call P27; \\1213
+}
+
+procedure P73 {
+    print a; \\1214
+    call P59; \\1215
+    call P94; \\1216
+}
+
+procedure P74 {
+    print a; \\1217
+    call P33; \\1218
+}
+
+procedure P75 {
+    print a; \\1219
+    call P22; \\1220
+    call P4; \\1221
+    call P53; \\1222
+}
+
+procedure P76 {
+    print a; \\1223
+}
+
+procedure P77 {
+    print a; \\1224
+    call P21; \\1225
+    call P89; \\1226
+    call P5; \\1227
+}
+
+procedure P78 {
+    print a; \\1228
+    call P47; \\1229
+    call P7; \\1230
+}
+
+procedure P79 {
+    print a; \\1231
+    call P70; \\1232
+}
+
+procedure P80 {
+    print a; \\1233
+}
+
+procedure P81 {
+    print a; \\1234
+    call P20; \\1235
+    call P14; \\1236
+}
+
+procedure P82 {
+    print a; \\1237
+    call P5; \\1238
+    call P23; \\1239
+    call P83; \\1240
+    call P81; \\1241
+    call P68; \\1242
+}
+
+procedure P83 {
+    print a; \\1243
+    call P20; \\1244
+    call P22; \\1245
+    call P61; \\1246
+}
+
+procedure P84 {
+    print a; \\1247
+    call P9; \\1248
+}
+
+procedure P85 {
+    print a; \\1249
+    call P14; \\1250
+    call P76; \\1251
+    call P89; \\1252
+    call P27; \\1253
+}
+
+procedure P86 {
+    print a; \\1254
+    call P88; \\1255
+    call P59; \\1256
+    call P66; \\1257
+}
+
+procedure P87 {
+    print a; \\1258
+    call P44; \\1259
+    call P82; \\1260
+    call P85; \\1261
+}
+
+procedure P88 {
+    print a; \\1262
+    call P66; \\1263
+}
+
+procedure P89 {
+    print a; \\1264
+    call P18; \\1265
+    call P39; \\1266
+}
+
+procedure P90 {
+    print a; \\1267
+    call P44; \\1268
+    call P63; \\1269
+}
+
+procedure P91 {
+    print a; \\1270
+    call P9; \\1271
+    call P16; \\1272
+}
+
+procedure P92 {
+    print a; \\1273
+    call P59; \\1274
+}
+
+procedure P93 {
+    print a; \\1275
+    call P53; \\1276
+    call P58; \\1277
+    call P64; \\1278
+}
+
+procedure P94 {
+    print a; \\1279
+    call P15; \\1280
+}
+
+procedure P95 {
+    print a; \\1281
+    call P70; \\1282
+}
+
+procedure P96 {
+    print a; \\1283
+    call P81; \\1284
+    call P30; \\1285
+}
+
+procedure P97 {
+    print a; \\1286
+    call P99; \\1287
+}
+
+procedure P98 {
+    print a; \\1288
+    call P16; \\1289
+}
+
+procedure P99 {
+    print a; \\1290
+    call P78; \\1291
+}
+
+procedure P100 {
+    print a; \\1292
+    call P63; \\1293
+    call P81; \\1294
+    call P93; \\1295
+}

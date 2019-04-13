@@ -6,6 +6,9 @@ using Lexer::Token;
 using Lexer::TokenType;
 
 namespace {
+// NAME, IDENT: LETTER ( LETTER | DIGIT )*
+// LETTER: A-Z | a-z
+// DIGIT: 0-9
 Token recognizeIdentifier(std::istream &stream) {
   std::string value;
   while (std::isalnum(stream.peek())) {
@@ -14,6 +17,8 @@ Token recognizeIdentifier(std::istream &stream) {
   return {TokenType::Identifier, value};
 }
 
+// INTEGER: DIGIT+
+// DIGIT: 0-9
 Token recognizeNumber(std::istream &stream) {
   std::string value;
   while (std::isdigit(stream.peek())) {
@@ -108,11 +113,11 @@ std::list<Token> tokenize(std::istream &stream) {
     }
     // Lex everything else
     if (std::isalpha(stream.peek())) {
-      tokens.push_back(recognizeIdentifier(stream));
+      tokens.emplace_back(recognizeIdentifier(stream));
     } else if (std::isdigit(stream.peek())) {
-      tokens.push_back(recognizeNumber(stream));
+      tokens.emplace_back(recognizeNumber(stream));
     } else if (std::ispunct(stream.peek())) {
-      tokens.push_back(recognizePunctuation(stream));
+      tokens.emplace_back(recognizePunctuation(stream));
     } else if (std::isspace(stream.peek())) {
       recognizeSpace(stream);
     } else if (stream.peek() == EOF) {

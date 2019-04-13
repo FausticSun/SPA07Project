@@ -1,0 +1,128 @@
+procedure procA {
+	read a;
+	print b;
+	call procB;
+	if(x == y) then {
+		y = z;
+	} else {
+		z = 11 + 13 + 15 + 16;
+	}
+	while(a1 == b1) {
+		n = q;
+	}
+	while((!(file > a)) || ((result >= 1) && (m % 24134 < p))) {
+		c = o;
+	}
+	if((ifVar <= 1 - (ifVar2 - ifVar)) || ((!(ifVar == 2)) && (ifVar != ifVar3 + ifVar))) then {
+		ifVar = ifVar3;}
+	else{
+		if((max <= 1 - (b - a )) || ((!(r == 2)) && (max != z + min))) then {
+		b = a;
+ 	} else {
+		print  ai;
+	}
+		a = b;
+	}
+	a= b + c;
+	a = b + (c - d);	a = (b + c - (abc %d)) / e;
+		a = (b +c - d) / e % a + (b + c - d) / e;
+a = b+c-d;
+		a = b + (c-d);
+	a = (b + c -d / (ab % d)) / e;
+	a = (b + c*(b -q / (abc % d))) / e %a;
+}
+
+procedure procB {
+	print bA;
+	if(bA == 0) then {
+		bA = 1234;
+		if(bBBB != bAAA) then {
+			call procD;
+			read uniA;
+		} else {
+			call procE;
+			print uniB;
+		}
+	} else {
+		bA = bC / 2;
+		while(bA == bB) {
+			bA = 10;
+			x =10;
+			call procD;
+			if(bD == (bA + bB + bC)) then {
+				while( bD == 4321 ) {
+					call procE;
+					while (bA >=0){
+						print bD;
+					}
+				}
+			} else {
+				print bD;
+			}
+		}
+		bD = bC / 2;
+	}
+	call procC;
+}
+
+procedure procE {
+	print EEEEE;
+}
+
+procedure procC {
+	if( x != 0 )then {
+		if (y != 1) then {
+			while ( y!= 1) {
+				z = x + y;}}
+		else {
+			z = 0;}
+		while (x !=1) {
+			y = 1;}
+		x = x + 1;}
+	else {
+	while (x != 9) {
+                                  x = x-1;
+	while (y != 0) {
+	y = y - 1;}}
+		k = 1;}
+	file = k + y - x;
+	print cA;
+}
+
+	procedure procD {
+	while(dAAA==9){
+	dAAA = dBBB;
+	call procE;
+}
+print uniA;
+dA = dB / dC + uniA;
+dA = dB / dc % dD - dE + dF;
+}
+
+procedure ifInIf {
+	read uniC;
+	if(ifA == ifB) then {
+		ifA = 0;
+	} else {
+		ifA = 1;
+		if(ifA == ifC) then {
+			ifA = 2;
+		} else {
+			if(ifA == ifD) then {
+				ifB = 3;
+			} else {
+				ifA = 5;
+			}
+			ifA = 3;
+		}
+	}
+	print uniC;
+}
+
+procedure withTest {
+	procC = 1;
+}
+
+procedure ifA{
+read x;
+}

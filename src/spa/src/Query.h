@@ -1,5 +1,4 @@
 #pragma once
-#include "Entity.h"
 #include <queue>
 #include <vector>
 
@@ -40,23 +39,29 @@ enum class ClauseType {
   IfPatt,
   WhilePatt,
   With,
+  NextBip,
+  NextBipT,
+  AffectsBip,
+  AffectsBipT
 };
 
 struct QueryEntity {
   QueryEntity() {
     this->type = QueryEntityType::Assign; // default
     this->name = "";
-	this->attrRefSynonymType = QueryEntityType::Assign; // default, only used when this QueryEntity is of type Attrref
+    this->attrRefSynonymType =
+        QueryEntityType::Assign; // default, only used when this QueryEntity is
+                                 // of type Attrref
   };
 
   QueryEntity(QueryEntityType type, std::string name = "")
       : type(type), name(name){};
 
   QueryEntity(QueryEntityType type, std::string name, QueryEntityType type2)
-	  : type(type), name(name), attrRefSynonymType(type2) {};
+      : type(type), name(name), attrRefSynonymType(type2){};
 
-  bool operator==(QueryEntity other) {
-    return this->type == other.type && this->name == other.name;
+  friend bool operator==(const QueryEntity &lhs, const QueryEntity &rhs) {
+	  return lhs.type == rhs.type && lhs.name == rhs.name;
   }
 
   QueryEntityType type;
@@ -70,6 +75,10 @@ public:
       : clauseType(clauseType), parameters(parameters){};
   ClauseType clauseType;
   std::vector<QueryEntity> parameters;
+
+  friend bool operator==(const Clause &lhs, const Clause &rhs) {
+	  return lhs.clauseType == rhs.clauseType && lhs.parameters == rhs.parameters;
+  }
 
   bool isValid();
 };

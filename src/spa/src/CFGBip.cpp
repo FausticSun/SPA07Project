@@ -238,6 +238,4 @@ Table CFGBip::getNextBip() {
 	return nextBip;
 }
 
-Table CFGBip::getNextBipT() {
-	return nextBipT;
-}
+Table CFGBip::getNextBipT() { return nextBipT; }

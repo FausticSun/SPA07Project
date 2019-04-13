@@ -1,0 +1,126 @@
+procedure main
+{
+    I1= r / (8 + b % y ) - 11 + b * b;                   \\ 1 
+
+    b = g - 6 % rOM;                                               \\ 2
+
+    while (d < on) {                                                   \\ 3
+        if (!( (b >= 0) && (c != c) )) then {                        \\ 4
+            i = i - 1;                                                \\ 5
+        } else {
+            print x;                                                    \\ 6
+            while (c != b) {                                 \\ 7
+                l = I - (k + h * t);                    \\ 8
+                read randOM;                                            \\ 9
+            }
+        }
+        while (b >= 11) {                                            \\ 10
+            if ( (6 > y) && (!(c == Z)) ) then {                 \\ 11
+                if ( g != R ) then {                              \\ 12
+                    p = a % c1 + 1 ;                                    \\ 13
+                } else {
+                    print ydj;                                          \\ 14
+                    while ( !(i <= 22) ) {                             \\ 15
+                        read one;                                       \\ 16
+                    }
+                    y = y + 1;                                              \\ 17
+                }
+                e = e - 2;                                          \\ 18
+            } else {
+                read x;                                                 \\ 19
+                read y;                                                 \\ 20
+                print x;                                                \\ 21
+                y = (y * 7 - 23 * 11) / (100 + x);                      \\ 22
+            } 
+        }
+
+        while ((c == 0) || ((a < 11) || (b * ydj + 10 == a)) )  {  \\ 23
+            c = 1000;                                                       \\ 24
+            print one;                                                      \\ 25
+            b = be + l  / bb + R;                                    \\ 26
+        }
+    }
+    read bp;                                                                \\ 27
+}
+ 
+procedure ONE {
+    if (d < o) then {                                             \\ 28 
+        if (count > x) then {                                      \\ 29
+            call TWO;                                               \\ 30
+        } else {
+            y = (d + d + (a + c + 21)) + (b + b / 14);              \\ 31
+        }
+    } else {
+        if (s < 21) then {                                        \\ 32
+            print sum;                                              \\ 33
+        } else {
+            count = count + 1;                                      \\ 34
+            f = r - 4 - g / b * 2 * 1 + s;                   \\ 35
+        }
+    }
+    read r;                                                         \\ 36
+    read x;                                                         \\ 37
+    x = x + 200;                                                    \\ 38
+    print r;                                                        \\ 39
+}
+
+procedure TWO {
+    while ((c < 0) && ((a > 11) || (b * y + 10 > a)) )    \\ 40
+    {
+        a = f + y + z + s * s / f + x;                          \\ 41
+        if ((x < 100) || (x > 1)) then {                           \\ 42
+            x = x * 10;                                             \\ 43
+        } else {                    
+            x = v - x + y + z * t;                                  \\ 44
+        }
+    }
+}
+
+procedure THREE {
+    read y;                                                         \\ 45
+    r = s * 2;                                               \\ 46
+    call main;                                                      \\ 47
+    if (a != s) then {                                          \\ 48   
+        print y;                                                    \\ 49
+        while (l == a) {                                         \\ 50
+            l = l - 1;                                        \\ 51
+            w = a - l;                                           \\ 52
+            s = i - r;                                       \\ 53
+        }
+        d  = (s - 12) * (l + 13);                            \\ 54
+        read s;                                                 \\ 55
+        print a;                                                    \\ 56
+    } else {
+        if (l != c) then {                                       \\ 57
+            f = f + 71 / 88;                                        \\ 58
+            c = 1;                                                  \\ 59
+        } else {
+            while (6 > x + 5 - 8) {                                 \\ 60
+                read f;                                             \\ 61
+                print z;                                            \\ 62
+                y = f - 6 + 1;                                      \\ 63
+                print y;                                            \\ 64
+            }   
+        }
+    }
+}
+
+procedure FOUR {
+    while (x - y - z != t) {                                     \\ 65
+        x = (t + 102 % (x + y) * 11) / z;                        \\ 66
+        read test;                                                  \\ 67
+        y = y + z - 1;                                              \\ 68
+        print z;                                                    \\ 69
+        if (z < 1) then {                                           \\ 70
+            call main;                                              \\ 71
+        } else {    
+            print test;                                             \\ 72
+        }
+        while (x - 1 > y + 21) {                                   \\ 73
+            print x;                                                \\ 74
+            y = y * 1;                                              \\ 75
+            print y;                                                \\ 76
+            read a;                                                 \\ 77
+        }
+    }
+}

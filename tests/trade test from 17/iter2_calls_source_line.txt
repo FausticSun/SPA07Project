@@ -1,0 +1,37 @@
+procedure a {
+    if (a == A) then {      \\1
+        call b;             \\2
+    } else {
+        call d;             \\3
+    }
+}
+
+procedure b {
+    call c;                 \\4
+}
+
+procedure c {
+    while (c != d) {        \\5
+        call d; }           \\6
+
+    call procedure;         \\7
+}
+
+procedure d {
+    read a;                 \\8
+    b = a + 3;              \\9
+    print e;                \\10
+}
+
+procedure procedure {
+    read a;                 \\11
+}
+
+procedure procName {
+    call procedure;         \\12
+    call procedure;         \\13
+}
+
+procedure B {
+    print procedure;        \\14
+}
