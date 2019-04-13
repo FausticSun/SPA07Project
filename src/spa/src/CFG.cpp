@@ -311,8 +311,9 @@ std::deque<int> CFG::getAffectsForward(int start, std::string v) {
 }
 
 std::deque<int> CFG::getAffectsReverse(int start, std::string v) {
-  if (affectsReverseCache.count(start)) {
-    return affectsReverseCache.at(start);
+  auto cacheKey = std::make_pair(start, v);
+  if (affectsReverseCache.count(cacheKey)) {
+    return affectsReverseCache.at(cacheKey);
   }
   std::vector<std::vector<int>> compressedCFG = reverseCompressedGraph;
   std::deque<int> results;
@@ -330,7 +331,7 @@ std::deque<int> CFG::getAffectsReverse(int start, std::string v) {
     }
     if (modifiesTable.contains({std::to_string(node), v})) {
       // v is modified in any line in the start node
-      auto cacheRes = affectsReverseCache.emplace(start, std::move(results));
+      auto cacheRes = affectsReverseCache.emplace(cacheKey, std::move(results));
       return cacheRes.first->second;
     }
     visited[node] = true;
@@ -370,7 +371,7 @@ std::deque<int> CFG::getAffectsReverse(int start, std::string v) {
       }
     }
   }
-  auto cacheRes = affectsReverseCache.emplace(start, std::move(results));
+  auto cacheRes = affectsReverseCache.emplace(cacheKey, std::move(results));
   return cacheRes.first->second;
 }
 
