@@ -3,6 +3,7 @@
 #include <list>
 #include <queue>
 #include <stack>
+#define ENABLE_BIP 1
 
 // Kahn's algorithm for toposort
 std::vector<std::string> topologicalSort(Table callsTable) {
@@ -218,14 +219,19 @@ void populateCFG(std::unique_ptr<PKB> &pkb) {
 }
 
 void populateCFGBip(std::unique_ptr<PKB> &pkb) {
+	auto whileIfTable = pkb->getStmtType(StatementType::While);
+	auto ifTable = pkb->getStmtType(StatementType::If);
+	whileIfTable.concatenate(ifTable);
   CFGBip graph = CFGBip{pkb->getStmtType(StatementType::Call),
                         pkb->getNext(),
                         pkb->getProcStmt(),
                         pkb->getCallProcName(),
                         pkb->getProcExitStmt(),
-                        pkb->getStmtCount()};
+                        pkb->getStmtCount(), pkb->getUsesS(), pkb->getModifiesS(),
+  pkb->getStmtType(StatementType::Assign), whileIfTable};
+
+  pkb->setCFGBip(graph);
   pkb->setNextBip(graph.getNextBip());
-  pkb->setNextBipT(graph.getNextBipT());
 }
 
 void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {

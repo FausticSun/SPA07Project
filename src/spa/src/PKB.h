@@ -22,6 +22,9 @@ private:
   Table constTable{1};
   std::map<StatementType, std::set<int>> stmtTable;
   CFG cfg;
+  CFGBip cfgBip;
+  std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap;
+  std::map<int, StatementType> stmtMap;
   Table procExitStmtTable{2};
 
   // PQL Relation Tables
@@ -36,9 +39,7 @@ private:
   Table callsTable{2};
   Table callsTTable{2};
   Table nextTable{2};
-  Table nextTTable{1};
   Table nextBipTable{2};
-  Table nextBipTTable{2};
 
   // Other Relation Tables
   Table callProcNameTable{2};
@@ -70,6 +71,7 @@ public:
   void setNext(int, int);
   void setNextBip(Table);
   void setNextBipT(Table);
+  void setAffectsBip(Table);
   // Pattern setters
   void setAssign(int, std::string &, std::string &);
   void setIf(int, const std::string &);
@@ -77,6 +79,9 @@ public:
   // Other setters
   void setCallProcName(int, const std::string &);
   void setCFG(CFG &);
+  void setCFGBip(CFGBip &);
+  void setAssignMap(int, std::string);
+  void setStmtMap(int, StatementType);
 
   // Getters
   // Entity getter
@@ -99,7 +104,6 @@ public:
   Table getCallsT() const;
   Table getNext() const;
   Table getNextBip() const;
-  Table getNextBipT() const;
 
   bool isNextT(int, int);
   Table getNextT(int, bool);
@@ -108,6 +112,9 @@ public:
   Table getAffects(int, bool);
   Table getAffects();
   Table getAffectsT();
+  Table getNextBipT();
+  Table getAffectsBip();
+  Table getAffectsBipT();
 
   Table getCallProcNameTable() const;
   // Pattern getter
@@ -117,6 +124,7 @@ public:
   // Other getters
   Table getCallProcName();
   CFG getCFG();
+  CFGBip getCFGBip();
   int getStmtCount();
 
   void clearCache();
