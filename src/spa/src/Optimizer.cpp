@@ -10,7 +10,7 @@ Table Optimizer::getResult() {
   // initialize map with only 1 table
   for (int i = 0; i < nodes.size(); i++) {
     set<int> present({i});
-    m.insert(pair<set<int>, node *>(present, nodes[i]));
+    m.insert(pair<set<int>, shared_ptr<node>>(present, nodes[i]));
   }
   // from size of 2 to size of n
   for (int i = 2; i <= fromlist.size(); i++) {
@@ -18,12 +18,12 @@ Table Optimizer::getResult() {
     for (set<int> subset : subSets) {
       // dummpy cost with infinite
       int min_cost = numeric_limits<int>::max();
-      node *min_node;
+      shared_ptr<node> min_node;
       vector<set<int>> allSubSets = generateAllSets(subset);
       for (set<int> leftTables : allSubSets) {
         set<int> rightTables = removeSets(subset, leftTables);
-        node *left = m[leftTables];
-        node *right = m[rightTables];
+        shared_ptr<node> left = m[leftTables];
+        shared_ptr<node> right = m[rightTables];
         vector<string> newSchema = joinSchema(left->schema, right->schema);
         int size = 0;
         if (newSchema.size() < left->schema.size() + right->schema.size()) {
@@ -31,7 +31,7 @@ Table Optimizer::getResult() {
         } else {
           size = left->size * right->size;
         }
-        node *join = new node;
+        shared_ptr<node> join(new node);
         join->isJoin = true;
         join->left = left;
         join->right = right;
@@ -44,16 +44,16 @@ Table Optimizer::getResult() {
           min_node = join;
         }
       }
-      m.insert(pair<set<int>, node *>(subset, min_node));
+      m.insert(pair<set<int>, shared_ptr<node>>(subset, min_node));
     }
   }
 
-  node *best_plan = m[fromlist];
+  shared_ptr<node> best_plan = m[fromlist];
   Table result = join(best_plan);
   return result;
 }
 
-Table Optimizer::join(node *root) {
+Table Optimizer::join(shared_ptr<node> root) {
   if (root->isJoin) {
     Table left = join(root->left);
     Table right = join(root->right);
@@ -69,7 +69,7 @@ Table Optimizer::join(node *root) {
 
 void Optimizer::wrapData(vector<Table> tables) {
   for (Table t : tables) {
-    node *present = new node;
+    shared_ptr<node> present(new node);
     present->isJoin = false;
     present->data = t;
     present->schema = t.getHeader();
@@ -141,12 +141,12 @@ vector<string> Optimizer::joinSchema(vector<string> left,
   return leftSchema;
 }
 
-int PlanCost::getCost(node *root) {
+int PlanCost::getCost(shared_ptr<node> root) {
   calculateCost(root);
   return cost;
 }
 
-int PlanCost::calculateCost(node *root) {
+int PlanCost::calculateCost(shared_ptr<node> root) {
   if (root->isJoin) {
     calculateCost(root->left);
     calculateCost(root->right);

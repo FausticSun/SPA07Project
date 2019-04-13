@@ -10,8 +10,8 @@ using namespace std;
 struct node {
 public:
   bool isJoin;
-  node *left;
-  node *right;
+  shared_ptr<node> left;
+  shared_ptr<node> right;
   Table data = Table(0);
   vector<string> schema;
   int size;
@@ -20,9 +20,9 @@ public:
 class Optimizer {
 private:
   vector<Table> data;
-  vector<node *> nodes;
+  vector<shared_ptr<node>> nodes;
   set<int> fromlist;
-  map<set<int>, node *> m;
+  map<set<int>, shared_ptr<node>> m;
 
 public:
   Optimizer(vector<Table> d) {
@@ -38,14 +38,14 @@ public:
   vector<set<int>> generateAllSets(set<int> s);
   set<int> removeSets(set<int> from, set<int> to);
   static vector<string> joinSchema(vector<string> left, vector<string> right);
-  Table join(node *root);
+  Table join(shared_ptr<node> root);
 };
 
 class PlanCost {
 public:
   int cost;
   PlanCost() { cost = 0; }
-  int getCost(node *root);
-  int calculateCost(node *n);
+  int getCost(shared_ptr<node> root);
+  int calculateCost(shared_ptr<node> n);
   int getStats(node n);
 };
