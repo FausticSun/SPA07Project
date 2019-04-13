@@ -16,7 +16,7 @@ private:
 
   // Cache
   std::map<int, std::deque<int>> affectsForwardCache;
-  std::map<int, std::deque<int>> affectsReverseCache;
+  std::map<std::pair<int, std::string>, std::deque<int>> affectsReverseCache;
   Table affectsTCache{1};
   std::map<int, Table> whileBlockCache;
 
