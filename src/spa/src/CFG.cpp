@@ -130,6 +130,10 @@ void CFG::populateCompressedGraph(Table procStmtTable) {
 
 // Algorithm for Next*(constant, synonym)
 std::deque<int> CFG::getNextTForward(int start, int end = -1) {
+  // Use cached results if exists
+  if (nextTForwardCache.count(start)) {
+    return nextTForwardCache.at(start);
+  }
   std::deque<int> result;
   std::vector<std::vector<int>> compressedCFG = forwardCompressedGraph;
   bool reachedEnd = false;
@@ -174,11 +178,16 @@ std::deque<int> CFG::getNextTForward(int start, int end = -1) {
     // return empty vector if end not reachable from start
     return std::deque<int>{};
   }
-  return result;
+  auto cacheRes = nextTForwardCache.emplace(start, std::move(result));
+  return cacheRes.first->second;
 }
 
 // Algorithm for Next*(synonym, constant)
 std::deque<int> CFG::getNextTReverse(int start) {
+  // Use cached results if exists
+  if (nextTReverseCache.count(start)) {
+    return nextTReverseCache.at(start);
+  }
   std::deque<int> result;
   std::vector<std::vector<int>> compressedCFG = reverseCompressedGraph;
   std::vector<bool> visited(initialToCompressed.size() + 1, false);
@@ -210,7 +219,8 @@ std::deque<int> CFG::getNextTReverse(int start) {
       }
     }
   }
-  return result;
+  auto cacheRes = nextTReverseCache.emplace(start, std::move(result));
+  return cacheRes.first->second;
 }
 
 // Getter for Next*(synonym, synonym)

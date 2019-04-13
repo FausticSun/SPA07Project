@@ -15,6 +15,8 @@ private:
   int numCompressedNodes = 0;
 
   // Cache
+  std::map<int, std::deque<int>> nextTForwardCache;
+  std::map<int, std::deque<int>> nextTReverseCache;
   std::map<int, std::deque<int>> affectsForwardCache;
   std::map<std::pair<int, std::string>, std::deque<int>> affectsReverseCache;
   Table affectsTCache{1};

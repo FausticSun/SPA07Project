@@ -836,3 +836,46 @@ TEST_CASE(
     REQUIRE(affectsTbl.contains({std::to_string(result.first)}));
   }
 }
+
+TEST_CASE(
+    "Program with if while nested in while stmt and some stmts in between") {
+  std::string program = R"(
+  procedure A {
+    a = z; \\1
+    b = y; \\2
+    while (b == a) { \\3
+      c = x; \\4
+      d = w; \\5
+      while (a == 0) { \\6
+        a = b; \\7
+        c = a + d; \\8
+        b = a; \\9
+        d = c + b; \\10
+      }
+      w = a + b + c + d; \\11
+    }
+  }
+  )";
+  std::stringstream ss;
+  ss << program;
+  std::list<Token> tokens = Lexer::tokenize(ss);
+  auto pkb = Parser::parseSIMPLE(tokens);
+  DesignExtractor::populateDesigns(pkb);
+  auto affectsTable = pkb->getAffects();
+  auto results = {
+      std::make_pair(1, 11), std::make_pair(2, 7),   std::make_pair(2, 11),
+      std::make_pair(4, 11), std::make_pair(5, 11),  std::make_pair(7, 8),
+      std::make_pair(7, 9),  std::make_pair(7, 11),  std::make_pair(8, 10),
+      std::make_pair(8, 11), std::make_pair(9, 7),   std::make_pair(9, 11),
+      std::make_pair(10, 8), std::make_pair(10, 11), std::make_pair(11, 5),
+      std::make_pair(9, 10), std::make_pair(5, 8)};
+  for (auto result : results) {
+    REQUIRE(pkb->isAffects(result.first, result.second));
+    REQUIRE(affectsTable.contains(
+        {std::to_string(result.first), std::to_string(result.second)}));
+    auto affectsTbl = pkb->getAffects(result.first, true);
+    REQUIRE(affectsTbl.contains({std::to_string(result.second)}));
+    affectsTbl = pkb->getAffects(result.second, false);
+    REQUIRE(affectsTbl.contains({std::to_string(result.first)}));
+  }
+}
