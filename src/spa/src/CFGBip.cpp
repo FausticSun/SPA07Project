@@ -3,14 +3,15 @@
 CFGBip::CFGBip() {}
 
 CFGBip::CFGBip(Table callTable, Table nextTable, Table procTable, Table callProcNameTable, Table procExitStmtTable, int stmtCount, Table usesTable, Table modifiesTable,
-	Table assignTable, Table whileIfTable) : modifiesTable(modifiesTable), whileIfTable(whileIfTable) {
+	Table assignTable, Table whileIfTable) : modifiesTable(modifiesTable), whileIfTable(whileIfTable), stmtCount(stmtCount) {
 	modifiesTable = modifiesTable;
 	modifiesAssignTable = modifiesTable;
 	modifiesAssignTable.mergeWith(assignTable);
 	usesAssignTable = usesTable;
 	usesAssignTable.mergeWith(assignTable);
 	buildCFGBip(callTable, nextTable, procTable, callProcNameTable, procExitStmtTable);
-	populateTables(stmtCount);
+	buildAdjacencyLists();
+	populateNextBip();
 }
 
 void CFGBip::buildCFGBip(Table callTable, Table nextTable, Table procTable, Table callProcNameTable, Table procExitStmtTable) {
@@ -84,7 +85,7 @@ void CFGBip::buildCFGBip(Table callTable, Table nextTable, Table procTable, Tabl
 	}
 }
 
-void CFGBip::populateTables(int stmtCount) {
+void CFGBip::buildAdjacencyLists() {
 	
 	//building adjacency list (map)
 	for (auto data : controlFlowLink) {
@@ -109,10 +110,6 @@ void CFGBip::populateTables(int stmtCount) {
 		addToAdjLst(data[0], l);
 	}
 	
-	//populating Tables
-	populateNextBip(stmtCount);
-	populateNextBipT(stmtCount);
-	populateAffectsBip(stmtCount);
 }
 
 void CFGBip::addToAdjLst(int stmt, Link l) {
@@ -125,7 +122,7 @@ void CFGBip::addToAdjLst(int stmt, Link l) {
 }
 
 
-void CFGBip::populateNextBip(int stmtCount) {
+void CFGBip::populateNextBip() {
 	for (int i = 1; i < stmtCount + 1; i++) {
 		std::map<int, bool> visited;
 		for (auto i : adjLst) {
@@ -156,7 +153,7 @@ void CFGBip::populateNextBip(int stmtCount) {
 }
 
 
-void CFGBip::populateNextBipT(int stmtCount) {
+void CFGBip::populateNextBipT() {
 
 	//BFS from every statement number
 	for (int i = 1; i < stmtCount + 1; i++) {
@@ -178,7 +175,6 @@ void CFGBip::populateNextBipT(int stmtCount) {
 			for (Link j : adjLst[curr]) {
 				int v = j.v;
 				LinkType type = j.type;
-
 				if (type == LinkType::CFLink) {
 					if (!visited[v]) {
 						visited[v] = true;
@@ -194,10 +190,10 @@ void CFGBip::populateNextBipT(int stmtCount) {
 						q.push(v);
 						for (int k = 0; k < procExitStmtMap[callProcNameMap[curr]].size(); k++) { //push one in for every exit stmt
 							branches.push(curr);
-						} 
+						}
 						nextBipT.insertRow({ std::to_string(i), std::to_string(v) });
 					}
-					else { 
+					else {
 						for (auto k : procExitStmtMap[callProcNameMap[curr]]) { //already visited, just enqueue exit stmts
 							if (isCallStatement(k)) {
 								q.push(k*-1);
@@ -233,11 +229,10 @@ void CFGBip::populateNextBipT(int stmtCount) {
 			}
 		}
 	}
-
 }
 
 
-void CFGBip::populateAffectsBip(int stmtCount) {
+void CFGBip::populateAffectsBip() {
 	for (auto data : modifiesAssignTable.getData()) {
 		auto result = getAffectsForward(std::stoi(data[0]), data[1]);
 		for (int i : result) {
@@ -300,8 +295,7 @@ std::deque<int> CFGBip::getAffectsForward(int i, std::string var) {
 						}
 					}
 				}
-			}
-			else if (l.type == LinkType::BranchBack) {
+			} else if (l.type == LinkType::BranchBack) {
 				if (branches.empty()) {
 					visited[v] = true;
 					isModified = checkUsesModifies(v, var, results);
@@ -346,9 +340,11 @@ Table CFGBip::getNextBip() {
 }
 
 Table CFGBip::getNextBipT() { 
+	populateNextBipT();
 	return nextBipT; 
 }
 
 Table CFGBip::getAffectsBip() {
+	populateAffectsBip();
 	return affectsBip;
 }

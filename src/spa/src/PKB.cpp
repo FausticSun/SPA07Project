@@ -93,6 +93,8 @@ void PKB::setCallProcName(int stmtNo, const std::string &procName) {
 
 void PKB::setCFG(CFG &graph) { cfg = graph; }
 
+void PKB::setCFGBip(CFGBip &graph) { cfgBip = graph; }
+
 void PKB::setAssignMap(int stmtNo, std::string var) {
   if (assignMap.find(stmtNo) != assignMap.end()) {
     assignMap[stmtNo].second.push_back(var);
@@ -153,8 +155,6 @@ Table PKB::getCalls() const { return callsTable; }
 Table PKB::getCallsT() const { return callsTTable; }
 Table PKB::getNext() const { return nextTable; }
 Table PKB::getNextBip() const { return nextBipTable; }
-Table PKB::getNextBipT() const { return nextBipTTable; }
-Table PKB::getAffectsBip() const { return affectsBipTable; }
 
 bool PKB::isNextT(int start, int end) { return cfg.isNextT(start, end); }
 
@@ -189,6 +189,11 @@ Table PKB::getAffects() { return cfg.getAffects(); }
 
 Table PKB::getAffectsT() { return cfg.getAffectsT(); }
 
+
+Table PKB::getNextBipT() { return cfgBip.getNextBipT(); }
+
+Table PKB::getAffectsBip() { return cfgBip.getAffectsBip(); }
+
 Table PKB::getCallProcNameTable() const { return callProcNameTable; }
 
 Table PKB::getAssignMatches(std::string expr, bool partial) {
@@ -206,6 +211,7 @@ Table PKB::getWhileMatches() { return whileTable; }
 Table PKB::getIfMatches() { return ifTable; }
 Table PKB::getCallProcName() { return callProcNameTable; }
 CFG PKB::getCFG() { return cfg; }
+CFGBip PKB::getCFGBip() { return cfgBip; }
 int PKB::getStmtCount() { return stmtCount; }
 std::map<int, std::pair<std::string, std::vector<std::string>>>
 PKB::getAssignMap() {

@@ -16,6 +16,7 @@ class CFGBip {
 	};
 
 private:
+	int stmtCount;
 	Table nextBip{2};
 	Table nextBipT{2};
 	Table affectsBip{2};
@@ -32,11 +33,11 @@ private:
 	std::set<int> callSet;
 
 	void buildCFGBip(Table, Table, Table, Table, Table);
-	void populateTables(int);
+	void buildAdjacencyLists();
 	void addToAdjLst(int, Link);
-	void populateNextBip(int);
-	void populateNextBipT(int);
-	void populateAffectsBip(int);
+	void populateNextBip();
+	void populateNextBipT();
+	void populateAffectsBip();
 	std::deque<int> getAffectsForward(int, std::string);
 	bool isCallStatement(int);
 	bool checkUsesModifies(int, std::string, std::deque<int>&);

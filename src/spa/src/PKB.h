@@ -22,6 +22,7 @@ private:
   Table constTable{1};
   std::map<StatementType, std::set<int>> stmtTable;
   CFG cfg;
+  CFGBip cfgBip;
   std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap;
   std::map<int, StatementType> stmtMap;
   Table procExitStmtTable{2};
@@ -81,6 +82,7 @@ public:
   // Other setters
   void setCallProcName(int, const std::string &);
   void setCFG(CFG &);
+  void setCFGBip(CFGBip &);
   void setAssignMap(int, std::string);
   void setStmtMap(int, StatementType);
 
@@ -105,8 +107,6 @@ public:
   Table getCallsT() const;
   Table getNext() const;
   Table getNextBip() const;
-  Table getNextBipT() const;
-  Table getAffectsBip() const;
 
   bool isNextT(int, int);
   Table getNextT(int, bool);
@@ -115,6 +115,8 @@ public:
   Table getAffects(int, bool);
   Table getAffects();
   Table getAffectsT();
+  Table getNextBipT();
+  Table getAffectsBip();
 
   Table getCallProcNameTable() const;
   // Pattern getter
@@ -124,6 +126,7 @@ public:
   // Other getters
   Table getCallProcName();
   CFG getCFG();
+  CFGBip getCFGBip();
   int getStmtCount();
   std::map<int, std::pair<std::string, std::vector<std::string>>>
   getAssignMap();
