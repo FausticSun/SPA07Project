@@ -25,6 +25,7 @@ void SPA::parseSIMPLEFile(const std::string &filename) {
 
 void SPA::evaluateQuery(const std::string &queryString,
                         std::list<std::string> &results) const {
+  pkb->clearCache();
   auto selectBool = false;
   try {
     std::stringstream ss;

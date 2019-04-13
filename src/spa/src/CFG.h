@@ -1,7 +1,7 @@
 #pragma once
 #include "Table.h"
 #include "Util.h"
-#include <list>
+#include <deque>
 #include <map>
 
 class CFG {
@@ -14,10 +14,24 @@ private:
   std::vector<std::vector<int>> reverseCompressedGraph;
   int numCompressedNodes = 0;
 
+  // Cache
+  std::map<int, std::deque<int>> affectsForwardCache;
+  std::map<int, std::deque<int>> affectsReverseCache;
+  Table affectsTCache{1};
+  std::map<int, Table> whileBlockCache;
+
   // Other information
-  Table whileIfTable{1};
   Table procStmtTable{1};
-  std::map<int, std::set<int>> whileParentMap;
+  Table modifiesTable{2};
+  Table usesTable{2};
+  Table modifiesAssignTable{2};
+  Table usesAssignTable{2};
+  Table assignTable{1};
+  Table whileIfTable{1};
+  Table whileParentTable{2};
+  std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap;
+  std::map<int, StatementType> stmtMap;
+  std::map<int, std::vector<int>> assignWhileMap;
   std::vector<int> inDegree;
 
   // Methods to get CFG information
@@ -26,34 +40,38 @@ private:
   void populateCompressedGraph(Table);
 
   // Methods for traversal to retrieve Next* relations
-  std::list<int> getNextTForward(int, int) const;
-  std::list<int> getNextTReverse(int) const;
+  std::deque<int> getNextTForward(int, int);
+  std::deque<int> getNextTReverse(int);
 
   // Methods for traversal to retrieve Affects relations
-  std::list<int> getAffectsForward(int, std::string, Table, Table) const;
-  std::list<int> getAffectsReverse(int, std::string, Table, Table) const;
+  std::deque<int> getAffectsForward(int, std::string);
+  std::deque<int> getAffectsReverse(int, std::string);
 
   // Method for traversal to retrieve Affects* relations
-  std::map<int, std::set<int>> getAffectsTResults(
-      int, Table, Table, std::map<int, StatementType>,
-      std::map<int, std::pair<std::string, std::vector<std::string>>>) const;
+  std::map<int, std::set<int>> getAffectsTResults(int);
+
+  Table getAffectsTWhile(int, std::map<int, std::vector<int>>);
 
 public:
   CFG();
-  CFG(Table, Table, Table, Table, int);
+  CFG(Table procStmtTable, Table nextTable, Table modifiesTable,
+      Table usesTable, Table whileIfTable, Table whileParentTable,
+      Table assignTable,
+      std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap,
+      std::map<int, StatementType> stmtMap, int stmtCount);
 
   // Getters for Next*
-  bool isNextT(int, int) const;
-  Table getNextT() const;
-  Table getNextT(int, bool) const;
+  bool isNextT(int, int);
+  Table getNextT();
+  Table getNextT(int, bool);
 
   // Getters for Affects
-  bool isAffects(int, int, Table, Table) const;
-  Table getAffects(Table, Table, std::set<int>) const;
-  Table getAffects(int, bool, Table, Table, std::set<int>) const;
+  bool isAffects(int, int);
+  Table getAffects();
+  Table getAffects(int, bool);
 
   // Getter for Affects*
-  Table getAffectsT(
-      Table, Table, std::map<int, StatementType>,
-      std::map<int, std::pair<std::string, std::vector<std::string>>>) const;
+  Table getAffectsT();
+
+  void clearCache();
 };

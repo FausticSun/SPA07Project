@@ -157,4 +157,56 @@ procedure A {
 	} else {
 		x = 5; \\ 82
 	}
+	\\ Test affects in nested loops
+	while ((ss < 0) && (rr > tt) || (mm == 12) && (nn != (bb - aa)) || (kk <= (pp + 1))) { \\ 83
+		m =  (n - p) / 2  +  n; \\84
+		p = 9; \\ 85
+		k = j; \\ 86
+		j = k; \\ 87
+		if (p >=  9)  then { \\ 88
+			p = n;  \\ 89
+			while (k >= n) { \\90
+				aa = aa + 1; \\91
+				aa = aa + 3; \\92
+				while (jj == 11) { \\ 93
+					f = j; \\94
+					if (j > 10) then { \\95
+						f = n + f; \\ 96
+					}
+					else {
+						n = n + f; \\ 97
+					}
+					f = n; \\ 98
+					while (p == n) { \\ 99
+						m = aa + p; \\ 100
+						p = m * m; \\ 101
+						while (m == 0) { \\ 102
+							j = j + k; \\103
+						}
+					}
+					n = k; \\ 104
+				}
+				j = f; \\ 105
+				j = n; \\ 106
+			}
+			p = aa; \\ 107	
+		}
+		else {
+			p = n; \\ 108
+		}
+		p = aa + n; \\ 109
+		n = m + 1; \\ 110
+	}
+	print m; \\ 111 
+	q = m + p; \\ 112
+	m = n - p / 2 + n; \\ 113
+	if  ((q == 11) && (m > 22)) then { \\ 114
+		p = m; \\ 115
+	} else {
+		m = p; \\ 116 
+		n = p; \\ 117
+	}
+	aa = m - p + n + aa; \\ 118
+	x = (a / b) + (a % b) - (a * b); \\ 119
+	n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\ 120
 }

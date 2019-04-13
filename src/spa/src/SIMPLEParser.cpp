@@ -23,6 +23,7 @@ Token SIMPLEParser::expect(Token token) {
 
 int SIMPLEParser::getStmtNo() { return ++stmtCounter; }
 
+// program: procedure+
 void SIMPLEParser::parseProgram() {
   do {
     if (tokens.empty()) {
@@ -32,6 +33,9 @@ void SIMPLEParser::parseProgram() {
   } while (!tokens.empty());
 }
 
+// procedure: 'procedure' proc_name '{' stmtLst '}'
+// Sets the procedure and the exiting statements
+// of said procedure
 void SIMPLEParser::parseProcedure() {
   int firstStmtNo = stmtCounter + 1;
   expect(SIMPLETokens::Procedure);
@@ -44,6 +48,9 @@ void SIMPLEParser::parseProcedure() {
   pkb->setProcExitStmt(currentProc, procExitStmts);
 }
 
+// stmtLst: stmt+
+// Sets the follows, parent and next relations
+// Returns the exiting statements of this stmtLst
 SIMPLEParser::ExitStmtLst SIMPLEParser::parseStmtLst(int parent) {
   // Parse stmts
   std::vector<StmtInfo> stmtInfoLst;
@@ -80,6 +87,8 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseStmtLst(int parent) {
   return stmtInfoLst.back().second;
 }
 
+// stmt: read | print | call | while | if | assign
+// Returns information about this stmt
 SIMPLEParser::StmtInfo SIMPLEParser::parseStmt() {
   int stmtNo = getStmtNo();
   ExitStmtLst exitStmtLst;
@@ -101,6 +110,8 @@ SIMPLEParser::StmtInfo SIMPLEParser::parseStmt() {
   return StmtInfo(stmtNo, exitStmtLst);
 }
 
+// read: 'read' var_name ';'
+// Sets the modifies relation for read stmts
 SIMPLEParser::ExitStmtLst SIMPLEParser::parseRead(int stmtNo) {
   expect(SIMPLETokens::Read);
   auto var = expect(SIMPLETokens::Identifier).value;
@@ -112,6 +123,8 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseRead(int stmtNo) {
   return {stmtNo};
 }
 
+// print: 'print' var_name ';'
+// Sets the uses relation for print stmts
 SIMPLEParser::ExitStmtLst SIMPLEParser::parsePrint(int stmtNo) {
   expect(SIMPLETokens::Print);
   auto var = expect(SIMPLETokens::Identifier).value;
@@ -123,6 +136,8 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parsePrint(int stmtNo) {
   return {stmtNo};
 }
 
+// call: 'call' proc_name ';'
+// Sets the calls relation for call stmts
 SIMPLEParser::ExitStmtLst SIMPLEParser::parseCall(int stmtNo) {
   expect(SIMPLETokens::Call);
   auto proc = expect(SIMPLETokens::Identifier).value;
@@ -134,6 +149,9 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseCall(int stmtNo) {
   return {stmtNo};
 }
 
+// while: 'while' '(' cond_expr ')' '{' stmtLst '}'
+// Sets uses (for variables in the cond_expr),
+// next relation and while pattern
 SIMPLEParser::ExitStmtLst SIMPLEParser::parseWhile(int stmtNo) {
   expect(SIMPLETokens::While);
   expect(SIMPLETokens::LeftParentheses);
@@ -160,6 +178,9 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseWhile(int stmtNo) {
   return {stmtNo};
 }
 
+// if: 'if' '(' cond_expr ')' 'then' '{' stmtLst '}' 'else' '{' stmtLst '}'
+// Sets uses (for variables in the cond_expr),
+// next relation and if pattern
 SIMPLEParser::ExitStmtLst SIMPLEParser::parseIf(int stmtNo) {
   expect(SIMPLETokens::If);
   expect(SIMPLETokens::LeftParentheses);
@@ -190,6 +211,8 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseIf(int stmtNo) {
   return exitStmtLst;
 }
 
+// assign: var_name '=' expr ';'
+// Set uses, modifies relation and assign pattern
 SIMPLEParser::ExitStmtLst SIMPLEParser::parseAssign(int stmtNo) {
   auto var = expect(SIMPLETokens::Identifier).value;
   expect(SIMPLETokens::Assign);
@@ -205,6 +228,8 @@ SIMPLEParser::ExitStmtLst SIMPLEParser::parseAssign(int stmtNo) {
   return {stmtNo};
 }
 
+// Extract out the tokens in while cond_expr
+// and delegate parsing of cond_expr to ExprParser
 std::list<Token> SIMPLEParser::parseWhileCondExpr() {
   std::list<Token> exprTokens;
   while (!(*(tokens.begin()) == SIMPLETokens::RightParentheses &&
@@ -218,6 +243,8 @@ std::list<Token> SIMPLEParser::parseWhileCondExpr() {
   return parseExpr(exprTokens);
 }
 
+// Extract out the tokens in if cond_expr
+// and delegate parsing of cond_expr to ExprParser
 std::list<Token> SIMPLEParser::parseIfCondExpr() {
   std::list<Token> exprTokens;
   while (!(*(tokens.begin()) == SIMPLETokens::RightParentheses &&
@@ -231,6 +258,9 @@ std::list<Token> SIMPLEParser::parseIfCondExpr() {
   return parseExpr(exprTokens);
 }
 
+// Extract out the tokens in assign expr and delegate parsing of expr to
+// ExprParser Also validates expression to make sure it does not contain
+// relational tokens
 std::list<Token> SIMPLEParser::parseAssignExpr() {
   std::list<Token> exprTokens;
   while (*(tokens.begin()) != SIMPLETokens::Semicolon) {
@@ -250,6 +280,8 @@ std::list<Token> SIMPLEParser::parseAssignExpr() {
   return postfix;
 }
 
+// Helper method to extract out the variables in a postfix expr
+// and set uses for specified stmt
 void SIMPLEParser::setUsesExpr(int stmtNo, std::list<Token> postfix) {
   for (auto token : postfix) {
     switch (token.type) {

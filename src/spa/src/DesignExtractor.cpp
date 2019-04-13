@@ -210,8 +210,16 @@ void populateCFG(std::unique_ptr<PKB> &pkb) {
   auto parentTTable = pkb->getParentT();
   parentTTable.setHeader({"w", "s"});
   whileParentTable.mergeWith(parentTTable);
-  CFG graph = CFG{pkb->getProcStmt(), pkb->getNext(), whileIfTable,
-                  whileParentTable, pkb->getStmtCount()};
+  CFG graph = CFG{pkb->getProcStmt(),
+                  pkb->getNext(),
+                  pkb->getModifiesS(),
+                  pkb->getUsesS(),
+                  whileIfTable,
+                  whileParentTable,
+                  pkb->getStmtType(StatementType::Assign),
+                  pkb->getAssignMap(),
+                  pkb->getStmtMap(),
+                  pkb->getStmtCount()};
   pkb->setCFG(graph);
 }
 
@@ -273,9 +281,9 @@ void DesignExtractor::populateDesigns(std::unique_ptr<PKB> &pkb) {
   populateUsesAndModifiesC(pkb);
   populateUsesS(pkb);
   populateModifiesS(pkb);
-  populateCFG(pkb);
   populateAssignMap(pkb);
   populateStmtMap(pkb);
+  populateCFG(pkb);
 #ifdef ENABLE_BIP
   populateCFGBip(pkb);
 #endif

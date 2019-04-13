@@ -105,13 +105,13 @@ public:
   Table getNextBip() const;
   Table getNextBipT() const;
 
-  bool isNextT(int, int) const;
-  Table getNextT(int, bool) const;
-  Table getNextT() const;
-  bool isAffects(int, int) const;
-  Table getAffects(int, bool) const;
-  Table getAffects() const;
-  Table getAffectsT() const;
+  bool isNextT(int, int);
+  Table getNextT(int, bool);
+  Table getNextT();
+  bool isAffects(int, int);
+  Table getAffects(int, bool);
+  Table getAffects();
+  Table getAffectsT();
 
   Table getCallProcNameTable() const;
   // Pattern getter
@@ -122,4 +122,9 @@ public:
   Table getCallProcName();
   CFG getCFG();
   int getStmtCount();
+  std::map<int, std::pair<std::string, std::vector<std::string>>>
+  getAssignMap();
+  std::map<int, StatementType> getStmtMap();
+
+  void clearCache();
 };

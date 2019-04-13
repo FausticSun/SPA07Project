@@ -3,6 +3,9 @@
 #include <deque>
 #include <iterator>
 #include <map>
+#include <stack>
+
+Table::Table() { headerRow.emplace_back(std::to_string(0)); }
 
 int Table::getHeaderIdx(std::string header) {
   for (int i = 0; i < headerRow.size(); ++i) {
@@ -118,26 +121,6 @@ void Table::filterColumn(std::string header, std::set<std::string> filter) {
   }
 }
 
-Table Table::filter(std::string columnHeader,
-                    std::vector<std::string> elements) {
-  // Get the index of the required column
-  auto it = std::find(headerRow.begin(), headerRow.end(), columnHeader);
-  if (it == headerRow.end()) {
-    throw std::logic_error("Column: " + columnHeader + " not found");
-  }
-  int index = std::distance(headerRow.begin(), it);
-
-  // Put required rows into a new table
-  Table table{headerRow};
-  for (auto row : data) {
-    if (std::find(elements.begin(), elements.end(), row[index]) !=
-        elements.end()) {
-      table.insertRow(row);
-    }
-  }
-  return table;
-}
-
 std::set<Table::DataRow> Table::getData() const { return data; }
 
 int Table::size() const { return data.size(); }
@@ -229,6 +212,10 @@ void Table::transitiveClosure() {
     throw std::logic_error(
         "Transitive closure can only be performed on table with 2 columns");
   }
+  repeatedDFS();
+}
+
+void Table::recursiveSelfJoin() {
   // Get number of unique elements
   std::set<std::string> uniqueElements;
   for (auto i : data) {
@@ -251,6 +238,51 @@ void Table::transitiveClosure() {
       data.insert(newRow);
     }
   }
+}
+
+void dfs(const std::string &v,
+         const std::map<std::string, std::set<std::string>> &adjList,
+         std::map<std::string, std::set<std::string>> &tcList) {
+  if (tcList.count(v)) {
+    return;
+  }
+  tcList.emplace(v, std::move(std::set<std::string>()));
+  if (!adjList.count(v)) {
+    return;
+  }
+  for (auto &n : adjList.at(v)) {
+    tcList.at(v).emplace(n);
+    dfs(n, adjList, tcList);
+    auto &tc = tcList.at(n);
+    tcList.at(v).insert(tc.begin(), tc.end());
+  }
+}
+
+void Table::repeatedDFS() {
+  // Generate an adjacency list
+  std::map<std::string, std::set<std::string>> adjList;
+  for (auto &row : data) {
+    if (!adjList.count(row[0])) {
+      adjList.emplace(row[0], std::move(std::set<std::string>({row[1]})));
+    } else {
+      adjList.at(row[0]).emplace(row[1]);
+    }
+  }
+  // Perform depth-first search
+  std::map<std::string, std::set<std::string>> tcList;
+  for (auto &kv : adjList) {
+    if (!tcList.count(kv.first)) {
+      dfs(kv.first, adjList, tcList);
+    }
+  }
+  // Convert transitive closure adjacency list to table
+  std::set<DataRow> newData;
+  for (auto &kv : tcList) {
+    for (auto &n : kv.second) {
+      newData.emplace(std::move(DataRow({kv.first, n})));
+    }
+  }
+  data = std::move(newData);
 }
 
 void Table::naturalJoin(const Table &other,
