@@ -39,10 +39,7 @@ private:
   Table callsTable{2};
   Table callsTTable{2};
   Table nextTable{2};
-  Table nextTTable{1};
   Table nextBipTable{2};
-  Table nextBipTTable{2};
-  Table affectsBipTable{2};
 
   // Other Relation Tables
   Table callProcNameTable{2};
@@ -117,6 +114,7 @@ public:
   Table getAffectsT();
   Table getNextBipT();
   Table getAffectsBip();
+  Table getAffectsBipT();
 
   Table getCallProcNameTable() const;
   // Pattern getter

@@ -87,19 +87,21 @@ void CFGBip::buildCFGBip(Table callTable, Table nextTable, Table procTable, Tabl
 
 void CFGBip::buildAdjacencyLists() {
 	
-	//building adjacency list (map)
+	//building adjacency lists (map)
 	for (auto data : controlFlowLink) {
 		Link l;
 		l.type = LinkType::CFLink;
 		l.v = data[1];
-		addToAdjLst(data[0], l);
+		addToGenAdjLst(data[0], l);
+		addToSimpleAdjLst(data[0], l.v);
 	}
 
 	for (auto data : branchIn) {
 		Link l;
 		l.type = LinkType::BranchIn;
 		l.v = data[1];
-		addToAdjLst(data[0], l);
+		addToGenAdjLst(data[0], l);
+		addToSimpleAdjLst(data[0], l.v);
 	}
 	
 	for (auto data : branchBack) {
@@ -107,17 +109,27 @@ void CFGBip::buildAdjacencyLists() {
 		l.type = LinkType::BranchBack;
 		l.v = data[1];
 		l.source = data[2];
-		addToAdjLst(data[0], l);
+		addToGenAdjLst(data[0], l);
+		addToSimpleAdjLst(data[0], l.v);
 	}
 	
 }
 
-void CFGBip::addToAdjLst(int stmt, Link l) {
-	if (adjLst.count(stmt) == 1) {
-		adjLst[stmt].push_back(l);
+void CFGBip::addToGenAdjLst(int stmt, Link l) {
+	if (generalizedAdjLst.count(stmt) == 1) {
+		generalizedAdjLst[stmt].push_back(l);
 	}
 	else {
-		adjLst[stmt] = std::vector<Link>{ l };
+		generalizedAdjLst[stmt] = std::vector<Link>{ l };
+	}
+}
+
+void CFGBip::addToSimpleAdjLst(int stmt1, int stmt2) {
+	if (simpleAdjLst.count(stmt1) == 1) {
+		simpleAdjLst[stmt1].push_back(stmt2);
+	}
+	else {
+		simpleAdjLst[stmt1] = std::vector<int>{ stmt2 };
 	}
 }
 
@@ -125,7 +137,7 @@ void CFGBip::addToAdjLst(int stmt, Link l) {
 void CFGBip::populateNextBip() {
 	for (int i = 1; i < stmtCount + 1; i++) {
 		std::map<int, bool> visited;
-		for (auto i : adjLst) {
+		for (auto i : generalizedAdjLst) {
 			visited[i.first] = false;
 		}
 		std::queue<int> q;
@@ -134,7 +146,7 @@ void CFGBip::populateNextBip() {
 		while (!q.empty()) {
 			int curr = q.front();
 			q.pop();
-			for (Link l : adjLst[curr]) {
+			for (Link l : generalizedAdjLst[curr]) {
 				int v = l.v;
 				if (!visited[v]) {
 					if ((v < 0) && (l.type == LinkType::BranchBack)) { //connected to dummy via branch back
@@ -159,7 +171,7 @@ void CFGBip::populateNextBipT() {
 	for (int i = 1; i < stmtCount + 1; i++) {
 
 		std::map<int, bool> visited;
-		for (auto i : adjLst) {
+		for (auto i : generalizedAdjLst) {
 			visited[i.first] = false;
 		}
 
@@ -172,7 +184,7 @@ void CFGBip::populateNextBipT() {
 		while (!q.empty()) {
 			int curr = q.front();
 			q.pop();
-			for (Link j : adjLst[curr]) {
+			for (Link j : generalizedAdjLst[curr]) {
 				int v = j.v;
 				LinkType type = j.type;
 				if (type == LinkType::CFLink) {
@@ -247,7 +259,7 @@ std::deque<int> CFGBip::getAffectsForward(int i, std::string var) {
 	std::stack<int> branches;
 	//initialize visited
 	std::map<int, bool> visited;
-	for (auto i : adjLst) {
+	for (auto i : generalizedAdjLst) {
 		visited[i.first] = false;
 	}
 	visited[0] = true;
@@ -258,7 +270,7 @@ std::deque<int> CFGBip::getAffectsForward(int i, std::string var) {
 		int curr = q.front();
 		q.pop();
 		//looping through neighbours
-		for (Link l : adjLst[curr]) {
+		for (Link l : generalizedAdjLst[curr]) {
 			int v = l.v;
 			bool isModified = false; //keep track if statement modifies
 			if (l.type == LinkType::CFLink) {
@@ -320,6 +332,10 @@ std::deque<int> CFGBip::getAffectsForward(int i, std::string var) {
 	return results;
 }
 
+void CFGBip::populateAffectsBipT() {
+	//implement affectsBipT algo here but on simpleAdjLst
+}
+
 bool CFGBip::isCallStatement(int i) {
 	return (callSet.count(i) == 1);
 }
@@ -347,4 +363,9 @@ Table CFGBip::getNextBipT() {
 Table CFGBip::getAffectsBip() {
 	populateAffectsBip();
 	return affectsBip;
+}
+
+Table CFGBip::getAffectsBipT() {
+	populateAffectsBipT();
+	return affectsBipT;
 }

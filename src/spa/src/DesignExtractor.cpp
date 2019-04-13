@@ -3,7 +3,7 @@
 #include <list>
 #include <queue>
 #include <stack>
-//#define ENABLE_BIP 1
+#define ENABLE_BIP 1
 
 // Kahn's algorithm
 std::vector<std::string> topologicalSort(Table callsTable) {
