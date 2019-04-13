@@ -73,6 +73,8 @@ void PKB::setNextBip(Table t) { nextBipTable = t; }
 
 void PKB::setNextBipT(Table t) { nextBipTTable = t; }
 
+void PKB::setAffectsBip(Table t) { affectsBipTable = t; }
+
 void PKB::setAssign(int a, std::string &v, std::string &expr) {
   assignTable.insert(std::make_pair(a, std::make_pair(v, expr)));
 }
@@ -152,6 +154,7 @@ Table PKB::getCallsT() const { return callsTTable; }
 Table PKB::getNext() const { return nextTable; }
 Table PKB::getNextBip() const { return nextBipTable; }
 Table PKB::getNextBipT() const { return nextBipTTable; }
+Table PKB::getAffectsBip() const { return affectsBipTable; }
 
 bool PKB::isNextT(int start, int end) { return cfg.isNextT(start, end); }
 

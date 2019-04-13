@@ -2,7 +2,13 @@
 
 CFGBip::CFGBip() {}
 
-CFGBip::CFGBip(Table callTable, Table nextTable, Table procTable, Table callProcNameTable, Table procExitStmtTable, int stmtCount) {
+CFGBip::CFGBip(Table callTable, Table nextTable, Table procTable, Table callProcNameTable, Table procExitStmtTable, int stmtCount, Table usesTable, Table modifiesTable,
+	Table assignTable, Table whileIfTable) : modifiesTable(modifiesTable), whileIfTable(whileIfTable) {
+	modifiesTable = modifiesTable;
+	modifiesAssignTable = modifiesTable;
+	modifiesAssignTable.mergeWith(assignTable);
+	usesAssignTable = usesTable;
+	usesAssignTable.mergeWith(assignTable);
 	buildCFGBip(callTable, nextTable, procTable, callProcNameTable, procExitStmtTable);
 	populateTables(stmtCount);
 }
@@ -106,6 +112,7 @@ void CFGBip::populateTables(int stmtCount) {
 	//populating Tables
 	populateNextBip(stmtCount);
 	populateNextBipT(stmtCount);
+	populateAffectsBip(stmtCount);
 }
 
 void CFGBip::addToAdjLst(int stmt, Link l) {
@@ -229,13 +236,119 @@ void CFGBip::populateNextBipT(int stmtCount) {
 
 }
 
+
+void CFGBip::populateAffectsBip(int stmtCount) {
+	for (auto data : modifiesAssignTable.getData()) {
+		auto result = getAffectsForward(std::stoi(data[0]), data[1]);
+		for (int i : result) {
+			affectsBip.insertRow({ data[0], std::to_string(i) });
+		}
+	}
+}
+
+std::deque<int> CFGBip::getAffectsForward(int i, std::string var) {
+	
+	std::deque<int> results;
+	std::stack<int> branches;
+	//initialize visited
+	std::map<int, bool> visited;
+	for (auto i : adjLst) {
+		visited[i.first] = false;
+	}
+	visited[0] = true;
+
+	std::queue<int> q;
+	q.push(i);
+	while (!q.empty()) {
+		int curr = q.front();
+		q.pop();
+		//looping through neighbours
+		for (Link l : adjLst[curr]) {
+			int v = l.v;
+			bool isModified = false; //keep track if statement modifies
+			if (l.type == LinkType::CFLink) {
+				if (!visited[v]) {
+					visited[v] = true;
+					isModified = checkUsesModifies(v, var, results);
+					if (!isModified) {
+						q.push(v);
+					}
+				}
+			}
+			else if (l.type == LinkType::BranchIn) {
+				if (!visited[v]) {
+					visited[v] = true;
+					isModified = checkUsesModifies(v, var, results);
+					if (!isModified) {
+						for (int k = 0; k < procExitStmtMap[callProcNameMap[curr]].size(); k++) { //push one in for every exit stmt
+							branches.push(curr);  //curr is a call
+						}
+						q.push(v);
+					}
+				}
+				else {
+					isModified = checkUsesModifies(v, var, results);
+					if (!isModified) {
+						for (auto k : procExitStmtMap[callProcNameMap[curr]]) { //already visited, just enqueue exit stmts
+							if (isCallStatement(k)) {
+								q.push(k*-1);
+							}
+							else {
+								q.push(k);
+							}
+							branches.push(curr);
+						}
+					}
+				}
+			}
+			else if (l.type == LinkType::BranchBack) {
+				if (branches.empty()) {
+					visited[v] = true;
+					isModified = checkUsesModifies(v, var, results);
+					if (!isModified) {
+						q.push(v);
+					}
+				}
+				else {
+					if (l.source == branches.top()) {
+						branches.pop();
+						visited[v] = true;
+						isModified = checkUsesModifies(v, var, results);
+						if (!isModified) {
+							q.push(v);
+						}
+						break;
+					}
+				}
+			}
+		}
+	}
+	return results;
+}
+
 bool CFGBip::isCallStatement(int i) {
 	return (callSet.count(i) == 1);
 }
 
+bool CFGBip::checkUsesModifies(int v, std::string var, std::deque<int> &results) {
+	if (usesAssignTable.contains({ std::to_string(v), var })) {
+		results.emplace_back(v);
+	}
+	if (modifiesTable.contains({ std::to_string(v), var }) &&
+		!whileIfTable.contains({ std::to_string(v) }) && !isCallStatement(v)) {
+		return true;
+	}
+	return false;
+}
 
 Table CFGBip::getNextBip() {
 	return nextBip;
 }
 
-Table CFGBip::getNextBipT() { return nextBipT; }
+Table CFGBip::getNextBipT() { 
+	return nextBipT; 
+}
+
+Table CFGBip::getAffectsBip() {
+	return affectsBip;
+}

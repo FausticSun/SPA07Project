@@ -41,6 +41,7 @@ private:
   Table nextTTable{1};
   Table nextBipTable{2};
   Table nextBipTTable{2};
+  Table affectsBipTable{2};
 
   // Other Relation Tables
   Table callProcNameTable{2};
@@ -72,6 +73,7 @@ public:
   void setNext(int, int);
   void setNextBip(Table);
   void setNextBipT(Table);
+  void setAffectsBip(Table);
   // Pattern setters
   void setAssign(int, std::string &, std::string &);
   void setIf(int, const std::string &);
@@ -104,6 +106,7 @@ public:
   Table getNext() const;
   Table getNextBip() const;
   Table getNextBipT() const;
+  Table getAffectsBip() const;
 
   bool isNextT(int, int);
   Table getNextT(int, bool);
