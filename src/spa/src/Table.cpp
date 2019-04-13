@@ -242,20 +242,30 @@ void Table::recursiveSelfJoin() {
 
 void dfs(const std::string &v,
          const std::map<std::string, std::set<std::string>> &adjList,
-         std::map<std::string, std::set<std::string>> &tcList) {
-  if (tcList.count(v)) {
-    return;
-  }
-  tcList.emplace(v, std::move(std::set<std::string>()));
+         std::map<std::string, std::set<std::string>> &tcList,
+         std::set<std::string> &visited) {
+  visited.emplace(v);
   if (!adjList.count(v)) {
     return;
   }
   for (auto &n : adjList.at(v)) {
-    tcList.at(v).emplace(n);
-    dfs(n, adjList, tcList);
-    auto &tc = tcList.at(n);
-    tcList.at(v).insert(tc.begin(), tc.end());
+    if (!visited.count(n)) {
+      if (tcList.count(n)) {
+        visited.emplace(n);
+        auto &tc = tcList.at(n);
+        visited.insert(tc.begin(), tc.end());
+      } else {
+        dfs(n, adjList, tcList, visited);
+      }
+    }
   }
+}
+
+void dfs(const std::string &v,
+         const std::map<std::string, std::set<std::string>> &adjList,
+         std::map<std::string, std::set<std::string>> &tcList) {
+  std::set<std::string> visited;
+  dfs(v, adjList, tcList, visited);
 }
 
 void Table::repeatedDFS() {
@@ -271,9 +281,7 @@ void Table::repeatedDFS() {
   // Perform depth-first search
   std::map<std::string, std::set<std::string>> tcList;
   for (auto &kv : adjList) {
-    if (!tcList.count(kv.first)) {
-      dfs(kv.first, adjList, tcList);
-    }
+    dfs(kv.first, adjList, tcList);
   }
   // Convert transitive closure adjacency list to table
   std::set<DataRow> newData;
