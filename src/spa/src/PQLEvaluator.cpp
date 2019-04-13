@@ -256,6 +256,7 @@ set<vector<string>> PqlEvaluator::executeComplexQuery(Query q) {
     if (groupResult.empty()) {
       return validateResult(groupResult, q.target).getData();
     }
+		groupResult = projectOut(groupResult,q.target);
     relevantResults.push_back(groupResult);
   }
   // join the groups that are relevant to the selected tuplle
@@ -449,6 +450,19 @@ ClauseResult PqlEvaluator::dataFilter(Table data, Clause c) {
   }
   return ClauseResult(true, true);
 }
+
+Table PqlEvaluator::projectOut(Table t, vector<QueryEntity> targets) {
+  vector<string> headers;
+  vector<string> tars = targetsToTable(targets).getHeader();
+  set<string> tarset(tars.begin(), tars.end());
+  for (string s : t.getHeader()) {
+    if (!tarset.count(s)) {
+      t.dropColumn(s);
+    }
+  }
+  return t;
+}
+
 // evaluate with clause
 ClauseResult PqlEvaluator::withEvaluate(Clause c) {
   vector<Table> tables;
