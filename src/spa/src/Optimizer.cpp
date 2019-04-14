@@ -1,6 +1,6 @@
 #include <Optimizer.h>
 #include <algorithm>
-
+// DP algorithm by CS3223 System R approach
 Table Optimizer::getResult() {
   if (nodes.size() == 1) {
     return data[0];
@@ -10,7 +10,7 @@ Table Optimizer::getResult() {
   // initialize map with only 1 table
   for (int i = 0; i < nodes.size(); i++) {
     set<int> present({i});
-    m.insert(pair<set<int>, node *>(present, nodes[i]));
+    m.insert(pair<set<int>, shared_ptr<node>>(present, nodes[i]));
   }
   // from size of 2 to size of n
   for (int i = 2; i <= fromlist.size(); i++) {
@@ -18,12 +18,15 @@ Table Optimizer::getResult() {
     for (set<int> subset : subSets) {
       // dummpy cost with infinite
       int min_cost = numeric_limits<int>::max();
-      node *min_node;
+      shared_ptr<node> min_node;
       vector<set<int>> allSubSets = generateAllSets(subset);
+      // examing all possible plans of the given subset, compare the cost with
+      // optimal plan
+      // update optimal plan
       for (set<int> leftTables : allSubSets) {
         set<int> rightTables = removeSets(subset, leftTables);
-        node *left = m[leftTables];
-        node *right = m[rightTables];
+        shared_ptr<node> left = m[leftTables];
+        shared_ptr<node> right = m[rightTables];
         vector<string> newSchema = joinSchema(left->schema, right->schema);
         int size = 0;
         if (newSchema.size() < left->schema.size() + right->schema.size()) {
@@ -31,7 +34,7 @@ Table Optimizer::getResult() {
         } else {
           size = left->size * right->size;
         }
-        node *join = new node;
+        shared_ptr<node> join(new node);
         join->isJoin = true;
         join->left = left;
         join->right = right;
@@ -44,16 +47,16 @@ Table Optimizer::getResult() {
           min_node = join;
         }
       }
-      m.insert(pair<set<int>, node *>(subset, min_node));
+      m.insert(pair<set<int>, shared_ptr<node>>(subset, min_node));
     }
   }
-
-  node *best_plan = m[fromlist];
+  // get the optimal plan of join tables, return the join result
+  shared_ptr<node> best_plan = m[fromlist];
   Table result = join(best_plan);
   return result;
 }
-
-Table Optimizer::join(node *root) {
+// actually join input tables
+Table Optimizer::join(shared_ptr<node> root) {
   if (root->isJoin) {
     Table left = join(root->left);
     Table right = join(root->right);
@@ -66,10 +69,10 @@ Table Optimizer::join(node *root) {
     return root->data;
   }
 }
-
+// wrapping tables into leave nodes
 void Optimizer::wrapData(vector<Table> tables) {
   for (Table t : tables) {
-    node *present = new node;
+    shared_ptr<node> present(new node);
     present->isJoin = false;
     present->data = t;
     present->schema = t.getHeader();
@@ -77,6 +80,7 @@ void Optimizer::wrapData(vector<Table> tables) {
     nodes.push_back(present);
   }
 }
+// generate subsets with a given size of input set
 vector<set<int>> Optimizer::powerSet(set<int> data_set, const int &n) {
   vector<set<int>> result;
   vector<int> data_list(data_set.begin(), data_set.end());
@@ -99,7 +103,7 @@ vector<set<int>> Optimizer::powerSet(set<int> data_set, const int &n) {
       indices[r++] = ++c;
   }
 }
-
+// generate all subsets of input set
 vector<set<int>> Optimizer::generateAllSets(set<int> s) {
   vector<set<int>> allSets;
   for (int i = 1; i < s.size(); i++) {
@@ -117,6 +121,7 @@ set<int> Optimizer::removeSets(set<int> from, set<int> to) {
   }
   return from;
 }
+// merging headers of two tables into one
 vector<string> Optimizer::joinSchema(vector<string> left,
                                      vector<string> right) {
   vector<string> leftSchema = left;
@@ -140,13 +145,13 @@ vector<string> Optimizer::joinSchema(vector<string> left,
   }
   return leftSchema;
 }
-
-int PlanCost::getCost(node *root) {
+// calculate the cost of a give plan
+int PlanCost::getCost(shared_ptr<node> root) {
   calculateCost(root);
   return cost;
 }
 
-int PlanCost::calculateCost(node *root) {
+int PlanCost::calculateCost(shared_ptr<node> root) {
   if (root->isJoin) {
     calculateCost(root->left);
     calculateCost(root->right);
