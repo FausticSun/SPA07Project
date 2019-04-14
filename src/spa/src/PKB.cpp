@@ -71,8 +71,6 @@ void PKB::setNext(int s1, int s2) {
 
 void PKB::setNextBip(Table t) { nextBipTable = t; }
 
-void PKB::setNextBipT(Table t) { nextBipTTable = t; }
-
 void PKB::setAssign(int a, std::string &v, std::string &expr) {
   assignTable.insert(std::make_pair(a, std::make_pair(v, expr)));
 }
@@ -90,6 +88,19 @@ void PKB::setCallProcName(int stmtNo, const std::string &procName) {
 }
 
 void PKB::setCFG(CFG &graph) { cfg = graph; }
+
+void PKB::setCFGBip(CFGBip &graph) { cfgBip = graph; }
+
+void PKB::setAssignMap(int stmtNo, std::string var) {
+  if (assignMap.find(stmtNo) != assignMap.end()) {
+    assignMap[stmtNo].second.push_back(var);
+  } else {
+    std::vector<std::string> emptyVec;
+    assignMap[stmtNo] = std::make_pair(var, emptyVec);
+  }
+}
+
+void PKB::setStmtMap(int stmtNo, StatementType type) { stmtMap[stmtNo] = type; }
 
 Table PKB::getVarTable() const { return varTable; }
 
@@ -140,7 +151,6 @@ Table PKB::getCalls() const { return callsTable; }
 Table PKB::getCallsT() const { return callsTTable; }
 Table PKB::getNext() const { return nextTable; }
 Table PKB::getNextBip() const { return nextBipTable; }
-Table PKB::getNextBipT() const { return nextBipTTable; }
 
 bool PKB::isNextT(int start, int end) { return cfg.isNextT(start, end); }
 
@@ -175,6 +185,13 @@ Table PKB::getAffects() { return cfg.getAffects(); }
 
 Table PKB::getAffectsT() { return cfg.getAffectsT(); }
 
+
+Table PKB::getNextBipT() { return cfgBip.getNextBipT(); }
+
+Table PKB::getAffectsBip() { return cfgBip.getAffectsBip(); }
+
+Table PKB::getAffectsBipT() { return cfgBip.getAffectsBipT(); }
+
 Table PKB::getCallProcNameTable() const { return callProcNameTable; }
 
 Table PKB::getAssignMatches(std::string expr, bool partial) {
@@ -192,6 +209,7 @@ Table PKB::getWhileMatches() { return whileTable; }
 Table PKB::getIfMatches() { return ifTable; }
 Table PKB::getCallProcName() { return callProcNameTable; }
 CFG PKB::getCFG() { return cfg; }
+CFGBip PKB::getCFGBip() { return cfgBip; }
 int PKB::getStmtCount() { return stmtCount; }
 
 void PKB::clearCache() { cfg.clearCache(); }
