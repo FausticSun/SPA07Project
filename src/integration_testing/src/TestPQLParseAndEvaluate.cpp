@@ -380,19 +380,15 @@ SCENARIO("target not in clauses") {
     REQUIRE(result.empty());
   }
   SECTION("all are true caluse") {
-    Query q;
-    QueryEntity stm(QueryEntityType::Stmt, "s");
-    QueryEntity s1(QueryEntityType::Line, "1");
-    QueryEntity s2(QueryEntityType::Name, "a");
-    vector<QueryEntity> qes{s1, s2};
-    Clause c(ClauseType::UsesS, qes);
-    vector<QueryEntity> sele;
-    vector<QueryEntity> targets;
-    vector<Clause> clause;
-    targets.push_back(stm);
-    sele.push_back(stm);
-    clause.push_back(c);
-    q.setQuery(targets, sele, clause);
+    std::string pql = R"(
+    stmt s;
+    Select s such that Uses(1, "a")
+    )";
+    std::stringstream ss;
+    ss << pql;
+    std::list<Token> tokens = Lexer::tokenize(ss);
+    auto q = Parser::parsePQL(tokens);
+
     list<string> result;
     pe.executeQuery(q, result);
     REQUIRE(result.size() == 15);
@@ -422,18 +418,14 @@ SCENARIO("target in clause,one clause") {
   // repeated s,s notice
   WHEN("uses") {
     SECTION("cons,cons") {
-      Query q;
-      QueryEntity n1(QueryEntityType::Line, "1");
-      QueryEntity n2(QueryEntityType::Name, "a");
-      QueryEntity boolean(QueryEntityType::Boolean, "");
-      QueryEntity t1(QueryEntityType::Stmt, "s");
-      Clause c1(ClauseType::UsesS, vector<QueryEntity>{n1, n2});
-      vector<QueryEntity> targets;
-      vector<QueryEntity> sele;
-      vector<Clause> clause;
-      targets.push_back(boolean);
-      clause.push_back(c1);
-      q.setQuery(targets, sele, clause);
+      std::string pql = R"(
+      Select BOOLEAN such that Uses(1, "a")
+      )";
+      std::stringstream ss;
+      ss << pql;
+      std::list<Token> tokens = Lexer::tokenize(ss);
+      auto q = Parser::parsePQL(tokens);
+
       list<string> result;
       pe.executeQuery(q, result);
       REQUIRE(result.size() == 1);
@@ -442,19 +434,15 @@ SCENARIO("target in clause,one clause") {
   }
   WHEN("modifies") {
     SECTION("cons,s") {
-      Query q;
-      QueryEntity n1(QueryEntityType::Line, "1");
-      QueryEntity n2(QueryEntityType::Variable, "v");
-      QueryEntity boolean(QueryEntityType::Boolean, "");
-      QueryEntity t1(QueryEntityType::Stmt, "s");
-      Clause c1(ClauseType::ModifiesS, vector<QueryEntity>{n1, n2});
-      vector<QueryEntity> targets;
-      vector<QueryEntity> sele;
-      vector<Clause> clause;
-      sele.push_back(n2);
-      targets.push_back(n2);
-      clause.push_back(c1);
-      q.setQuery(targets, sele, clause);
+      std::string pql = R"(
+      variable v;
+      Select v such that Modifies(1, v)
+      )";
+      std::stringstream ss;
+      ss << pql;
+      std::list<Token> tokens = Lexer::tokenize(ss);
+      auto q = Parser::parsePQL(tokens);
+
       list<string> result;
       pe.executeQuery(q, result);
       REQUIRE(result.size() == 1);
@@ -463,19 +451,15 @@ SCENARIO("target in clause,one clause") {
   }
   WHEN("parent") {
     SECTION("s,s") {
-      Query q;
-      QueryEntity n1(QueryEntityType::Stmt, "s");
-      QueryEntity n2(QueryEntityType::If, "ifs");
-      QueryEntity boolean(QueryEntityType::Boolean, "");
-      Clause c1(ClauseType::Parent, vector<QueryEntity>{n1, n2});
-      vector<QueryEntity> targets;
-      vector<QueryEntity> sele;
-      vector<Clause> clause;
-      sele.push_back(n1);
-      sele.push_back(n2);
-      targets.push_back(n2);
-      clause.push_back(c1);
-      q.setQuery(targets, sele, clause);
+      std::string pql = R"(
+      stmt s; if ifs;
+      Select ifs such that Parent(s, ifs)
+      )";
+      std::stringstream ss;
+      ss << pql;
+      std::list<Token> tokens = Lexer::tokenize(ss);
+      auto q = Parser::parsePQL(tokens);
+
       list<string> result;
       pe.executeQuery(q, result);
       REQUIRE(result.size() == 1);
@@ -484,19 +468,15 @@ SCENARIO("target in clause,one clause") {
   }
   WHEN("parent*") {
     SECTION("s,_") {
-      Query q;
-      QueryEntity n1(QueryEntityType::While, "w");
-      QueryEntity n2(QueryEntityType::Underscore, "_");
-      QueryEntity boolean(QueryEntityType::Boolean, "");
-      QueryEntity t1(QueryEntityType::Stmt, "s");
-      Clause c1(ClauseType::ParentT, vector<QueryEntity>{n1, n2});
-      vector<QueryEntity> targets;
-      vector<QueryEntity> sele;
-      vector<Clause> clause;
-      sele.push_back(n1);
-      targets.push_back(n1);
-      clause.push_back(c1);
-      q.setQuery(targets, sele, clause);
+      std::string pql = R"(
+      while w; stmt s;
+      Select w such that Parent*(w, _)
+      )";
+      std::stringstream ss;
+      ss << pql;
+      std::list<Token> tokens = Lexer::tokenize(ss);
+      auto q = Parser::parsePQL(tokens);
+
       list<string> result;
       pe.executeQuery(q, result);
       REQUIRE(result.size() == 1);
@@ -505,19 +485,14 @@ SCENARIO("target in clause,one clause") {
   }
   WHEN("follows") {
     SECTION("_,_") {
-      Query q;
-      QueryEntity n1(QueryEntityType::Line, "1");
-      QueryEntity n2(QueryEntityType::Underscore, "_");
-      QueryEntity boolean(QueryEntityType::Boolean, "");
-      QueryEntity t1(QueryEntityType::Stmt, "s");
-      Clause c1(ClauseType::Follows, vector<QueryEntity>{n2, n2});
-      vector<QueryEntity> targets;
-      vector<QueryEntity> sele;
-      vector<Clause> clause;
-      sele.push_back(n2);
-      targets.push_back(boolean);
-      clause.push_back(c1);
-      q.setQuery(targets, sele, clause);
+      std::string pql = R"(
+      Select BOOLEAN such that Follows(1, _)
+      )";
+      std::stringstream ss;
+      ss << pql;
+      std::list<Token> tokens = Lexer::tokenize(ss);
+      auto q = Parser::parsePQL(tokens);
+
       list<string> result;
       pe.executeQuery(q, result);
       REQUIRE(result.size() == 1);
@@ -526,19 +501,15 @@ SCENARIO("target in clause,one clause") {
   }
   WHEN("follows*") {
     SECTION("_,s") {
-      Query q;
-      QueryEntity n1(QueryEntityType::Underscore, "_");
-      QueryEntity n2(QueryEntityType::Stmt, "s");
-      QueryEntity boolean(QueryEntityType::Boolean, "");
-      QueryEntity t1(QueryEntityType::Stmt, "s");
-      Clause c1(ClauseType::FollowsT, vector<QueryEntity>{n1, n2});
-      vector<QueryEntity> targets;
-      vector<QueryEntity> sele;
-      vector<Clause> clause;
-      sele.push_back(n2);
-      targets.push_back(n2);
-      clause.push_back(c1);
-      q.setQuery(targets, sele, clause);
+      std::string pql = R"(
+      stmt s;
+      Select s such that Follows*(_, s)
+      )";
+      std::stringstream ss;
+      ss << pql;
+      std::list<Token> tokens = Lexer::tokenize(ss);
+      auto q = Parser::parsePQL(tokens);
+
       list<string> result;
       pe.executeQuery(q, result);
       REQUIRE(result.size() == 6);
@@ -557,38 +528,29 @@ SCENARIO("simple select, no clauses") {
   PKB pkb = buildPKB();
   PqlEvaluator pe(pkb);
   SECTION("Select Boolean") {
-    Query q;
-    QueryEntity boolean(QueryEntityType::Boolean, "");
-    QueryEntity ass(QueryEntityType::Assign, "a");
-    vector<QueryEntity> targets;
-    vector<QueryEntity> sele;
-    vector<Clause> clause;
-    targets.push_back(boolean);
-    sele.push_back(ass);
-    q.setQuery(targets, sele, clause);
+    std::string pql = R"(
+      Select BOOLEAN
+      )";
+    std::stringstream ss;
+    ss << pql;
+    std::list<Token> tokens = Lexer::tokenize(ss);
+    auto q = Parser::parsePQL(tokens);
+
     list<string> result;
     pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "TRUE"));
   }
   SECTION("Select Tuple") {
-    Query q;
-    QueryEntity p(QueryEntityType::Procedure, "p");
-    QueryEntity c(QueryEntityType::Call, "c");
-    QueryEntity w(QueryEntityType::While, "w");
-    QueryEntity cp(QueryEntityType::Attrref, "c.procName",
-                   QueryEntityType::Call);
-    vector<QueryEntity> targets;
-    vector<QueryEntity> sele;
-    vector<Clause> clause;
-    targets.push_back(p);
-    targets.push_back(cp);
-    targets.push_back(w);
-    sele.push_back(p);
-    sele.push_back(cp);
-    sele.push_back(c);
-    sele.push_back(w);
-    q.setQuery(targets, sele, clause);
+    std::string pql = R"(
+      procedure p; call c; while w;
+      Select <p, c.procName, w>
+      )";
+    std::stringstream ss;
+    ss << pql;
+    std::list<Token> tokens = Lexer::tokenize(ss);
+    auto q = Parser::parsePQL(tokens);
+
     list<string> result;
     pe.executeQuery(q, result);
     REQUIRE(result.size() == 12);
@@ -611,98 +573,75 @@ SCENARIO("test one with clause evaluate") {
   PKB pkb = buildPKB();
   PqlEvaluator pe(pkb);
   SECTION("with attrref = synonym") {
-    Query q;
-    QueryEntity w(QueryEntityType::While, "w");
-    QueryEntity pl(QueryEntityType::Progline, "pl");
-    QueryEntity firstPara(QueryEntityType::Attrref, "w.stmt#",
-                          QueryEntityType::While);
-    Clause with(ClauseType::With, vector<QueryEntity>{firstPara, pl});
-    vector<QueryEntity> targets;
-    vector<QueryEntity> sele;
-    vector<Clause> clause;
-    targets.push_back(pl);
-    sele.push_back(w);
-    sele.push_back(pl);
-    clause.push_back(with);
-    q.setQuery(targets, sele, clause);
+    std::string pql = R"(
+      prog_line pl; while w;
+      Select pl with w.stmt# = pl
+      )";
+    std::stringstream ss;
+    ss << pql;
+    std::list<Token> tokens = Lexer::tokenize(ss);
+    auto q = Parser::parsePQL(tokens);
+
     list<string> result;
     pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "7"));
   }
   SECTION("with attrRef = attrRef") {
-    Query q;
-    QueryEntity w(QueryEntityType::While, "w");
-    QueryEntity s(QueryEntityType::Stmt, "s");
-    QueryEntity firstPara(QueryEntityType::Attrref, "w.stmt#",
-                          QueryEntityType::While);
-    QueryEntity secondPara(QueryEntityType::Attrref, "s.stmt#",
-                           QueryEntityType::Stmt);
-    Clause with1(ClauseType::With, vector<QueryEntity>{firstPara, secondPara});
-    vector<QueryEntity> targets;
-    vector<QueryEntity> sele;
-    vector<Clause> clause;
-    targets.push_back(w);
-    targets.push_back(s);
-    sele.push_back(w);
-    sele.push_back(secondPara);
-    clause.push_back(with1);
-    q.setQuery(targets, sele, clause);
+    std::string pql = R"(
+      while w; stmt s;
+      Select <w, s> with w.stmt# = s.stmt#
+      )";
+    std::stringstream ss;
+    ss << pql;
+    std::list<Token> tokens = Lexer::tokenize(ss);
+    auto q = Parser::parsePQL(tokens);
+
     list<string> result;
     pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "7 7"));
   }
   SECTION("with attrref = ident") {
-    Query q;
-    QueryEntity r(QueryEntityType::Read, "r");
-    QueryEntity name(QueryEntityType::Name, "x");
-    QueryEntity firstPara(QueryEntityType::Attrref, "r.varName",
-                          QueryEntityType::Read);
-    Clause with(ClauseType::With, vector<QueryEntity>{firstPara, name});
-    vector<QueryEntity> targets;
-    vector<QueryEntity> sele;
-    vector<Clause> clause;
-    targets.push_back(r);
-    sele.push_back(r);
-    clause.push_back(with);
-    q.setQuery(targets, sele, clause);
+    std::string pql = R"(
+      read r;
+      Select r with r.varName = "x"
+      )";
+    std::stringstream ss;
+    ss << pql;
+    std::list<Token> tokens = Lexer::tokenize(ss);
+    auto q = Parser::parsePQL(tokens);
+
     list<string> result;
     pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "15"));
   }
   SECTION("with attrref = Integer") {
-    Query q;
-    QueryEntity c(QueryEntityType::Constant, "c");
-    QueryEntity INT(QueryEntityType::Line, "1");
-    QueryEntity firstPara(QueryEntityType::Attrref, "c.value",
-                          QueryEntityType::Constant);
-    Clause with(ClauseType::With, vector<QueryEntity>{firstPara, INT});
-    vector<QueryEntity> targets;
-    vector<QueryEntity> sele;
-    vector<Clause> clause;
-    targets.push_back(c);
-    sele.push_back(c);
-    clause.push_back(with);
-    q.setQuery(targets, sele, clause);
+    std::string pql = R"(
+      constant c;
+      Select c with c.value = 1
+      )";
+    std::stringstream ss;
+    ss << pql;
+    std::list<Token> tokens = Lexer::tokenize(ss);
+    auto q = Parser::parsePQL(tokens);
+
     list<string> result;
     pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
     REQUIRE(contains(result, "1"));
   }
   SECTION("with synonym = Integer") {
-    Query q;
-    QueryEntity pl(QueryEntityType::Progline, "pl");
-    QueryEntity INT(QueryEntityType::Line, "2");
-    Clause with(ClauseType::With, vector<QueryEntity>{pl, INT});
-    vector<QueryEntity> targets;
-    vector<QueryEntity> sele;
-    vector<Clause> clause;
-    targets.push_back(pl);
-    sele.push_back(pl);
-    clause.push_back(with);
-    q.setQuery(targets, sele, clause);
+    std::string pql = R"(
+      prog_line pl;
+      Select pl with pl = 2
+      )";
+    std::stringstream ss;
+    ss << pql;
+    std::list<Token> tokens = Lexer::tokenize(ss);
+    auto q = Parser::parsePQL(tokens);
+
     list<string> result;
     pe.executeQuery(q, result);
     REQUIRE(result.size() == 1);
