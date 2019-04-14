@@ -219,19 +219,16 @@ void populateCFG(std::unique_ptr<PKB> &pkb) {
 }
 
 void populateCFGBip(std::unique_ptr<PKB> &pkb) {
-  auto whileIfTable = pkb->getStmtType(StatementType::While);
-  auto ifTable = pkb->getStmtType(StatementType::If);
-  whileIfTable.concatenate(ifTable);
+	auto whileIfTable = pkb->getStmtType(StatementType::While);
+	auto ifTable = pkb->getStmtType(StatementType::If);
+	whileIfTable.concatenate(ifTable);
   CFGBip graph = CFGBip{pkb->getStmtType(StatementType::Call),
                         pkb->getNext(),
                         pkb->getProcStmt(),
                         pkb->getCallProcName(),
                         pkb->getProcExitStmt(),
-                        pkb->getStmtCount(),
-                        pkb->getUsesS(),
-                        pkb->getModifiesS(),
-                        pkb->getStmtType(StatementType::Assign),
-                        whileIfTable};
+                        pkb->getStmtCount(), pkb->getUsesS(), pkb->getModifiesS(),
+  pkb->getStmtType(StatementType::Assign), whileIfTable};
 
   pkb->setCFGBip(graph);
   pkb->setNextBip(graph.getNextBip());
