@@ -7,7 +7,6 @@
 #include <Table.h>
 #include <list>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 using namespace std;
@@ -42,7 +41,7 @@ private:
   vector<vector<Table>> inrelevantGroups;
   // pkb instance
   PKB &mypkb;
-  // extracte results from merged results
+  // extract results from merged results
   dataRows resultExtractor(Table result, Query q);
   // format results into list of string
   void resultFormater(dataRows &t, std::list<std::string> &results);
@@ -59,12 +58,12 @@ private:
   Table getdataByTtype(QueryEntity q);
   // get data from pkb that requested entity type is AttrRef: s.stmt#,prog_line
   Table getdataWith(QueryEntity q);
-  // accept empty result table, if select boolean, return flase;else,return none
+  // accept empty result table, if select boolean, return false;else,return none
   Table validateResult(Table t, vector<QueryEntity> target);
   // filter result get from pkb according to type of parameters in clause
   ClauseResult dataFilter(Table data, Clause c);
-	//projectOut unnecessary columns
-	Table projectOut(Table t, vector<QueryEntity> targets);
+  // projectOut unnecessary columns
+  Table projectOut(Table t, vector<QueryEntity> targets);
   // evaluate with clauses
   ClauseResult withEvaluate(Clause c);
   // evaluate NextT,Affects,AffectsT,NextBip,NextBipT,AffectsBip,AffectsBipT
@@ -76,7 +75,7 @@ private:
   ClauseResult NextBipTEvaluate(Clause clause);
   ClauseResult AffectsBipEvaluate(Clause clause);
   ClauseResult AffectsBipTEvaluate(Clause clause);
-  // convert query entity type to corresbonding statement type,which are
+  // convert query entity type to corresponding statement type,which are
   // accepted by pkb to retrieve data
   StatementType convertQType(QueryEntityType q);
   // convert clausetype to readable string

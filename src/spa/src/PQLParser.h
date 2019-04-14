@@ -4,11 +4,10 @@
 #include "Query.h"
 #include <exception>
 #include <map>
-#include <memory>
 
 namespace Parser {
 struct SemanticError : public std::exception {
-  SemanticError(const char* msg) : std::exception(msg) {}
+  SemanticError(const char *msg) : std::exception(msg) {}
 };
 
 enum class RefType { EntRef, StmtRef, LineRef };
