@@ -157,7 +157,7 @@ procedure A {
 	} else {
 		x = 5; \\ 82
 	}
-	\\ Test affects in nested loops
+	\\ Test affects in deep nested loops
 	while ((ss < 0) && (rr > tt) || (mm == 12) && (nn != (bb - aa)) || (kk <= (pp + 1))) { \\ 83
 		m =  (n - p) / 2  +  n; \\84
 		p = 9; \\ 85
@@ -209,4 +209,131 @@ procedure A {
 	aa = m - p + n + aa; \\ 118
 	x = (a / b) + (a % b) - (a * b); \\ 119
 	n = (o + p - (q + r)) / s - t % (u * v - w) % (x * y / z); \\ 120
+
+	\\ Test affects with single while stmt
+	be = 500; \\121
+	be2 = 501; \\122
+	while (x == 0) { \\ 123
+		is = be + 1; \\ 124
+		in1 = 2; \\ 125
+		out1 = in1+ 2; \\126
+		out2 = in2 + 3; \\127
+		in2 = 1; \\128
+	}
+	af = be2 - 1; \\129
+	af2 = is + 1; \\130
+
+	\\ Test affects with single if stmt
+	be3 = 500; \\131
+	be4 = 501; \\132
+	if  ((q == 11) && (m > 22)) then { \\ 133
+		is2 = be3 - 1; \\134
+	} else {
+		is3 = be4 + 1; \\ 135 
+	}
+	af3 = be3 - 1; \\ 136
+	af4 = is2 + 1; \\137
+
+	\\ Test affects with if nested in while
+	be5 = 500; \\138
+	while(x == 0) { \\139
+		if(x == 0) then { \\140
+			is4 = be5 - 1; \\141
+		} else {
+			x = 0; \\142
+		}
+	}
+
+	while(x == 0) { \\143
+		be6 = 500; \\144 
+		if(x == 0) then { \\145
+			is5 = be6 - 1; \\146
+		} else {
+			x = 0; \\147
+		}
+	}
+
+	while(x == 0) { \\148
+		if(x == 0) then { \\149
+			be7 = 500; \\150
+		} else {
+			x = 0; \\151
+		}
+		is6 = be7 + 1; \\152
+	}
+
+	while(x == 0) { \\153
+		if(x == 0) then { \\154
+			be8 = 500; \\155
+		} else {
+			is7 = be8 + 1; \\ 156
+		}
+	}
+
+	\\ Test affects with while nested in if
+	be9 = 500; \\157
+	if (x == 9) then { \\ 158
+		while (x == 0) { \\159
+			is8 = be9 + 1; \\160
+		}
+	} else {
+		x = 1; \\161
+	}
+
+	be10 = 500; \\162
+	if (x == 9) then { \\163
+		while (x == 0) { \\164
+			x = 0; \\ 165
+		}
+		is9 = be10 + 1; \\ 166
+	} else {
+		x = 1; \\167
+	}
+
+	if (x == 9) then { \\168
+		while (x == 0) { \\169
+			be11 = 500; \\170
+		}
+		is10 = be11 + 1; \\171
+	} else {
+		x = 1; \\172
+	}
+
+	if (x == 9) then { \\173
+		while (x == 0) { \\ 174
+			be12 = 500; \\175
+		}
+	} else {
+		x = 1; \\176
+	}
+	is11 = be12 + 1; \\177
+
+	\\ Test affects with while nested in while
+	while (x == 0) { \\178
+		be13 = 500; \\179
+		while(x == 0) { \\180
+			is12 = be13 + 1; \\181
+		}
+	}
+
+	while (x == 0) { \\182
+		is13 = be14 + 1; \\183
+		while(x == 0) { \\184
+			be14 = 500; \\185
+		}
+	}
+
+	while (x == 0) { \\186
+		while(x == 0) { \\187
+			be15 = 500; \\188
+			is14 = be15 + 1; \\189
+		}
+	}
+
+	while (x == 0) { \\190
+		while(x == 0) { \\191
+			is15 = be16 + 1; \\192
+			be16 = 500; \\193
+		}
+	}
 }
