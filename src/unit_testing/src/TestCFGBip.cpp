@@ -3,885 +3,868 @@
 #include "catch.hpp"
 
 TEST_CASE("One call from procedure with no nesting") {
-	std::unique_ptr<PKB> pkb{ new PKB() };
-	pkb->setProc("A", 1, 5);
-	pkb->setProc("B", 5, 8);
-	pkb->setNext(1, 2);
-	pkb->setNext(2, 3);
-	pkb->setNext(3, 4);
-	pkb->setNext(5, 6);
-	pkb->setNext(6, 7);
-	pkb->setStmtType(2, StatementType::Call);
-	pkb->setCallProcName(2, "B");
-	pkb->setProcExitStmt("A", std::vector<int> {4});
-	pkb->setProcExitStmt("B", std::vector<int> {7});
-	
-	pkb->setStmtType(1, StatementType::Assign);
-	pkb->setModifies(1, "x");
-	pkb->setStmtType(3, StatementType::Assign);
-	pkb->setModifies(3, "v");
-	pkb->setUses(3, "x");
-	pkb->setStmtType(4, StatementType::Assign);
-	pkb->setModifies(4, "w");
-	pkb->setUses(4, "v");
-	pkb->setStmtType(5, StatementType::Assign);
-	pkb->setModifies(5, "y");
-	pkb->setUses(5, "x");
-	pkb->setStmtType(7, StatementType::Read);
-	pkb->setModifies(7, "x");
-	DesignExtractor::populateDesigns(pkb);
+  std::unique_ptr<PKB> pkb{new PKB()};
+  pkb->setProc("A", 1, 5);
+  pkb->setProc("B", 5, 8);
+  pkb->setNext(1, 2);
+  pkb->setNext(2, 3);
+  pkb->setNext(3, 4);
+  pkb->setNext(5, 6);
+  pkb->setNext(6, 7);
+  pkb->setStmtType(2, StatementType::Call);
+  pkb->setCallProcName(2, "B");
+  pkb->setProcExitStmt("A", std::vector<int>{4});
+  pkb->setProcExitStmt("B", std::vector<int>{7});
 
-	//testing nextBip
-	Table result = pkb->getNextBip();
-	REQUIRE(result.size() == 6);
-	REQUIRE(result.contains({"1", "2"}));
-	REQUIRE(result.contains({"2", "5"}));
-	REQUIRE(result.contains({"5", "6"}));
-	REQUIRE(result.contains({"6", "7"}));
-	REQUIRE(result.contains({"7", "3"}));
-	REQUIRE(result.contains({"3", "4"}));
+  pkb->setStmtType(1, StatementType::Assign);
+  pkb->setModifies(1, "x");
+  pkb->setStmtType(3, StatementType::Assign);
+  pkb->setModifies(3, "v");
+  pkb->setUses(3, "x");
+  pkb->setStmtType(4, StatementType::Assign);
+  pkb->setModifies(4, "w");
+  pkb->setUses(4, "v");
+  pkb->setStmtType(5, StatementType::Assign);
+  pkb->setModifies(5, "y");
+  pkb->setUses(5, "x");
+  pkb->setStmtType(7, StatementType::Read);
+  pkb->setModifies(7, "x");
+  DesignExtractor::populateDesigns(pkb);
 
-	//testing nextBipT
-	result = pkb->getNextBipT();
-	REQUIRE(result.size() == 21);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "1", "3" }));
-	REQUIRE(result.contains({ "1", "4" }));
-	REQUIRE(result.contains({ "1", "5" }));
-	REQUIRE(result.contains({ "1", "6" }));
-	REQUIRE(result.contains({ "1", "7" }));
-	REQUIRE(result.contains({ "2", "3" }));
-	REQUIRE(result.contains({ "2", "4" }));
-	REQUIRE(result.contains({ "2", "5" }));
-	REQUIRE(result.contains({ "2", "6" }));
-	REQUIRE(result.contains({ "2", "7" }));
-	REQUIRE(result.contains({ "3", "4" }));
-	REQUIRE(result.contains({ "5", "6" }));
-	REQUIRE(result.contains({ "5", "7" }));
-	REQUIRE(result.contains({ "5", "3" }));
-	REQUIRE(result.contains({ "5", "4" }));
-	REQUIRE(result.contains({ "6", "7" }));
-	REQUIRE(result.contains({ "6", "3" }));
-	REQUIRE(result.contains({ "6", "4" }));
-	REQUIRE(result.contains({ "7", "3" }));
-	REQUIRE(result.contains({ "7", "4" }));
+  // testing nextBip
+  Table result = pkb->getNextBip();
+  REQUIRE(result.size() == 6);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"2", "5"}));
+  REQUIRE(result.contains({"5", "6"}));
+  REQUIRE(result.contains({"6", "7"}));
+  REQUIRE(result.contains({"7", "3"}));
+  REQUIRE(result.contains({"3", "4"}));
 
-	//testing AffectsBip
-	result = pkb->getAffectsBip();
-	REQUIRE(result.size() == 2);
-	REQUIRE(result.contains({ "1", "5" }));
-	REQUIRE(result.contains({ "3", "4" }));
+  // testing nextBipT
+  result = pkb->getNextBipT();
+  REQUIRE(result.size() == 21);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"1", "3"}));
+  REQUIRE(result.contains({"1", "4"}));
+  REQUIRE(result.contains({"1", "5"}));
+  REQUIRE(result.contains({"1", "6"}));
+  REQUIRE(result.contains({"1", "7"}));
+  REQUIRE(result.contains({"2", "3"}));
+  REQUIRE(result.contains({"2", "4"}));
+  REQUIRE(result.contains({"2", "5"}));
+  REQUIRE(result.contains({"2", "6"}));
+  REQUIRE(result.contains({"2", "7"}));
+  REQUIRE(result.contains({"3", "4"}));
+  REQUIRE(result.contains({"5", "6"}));
+  REQUIRE(result.contains({"5", "7"}));
+  REQUIRE(result.contains({"5", "3"}));
+  REQUIRE(result.contains({"5", "4"}));
+  REQUIRE(result.contains({"6", "7"}));
+  REQUIRE(result.contains({"6", "3"}));
+  REQUIRE(result.contains({"6", "4"}));
+  REQUIRE(result.contains({"7", "3"}));
+  REQUIRE(result.contains({"7", "4"}));
 
+  // testing AffectsBip
+  result = pkb->getAffectsBip();
+  REQUIRE(result.size() == 2);
+  REQUIRE(result.contains({"1", "5"}));
+  REQUIRE(result.contains({"3", "4"}));
 }
 
 TEST_CASE("One call from procedure inside while loop") {
-	std::unique_ptr<PKB> pkb{ new PKB() };
-	pkb->setProc("A", 1, 5);
-	pkb->setProc("B", 5, 7);
-	pkb->setNext(1, 2);
-	pkb->setNext(2, 3);
-	pkb->setNext(3, 2);
-	pkb->setNext(2, 4);
-	pkb->setNext(5, 6);
-	pkb->setStmtType(2, StatementType::While);
-	pkb->setStmtType(3, StatementType::Call);
-	pkb->setCallProcName(3, "B");
-	pkb->setProcExitStmt("A", std::vector<int> {4});
-	pkb->setProcExitStmt("B", std::vector<int> {6});
-	pkb->setStmtType(1, StatementType::Assign);
-	pkb->setModifies(1, "x");
-	pkb->setStmtType(4, StatementType::Assign);
-	pkb->setModifies(4, "w");
-	pkb->setUses(4, "x");
-	pkb->setStmtType(5, StatementType::Assign);
-	pkb->setModifies(5, "y");
-	pkb->setUses(5, "x");
-	pkb->setStmtType(6, StatementType::Read);
-	pkb->setModifies(6, "x");
-	DesignExtractor::populateDesigns(pkb);
+  std::unique_ptr<PKB> pkb{new PKB()};
+  pkb->setProc("A", 1, 5);
+  pkb->setProc("B", 5, 7);
+  pkb->setNext(1, 2);
+  pkb->setNext(2, 3);
+  pkb->setNext(3, 2);
+  pkb->setNext(2, 4);
+  pkb->setNext(5, 6);
+  pkb->setStmtType(2, StatementType::While);
+  pkb->setStmtType(3, StatementType::Call);
+  pkb->setCallProcName(3, "B");
+  pkb->setProcExitStmt("A", std::vector<int>{4});
+  pkb->setProcExitStmt("B", std::vector<int>{6});
+  pkb->setStmtType(1, StatementType::Assign);
+  pkb->setModifies(1, "x");
+  pkb->setStmtType(4, StatementType::Assign);
+  pkb->setModifies(4, "w");
+  pkb->setUses(4, "x");
+  pkb->setStmtType(5, StatementType::Assign);
+  pkb->setModifies(5, "y");
+  pkb->setUses(5, "x");
+  pkb->setStmtType(6, StatementType::Read);
+  pkb->setModifies(6, "x");
+  DesignExtractor::populateDesigns(pkb);
 
-	//testing nextBip
-	Table result = pkb->getNextBip();
-	REQUIRE(result.size() == 6);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "2", "3" }));
-	REQUIRE(result.contains({ "3", "5" }));
-	REQUIRE(result.contains({ "5", "6" }));
-	REQUIRE(result.contains({ "6", "2" }));
-	REQUIRE(result.contains({ "2", "4" }));
+  // testing nextBip
+  Table result = pkb->getNextBip();
+  REQUIRE(result.size() == 6);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"2", "3"}));
+  REQUIRE(result.contains({"3", "5"}));
+  REQUIRE(result.contains({"5", "6"}));
+  REQUIRE(result.contains({"6", "2"}));
+  REQUIRE(result.contains({"2", "4"}));
 
-	//testing nextBipT
+  // testing nextBipT
 
-	result = pkb->getNextBipT();
-	REQUIRE(result.size() == 25);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "1", "3" }));
-	REQUIRE(result.contains({ "1", "4" }));
-	REQUIRE(result.contains({ "1", "5" }));
-	REQUIRE(result.contains({ "1", "6" }));
-	REQUIRE(result.contains({ "2", "2" }));
-	REQUIRE(result.contains({ "2", "3" }));
-	REQUIRE(result.contains({ "2", "4" }));
-	REQUIRE(result.contains({ "2", "5" }));
-	REQUIRE(result.contains({ "2", "6" }));
-	REQUIRE(result.contains({ "3", "2" }));
-	REQUIRE(result.contains({ "3", "3" }));
-	REQUIRE(result.contains({ "3", "4" }));
-	REQUIRE(result.contains({ "3", "5" }));
-	REQUIRE(result.contains({ "3", "6" }));
-	REQUIRE(result.contains({ "5", "2" }));
-	REQUIRE(result.contains({ "5", "3" }));
-	REQUIRE(result.contains({ "5", "4" }));
-	REQUIRE(result.contains({ "5", "5" }));
-	REQUIRE(result.contains({ "5", "6" }));
-	REQUIRE(result.contains({ "6", "2" }));
-	REQUIRE(result.contains({ "6", "3" }));
-	REQUIRE(result.contains({ "6", "4" }));
-	REQUIRE(result.contains({ "6", "5" }));
-	REQUIRE(result.contains({ "6", "6" }));
+  result = pkb->getNextBipT();
+  REQUIRE(result.size() == 25);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"1", "3"}));
+  REQUIRE(result.contains({"1", "4"}));
+  REQUIRE(result.contains({"1", "5"}));
+  REQUIRE(result.contains({"1", "6"}));
+  REQUIRE(result.contains({"2", "2"}));
+  REQUIRE(result.contains({"2", "3"}));
+  REQUIRE(result.contains({"2", "4"}));
+  REQUIRE(result.contains({"2", "5"}));
+  REQUIRE(result.contains({"2", "6"}));
+  REQUIRE(result.contains({"3", "2"}));
+  REQUIRE(result.contains({"3", "3"}));
+  REQUIRE(result.contains({"3", "4"}));
+  REQUIRE(result.contains({"3", "5"}));
+  REQUIRE(result.contains({"3", "6"}));
+  REQUIRE(result.contains({"5", "2"}));
+  REQUIRE(result.contains({"5", "3"}));
+  REQUIRE(result.contains({"5", "4"}));
+  REQUIRE(result.contains({"5", "5"}));
+  REQUIRE(result.contains({"5", "6"}));
+  REQUIRE(result.contains({"6", "2"}));
+  REQUIRE(result.contains({"6", "3"}));
+  REQUIRE(result.contains({"6", "4"}));
+  REQUIRE(result.contains({"6", "5"}));
+  REQUIRE(result.contains({"6", "6"}));
 
-	//testing affects
-	result = pkb->getAffectsBip();
-	REQUIRE(result.size() == 2);
-	REQUIRE(result.contains({ "1", "5" }));
-	REQUIRE(result.contains({ "1", "4" }));
-
+  // testing affects
+  result = pkb->getAffectsBip();
+  REQUIRE(result.size() == 2);
+  REQUIRE(result.contains({"1", "5"}));
+  REQUIRE(result.contains({"1", "4"}));
 }
 
 TEST_CASE("One call from procedure inside if statement") {
-	std::unique_ptr<PKB> pkb{ new PKB() };
-	pkb->setProc("A", 1, 6);
-	pkb->setProc("B", 6, 8);
-	pkb->setNext(1, 2);
-	pkb->setNext(2, 3);
-	pkb->setNext(2, 4);
-	pkb->setNext(3, 5);
-	pkb->setNext(4, 5);
-	pkb->setNext(6, 7);
-	pkb->setStmtType(2, StatementType::If);
-	pkb->setStmtType(3, StatementType::Call);
-	pkb->setCallProcName(3, "B");
-	pkb->setProcExitStmt("A", std::vector<int> {5});
-	pkb->setProcExitStmt("B", std::vector<int> {7});
-	pkb->setStmtType(1, StatementType::Assign);
-	pkb->setModifies(1, "x");
-	pkb->setStmtType(4, StatementType::Assign);
-	pkb->setModifies(4, "z");
-	pkb->setUses(4, "y");
-	pkb->setStmtType(5, StatementType::Assign);
-	pkb->setModifies(5, "w");
-	pkb->setUses(5, "x");
-	pkb->setStmtType(6, StatementType::Assign);
-	pkb->setModifies(6, "y");
-	pkb->setUses(6, "x");
-	pkb->setStmtType(7, StatementType::Read);
-	pkb->setModifies(7, "x");
-	DesignExtractor::populateDesigns(pkb);
+  std::unique_ptr<PKB> pkb{new PKB()};
+  pkb->setProc("A", 1, 6);
+  pkb->setProc("B", 6, 8);
+  pkb->setNext(1, 2);
+  pkb->setNext(2, 3);
+  pkb->setNext(2, 4);
+  pkb->setNext(3, 5);
+  pkb->setNext(4, 5);
+  pkb->setNext(6, 7);
+  pkb->setStmtType(2, StatementType::If);
+  pkb->setStmtType(3, StatementType::Call);
+  pkb->setCallProcName(3, "B");
+  pkb->setProcExitStmt("A", std::vector<int>{5});
+  pkb->setProcExitStmt("B", std::vector<int>{7});
+  pkb->setStmtType(1, StatementType::Assign);
+  pkb->setModifies(1, "x");
+  pkb->setStmtType(4, StatementType::Assign);
+  pkb->setModifies(4, "z");
+  pkb->setUses(4, "y");
+  pkb->setStmtType(5, StatementType::Assign);
+  pkb->setModifies(5, "w");
+  pkb->setUses(5, "x");
+  pkb->setStmtType(6, StatementType::Assign);
+  pkb->setModifies(6, "y");
+  pkb->setUses(6, "x");
+  pkb->setStmtType(7, StatementType::Read);
+  pkb->setModifies(7, "x");
+  DesignExtractor::populateDesigns(pkb);
 
-	//testing nextBip
-	Table result = pkb->getNextBip();
-	REQUIRE(result.size() == 7);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "2", "3" }));
-	REQUIRE(result.contains({ "2", "4" }));
-	REQUIRE(result.contains({ "3", "6" }));
-	REQUIRE(result.contains({ "6", "7" }));
-	REQUIRE(result.contains({ "7", "5" }));
-	REQUIRE(result.contains({ "4", "5" }));
+  // testing nextBip
+  Table result = pkb->getNextBip();
+  REQUIRE(result.size() == 7);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"2", "3"}));
+  REQUIRE(result.contains({"2", "4"}));
+  REQUIRE(result.contains({"3", "6"}));
+  REQUIRE(result.contains({"6", "7"}));
+  REQUIRE(result.contains({"7", "5"}));
+  REQUIRE(result.contains({"4", "5"}));
 
-	//testing nextBipT
-	result = pkb->getNextBipT();
-	REQUIRE(result.size() == 18);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "1", "3" }));
-	REQUIRE(result.contains({ "1", "4" }));
-	REQUIRE(result.contains({ "1", "5" }));
-	REQUIRE(result.contains({ "1", "6" }));
-	REQUIRE(result.contains({ "1", "7" }));
-	REQUIRE(result.contains({ "2", "3" }));
-	REQUIRE(result.contains({ "2", "4" }));
-	REQUIRE(result.contains({ "2", "5" }));
-	REQUIRE(result.contains({ "2", "6" }));
-	REQUIRE(result.contains({ "2", "7" }));
-	REQUIRE(result.contains({ "3", "5" }));
-	REQUIRE(result.contains({ "3", "6" }));
-	REQUIRE(result.contains({ "3", "7" }));
-	REQUIRE(result.contains({ "4", "5" }));
-	REQUIRE(result.contains({ "6", "5" }));
-	REQUIRE(result.contains({ "6", "5" }));
-	REQUIRE(result.contains({ "7", "5" }));
+  // testing nextBipT
+  result = pkb->getNextBipT();
+  REQUIRE(result.size() == 18);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"1", "3"}));
+  REQUIRE(result.contains({"1", "4"}));
+  REQUIRE(result.contains({"1", "5"}));
+  REQUIRE(result.contains({"1", "6"}));
+  REQUIRE(result.contains({"1", "7"}));
+  REQUIRE(result.contains({"2", "3"}));
+  REQUIRE(result.contains({"2", "4"}));
+  REQUIRE(result.contains({"2", "5"}));
+  REQUIRE(result.contains({"2", "6"}));
+  REQUIRE(result.contains({"2", "7"}));
+  REQUIRE(result.contains({"3", "5"}));
+  REQUIRE(result.contains({"3", "6"}));
+  REQUIRE(result.contains({"3", "7"}));
+  REQUIRE(result.contains({"4", "5"}));
+  REQUIRE(result.contains({"6", "5"}));
+  REQUIRE(result.contains({"6", "5"}));
+  REQUIRE(result.contains({"7", "5"}));
 
-	//testing AffectsBip
-	result = pkb->getAffectsBip();
-	REQUIRE(result.size() == 2);
-	REQUIRE(result.contains({ "1", "6" }));
-	REQUIRE(result.contains({ "1", "5" }));
-
+  // testing AffectsBip
+  result = pkb->getAffectsBip();
+  REQUIRE(result.size() == 2);
+  REQUIRE(result.contains({"1", "6"}));
+  REQUIRE(result.contains({"1", "5"}));
 }
 
 TEST_CASE("One call from last statement in procedure") {
-	std::unique_ptr<PKB> pkb{ new PKB() };
-	pkb->setProc("A", 1, 4);
-	pkb->setProc("B", 4, 6);
-	pkb->setNext(1, 2);
-	pkb->setNext(2, 3);
-	pkb->setNext(4, 5);
-	pkb->setStmtType(3, StatementType::Call);
-	pkb->setCallProcName(3, "B");
-	pkb->setProcExitStmt("A", std::vector<int> {3});
-	pkb->setProcExitStmt("B", std::vector<int> {5});
-	pkb->setStmtType(1, StatementType::Assign);
-	pkb->setModifies(1, "x");
-	pkb->setStmtType(2, StatementType::Assign);
-	pkb->setModifies(2, "y");
-	pkb->setUses(2, "x");
-	pkb->setStmtType(4, StatementType::Assign);
-	pkb->setModifies(4, "x");
-	pkb->setUses(4, "x");
-	pkb->setStmtType(5, StatementType::Assign);
-	pkb->setModifies(5, "w");
-	pkb->setUses(5, "x");
-	DesignExtractor::populateDesigns(pkb);
+  std::unique_ptr<PKB> pkb{new PKB()};
+  pkb->setProc("A", 1, 4);
+  pkb->setProc("B", 4, 6);
+  pkb->setNext(1, 2);
+  pkb->setNext(2, 3);
+  pkb->setNext(4, 5);
+  pkb->setStmtType(3, StatementType::Call);
+  pkb->setCallProcName(3, "B");
+  pkb->setProcExitStmt("A", std::vector<int>{3});
+  pkb->setProcExitStmt("B", std::vector<int>{5});
+  pkb->setStmtType(1, StatementType::Assign);
+  pkb->setModifies(1, "x");
+  pkb->setStmtType(2, StatementType::Assign);
+  pkb->setModifies(2, "y");
+  pkb->setUses(2, "x");
+  pkb->setStmtType(4, StatementType::Assign);
+  pkb->setModifies(4, "x");
+  pkb->setUses(4, "x");
+  pkb->setStmtType(5, StatementType::Assign);
+  pkb->setModifies(5, "w");
+  pkb->setUses(5, "x");
+  DesignExtractor::populateDesigns(pkb);
 
-	//testing nextBip
-	Table result = pkb->getNextBip();
-	REQUIRE(result.size() == 4);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "2", "3" }));
-	REQUIRE(result.contains({ "3", "4" }));
-	REQUIRE(result.contains({ "4", "5" }));
+  // testing nextBip
+  Table result = pkb->getNextBip();
+  REQUIRE(result.size() == 4);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"2", "3"}));
+  REQUIRE(result.contains({"3", "4"}));
+  REQUIRE(result.contains({"4", "5"}));
 
-	//testing nextBipT
+  // testing nextBipT
 
-	result = pkb->getNextBipT();
-	REQUIRE(result.size() == 10);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "1", "3" }));
-	REQUIRE(result.contains({ "1", "4" }));
-	REQUIRE(result.contains({ "1", "5" }));
-	REQUIRE(result.contains({ "2", "3" }));
-	REQUIRE(result.contains({ "2", "4" }));
-	REQUIRE(result.contains({ "2", "5" }));
-	REQUIRE(result.contains({ "3", "4" }));
-	REQUIRE(result.contains({ "3", "5" }));
-	REQUIRE(result.contains({ "4", "5" }));
+  result = pkb->getNextBipT();
+  REQUIRE(result.size() == 10);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"1", "3"}));
+  REQUIRE(result.contains({"1", "4"}));
+  REQUIRE(result.contains({"1", "5"}));
+  REQUIRE(result.contains({"2", "3"}));
+  REQUIRE(result.contains({"2", "4"}));
+  REQUIRE(result.contains({"2", "5"}));
+  REQUIRE(result.contains({"3", "4"}));
+  REQUIRE(result.contains({"3", "5"}));
+  REQUIRE(result.contains({"4", "5"}));
 
-	//testing affectsBip
-	result = pkb->getAffectsBip();
-	REQUIRE(result.size() == 3);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "1", "4" }));
-	REQUIRE(result.contains({ "4", "5" }));
-
+  // testing affectsBip
+  result = pkb->getAffectsBip();
+  REQUIRE(result.size() == 3);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"1", "4"}));
+  REQUIRE(result.contains({"4", "5"}));
 }
 
 TEST_CASE("Two consecutive calls with no nesting") {
-	std::unique_ptr<PKB> pkb{ new PKB() };
-	pkb->setProc("A", 1, 5);
-	pkb->setProc("B", 5, 7);
-	pkb->setProc("C", 7, 9);
-	pkb->setNext(1, 2);
-	pkb->setNext(2, 3);
-	pkb->setNext(3, 4);
-	pkb->setNext(5, 6);
-	pkb->setNext(7, 8);
-	pkb->setStmtType(2, StatementType::Call);
-	pkb->setStmtType(3, StatementType::Call);
-	pkb->setProcExitStmt("A", std::vector<int> {4});
-	pkb->setProcExitStmt("B", std::vector<int> {6});
-	pkb->setProcExitStmt("C", std::vector<int> {8});
-	pkb->setStmtType(1, StatementType::Assign);
-	pkb->setModifies(1, "x");
-	pkb->setStmtType(4, StatementType::Assign);
-	pkb->setModifies(4, "w");
-	pkb->setUses(4, "x");
-	pkb->setStmtType(5, StatementType::Assign);
-	pkb->setModifies(5, "y");
-	pkb->setUses(5, "x");
-	pkb->setStmtType(6, StatementType::Assign);
-	pkb->setModifies(6, "x");
-	pkb->setUses(6, "y");
-	pkb->setStmtType(7, StatementType::Assign);
-	pkb->setModifies(7, "z");
-	pkb->setUses(7, "x");
-	pkb->setStmtType(8, StatementType::Assign);
-	pkb->setModifies(8, "x");
-	WHEN("consecutively calling the same method") {
-		pkb->setCallProcName(2, "B");
-		pkb->setCallProcName(3, "B");
-		DesignExtractor::populateDesigns(pkb);
+  std::unique_ptr<PKB> pkb{new PKB()};
+  pkb->setProc("A", 1, 5);
+  pkb->setProc("B", 5, 7);
+  pkb->setProc("C", 7, 9);
+  pkb->setNext(1, 2);
+  pkb->setNext(2, 3);
+  pkb->setNext(3, 4);
+  pkb->setNext(5, 6);
+  pkb->setNext(7, 8);
+  pkb->setStmtType(2, StatementType::Call);
+  pkb->setStmtType(3, StatementType::Call);
+  pkb->setProcExitStmt("A", std::vector<int>{4});
+  pkb->setProcExitStmt("B", std::vector<int>{6});
+  pkb->setProcExitStmt("C", std::vector<int>{8});
+  pkb->setStmtType(1, StatementType::Assign);
+  pkb->setModifies(1, "x");
+  pkb->setStmtType(4, StatementType::Assign);
+  pkb->setModifies(4, "w");
+  pkb->setUses(4, "x");
+  pkb->setStmtType(5, StatementType::Assign);
+  pkb->setModifies(5, "y");
+  pkb->setUses(5, "x");
+  pkb->setStmtType(6, StatementType::Assign);
+  pkb->setModifies(6, "x");
+  pkb->setUses(6, "y");
+  pkb->setStmtType(7, StatementType::Assign);
+  pkb->setModifies(7, "z");
+  pkb->setUses(7, "x");
+  pkb->setStmtType(8, StatementType::Assign);
+  pkb->setModifies(8, "x");
+  WHEN("consecutively calling the same method") {
+    pkb->setCallProcName(2, "B");
+    pkb->setCallProcName(3, "B");
+    DesignExtractor::populateDesigns(pkb);
 
-		//testing nextBip
-		Table result = pkb->getNextBip();
-		REQUIRE(result.size() == 7);
-		REQUIRE(result.contains({ "1", "2" }));
-		REQUIRE(result.contains({ "2", "5" }));
-		REQUIRE(result.contains({ "5", "6" }));
-		REQUIRE(result.contains({ "6", "3" }));
-		REQUIRE(result.contains({ "3", "5" }));
-		REQUIRE(result.contains({ "6", "4" }));
-		REQUIRE(result.contains({ "7", "8" }));
+    // testing nextBip
+    Table result = pkb->getNextBip();
+    REQUIRE(result.size() == 7);
+    REQUIRE(result.contains({"1", "2"}));
+    REQUIRE(result.contains({"2", "5"}));
+    REQUIRE(result.contains({"5", "6"}));
+    REQUIRE(result.contains({"6", "3"}));
+    REQUIRE(result.contains({"3", "5"}));
+    REQUIRE(result.contains({"6", "4"}));
+    REQUIRE(result.contains({"7", "8"}));
 
-		//testing nextBipT
+    // testing nextBipT
 
-		result = pkb->getNextBipT();
-		REQUIRE(result.size() == 21);
-		REQUIRE(result.contains({ "1", "2" }));
-		REQUIRE(result.contains({ "1", "3" }));
-		REQUIRE(result.contains({ "1", "4" }));
-		REQUIRE(result.contains({ "1", "5" }));
-		REQUIRE(result.contains({ "1", "6" }));
-		REQUIRE(result.contains({ "2", "3" }));
-		REQUIRE(result.contains({ "2", "4" }));
-		REQUIRE(result.contains({ "2", "5" }));
-		REQUIRE(result.contains({ "2", "6" }));
-		REQUIRE(result.contains({ "3", "4" }));
-		REQUIRE(result.contains({ "3", "5" }));
-		REQUIRE(result.contains({ "3", "6" }));
-		REQUIRE(result.contains({ "5", "3" }));
-		REQUIRE(result.contains({ "5", "4" }));
-		REQUIRE(result.contains({ "5", "5" }));
-		REQUIRE(result.contains({ "5", "6" }));
-		REQUIRE(result.contains({ "6", "3" }));
-		REQUIRE(result.contains({ "6", "4" }));
-		REQUIRE(result.contains({ "6", "5" }));
-		REQUIRE(result.contains({ "6", "6" }));
-		REQUIRE(result.contains({ "7", "8" }));
+    result = pkb->getNextBipT();
+    REQUIRE(result.size() == 21);
+    REQUIRE(result.contains({"1", "2"}));
+    REQUIRE(result.contains({"1", "3"}));
+    REQUIRE(result.contains({"1", "4"}));
+    REQUIRE(result.contains({"1", "5"}));
+    REQUIRE(result.contains({"1", "6"}));
+    REQUIRE(result.contains({"2", "3"}));
+    REQUIRE(result.contains({"2", "4"}));
+    REQUIRE(result.contains({"2", "5"}));
+    REQUIRE(result.contains({"2", "6"}));
+    REQUIRE(result.contains({"3", "4"}));
+    REQUIRE(result.contains({"3", "5"}));
+    REQUIRE(result.contains({"3", "6"}));
+    REQUIRE(result.contains({"5", "3"}));
+    REQUIRE(result.contains({"5", "4"}));
+    REQUIRE(result.contains({"5", "5"}));
+    REQUIRE(result.contains({"5", "6"}));
+    REQUIRE(result.contains({"6", "3"}));
+    REQUIRE(result.contains({"6", "4"}));
+    REQUIRE(result.contains({"6", "5"}));
+    REQUIRE(result.contains({"6", "6"}));
+    REQUIRE(result.contains({"7", "8"}));
 
-		//testing affects bip
-		result = pkb->getAffectsBip();
-		REQUIRE(result.size() == 4);
-		REQUIRE(result.contains({ "1", "5" }));
-		REQUIRE(result.contains({ "5", "6" }));
-		REQUIRE(result.contains({ "6", "5" }));
-		REQUIRE(result.contains({ "6", "4" }));
+    // testing affects bip
+    result = pkb->getAffectsBip();
+    REQUIRE(result.size() == 4);
+    REQUIRE(result.contains({"1", "5"}));
+    REQUIRE(result.contains({"5", "6"}));
+    REQUIRE(result.contains({"6", "5"}));
+    REQUIRE(result.contains({"6", "4"}));
+  }
 
-	}
+  WHEN("consecutively calling two different methods") {
+    pkb->setCallProcName(2, "B");
+    pkb->setCallProcName(3, "C");
 
-	WHEN("consecutively calling two different methods") {
-		pkb->setCallProcName(2, "B");
-		pkb->setCallProcName(3, "C");
+    DesignExtractor::populateDesigns(pkb);
 
-		DesignExtractor::populateDesigns(pkb);
+    // testing nextBip
+    Table result = pkb->getNextBip();
+    REQUIRE(result.size() == 7);
+    REQUIRE(result.contains({"1", "2"}));
+    REQUIRE(result.contains({"2", "5"}));
+    REQUIRE(result.contains({"5", "6"}));
+    REQUIRE(result.contains({"6", "3"}));
+    REQUIRE(result.contains({"3", "7"}));
+    REQUIRE(result.contains({"7", "8"}));
+    REQUIRE(result.contains({"8", "4"}));
 
-		//testing nextBip
-		Table result = pkb->getNextBip();
-		REQUIRE(result.size() == 7);
-		REQUIRE(result.contains({ "1", "2" }));
-		REQUIRE(result.contains({ "2", "5" }));
-		REQUIRE(result.contains({ "5", "6" }));
-		REQUIRE(result.contains({ "6", "3" }));
-		REQUIRE(result.contains({ "3", "7" }));
-		REQUIRE(result.contains({ "7", "8" }));
-		REQUIRE(result.contains({ "8", "4" }));
+    // testing nextBipT
 
-		//testing nextBipT
+    result = pkb->getNextBipT();
+    REQUIRE(result.size() == 28);
+    REQUIRE(result.contains({"1", "2"}));
+    REQUIRE(result.contains({"1", "3"}));
+    REQUIRE(result.contains({"1", "4"}));
+    REQUIRE(result.contains({"1", "5"}));
+    REQUIRE(result.contains({"1", "6"}));
+    REQUIRE(result.contains({"1", "7"}));
+    REQUIRE(result.contains({"1", "8"}));
+    REQUIRE(result.contains({"2", "3"}));
+    REQUIRE(result.contains({"2", "4"}));
+    REQUIRE(result.contains({"2", "5"}));
+    REQUIRE(result.contains({"2", "6"}));
+    REQUIRE(result.contains({"2", "7"}));
+    REQUIRE(result.contains({"2", "8"}));
+    REQUIRE(result.contains({"3", "4"}));
+    REQUIRE(result.contains({"3", "7"}));
+    REQUIRE(result.contains({"3", "8"}));
+    REQUIRE(result.contains({"5", "3"}));
+    REQUIRE(result.contains({"5", "4"}));
+    REQUIRE(result.contains({"5", "6"}));
+    REQUIRE(result.contains({"5", "7"}));
+    REQUIRE(result.contains({"5", "8"}));
+    REQUIRE(result.contains({"6", "3"}));
+    REQUIRE(result.contains({"6", "4"}));
+    REQUIRE(result.contains({"6", "7"}));
+    REQUIRE(result.contains({"6", "8"}));
+    REQUIRE(result.contains({"7", "4"}));
+    REQUIRE(result.contains({"7", "8"}));
+    REQUIRE(result.contains({"8", "4"}));
 
-		result = pkb->getNextBipT();
-		REQUIRE(result.size() == 28);
-		REQUIRE(result.contains({ "1", "2" }));
-		REQUIRE(result.contains({ "1", "3" }));
-		REQUIRE(result.contains({ "1", "4" }));
-		REQUIRE(result.contains({ "1", "5" }));
-		REQUIRE(result.contains({ "1", "6" }));
-		REQUIRE(result.contains({ "1", "7" }));
-		REQUIRE(result.contains({ "1", "8" }));
-		REQUIRE(result.contains({ "2", "3" }));
-		REQUIRE(result.contains({ "2", "4" }));
-		REQUIRE(result.contains({ "2", "5" }));
-		REQUIRE(result.contains({ "2", "6" }));
-		REQUIRE(result.contains({ "2", "7" }));
-		REQUIRE(result.contains({ "2", "8" }));
-		REQUIRE(result.contains({ "3", "4" }));
-		REQUIRE(result.contains({ "3", "7" }));
-		REQUIRE(result.contains({ "3", "8" }));
-		REQUIRE(result.contains({ "5", "3" }));
-		REQUIRE(result.contains({ "5", "4" }));
-		REQUIRE(result.contains({ "5", "6" }));
-		REQUIRE(result.contains({ "5", "7" }));
-		REQUIRE(result.contains({ "5", "8" }));
-		REQUIRE(result.contains({ "6", "3" }));
-		REQUIRE(result.contains({ "6", "4" }));
-		REQUIRE(result.contains({ "6", "7" }));
-		REQUIRE(result.contains({ "6", "8" }));
-		REQUIRE(result.contains({ "7", "4" }));
-		REQUIRE(result.contains({ "7", "8" }));
-		REQUIRE(result.contains({ "8", "4" }));
-
-		//testing affectsBip;
-		result = pkb->getAffectsBip();
-		REQUIRE(result.size() == 4);
-		REQUIRE(result.contains({ "1", "5" }));
-		REQUIRE(result.contains({ "5", "6" }));
-		REQUIRE(result.contains({ "6", "7" }));
-		REQUIRE(result.contains({ "8", "4" }));
-
-	}
-
+    // testing affectsBip;
+    result = pkb->getAffectsBip();
+    REQUIRE(result.size() == 4);
+    REQUIRE(result.contains({"1", "5"}));
+    REQUIRE(result.contains({"5", "6"}));
+    REQUIRE(result.contains({"6", "7"}));
+    REQUIRE(result.contains({"8", "4"}));
+  }
 }
 
 TEST_CASE("One call in if statement list and one call in else statement list") {
-	std::unique_ptr<PKB> pkb{ new PKB() };
-	pkb->setProc("A", 1, 5);
-	pkb->setProc("B", 5, 7);
-	pkb->setProc("C", 7, 9);
-	pkb->setNext(1, 2);
-	pkb->setNext(1, 3);
-	pkb->setNext(2, 4);
-	pkb->setNext(3, 4);
-	pkb->setNext(5, 6);
-	pkb->setNext(7, 8);
-	pkb->setStmtType(1, StatementType::If);
-	pkb->setStmtType(2, StatementType::Call);
-	pkb->setStmtType(3, StatementType::Call);
-	pkb->setProcExitStmt("A", std::vector<int> {4});
-	pkb->setProcExitStmt("B", std::vector<int> {6});
-	pkb->setProcExitStmt("C", std::vector<int> {8});
-	pkb->setStmtType(4, StatementType::Assign);
-	pkb->setModifies(4, "w");
-	pkb->setUses(4, "x");
-	pkb->setStmtType(5, StatementType::Assign);
-	pkb->setModifies(5, "y");
-	pkb->setUses(5, "x");
-	pkb->setStmtType(6, StatementType::Assign);
-	pkb->setModifies(6, "x");
-	pkb->setUses(6, "y");
-	pkb->setStmtType(7, StatementType::Assign);
-	pkb->setModifies(7, "z");
-	pkb->setUses(7, "x");
-	pkb->setStmtType(8, StatementType::Assign);
-	pkb->setModifies(8, "x");
+  std::unique_ptr<PKB> pkb{new PKB()};
+  pkb->setProc("A", 1, 5);
+  pkb->setProc("B", 5, 7);
+  pkb->setProc("C", 7, 9);
+  pkb->setNext(1, 2);
+  pkb->setNext(1, 3);
+  pkb->setNext(2, 4);
+  pkb->setNext(3, 4);
+  pkb->setNext(5, 6);
+  pkb->setNext(7, 8);
+  pkb->setStmtType(1, StatementType::If);
+  pkb->setStmtType(2, StatementType::Call);
+  pkb->setStmtType(3, StatementType::Call);
+  pkb->setProcExitStmt("A", std::vector<int>{4});
+  pkb->setProcExitStmt("B", std::vector<int>{6});
+  pkb->setProcExitStmt("C", std::vector<int>{8});
+  pkb->setStmtType(4, StatementType::Assign);
+  pkb->setModifies(4, "w");
+  pkb->setUses(4, "x");
+  pkb->setStmtType(5, StatementType::Assign);
+  pkb->setModifies(5, "y");
+  pkb->setUses(5, "x");
+  pkb->setStmtType(6, StatementType::Assign);
+  pkb->setModifies(6, "x");
+  pkb->setUses(6, "y");
+  pkb->setStmtType(7, StatementType::Assign);
+  pkb->setModifies(7, "z");
+  pkb->setUses(7, "x");
+  pkb->setStmtType(8, StatementType::Assign);
+  pkb->setModifies(8, "x");
 
-	WHEN("both calls same method") {
-		pkb->setCallProcName(2, "B");
-		pkb->setCallProcName(3, "B");
+  WHEN("both calls same method") {
+    pkb->setCallProcName(2, "B");
+    pkb->setCallProcName(3, "B");
 
-		DesignExtractor::populateDesigns(pkb);
+    DesignExtractor::populateDesigns(pkb);
 
-		//testing nextBip
-		Table result = pkb->getNextBip();
-		REQUIRE(result.size() == 7);
-		REQUIRE(result.contains({ "1", "2" }));
-		REQUIRE(result.contains({ "1", "3" }));
-		REQUIRE(result.contains({ "2", "5" }));
-		REQUIRE(result.contains({ "5", "6" }));
-		REQUIRE(result.contains({ "6", "4" }));
-		REQUIRE(result.contains({ "3", "5" }));
-		REQUIRE(result.contains({ "7", "8" }));
+    // testing nextBip
+    Table result = pkb->getNextBip();
+    REQUIRE(result.size() == 7);
+    REQUIRE(result.contains({"1", "2"}));
+    REQUIRE(result.contains({"1", "3"}));
+    REQUIRE(result.contains({"2", "5"}));
+    REQUIRE(result.contains({"5", "6"}));
+    REQUIRE(result.contains({"6", "4"}));
+    REQUIRE(result.contains({"3", "5"}));
+    REQUIRE(result.contains({"7", "8"}));
 
-		//testing nextBipT
-		result = pkb->getNextBipT();
-		REQUIRE(result.size() == 15);
-		REQUIRE(result.contains({ "1", "2" }));
-		REQUIRE(result.contains({ "1", "3" }));
-		REQUIRE(result.contains({ "1", "4" }));
-		REQUIRE(result.contains({ "1", "5" }));
-		REQUIRE(result.contains({ "1", "6" }));
-		REQUIRE(result.contains({ "2", "4" }));
-		REQUIRE(result.contains({ "2", "5" }));
-		REQUIRE(result.contains({ "2", "6" }));
-		REQUIRE(result.contains({ "3", "4" }));
-		REQUIRE(result.contains({ "3", "5" }));
-		REQUIRE(result.contains({ "3", "6" }));
-		REQUIRE(result.contains({ "5", "4" }));
-		REQUIRE(result.contains({ "5", "6" }));
-		REQUIRE(result.contains({ "6", "4" }));
-		REQUIRE(result.contains({ "7", "8" }));
+    // testing nextBipT
+    result = pkb->getNextBipT();
+    REQUIRE(result.size() == 15);
+    REQUIRE(result.contains({"1", "2"}));
+    REQUIRE(result.contains({"1", "3"}));
+    REQUIRE(result.contains({"1", "4"}));
+    REQUIRE(result.contains({"1", "5"}));
+    REQUIRE(result.contains({"1", "6"}));
+    REQUIRE(result.contains({"2", "4"}));
+    REQUIRE(result.contains({"2", "5"}));
+    REQUIRE(result.contains({"2", "6"}));
+    REQUIRE(result.contains({"3", "4"}));
+    REQUIRE(result.contains({"3", "5"}));
+    REQUIRE(result.contains({"3", "6"}));
+    REQUIRE(result.contains({"5", "4"}));
+    REQUIRE(result.contains({"5", "6"}));
+    REQUIRE(result.contains({"6", "4"}));
+    REQUIRE(result.contains({"7", "8"}));
 
-		//testing affectsbip
-		result = pkb->getAffectsBip();
-		REQUIRE(result.size() == 2);
-		REQUIRE(result.contains({ "6", "4" }));
-		REQUIRE(result.contains({ "5", "6" }));
+    // testing affectsbip
+    result = pkb->getAffectsBip();
+    REQUIRE(result.size() == 2);
+    REQUIRE(result.contains({"6", "4"}));
+    REQUIRE(result.contains({"5", "6"}));
+  }
 
-	}
+  WHEN("both calls different method") {
+    pkb->setCallProcName(2, "B");
+    pkb->setCallProcName(3, "C");
 
-	WHEN("both calls different method") {
-		pkb->setCallProcName(2, "B");
-		pkb->setCallProcName(3, "C");
+    DesignExtractor::populateDesigns(pkb);
 
-		DesignExtractor::populateDesigns(pkb);
+    // testing nextBip
+    Table result = pkb->getNextBip();
+    REQUIRE(result.size() == 8);
+    REQUIRE(result.contains({"1", "2"}));
+    REQUIRE(result.contains({"1", "3"}));
+    REQUIRE(result.contains({"2", "5"}));
+    REQUIRE(result.contains({"5", "6"}));
+    REQUIRE(result.contains({"6", "4"}));
+    REQUIRE(result.contains({"3", "7"}));
+    REQUIRE(result.contains({"7", "8"}));
+    REQUIRE(result.contains({"8", "4"}));
 
-		//testing nextBip
-		Table result = pkb->getNextBip();
-		REQUIRE(result.size() == 8);
-		REQUIRE(result.contains({ "1", "2" }));
-		REQUIRE(result.contains({ "1", "3" }));
-		REQUIRE(result.contains({ "2", "5" }));
-		REQUIRE(result.contains({ "5", "6" }));
-		REQUIRE(result.contains({ "6", "4" }));
-		REQUIRE(result.contains({ "3", "7" }));
-		REQUIRE(result.contains({ "7", "8" }));
-		REQUIRE(result.contains({ "8", "4" }));
+    // testing nextBipT
 
-		//testing nextBipT
+    result = pkb->getNextBipT();
+    REQUIRE(result.size() == 19);
+    REQUIRE(result.contains({"1", "2"}));
+    REQUIRE(result.contains({"1", "3"}));
+    REQUIRE(result.contains({"1", "4"}));
+    REQUIRE(result.contains({"1", "5"}));
+    REQUIRE(result.contains({"1", "6"}));
+    REQUIRE(result.contains({"1", "7"}));
+    REQUIRE(result.contains({"1", "8"}));
+    REQUIRE(result.contains({"2", "4"}));
+    REQUIRE(result.contains({"2", "5"}));
+    REQUIRE(result.contains({"2", "6"}));
+    REQUIRE(result.contains({"3", "4"}));
+    REQUIRE(result.contains({"3", "7"}));
+    REQUIRE(result.contains({"3", "8"}));
+    REQUIRE(result.contains({"5", "4"}));
+    REQUIRE(result.contains({"5", "6"}));
+    REQUIRE(result.contains({"6", "4"}));
+    REQUIRE(result.contains({"7", "4"}));
+    REQUIRE(result.contains({"7", "8"}));
+    REQUIRE(result.contains({"8", "4"}));
 
-		result = pkb->getNextBipT();
-		REQUIRE(result.size() == 19);
-		REQUIRE(result.contains({ "1", "2" }));
-		REQUIRE(result.contains({ "1", "3" }));
-		REQUIRE(result.contains({ "1", "4" }));
-		REQUIRE(result.contains({ "1", "5" }));
-		REQUIRE(result.contains({ "1", "6" }));
-		REQUIRE(result.contains({ "1", "7" }));
-		REQUIRE(result.contains({ "1", "8" }));
-		REQUIRE(result.contains({ "2", "4" }));
-		REQUIRE(result.contains({ "2", "5" }));
-		REQUIRE(result.contains({ "2", "6" }));
-		REQUIRE(result.contains({ "3", "4" }));
-		REQUIRE(result.contains({ "3", "7" }));
-		REQUIRE(result.contains({ "3", "8" }));
-		REQUIRE(result.contains({ "5", "4" }));
-		REQUIRE(result.contains({ "5", "6" }));
-		REQUIRE(result.contains({ "6", "4" }));
-		REQUIRE(result.contains({ "7", "4" }));
-		REQUIRE(result.contains({ "7", "8" }));
-		REQUIRE(result.contains({ "8", "4" }));
-
-		//testing affectsbip
-		result = pkb->getAffectsBip();
-		REQUIRE(result.size() == 3);
-		REQUIRE(result.contains({ "6", "4" }));
-		REQUIRE(result.contains({ "8", "4" }));
-		REQUIRE(result.contains({ "5", "6" }));
-
-	}
+    // testing affectsbip
+    result = pkb->getAffectsBip();
+    REQUIRE(result.size() == 3);
+    REQUIRE(result.contains({"6", "4"}));
+    REQUIRE(result.contains({"8", "4"}));
+    REQUIRE(result.contains({"5", "6"}));
+  }
 }
 
 TEST_CASE("Call to procedure ending with while loop") {
-	std::unique_ptr<PKB> pkb{ new PKB() };
-	pkb->setProc("A", 1, 4);
-	pkb->setProc("B", 4, 6);
-	pkb->setNext(1, 2);
-	pkb->setNext(2, 3);
-	pkb->setNext(4, 5);
-	pkb->setNext(5, 4);
-	pkb->setStmtType(2, StatementType::Call);
-	pkb->setCallProcName(2, "B");
-	pkb->setStmtType(4, StatementType::While);
-	pkb->setProcExitStmt("A", std::vector<int> {3});
-	pkb->setProcExitStmt("B", std::vector<int> {4});
-	pkb->setStmtType(1, StatementType::Assign);
-	pkb->setModifies(1, "x");
-	pkb->setStmtType(3, StatementType::Assign);
-	pkb->setModifies(3, "x");
-	pkb->setUses(3, "x");
-	pkb->setStmtType(5, StatementType::Assign);
-	pkb->setModifies(5, "x");
-	pkb->setUses(5, "x");
-	DesignExtractor::populateDesigns(pkb);
+  std::unique_ptr<PKB> pkb{new PKB()};
+  pkb->setProc("A", 1, 4);
+  pkb->setProc("B", 4, 6);
+  pkb->setNext(1, 2);
+  pkb->setNext(2, 3);
+  pkb->setNext(4, 5);
+  pkb->setNext(5, 4);
+  pkb->setStmtType(2, StatementType::Call);
+  pkb->setCallProcName(2, "B");
+  pkb->setStmtType(4, StatementType::While);
+  pkb->setProcExitStmt("A", std::vector<int>{3});
+  pkb->setProcExitStmt("B", std::vector<int>{4});
+  pkb->setStmtType(1, StatementType::Assign);
+  pkb->setModifies(1, "x");
+  pkb->setStmtType(3, StatementType::Assign);
+  pkb->setModifies(3, "x");
+  pkb->setUses(3, "x");
+  pkb->setStmtType(5, StatementType::Assign);
+  pkb->setModifies(5, "x");
+  pkb->setUses(5, "x");
+  DesignExtractor::populateDesigns(pkb);
 
-	//testing nextBip
-	Table result = pkb->getNextBip();
-	REQUIRE(result.size() == 5);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "2", "4" }));
-	REQUIRE(result.contains({ "4", "5" }));
-	REQUIRE(result.contains({ "5", "4" }));
-	REQUIRE(result.contains({ "4", "3" }));
+  // testing nextBip
+  Table result = pkb->getNextBip();
+  REQUIRE(result.size() == 5);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"2", "4"}));
+  REQUIRE(result.contains({"4", "5"}));
+  REQUIRE(result.contains({"5", "4"}));
+  REQUIRE(result.contains({"4", "3"}));
 
-	//testing nextBipT
+  // testing nextBipT
 
-	result = pkb->getNextBipT();
-	REQUIRE(result.size() == 13);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "1", "3" }));
-	REQUIRE(result.contains({ "1", "4" }));
-	REQUIRE(result.contains({ "1", "5" }));
-	REQUIRE(result.contains({ "2", "3" }));
-	REQUIRE(result.contains({ "2", "4" }));
-	REQUIRE(result.contains({ "2", "5" }));
-	REQUIRE(result.contains({ "4", "3" }));
-	REQUIRE(result.contains({ "4", "4" }));
-	REQUIRE(result.contains({ "4", "5" }));
-	REQUIRE(result.contains({ "5", "3" }));
-	REQUIRE(result.contains({ "5", "4" }));
-	REQUIRE(result.contains({ "5", "5" }));
+  result = pkb->getNextBipT();
+  REQUIRE(result.size() == 13);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"1", "3"}));
+  REQUIRE(result.contains({"1", "4"}));
+  REQUIRE(result.contains({"1", "5"}));
+  REQUIRE(result.contains({"2", "3"}));
+  REQUIRE(result.contains({"2", "4"}));
+  REQUIRE(result.contains({"2", "5"}));
+  REQUIRE(result.contains({"4", "3"}));
+  REQUIRE(result.contains({"4", "4"}));
+  REQUIRE(result.contains({"4", "5"}));
+  REQUIRE(result.contains({"5", "3"}));
+  REQUIRE(result.contains({"5", "4"}));
+  REQUIRE(result.contains({"5", "5"}));
 
-	//testing affects
-	result = pkb->getAffectsBip();
-	REQUIRE(result.size() == 4);
-	REQUIRE(result.contains({ "1", "5" }));
-	REQUIRE(result.contains({ "5", "5" }));
-	REQUIRE(result.contains({ "5", "3" }));
-	REQUIRE(result.contains({ "1", "3" }));
-
-
+  // testing affects
+  result = pkb->getAffectsBip();
+  REQUIRE(result.size() == 4);
+  REQUIRE(result.contains({"1", "5"}));
+  REQUIRE(result.contains({"5", "5"}));
+  REQUIRE(result.contains({"5", "3"}));
+  REQUIRE(result.contains({"1", "3"}));
 }
 
 TEST_CASE("Call to procedure ending with if statement") {
-	std::unique_ptr<PKB> pkb{ new PKB() };
-	pkb->setProc("A", 1, 4);
-	pkb->setProc("B", 4, 7);
-	pkb->setNext(1, 2);
-	pkb->setNext(2, 3);
-	pkb->setNext(4, 5);
-	pkb->setNext(4, 6);
-	pkb->setStmtType(2, StatementType::Call);
-	pkb->setCallProcName(2, "B");
-	pkb->setStmtType(4, StatementType::If);
-	pkb->setProcExitStmt("A", std::vector<int> {3});
-	pkb->setProcExitStmt("B", std::vector<int> {5, 6});
-	pkb->setStmtType(1, StatementType::Assign);
-	pkb->setModifies(1, "x");
-	pkb->setStmtType(3, StatementType::Assign);
-	pkb->setModifies(3, "x");
-	pkb->setUses(3, "x");
-	pkb->setStmtType(5, StatementType::Assign);
-	pkb->setModifies(5, "x");
-	pkb->setUses(5, "x");
-	pkb->setStmtType(6, StatementType::Assign);
-	pkb->setModifies(6, "w");
-	pkb->setUses(6, "x");
-	DesignExtractor::populateDesigns(pkb);
+  std::unique_ptr<PKB> pkb{new PKB()};
+  pkb->setProc("A", 1, 4);
+  pkb->setProc("B", 4, 7);
+  pkb->setNext(1, 2);
+  pkb->setNext(2, 3);
+  pkb->setNext(4, 5);
+  pkb->setNext(4, 6);
+  pkb->setStmtType(2, StatementType::Call);
+  pkb->setCallProcName(2, "B");
+  pkb->setStmtType(4, StatementType::If);
+  pkb->setProcExitStmt("A", std::vector<int>{3});
+  pkb->setProcExitStmt("B", std::vector<int>{5, 6});
+  pkb->setStmtType(1, StatementType::Assign);
+  pkb->setModifies(1, "x");
+  pkb->setStmtType(3, StatementType::Assign);
+  pkb->setModifies(3, "x");
+  pkb->setUses(3, "x");
+  pkb->setStmtType(5, StatementType::Assign);
+  pkb->setModifies(5, "x");
+  pkb->setUses(5, "x");
+  pkb->setStmtType(6, StatementType::Assign);
+  pkb->setModifies(6, "w");
+  pkb->setUses(6, "x");
+  DesignExtractor::populateDesigns(pkb);
 
-	//testing nextBip
-	Table result = pkb->getNextBip();
-	REQUIRE(result.size() == 6);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "2", "4" }));
-	REQUIRE(result.contains({ "4", "5" }));
-	REQUIRE(result.contains({ "4", "6" }));
-	REQUIRE(result.contains({ "5", "3" }));
-	REQUIRE(result.contains({ "6", "3" }));
+  // testing nextBip
+  Table result = pkb->getNextBip();
+  REQUIRE(result.size() == 6);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"2", "4"}));
+  REQUIRE(result.contains({"4", "5"}));
+  REQUIRE(result.contains({"4", "6"}));
+  REQUIRE(result.contains({"5", "3"}));
+  REQUIRE(result.contains({"6", "3"}));
 
-	//testing nextBipT
-	result = pkb->getNextBipT();
-	REQUIRE(result.size() == 14);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "1", "3" }));
-	REQUIRE(result.contains({ "1", "4" }));
-	REQUIRE(result.contains({ "1", "5" }));
-	REQUIRE(result.contains({ "1", "6" }));
-	REQUIRE(result.contains({ "2", "3" }));
-	REQUIRE(result.contains({ "2", "4" }));
-	REQUIRE(result.contains({ "2", "5" }));
-	REQUIRE(result.contains({ "2", "6" }));
-	REQUIRE(result.contains({ "4", "3" }));
-	REQUIRE(result.contains({ "4", "5" }));
-	REQUIRE(result.contains({ "4", "6" }));
-	REQUIRE(result.contains({ "5", "3" }));
-	REQUIRE(result.contains({ "6", "3" }));
+  // testing nextBipT
+  result = pkb->getNextBipT();
+  REQUIRE(result.size() == 14);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"1", "3"}));
+  REQUIRE(result.contains({"1", "4"}));
+  REQUIRE(result.contains({"1", "5"}));
+  REQUIRE(result.contains({"1", "6"}));
+  REQUIRE(result.contains({"2", "3"}));
+  REQUIRE(result.contains({"2", "4"}));
+  REQUIRE(result.contains({"2", "5"}));
+  REQUIRE(result.contains({"2", "6"}));
+  REQUIRE(result.contains({"4", "3"}));
+  REQUIRE(result.contains({"4", "5"}));
+  REQUIRE(result.contains({"4", "6"}));
+  REQUIRE(result.contains({"5", "3"}));
+  REQUIRE(result.contains({"6", "3"}));
 
-	//testing affectsBip
-	result = pkb->getAffectsBip();
-	REQUIRE(result.size() == 4);
-	REQUIRE(result.contains({ "1", "5" }));
-	REQUIRE(result.contains({ "1", "6" }));
-	REQUIRE(result.contains({ "5", "3" }));
-	REQUIRE(result.contains({ "1", "3" }));
-
+  // testing affectsBip
+  result = pkb->getAffectsBip();
+  REQUIRE(result.size() == 4);
+  REQUIRE(result.contains({"1", "5"}));
+  REQUIRE(result.contains({"1", "6"}));
+  REQUIRE(result.contains({"5", "3"}));
+  REQUIRE(result.contains({"1", "3"}));
 }
 
 TEST_CASE("Two procedures calling same procedure ending with if statement") {
-	std::unique_ptr<PKB> pkb{ new PKB() };
-	pkb->setProc("A", 1, 4);
-	pkb->setProc("B", 4, 7);
-	pkb->setProc("C", 7, 10);
-	pkb->setNext(1, 2);
-	pkb->setNext(2, 3);
-	pkb->setNext(4, 5);
-	pkb->setNext(5, 6);
-	pkb->setNext(7, 8);
-	pkb->setNext(7, 9);
-	pkb->setStmtType(2, StatementType::Call);
-	pkb->setCallProcName(2, "C");
-	pkb->setStmtType(5, StatementType::Call);
-	pkb->setCallProcName(5, "C");
-	pkb->setStmtType(7, StatementType::If);
-	pkb->setProcExitStmt("A", std::vector<int> {3});
-	pkb->setProcExitStmt("B", std::vector<int> {6});
-	pkb->setProcExitStmt("C", std::vector<int> {8, 9});
-	DesignExtractor::populateDesigns(pkb);
+  std::unique_ptr<PKB> pkb{new PKB()};
+  pkb->setProc("A", 1, 4);
+  pkb->setProc("B", 4, 7);
+  pkb->setProc("C", 7, 10);
+  pkb->setNext(1, 2);
+  pkb->setNext(2, 3);
+  pkb->setNext(4, 5);
+  pkb->setNext(5, 6);
+  pkb->setNext(7, 8);
+  pkb->setNext(7, 9);
+  pkb->setStmtType(2, StatementType::Call);
+  pkb->setCallProcName(2, "C");
+  pkb->setStmtType(5, StatementType::Call);
+  pkb->setCallProcName(5, "C");
+  pkb->setStmtType(7, StatementType::If);
+  pkb->setProcExitStmt("A", std::vector<int>{3});
+  pkb->setProcExitStmt("B", std::vector<int>{6});
+  pkb->setProcExitStmt("C", std::vector<int>{8, 9});
+  DesignExtractor::populateDesigns(pkb);
 
-	//testing nextBip
-	Table result = pkb->getNextBip();
-	REQUIRE(result.size() == 10);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "2", "7" }));
-	REQUIRE(result.contains({ "7", "8" }));
-	REQUIRE(result.contains({ "7", "9" }));
-	REQUIRE(result.contains({ "8", "3" }));
-	REQUIRE(result.contains({ "9", "3" }));
-	REQUIRE(result.contains({ "4", "5" }));
-	REQUIRE(result.contains({ "5", "7" }));
-	REQUIRE(result.contains({ "8", "6" }));
-	REQUIRE(result.contains({ "9", "6" }));
+  // testing nextBip
+  Table result = pkb->getNextBip();
+  REQUIRE(result.size() == 10);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"2", "7"}));
+  REQUIRE(result.contains({"7", "8"}));
+  REQUIRE(result.contains({"7", "9"}));
+  REQUIRE(result.contains({"8", "3"}));
+  REQUIRE(result.contains({"9", "3"}));
+  REQUIRE(result.contains({"4", "5"}));
+  REQUIRE(result.contains({"5", "7"}));
+  REQUIRE(result.contains({"8", "6"}));
+  REQUIRE(result.contains({"9", "6"}));
 
-	//testing nextBipT
-	result = pkb->getNextBipT();
-	REQUIRE(result.size() == 26);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "1", "3" }));
-	REQUIRE(result.contains({ "1", "7" }));
-	REQUIRE(result.contains({ "1", "8" }));
-	REQUIRE(result.contains({ "1", "9" }));
-	REQUIRE(result.contains({ "2", "3" }));
-	REQUIRE(result.contains({ "2", "7" }));
-	REQUIRE(result.contains({ "2", "8" }));
-	REQUIRE(result.contains({ "2", "9" }));
-	REQUIRE(result.contains({ "4", "5" }));
-	REQUIRE(result.contains({ "4", "6" }));
-	REQUIRE(result.contains({ "4", "7" }));
-	REQUIRE(result.contains({ "4", "8" }));
-	REQUIRE(result.contains({ "4", "9" }));
-	REQUIRE(result.contains({ "5", "6" }));
-	REQUIRE(result.contains({ "5", "7" }));
-	REQUIRE(result.contains({ "5", "8" }));
-	REQUIRE(result.contains({ "5", "9" }));
-	REQUIRE(result.contains({ "7", "3" }));
-	REQUIRE(result.contains({ "7", "6" }));
-	REQUIRE(result.contains({ "7", "8" }));
-	REQUIRE(result.contains({ "7", "9" }));
-	REQUIRE(result.contains({ "8", "3" }));
-	REQUIRE(result.contains({ "8", "6" }));
-	REQUIRE(result.contains({ "9", "3" }));
-	REQUIRE(result.contains({ "9", "6" }));
-
-
+  // testing nextBipT
+  result = pkb->getNextBipT();
+  REQUIRE(result.size() == 26);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"1", "3"}));
+  REQUIRE(result.contains({"1", "7"}));
+  REQUIRE(result.contains({"1", "8"}));
+  REQUIRE(result.contains({"1", "9"}));
+  REQUIRE(result.contains({"2", "3"}));
+  REQUIRE(result.contains({"2", "7"}));
+  REQUIRE(result.contains({"2", "8"}));
+  REQUIRE(result.contains({"2", "9"}));
+  REQUIRE(result.contains({"4", "5"}));
+  REQUIRE(result.contains({"4", "6"}));
+  REQUIRE(result.contains({"4", "7"}));
+  REQUIRE(result.contains({"4", "8"}));
+  REQUIRE(result.contains({"4", "9"}));
+  REQUIRE(result.contains({"5", "6"}));
+  REQUIRE(result.contains({"5", "7"}));
+  REQUIRE(result.contains({"5", "8"}));
+  REQUIRE(result.contains({"5", "9"}));
+  REQUIRE(result.contains({"7", "3"}));
+  REQUIRE(result.contains({"7", "6"}));
+  REQUIRE(result.contains({"7", "8"}));
+  REQUIRE(result.contains({"7", "9"}));
+  REQUIRE(result.contains({"8", "3"}));
+  REQUIRE(result.contains({"8", "6"}));
+  REQUIRE(result.contains({"9", "3"}));
+  REQUIRE(result.contains({"9", "6"}));
 }
 
 TEST_CASE("Two procedures calling same procedure ending with while statement") {
-	std::unique_ptr<PKB> pkb{ new PKB() };
-	pkb->setProc("A", 1, 4);
-	pkb->setProc("B", 4, 7);
-	pkb->setProc("C", 7, 10);
-	pkb->setNext(1, 2);
-	pkb->setNext(2, 3);
-	pkb->setNext(4, 5);
-	pkb->setNext(5, 6);
-	pkb->setNext(7, 8);
-	pkb->setNext(8, 7);
-	pkb->setStmtType(2, StatementType::Call);
-	pkb->setCallProcName(2, "C");
-	pkb->setStmtType(5, StatementType::Call);
-	pkb->setCallProcName(5, "C");
-	pkb->setStmtType(7, StatementType::While);
-	pkb->setProcExitStmt("A", std::vector<int> {3});
-	pkb->setProcExitStmt("B", std::vector<int> {6});
-	pkb->setProcExitStmt("C", std::vector<int> {7});
-	DesignExtractor::populateDesigns(pkb);
+  std::unique_ptr<PKB> pkb{new PKB()};
+  pkb->setProc("A", 1, 4);
+  pkb->setProc("B", 4, 7);
+  pkb->setProc("C", 7, 10);
+  pkb->setNext(1, 2);
+  pkb->setNext(2, 3);
+  pkb->setNext(4, 5);
+  pkb->setNext(5, 6);
+  pkb->setNext(7, 8);
+  pkb->setNext(8, 7);
+  pkb->setStmtType(2, StatementType::Call);
+  pkb->setCallProcName(2, "C");
+  pkb->setStmtType(5, StatementType::Call);
+  pkb->setCallProcName(5, "C");
+  pkb->setStmtType(7, StatementType::While);
+  pkb->setProcExitStmt("A", std::vector<int>{3});
+  pkb->setProcExitStmt("B", std::vector<int>{6});
+  pkb->setProcExitStmt("C", std::vector<int>{7});
+  DesignExtractor::populateDesigns(pkb);
 
-	//testing nextBip
-	Table result = pkb->getNextBip();
-	REQUIRE(result.size() == 8);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "2", "7" }));
-	REQUIRE(result.contains({ "7", "8" }));
-	REQUIRE(result.contains({ "8", "7" }));
-	REQUIRE(result.contains({ "7", "3" }));
-	REQUIRE(result.contains({ "4", "5" }));
-	REQUIRE(result.contains({ "5", "7" }));
-	REQUIRE(result.contains({ "7", "6" }));
+  // testing nextBip
+  Table result = pkb->getNextBip();
+  REQUIRE(result.size() == 8);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"2", "7"}));
+  REQUIRE(result.contains({"7", "8"}));
+  REQUIRE(result.contains({"8", "7"}));
+  REQUIRE(result.contains({"7", "3"}));
+  REQUIRE(result.contains({"4", "5"}));
+  REQUIRE(result.contains({"5", "7"}));
+  REQUIRE(result.contains({"7", "6"}));
 
-	//testing nextBipT
-	result = pkb->getNextBipT();
-	REQUIRE(result.size() == 22);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "1", "3" }));
-	REQUIRE(result.contains({ "1", "7" }));
-	REQUIRE(result.contains({ "1", "8" }));
-	REQUIRE(result.contains({ "2", "3" }));
-	REQUIRE(result.contains({ "2", "7" }));
-	REQUIRE(result.contains({ "2", "8" }));
-	REQUIRE(result.contains({ "4", "5" }));
-	REQUIRE(result.contains({ "4", "6" }));
-	REQUIRE(result.contains({ "4", "7" }));
-	REQUIRE(result.contains({ "4", "8" }));
-	REQUIRE(result.contains({ "5", "6" }));
-	REQUIRE(result.contains({ "5", "7" }));
-	REQUIRE(result.contains({ "5", "8" }));
-	REQUIRE(result.contains({ "7", "3" }));
-	REQUIRE(result.contains({ "7", "6" }));
-	REQUIRE(result.contains({ "7", "7" }));
-	REQUIRE(result.contains({ "7", "8" }));
-	REQUIRE(result.contains({ "8", "3" }));
-	REQUIRE(result.contains({ "8", "6" }));
-	REQUIRE(result.contains({ "8", "7" }));
-	REQUIRE(result.contains({ "8", "8" }));
+  // testing nextBipT
+  result = pkb->getNextBipT();
+  REQUIRE(result.size() == 22);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"1", "3"}));
+  REQUIRE(result.contains({"1", "7"}));
+  REQUIRE(result.contains({"1", "8"}));
+  REQUIRE(result.contains({"2", "3"}));
+  REQUIRE(result.contains({"2", "7"}));
+  REQUIRE(result.contains({"2", "8"}));
+  REQUIRE(result.contains({"4", "5"}));
+  REQUIRE(result.contains({"4", "6"}));
+  REQUIRE(result.contains({"4", "7"}));
+  REQUIRE(result.contains({"4", "8"}));
+  REQUIRE(result.contains({"5", "6"}));
+  REQUIRE(result.contains({"5", "7"}));
+  REQUIRE(result.contains({"5", "8"}));
+  REQUIRE(result.contains({"7", "3"}));
+  REQUIRE(result.contains({"7", "6"}));
+  REQUIRE(result.contains({"7", "7"}));
+  REQUIRE(result.contains({"7", "8"}));
+  REQUIRE(result.contains({"8", "3"}));
+  REQUIRE(result.contains({"8", "6"}));
+  REQUIRE(result.contains({"8", "7"}));
+  REQUIRE(result.contains({"8", "8"}));
 }
 
 TEST_CASE("Two procedures calling same procedure ending with call statement") {
-	std::unique_ptr<PKB> pkb{ new PKB() };
-	pkb->setProc("A", 1, 4);
-	pkb->setProc("B", 4, 6);
-	pkb->setProc("C", 6, 8);
-	pkb->setProc("D", 8, 11);
+  std::unique_ptr<PKB> pkb{new PKB()};
+  pkb->setProc("A", 1, 4);
+  pkb->setProc("B", 4, 6);
+  pkb->setProc("C", 6, 8);
+  pkb->setProc("D", 8, 11);
 
-	pkb->setNext(1, 2);
-	pkb->setNext(2, 3);
-	pkb->setNext(4, 5);
-	pkb->setNext(6, 7);
-	pkb->setNext(8, 9);
-	pkb->setNext(9, 10);
-	pkb->setStmtType(2, StatementType::Call);
-	pkb->setCallProcName(2, "B");
-	pkb->setStmtType(5, StatementType::Call);
-	pkb->setCallProcName(5, "C");
-	pkb->setStmtType(9, StatementType::Call);
-	pkb->setCallProcName(9, "B");
-	pkb->setProcExitStmt("A", std::vector<int> {3});
-	pkb->setProcExitStmt("B", std::vector<int> {5});
-	pkb->setProcExitStmt("C", std::vector<int> {7});
-	pkb->setProcExitStmt("D", std::vector<int> {10});
-	DesignExtractor::populateDesigns(pkb);
+  pkb->setNext(1, 2);
+  pkb->setNext(2, 3);
+  pkb->setNext(4, 5);
+  pkb->setNext(6, 7);
+  pkb->setNext(8, 9);
+  pkb->setNext(9, 10);
+  pkb->setStmtType(2, StatementType::Call);
+  pkb->setCallProcName(2, "B");
+  pkb->setStmtType(5, StatementType::Call);
+  pkb->setCallProcName(5, "C");
+  pkb->setStmtType(9, StatementType::Call);
+  pkb->setCallProcName(9, "B");
+  pkb->setProcExitStmt("A", std::vector<int>{3});
+  pkb->setProcExitStmt("B", std::vector<int>{5});
+  pkb->setProcExitStmt("C", std::vector<int>{7});
+  pkb->setProcExitStmt("D", std::vector<int>{10});
+  DesignExtractor::populateDesigns(pkb);
 
-	//testing nextBip
-	Table result = pkb->getNextBip();
-	REQUIRE(result.size() == 9);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "2", "4" }));
-	REQUIRE(result.contains({ "4", "5" }));
-	REQUIRE(result.contains({ "5", "6" }));
-	REQUIRE(result.contains({ "6", "7" }));
-	REQUIRE(result.contains({ "7", "3" }));
-	REQUIRE(result.contains({ "8", "9" }));
-	REQUIRE(result.contains({ "9", "4" }));
-	REQUIRE(result.contains({ "7", "10" }));
+  // testing nextBip
+  Table result = pkb->getNextBip();
+  REQUIRE(result.size() == 9);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"2", "4"}));
+  REQUIRE(result.contains({"4", "5"}));
+  REQUIRE(result.contains({"5", "6"}));
+  REQUIRE(result.contains({"6", "7"}));
+  REQUIRE(result.contains({"7", "3"}));
+  REQUIRE(result.contains({"8", "9"}));
+  REQUIRE(result.contains({"9", "4"}));
+  REQUIRE(result.contains({"7", "10"}));
 
-	//testing nextBipT
-	result = pkb->getNextBipT();
-	REQUIRE(result.size() == 36);
-	REQUIRE(result.contains({ "1", "2" }));
-	REQUIRE(result.contains({ "1", "3" }));
-	REQUIRE(result.contains({ "1", "4" }));
-	REQUIRE(result.contains({ "1", "5" }));
-	REQUIRE(result.contains({ "1", "6" }));
-	REQUIRE(result.contains({ "1", "7" }));
-	REQUIRE(result.contains({ "2", "3" }));
-	REQUIRE(result.contains({ "2", "4" }));
-	REQUIRE(result.contains({ "2", "5" }));
-	REQUIRE(result.contains({ "2", "6" }));
-	REQUIRE(result.contains({ "2", "7" }));
-	REQUIRE(result.contains({ "4", "5" }));
-	REQUIRE(result.contains({ "4", "6" }));
-	REQUIRE(result.contains({ "4", "7" }));
-	REQUIRE(result.contains({ "4", "3" }));
-	REQUIRE(result.contains({ "4", "10" }));
-	REQUIRE(result.contains({ "5", "3" }));
-	REQUIRE(result.contains({ "5", "6" }));
-	REQUIRE(result.contains({ "5", "7" }));
-	REQUIRE(result.contains({ "5", "10" }));
-	REQUIRE(result.contains({ "6", "3" }));
-	REQUIRE(result.contains({ "6", "7" }));
-	REQUIRE(result.contains({ "6", "10" }));
-	REQUIRE(result.contains({ "7", "3" }));
-	REQUIRE(result.contains({ "7", "10" }));
-	REQUIRE(result.contains({ "8", "4" }));
-	REQUIRE(result.contains({ "8", "5" }));
-	REQUIRE(result.contains({ "8", "6" }));
-	REQUIRE(result.contains({ "8", "7" }));
-	REQUIRE(result.contains({ "8", "9" }));
-	REQUIRE(result.contains({ "8", "10" }));
-	REQUIRE(result.contains({ "9", "4" }));
-	REQUIRE(result.contains({ "9", "5" }));
-	REQUIRE(result.contains({ "9", "6" }));
-	REQUIRE(result.contains({ "9", "7" }));
-	REQUIRE(result.contains({ "9", "10" }));
-
-
+  // testing nextBipT
+  result = pkb->getNextBipT();
+  REQUIRE(result.size() == 36);
+  REQUIRE(result.contains({"1", "2"}));
+  REQUIRE(result.contains({"1", "3"}));
+  REQUIRE(result.contains({"1", "4"}));
+  REQUIRE(result.contains({"1", "5"}));
+  REQUIRE(result.contains({"1", "6"}));
+  REQUIRE(result.contains({"1", "7"}));
+  REQUIRE(result.contains({"2", "3"}));
+  REQUIRE(result.contains({"2", "4"}));
+  REQUIRE(result.contains({"2", "5"}));
+  REQUIRE(result.contains({"2", "6"}));
+  REQUIRE(result.contains({"2", "7"}));
+  REQUIRE(result.contains({"4", "5"}));
+  REQUIRE(result.contains({"4", "6"}));
+  REQUIRE(result.contains({"4", "7"}));
+  REQUIRE(result.contains({"4", "3"}));
+  REQUIRE(result.contains({"4", "10"}));
+  REQUIRE(result.contains({"5", "3"}));
+  REQUIRE(result.contains({"5", "6"}));
+  REQUIRE(result.contains({"5", "7"}));
+  REQUIRE(result.contains({"5", "10"}));
+  REQUIRE(result.contains({"6", "3"}));
+  REQUIRE(result.contains({"6", "7"}));
+  REQUIRE(result.contains({"6", "10"}));
+  REQUIRE(result.contains({"7", "3"}));
+  REQUIRE(result.contains({"7", "10"}));
+  REQUIRE(result.contains({"8", "4"}));
+  REQUIRE(result.contains({"8", "5"}));
+  REQUIRE(result.contains({"8", "6"}));
+  REQUIRE(result.contains({"8", "7"}));
+  REQUIRE(result.contains({"8", "9"}));
+  REQUIRE(result.contains({"8", "10"}));
+  REQUIRE(result.contains({"9", "4"}));
+  REQUIRE(result.contains({"9", "5"}));
+  REQUIRE(result.contains({"9", "6"}));
+  REQUIRE(result.contains({"9", "7"}));
+  REQUIRE(result.contains({"9", "10"}));
 }
-
 
 TEST_CASE("Non last statement call to procedure ending with call statement") {
   std::unique_ptr<PKB> pkb{new PKB()};

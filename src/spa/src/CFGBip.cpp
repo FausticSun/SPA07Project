@@ -243,19 +243,17 @@ void CFGBip::populateNextBipT() {
   }
 }
 
-
 void CFGBip::populateAffectsBip(bool isAffectsBip) {
-	for (auto data : modifiesAssignTable.getData()) {
-		auto result = getAffectsForward(std::stoi(data[0]), data[1]);
-		for (int i : result) {
-			if (isAffectsBip) {
-				affectsBip.insertRow({ data[0], std::to_string(i) });
-			}
-			else {
-				affectsBipT.insertRow({ data[0], std::to_string(i) });
-			}
-		}
-	}
+  for (auto data : modifiesAssignTable.getData()) {
+    auto result = getAffectsForward(std::stoi(data[0]), data[1]);
+    for (int i : result) {
+      if (isAffectsBip) {
+        affectsBip.insertRow({data[0], std::to_string(i)});
+      } else {
+        affectsBipT.insertRow({data[0], std::to_string(i)});
+      }
+    }
+  }
 }
 
 std::deque<int> CFGBip::getAffectsForward(int i, std::string var) {
@@ -338,8 +336,8 @@ std::deque<int> CFGBip::getAffectsForward(int i, std::string var) {
 }
 
 void CFGBip::populateAffectsBipT() {
-	populateAffectsBip(false);
-	affectsBipT.transitiveClosure();
+  populateAffectsBip(false);
+  affectsBipT.transitiveClosure();
 }
 
 bool CFGBip::isCallStatement(int i) { return (callSet.count(i) == 1); }
@@ -364,8 +362,8 @@ Table CFGBip::getNextBipT() {
 }
 
 Table CFGBip::getAffectsBip() {
-	populateAffectsBip(true);
-	return affectsBip;
+  populateAffectsBip(true);
+  return affectsBip;
 }
 
 Table CFGBip::getAffectsBipT() {

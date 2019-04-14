@@ -33,17 +33,17 @@ private:
   std::map<std::string, std::vector<int>> procExitStmtMap;
   std::set<int> callSet;
 
-	void buildCFGBip(Table, Table, Table, Table, Table);
-	void buildAdjacencyLists();
-	void addToGenAdjLst(int, Link);
-	void addToSimpleAdjLst(int, int);
-	void populateNextBip();
-	void populateNextBipT();
-	void populateAffectsBip(bool);
-	std::deque<int> getAffectsForward(int, std::string);
-	void populateAffectsBipT();
-	bool isCallStatement(int);
-	bool checkUsesModifies(int, std::string, std::deque<int>&);
+  void buildCFGBip(Table, Table, Table, Table, Table);
+  void buildAdjacencyLists();
+  void addToGenAdjLst(int, Link);
+  void addToSimpleAdjLst(int, int);
+  void populateNextBip();
+  void populateNextBipT();
+  void populateAffectsBip(bool);
+  std::deque<int> getAffectsForward(int, std::string);
+  void populateAffectsBipT();
+  bool isCallStatement(int);
+  bool checkUsesModifies(int, std::string, std::deque<int> &);
 
 public:
   CFGBip();
