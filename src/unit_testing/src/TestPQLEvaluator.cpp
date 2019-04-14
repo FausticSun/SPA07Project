@@ -1,7 +1,7 @@
-
 #include "PQLEvaluator.h"
 #include "catch.hpp"
 #include <algorithm>
+
 using namespace std;
 
 bool contains(list<string> &s, string q) {

@@ -1,5 +1,4 @@
 #pragma once
-#include <queue>
 #include <vector>
 
 enum class QueryEntityType {
@@ -61,7 +60,7 @@ struct QueryEntity {
       : type(type), name(name), attrRefSynonymType(type2){};
 
   friend bool operator==(const QueryEntity &lhs, const QueryEntity &rhs) {
-	  return lhs.type == rhs.type && lhs.name == rhs.name;
+    return lhs.type == rhs.type && lhs.name == rhs.name;
   }
 
   QueryEntityType type;
@@ -77,7 +76,7 @@ public:
   std::vector<QueryEntity> parameters;
 
   friend bool operator==(const Clause &lhs, const Clause &rhs) {
-	  return lhs.clauseType == rhs.clauseType && lhs.parameters == rhs.parameters;
+    return lhs.clauseType == rhs.clauseType && lhs.parameters == rhs.parameters;
   }
 
   bool isValid();

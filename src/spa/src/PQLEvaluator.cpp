@@ -256,7 +256,7 @@ set<vector<string>> PqlEvaluator::executeComplexQuery(Query q) {
     if (groupResult.empty()) {
       return validateResult(groupResult, q.target).getData();
     }
-		groupResult = projectOut(groupResult,q.target);
+    groupResult = projectOut(groupResult, q.target);
     relevantResults.push_back(groupResult);
   }
   // join the groups that are relevant to the selected tuplle
