@@ -15,8 +15,10 @@ private:
   int numCompressedNodes = 0;
 
   // Cache
+  std::map<int, std::deque<int>> nextTForwardCache;
+  std::map<int, std::deque<int>> nextTReverseCache;
   std::map<int, std::deque<int>> affectsForwardCache;
-  std::map<int, std::deque<int>> affectsReverseCache;
+  std::map<std::pair<int, std::string>, std::deque<int>> affectsReverseCache;
   Table affectsTCache{1};
   std::map<int, Table> whileBlockCache;
 
@@ -47,18 +49,11 @@ private:
   std::deque<int> getAffectsForward(int, std::string);
   std::deque<int> getAffectsReverse(int, std::string);
 
-  // Method for traversal to retrieve Affects* relations
-  std::map<int, std::set<int>> getAffectsTResults(int);
-
-  Table getAffectsTWhile(int, std::map<int, std::vector<int>>);
-
 public:
   CFG();
   CFG(Table procStmtTable, Table nextTable, Table modifiesTable,
       Table usesTable, Table whileIfTable, Table whileParentTable,
-      Table assignTable,
-      std::map<int, std::pair<std::string, std::vector<std::string>>> assignMap,
-      std::map<int, StatementType> stmtMap, int stmtCount);
+      Table assignTable, int stmtCount);
 
   // Getters for Next*
   bool isNextT(int, int);

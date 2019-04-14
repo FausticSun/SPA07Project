@@ -243,19 +243,30 @@ void Table::recursiveSelfJoin() {
 void dfs(const std::string &v,
          const std::map<std::string, std::set<std::string>> &adjList,
          std::map<std::string, std::set<std::string>> &tcList) {
-  if (tcList.count(v)) {
-    return;
+  std::set<std::string> visited;
+  std::stack<std::string> stack;
+  std::string curr;
+  int selfLoops = -1;
+  stack.emplace(v);
+  while (!stack.empty()) {
+    curr = std::move(stack.top());
+    stack.pop();
+    if (curr == v) {
+      selfLoops++;
+    }
+    if (!visited.count(curr)) {
+      visited.emplace(curr);
+      if (adjList.count(curr)) {
+        for (auto &n : adjList.at(curr)) {
+          stack.emplace(n);
+        }
+      }
+    }
   }
-  tcList.emplace(v, std::move(std::set<std::string>()));
-  if (!adjList.count(v)) {
-    return;
+  if (selfLoops == 0) {
+    visited.erase(v);
   }
-  for (auto &n : adjList.at(v)) {
-    tcList.at(v).emplace(n);
-    dfs(n, adjList, tcList);
-    auto &tc = tcList.at(n);
-    tcList.at(v).insert(tc.begin(), tc.end());
-  }
+  tcList.emplace(v, std::move(visited));
 }
 
 void Table::repeatedDFS() {
@@ -271,9 +282,7 @@ void Table::repeatedDFS() {
   // Perform depth-first search
   std::map<std::string, std::set<std::string>> tcList;
   for (auto &kv : adjList) {
-    if (!tcList.count(kv.first)) {
-      dfs(kv.first, adjList, tcList);
-    }
+    dfs(kv.first, adjList, tcList);
   }
   // Convert transitive closure adjacency list to table
   std::set<DataRow> newData;
@@ -381,17 +390,14 @@ void Table::crossProduct(const Table &other) {
   headerRow.insert(headerRow.end(), other.headerRow.begin(),
                    other.headerRow.end());
   // Perform cartesian product
-  // Iterate through DataRow in this table
-  auto thisIt = data.begin();
-  while (thisIt != data.end()) {
-    // Remove the row from the table
-    auto thisData = (*thisIt);
-    thisIt = data.erase(thisIt);
-    // Merge and insert back with every row in the other table
-    for (auto otherRow : other.data) {
-      auto newData = thisData;
-      newData.insert(newData.end(), otherRow.begin(), otherRow.end());
-      data.insert(thisIt, newData);
+  std::set<DataRow> newData;
+  for (auto &thisRow : data) {
+    for (auto &otherRow : other.data) {
+      auto newRow = thisRow;
+      newRow.reserve(thisRow.size() + otherRow.size());
+      newRow.insert(newRow.end(), otherRow.begin(), otherRow.end());
+      newData.emplace_hint(newData.end(), std::move(newRow));
     }
   }
+  data = std::move(newData);
 }

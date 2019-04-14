@@ -2163,7 +2163,6 @@ TEST_CASE("Affects with if stmt nested in while stmt") {
   REQUIRE(pkb->isAffects(4, 6) == true);
 }
 
-// Test Affects T from this line
 TEST_CASE("AffectsT with no nesting") {
   std::unique_ptr<PKB> pkb{new PKB()};
   pkb->setProc("A", 1, 4);
@@ -2178,12 +2177,13 @@ TEST_CASE("AffectsT with no nesting") {
   pkb->setStmtType(2, StatementType::Assign);
   pkb->setStmtType(3, StatementType::Assign);
   DesignExtractor::populateDesigns(pkb);
-  Table affectsTable = pkb->getAffects();
-  affectsTable.transitiveClosure();
-  Table affectsTTable = pkb->getAffectsT();
-  REQUIRE(affectsTable.size() == affectsTTable.size());
-  for (auto data : affectsTable.getData()) {
-    REQUIRE(affectsTTable.contains(data));
+  Table affectsTTable = pkb->getAffects();
+  affectsTTable.transitiveClosure();
+  auto results = {std::make_pair(1, 2), std::make_pair(1, 3),
+                  std::make_pair(2, 3)};
+  for (auto result : results) {
+    REQUIRE(affectsTTable.contains(
+        {std::to_string(result.first), std::to_string(result.second)}));
   }
 }
 
@@ -2200,10 +2200,8 @@ TEST_CASE("AffectsT with read stmt and no nesting") {
   pkb->setStmtType(2, StatementType::Read);
   pkb->setStmtType(3, StatementType::Assign);
   DesignExtractor::populateDesigns(pkb);
-  Table affectsTable = pkb->getAffects();
-  affectsTable.transitiveClosure();
-  Table affectsTTable = pkb->getAffectsT();
-  REQUIRE(affectsTable.size() == affectsTTable.size());
+  Table affectsTTable = pkb->getAffects();
+  affectsTTable.transitiveClosure();
   REQUIRE(affectsTTable.empty());
 }
 
@@ -2227,10 +2225,8 @@ TEST_CASE("AffectsT with call stmt and no nesting") {
   pkb->setStmtType(3, StatementType::Assign);
   pkb->setStmtType(4, StatementType::Read);
   DesignExtractor::populateDesigns(pkb);
-  Table affectsTable = pkb->getAffects();
-  affectsTable.transitiveClosure();
-  Table affectsTTable = pkb->getAffectsT();
-  REQUIRE(affectsTable.size() == affectsTTable.size());
+  Table affectsTTable = pkb->getAffects();
+  affectsTTable.transitiveClosure();
   REQUIRE(affectsTTable.empty());
 }
 
@@ -2255,12 +2251,14 @@ TEST_CASE("AffectsT with one while") {
   pkb->setStmtType(3, StatementType::Assign);
   pkb->setStmtType(4, StatementType::Assign);
   DesignExtractor::populateDesigns(pkb);
-  Table affectsTable = pkb->getAffects();
-  affectsTable.transitiveClosure();
-  Table affectsTTable = pkb->getAffectsT();
-  REQUIRE(affectsTable.size() == affectsTTable.size());
-  for (auto data : affectsTable.getData()) {
-    REQUIRE(affectsTTable.contains(data));
+  Table affectsTTable = pkb->getAffects();
+  affectsTTable.transitiveClosure();
+  auto results = {std::make_pair(2, 2), std::make_pair(2, 3),
+                  std::make_pair(2, 4), std::make_pair(3, 2),
+                  std::make_pair(3, 3), std::make_pair(3, 4)};
+  for (auto result : results) {
+    REQUIRE(affectsTTable.contains(
+        {std::to_string(result.first), std::to_string(result.second)}));
   }
 }
 
@@ -2283,12 +2281,12 @@ TEST_CASE("AffectsT with one if") {
   pkb->setStmtType(3, StatementType::Assign);
   pkb->setStmtType(4, StatementType::Assign);
   DesignExtractor::populateDesigns(pkb);
-  Table affectsTable = pkb->getAffects();
-  affectsTable.transitiveClosure();
-  Table affectsTTable = pkb->getAffectsT();
-  REQUIRE(affectsTable.size() == affectsTTable.size());
-  for (auto data : affectsTable.getData()) {
-    REQUIRE(affectsTTable.contains(data));
+  Table affectsTTable = pkb->getAffects();
+  affectsTTable.transitiveClosure();
+  auto results = {std::make_pair(3, 4)};
+  for (auto result : results) {
+    REQUIRE(affectsTTable.contains(
+        {std::to_string(result.first), std::to_string(result.second)}));
   }
 }
 
@@ -2319,12 +2317,13 @@ TEST_CASE("AffectsT with one while nested in one if") {
   pkb->setStmtType(4, StatementType::Assign);
   pkb->setStmtType(5, StatementType::Assign);
   DesignExtractor::populateDesigns(pkb);
-  Table affectsTable = pkb->getAffects();
-  affectsTable.transitiveClosure();
-  Table affectsTTable = pkb->getAffectsT();
-  REQUIRE(affectsTable.size() == affectsTTable.size());
-  for (auto data : affectsTable.getData()) {
-    REQUIRE(affectsTTable.contains(data));
+  Table affectsTTable = pkb->getAffects();
+  affectsTTable.transitiveClosure();
+  auto results = {std::make_pair(3, 3), std::make_pair(3, 5),
+                  std::make_pair(4, 5)};
+  for (auto result : results) {
+    REQUIRE(affectsTTable.contains(
+        {std::to_string(result.first), std::to_string(result.second)}));
   }
 }
 
@@ -2355,12 +2354,14 @@ TEST_CASE("AffectsT with one if nested in one while") {
   pkb->setStmtType(4, StatementType::Assign);
   pkb->setStmtType(5, StatementType::Assign);
   DesignExtractor::populateDesigns(pkb);
-  Table affectsTable = pkb->getAffects();
-  affectsTable.transitiveClosure();
-  Table affectsTTable = pkb->getAffectsT();
-  REQUIRE(affectsTable.size() == affectsTTable.size());
-  for (auto data : affectsTable.getData()) {
-    REQUIRE(affectsTTable.contains(data));
+  Table affectsTTable = pkb->getAffects();
+  affectsTTable.transitiveClosure();
+  auto results = {std::make_pair(3, 5), std::make_pair(4, 3),
+                  std::make_pair(4, 4), std::make_pair(4, 5),
+                  std::make_pair(3, 3), std::make_pair(3, 4)};
+  for (auto result : results) {
+    REQUIRE(affectsTTable.contains(
+        {std::to_string(result.first), std::to_string(result.second)}));
   }
 }
 
@@ -2383,11 +2384,11 @@ TEST_CASE("AffectsT with one while nested in one while") {
   pkb->setStmtType(3, StatementType::Assign);
   pkb->setStmtType(4, StatementType::Assign);
   DesignExtractor::populateDesigns(pkb);
-  Table affectsTable = pkb->getAffects();
-  affectsTable.transitiveClosure();
-  Table affectsTTable = pkb->getAffectsT();
-  REQUIRE(affectsTable.size() == affectsTTable.size());
-  for (auto data : affectsTable.getData()) {
-    REQUIRE(affectsTTable.contains(data));
+  Table affectsTTable = pkb->getAffects();
+  affectsTTable.transitiveClosure();
+  auto results = {std::make_pair(3, 3), std::make_pair(3, 4)};
+  for (auto result : results) {
+    REQUIRE(affectsTTable.contains(
+        {std::to_string(result.first), std::to_string(result.second)}));
   }
 }

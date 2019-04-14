@@ -352,8 +352,7 @@ std::string PQLParser::parseQuotedExpr() {
     auto postfix = Parser::parseExpr(exprTokens);
     for (auto token : postfix) {
       if (ExprTokens::isRelationalOp(token)) {
-        throw std::logic_error(
-            "Non-arithmetic operators found in expression");
+        throw std::logic_error("Non-arithmetic operators found in expression");
       }
     }
     expr = Parser::tokensToString(postfix);
