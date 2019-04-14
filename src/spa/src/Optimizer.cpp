@@ -1,6 +1,6 @@
 #include <Optimizer.h>
 #include <algorithm>
-
+// DP algorithm by CS3223 System R approach
 Table Optimizer::getResult() {
   if (nodes.size() == 1) {
     return data[0];
@@ -20,6 +20,9 @@ Table Optimizer::getResult() {
       int min_cost = numeric_limits<int>::max();
       shared_ptr<node> min_node;
       vector<set<int>> allSubSets = generateAllSets(subset);
+      // examing all possible plans of the given subset, compare the cost with
+      // optimal plan
+      // update optimal plan
       for (set<int> leftTables : allSubSets) {
         set<int> rightTables = removeSets(subset, leftTables);
         shared_ptr<node> left = m[leftTables];
@@ -47,12 +50,12 @@ Table Optimizer::getResult() {
       m.insert(pair<set<int>, shared_ptr<node>>(subset, min_node));
     }
   }
-
+  // get the optimal plan of join tables, return the join result
   shared_ptr<node> best_plan = m[fromlist];
   Table result = join(best_plan);
   return result;
 }
-
+// actually join input tables
 Table Optimizer::join(shared_ptr<node> root) {
   if (root->isJoin) {
     Table left = join(root->left);
@@ -66,7 +69,7 @@ Table Optimizer::join(shared_ptr<node> root) {
     return root->data;
   }
 }
-
+// wrapping tables into leave nodes
 void Optimizer::wrapData(vector<Table> tables) {
   for (Table t : tables) {
     shared_ptr<node> present(new node);
@@ -77,6 +80,7 @@ void Optimizer::wrapData(vector<Table> tables) {
     nodes.push_back(present);
   }
 }
+// generate subsets with a given size of input set
 vector<set<int>> Optimizer::powerSet(set<int> data_set, const int &n) {
   vector<set<int>> result;
   vector<int> data_list(data_set.begin(), data_set.end());
@@ -99,7 +103,7 @@ vector<set<int>> Optimizer::powerSet(set<int> data_set, const int &n) {
       indices[r++] = ++c;
   }
 }
-
+// generate all subsets of input set
 vector<set<int>> Optimizer::generateAllSets(set<int> s) {
   vector<set<int>> allSets;
   for (int i = 1; i < s.size(); i++) {
@@ -117,6 +121,7 @@ set<int> Optimizer::removeSets(set<int> from, set<int> to) {
   }
   return from;
 }
+// merging headers of two tables into one
 vector<string> Optimizer::joinSchema(vector<string> left,
                                      vector<string> right) {
   vector<string> leftSchema = left;
@@ -140,7 +145,7 @@ vector<string> Optimizer::joinSchema(vector<string> left,
   }
   return leftSchema;
 }
-
+// calculate the cost of a give plan
 int PlanCost::getCost(shared_ptr<node> root) {
   calculateCost(root);
   return cost;
