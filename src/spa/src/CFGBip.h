@@ -39,7 +39,7 @@ private:
   void addToSimpleAdjLst(int, int);
   void populateNextBip();
   void populateNextBipT();
-  void populateAffectsBip();
+  void populateAffectsBip(bool);
   std::deque<int> getAffectsForward(int, std::string);
   void populateAffectsBipT();
   bool isCallStatement(int);

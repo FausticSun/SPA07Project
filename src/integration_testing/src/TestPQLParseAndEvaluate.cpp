@@ -63,7 +63,7 @@ PKB buildPKB() {
   pkb.setStmtType(14, StatementType::Print);
   pkb.setStmtType(15, StatementType::Read);
 
-  // procedure: mian one two three four
+  // procedure: main one two three four
   pkb.setProc("main", 1, 11);
   pkb.setProc("one", 11, 12);
   pkb.setProc("two", 12, 13);

@@ -243,11 +243,15 @@ void CFGBip::populateNextBipT() {
   }
 }
 
-void CFGBip::populateAffectsBip() {
+void CFGBip::populateAffectsBip(bool isAffectsBip) {
   for (auto data : modifiesAssignTable.getData()) {
     auto result = getAffectsForward(std::stoi(data[0]), data[1]);
     for (int i : result) {
-      affectsBip.insertRow({data[0], std::to_string(i)});
+      if (isAffectsBip) {
+        affectsBip.insertRow({data[0], std::to_string(i)});
+      } else {
+        affectsBipT.insertRow({data[0], std::to_string(i)});
+      }
     }
   }
 }
@@ -332,7 +336,8 @@ std::deque<int> CFGBip::getAffectsForward(int i, std::string var) {
 }
 
 void CFGBip::populateAffectsBipT() {
-  // implement affectsBipT algo here but on simpleAdjLst
+  populateAffectsBip(false);
+  affectsBipT.transitiveClosure();
 }
 
 bool CFGBip::isCallStatement(int i) { return (callSet.count(i) == 1); }
@@ -357,7 +362,7 @@ Table CFGBip::getNextBipT() {
 }
 
 Table CFGBip::getAffectsBip() {
-  populateAffectsBip();
+  populateAffectsBip(true);
   return affectsBip;
 }
 
